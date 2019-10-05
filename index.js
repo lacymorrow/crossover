@@ -70,6 +70,7 @@ const createMainWindow = async () => {
 		skipTaskbar: true,
 		titleBarStyle: 'customButtonsOnHover',
 		transparent: true,
+		hasShadow: false,
 		title: app.getName(),
 		resizable: true,
 		show: false,

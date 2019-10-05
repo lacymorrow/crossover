@@ -39,6 +39,7 @@ body {
 }
 
 .background {
+	transition: background 1s ease;
 	border-radius: 5px;
 	position: absolute;
 	top: 0;
@@ -61,13 +62,15 @@ body {
 .drag-me {
   display: none;
   border: 1px solid #EEE;
+  border-top: none;
+  border-left: none;
   /*border-radius: 5px;*/
   /*background: rgba(255, 255, 255, .3);*/
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   position: absolute;
-  bottom: 1px;
-  right: 1;
+  bottom: 3px;
+  right: 0;
   cursor: move;
   cursor: -webkit-grab;
   cursor: -moz-grab;
@@ -84,11 +87,11 @@ body {
 /*.drag-me:before {
 	content: '.';
 	position: absolute;
-	left: 14px;
+	left: 5;
 	font-size: 20px;
 	line-height: 20px;
 	color: #ac14c2;
-	text-shadow: 0 5px #ac14c2, 0 10px #ac14c2, 5px 0 #ac14c2, 5px 5px #ac14c2, 5px 10px #ac14c2, 10px 0 #ac14c2, 10px 5px #ac14c2, 10px 10px #ac14c2;
+	text-shadow: 0 4px #ac14c2, 0 8px #ac14c2, 4px 0 #ac14c2, 4px 4px #ac14c2, 4px 8px #ac14c2, 8px 0 #ac14c2, 8px 4px #ac14c2, 8px 8px #ac14c2;
 }*/
 
 .draggable .drag-me {
