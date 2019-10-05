@@ -3,6 +3,7 @@ body {
 	padding: 0;
 	margin: 0;
 	background: transparent;
+	overflow: hidden;
 }
 
 /* Use OS default fonts */
@@ -23,21 +24,73 @@ body {
 	font-feature-settings: 'liga', 'clig', 'kern';
 }
 
-header {
-	position: absolute;
-	width: 500px;
-	height: 250px;
-	top: 50%;
-	left: 50%;
-	margin-top: -125px;
-	margin-left: -250px;
-	text-align: center;
+::selection {
+	background: transparent;
+	color:inherit;
 }
 
-header h1 {
-	font-size: 60px;
-	font-weight: 200;
-	margin: 0;
-	padding: 0;
-	opacity: 0.7;
+.container {
+	overflow: hidden;
+	position: relative;
+	background: none;
+	border-radius: 5px;
+	width: 100%;
+	height: 100%;
+}
+
+.background {
+	border-radius: 5px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+}
+.draggable .background {
+	background: rgba(255, 255, 255, .3);
+}
+
+/* Application Style */
+.crosshairImg {
+	-webkit-user-select: none;
+	width: 100%;
+	height: auto;
+}
+
+.drag-me {
+  display: none;
+  border: 1px solid #EEE;
+  /*border-radius: 5px;*/
+  /*background: rgba(255, 255, 255, .3);*/
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 1px;
+  right: 1;
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.drag-me:active {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+}
+
+/*.drag-me:before {
+	content: '.';
+	position: absolute;
+	left: 14px;
+	font-size: 20px;
+	line-height: 20px;
+	color: #ac14c2;
+	text-shadow: 0 5px #ac14c2, 0 10px #ac14c2, 5px 0 #ac14c2, 5px 5px #ac14c2, 5px 10px #ac14c2, 10px 0 #ac14c2, 10px 5px #ac14c2, 10px 10px #ac14c2;
+}*/
+
+.draggable .drag-me {
+	display: inline-block;
 }

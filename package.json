@@ -1,14 +1,14 @@
 {
-	"name": "app-name",
-	"productName": "App Name",
-	"version": "0.0.0",
-	"description": "The best app ever",
+	"name": "crossover",
+	"productName": "CrossOver",
+	"version": "0.1.0",
+	"description": "A Crosshair Overlay for any platform.",
 	"license": "MIT",
-	"repository": "sindresorhus/electron-boilerplate",
+	"repository": "lacymorrow/crossover",
 	"author": {
-		"name": "Your Name",
-		"email": "user@gmail.com",
-		"url": "https://sindresorhus.com"
+		"name": "Lacy Morrow",
+		"email": "me@lacymorrow.com",
+		"url": "https://lacymorrow.com"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
@@ -44,9 +44,9 @@
 		"releaseDraft": false
 	},
 	"build": {
-		"appId": "com.company.AppName",
+		"appId": "com.lacymorrow.CrossOver",
 		"mac": {
-			"category": "public.app-category.social-networking",
+			"category": "public.app-category.utilities",
 			"darkModeSupport": true
 		},
 		"dmg": {
@@ -69,7 +69,7 @@
 				"AppImage",
 				"deb"
 			],
-			"category": "Network;Chat"
+			"category": "Game;Shooter"
 		}
 	}
 }

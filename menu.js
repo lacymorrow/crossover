@@ -1,6 +1,6 @@
 'use strict';
 const path = require('path');
-const {app, Menu, shell} = require('electron');
+const {app, Menu, shell, remote, BrowserWindow} = require('electron');
 const {
 	is,
 	appMenu,
@@ -12,17 +12,41 @@ const {
 const config = require('./config');
 
 const showPreferences = () => {
-	// Show the app's preferences here
+	console.log('Show Preferences…')
+};
+
+const moveWindow = (direction) => {
+	let unlocked = app.dock.isVisible();
+	if(unlocked) {
+		let mainWindow = BrowserWindow.getFocusedWindow()
+		let bounds = mainWindow.getBounds();
+		switch (direction) {
+			case 'up':
+				mainWindow.setBounds({ y: bounds.y - 1})
+				break;
+			case 'down':
+				mainWindow.setBounds({ y: bounds.y + 1})
+				break;
+			case 'left':
+				mainWindow.setBounds({ x: bounds.x - 1})
+				break;
+			case 'right':
+				mainWindow.setBounds({ x: bounds.x + 1})
+				break;
+			default:
+				break;
+		}
+	}
 };
 
 const helpSubmenu = [
 	openUrlMenuItem({
 		label: 'Website',
-		url: 'https://github.com/sindresorhus/electron-boilerplate'
+		url: 'https://github.com/lacymorrow/crossover'
 	}),
 	openUrlMenuItem({
 		label: 'Source Code',
-		url: 'https://github.com/sindresorhus/electron-boilerplate'
+		url: 'https://github.com/lacymorrow/crossover'
 	}),
 	{
 		label: 'Report an Issue…',
@@ -36,8 +60,8 @@ const helpSubmenu = [
 ${debugInfo()}`;
 
 			openNewGitHubIssue({
-				user: 'sindresorhus',
-				repo: 'electron-boilerplate',
+				user: 'lacymorrow',
+				repo: 'crossover',
 				body
 			});
 		}
@@ -51,7 +75,7 @@ if (!is.macos) {
 		},
 		aboutMenuItem({
 			icon: path.join(__dirname, 'static', 'icon.png'),
-			text: 'Created by Your Name'
+			text: 'Created by Lacy Morrow'
 		})
 	);
 }
@@ -104,7 +128,32 @@ const macosTemplate = [
 		role: 'fileMenu',
 		submenu: [
 			{
-				label: 'Custom'
+				label: 'Move Up',
+				accelerator: 'Control+Shift+Up',
+				click() {
+					moveWindow('up')
+				}
+			},
+			{
+				label: 'Move Down',
+				accelerator: 'Control+Shift+Down',
+				click() {
+					moveWindow('down')
+				}
+			},
+			{
+				label: 'Move Left',
+				accelerator: 'Control+Shift+Left',
+				click() {
+					moveWindow('left')
+				}
+			},
+			{
+				label: 'Move Right',
+				accelerator: 'Control+Shift+Right',
+				click() {
+					moveWindow('right')
+				}
 			},
 			{
 				type: 'separator'
