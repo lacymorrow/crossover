@@ -16,8 +16,8 @@ const showPreferences = () => {
 };
 
 const moveWindow = (direction) => {
-	let unlocked = app.dock.isVisible();
-	if(unlocked) {
+	let locked = config.get('window_locked');
+	if(locked) {
 		let mainWindow = BrowserWindow.getFocusedWindow()
 		let bounds = mainWindow.getBounds();
 		switch (direction) {

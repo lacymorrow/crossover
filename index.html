@@ -8,10 +8,22 @@
 	<body>
 		<div class="container">
 			<div class="background"></div>
-			<div class="crosshair">
-				<img class="crosshairImg" src="static/bullseye.png" draggable="false" />
+
+			<div class="crosshair-wrapper">
+				<div class="crosshair">
+					<img oncontextmenu=”return false;” class="crosshairImg" src="static/bullseye.png" draggable="false" />
+				</div>
+				<div class="drag-me"></div>
 			</div>
-			<div class="drag-me">
+
+
+			<div class="settings">
+				<select class="setting-crosshair" id="crosshairs">
+					<option value="bullseye">Bullseye</option>
+				</select>
+
+				<input id="setting-opacity" type="range" />
+				<output for="setting-opacity">50</output>
 			</div>
 		</div>
 	</body>

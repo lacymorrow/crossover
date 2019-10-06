@@ -14,7 +14,7 @@
 		"postinstall": "electron-builder install-app-deps",
 		"lint": "xo",
 		"test": "npm run lint",
-		"start": "electron .",
+		"start": "sass index.scss:index.css -s compressed && electron .",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder --macos --linux --windows",
 		"release": "np"

@@ -3,6 +3,9 @@ const Store = require('electron-store');
 
 module.exports = new Store({
 	defaults: {
-		crosshair: 'starburst'
+		'crosshair': 'bullseye',
+		'opacity': 50,
+		'size': 100,
+		'window_locked': false,
 	}
 });
