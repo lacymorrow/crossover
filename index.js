@@ -59,7 +59,7 @@ function prettify(str) {
 	return str;
 }
 
-const setupCrosshairs = () => {
+const setupCrosshairInput = () => {
 	// Crosshair select options
 	let crosshairs = [];
 	new Promise((resolve, reject) => {
@@ -127,7 +127,8 @@ const lockWindow = lock => {
 
 const setupApp = async () => {
 	// Crossover chooser
-	setupCrosshairs();
+	lockWindow(false);
+	setupCrosshairInput();
 };
 
 const createMainWindow = async () => {
@@ -243,7 +244,12 @@ app.on("activate", async () => {
 	await app.whenReady();
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
-	lockWindow(false);
+	mainWindow.on('move', () => {
+		console.log('moved')
+		let bounds = mainWindow.getBounds()
+		config.set('position_x', bounds.x)
+		config.set('position_y', bounds.y)
+	})
 
 	setupApp();
 	const crosshair = config.get("crosshair");

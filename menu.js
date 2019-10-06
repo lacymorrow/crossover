@@ -18,20 +18,30 @@ const showPreferences = () => {
 const moveWindow = (direction) => {
 	let locked = config.get('window_locked');
 	if(locked) {
+		let newBound;
 		let mainWindow = BrowserWindow.getFocusedWindow()
 		let bounds = mainWindow.getBounds();
 		switch (direction) {
 			case 'up':
-				mainWindow.setBounds({ y: bounds.y - 1})
+				newBound = bounds.y - 1;
+				config.set('position_y', newBound)
+				mainWindow.setBounds({ y: newBound})
 				break;
 			case 'down':
-				mainWindow.setBounds({ y: bounds.y + 1})
+				newBound = bounds.y + 1;
+				config.set('position_y', newBound)
+				mainWindow.setBounds({ y: newBound})
+
 				break;
 			case 'left':
-				mainWindow.setBounds({ x: bounds.x - 1})
+				newBound = bounds.x - 1;
+				config.set('position_x', newBound)
+				mainWindow.setBounds({ x: newBound})
 				break;
 			case 'right':
-				mainWindow.setBounds({ x: bounds.x + 1})
+				newBound = bounds.x + 1;
+				config.set('position_x', newBound)
+				mainWindow.setBounds({ x: newBound})
 				break;
 			default:
 				break;
