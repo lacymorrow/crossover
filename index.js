@@ -17,10 +17,7 @@ contextMenu();
 
 /* Settings
 
-	- crosshair
-	- size
 	- position
-	- opacity
 	- hide shortcut
 	-
 
@@ -127,16 +124,16 @@ const setOpacity = (opacity) => {
 	);
 }
 
-const setSize = (width) => {
-	config.set('size', width)
+const setSize = (size) => {
+	config.set('size', size)
 	mainWindow.webContents.executeJavaScript(
-		`document.getElementById('setting-width').value = '${width}';`
+		`document.getElementById('setting-size').value = '${size}';`
 	);
 	mainWindow.webContents.executeJavaScript(
-		`document.getElementById('output-width').innerText = '${width}';`
+		`document.getElementById('output-size').innerText = '${size}';`
 	);
 	mainWindow.webContents.executeJavaScript(
-		`document.getElementById('crosshair').style = 'width: ${width}px';`
+		`document.getElementById('crosshair').style = 'width: ${size}px';`
 	);
 }
 

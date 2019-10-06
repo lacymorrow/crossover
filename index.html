@@ -18,13 +18,17 @@
 
 
 			<div class="settings">
+				<div class="settings-background"></div>
+
 				<select class="setting-crosshair" id="crosshairs">
 					<option value="bullseye">Bullseye</option>
 				</select>
 
-				<input id="setting-width" type="range" min="1" max="100" step="1" value="100" />
-				<output id="output-width" for="setting-width">100</output>
+				<label for"setting-size">Size</label>
+				<input id="setting-size" type="range" min="1" max="100" step="1" value="100" />
+				<output id="output-size" for="setting-size">100</output>
 
+				<label for"setting-opacity">Opacity</label>
 				<input id="setting-opacity" type="range" min="0" max="100" step="1" />
 				<output id="output-opacity" for="setting-opacity">50</output>
 			</div>

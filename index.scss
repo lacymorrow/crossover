@@ -2,7 +2,6 @@ $border_color:        #c7c7c7;
 $border_color_focus:  #569aff;
 $border_color_hover:  #888888;
 $text_color:          #676767;
-$bg_color:            rgba(255,255,255,0.5);
 
 html,
 body {
@@ -14,6 +13,8 @@ body {
 
 /* Use OS default fonts */
 body {
+	color: #222;
+	font-size: 12px;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -37,7 +38,7 @@ body {
 	-webkit-user-select: none;
 }
 
-.background {
+.background, .settings-background {
 	transition: background 1s ease;
 	border-radius: 5px;
 	position: absolute;
@@ -50,7 +51,6 @@ body {
 
 .drag-me {
 	display: none;
-	transition: opacity 1s ease;
 	// border: 1px solid #eee;
 	border-top: none;
 	border-left: none;
@@ -105,7 +105,13 @@ body {
 
 .settings {
 	display: none;
-	margin: 15px;
+	border-top: 1px solid rgba(255, 255, 255, 0.5);
+	padding: 15px;
+	margin-top: 15px;
+	position: relative;
+	&-background {
+		background: white;
+	}
 }
 
 .draggable {
@@ -131,6 +137,11 @@ body {
 	}
 }
 
+label {
+	display: block;
+	margin-top: 15px;
+}
+
 select {
 	appearance: none;
 	-webkit-appearance: none;
@@ -140,7 +151,7 @@ select {
 	padding: 0.5em 3em 0.5em 0.5em;
 	border: 1px solid $border_color;
 	border-radius: 0;
-	background-color: $bg_color;
+	background-color: white;
 	color: $text_color;
 	outline: none;
 	display: inline-block;
