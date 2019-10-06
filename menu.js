@@ -17,7 +17,7 @@ const showPreferences = () => {
 
 const moveWindow = (direction) => {
 	let locked = config.get('window_locked');
-	if(locked) {
+	if(!locked) {
 		let newBound;
 		let mainWindow = BrowserWindow.getFocusedWindow()
 		let bounds = mainWindow.getBounds();
