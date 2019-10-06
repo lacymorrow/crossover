@@ -10,8 +10,8 @@
 			<div class="background"></div>
 
 			<div class="crosshair-wrapper">
-				<div class="crosshair">
-					<img oncontextmenu=”return false;” class="crosshairImg" src="static/bullseye.png" draggable="false" />
+				<div id="crosshair">
+					<img id="crosshairImg" src="static/crosshairs/bullseye.png" draggable="false" />
 				</div>
 				<div class="drag-me"></div>
 			</div>
@@ -22,9 +22,16 @@
 					<option value="bullseye">Bullseye</option>
 				</select>
 
-				<input id="setting-opacity" type="range" />
-				<output for="setting-opacity">50</output>
+				<input id="setting-width" type="range" min="1" max="100" step="1" value="100" />
+				<output id="output-width" for="setting-width">100</output>
+
+				<input id="setting-opacity" type="range" min="0" max="100" step="1" />
+				<output id="output-opacity" for="setting-opacity">50</output>
 			</div>
 		</div>
+
+		<script>
+		     require('./renderer');
+		</script>
 	</body>
 </html>

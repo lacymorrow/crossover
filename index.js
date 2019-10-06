@@ -2,7 +2,7 @@
 const fs = require("fs");
 
 const path = require("path");
-const { app, globalShortcut, BrowserWindow, Menu } = require("electron");
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require("electron");
 /// const {autoUpdater} = require('electron-updater');
 const { is } = require("electron-util");
 const unhandled = require("electron-unhandled");
@@ -48,6 +48,17 @@ let mainWindow;
 // Crosshair images
 const crosshairsPath = "static/crosshairs";
 
+const debounce = (func, delay) => {
+    let debounceTimer
+    return function() {
+        const context = this
+        const args = arguments
+            clearTimeout(debounceTimer)
+                debounceTimer
+            = setTimeout(() => func.apply(context, args), delay)
+    }
+}
+
 function prettify(str) {
 	// Title Case and spacing
 	str = str
@@ -55,13 +66,13 @@ function prettify(str) {
 		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
 		.join(" ");
 
-	console.log(str);
 	return str;
 }
 
 const setupCrosshairInput = () => {
 	// Crosshair select options
 	let crosshairs = [];
+	const crosshair = config.get("crosshair");
 	new Promise((resolve, reject) => {
 		fs.readdir(crosshairsPath, (err, dir) => {
 			if (err) reject(err);
@@ -73,8 +84,6 @@ const setupCrosshairInput = () => {
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
 				let filename = path.basename(filepath, ".png");
 				if (!/^\..*/.test(filename)) {
-					// display files
-					// console.log(filename);
 					crosshairs.push(filename);
 				}
 			}
@@ -86,10 +95,50 @@ const setupCrosshairInput = () => {
 					)}', '${crosshairs[i]}');`
 				);
 			}
+
+			mainWindow.webContents.executeJavaScript(
+				`document.getElementById('crosshairImg').src = '${crosshairsPath}/${crosshair}.png'`
+			);
+			mainWindow.webContents.executeJavaScript(
+				`
+					for(let i = 0; i < document.getElementById("crosshairs").options.length; i++) {
+						if (document.getElementById("crosshairs").options[i].value == '${crosshair}') {
+							document.getElementById("crosshairs").options[i].selected = true;
+						}
+					};
+				`
+			);
+
 			resolve(crosshairs);
 		});
 	});
 };
+
+const setOpacity = (opacity) => {
+	config.set('opacity', opacity)
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('setting-opacity').value = '${opacity}';`
+	);
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('output-opacity').innerText = '${opacity}';`
+	);
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('crosshairImg').style = 'opacity: ${opacity/100}';`
+	);
+}
+
+const setSize = (width) => {
+	config.set('size', width)
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('setting-width').value = '${width}';`
+	);
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('output-width').innerText = '${width}';`
+	);
+	mainWindow.webContents.executeJavaScript(
+		`document.getElementById('crosshair').style = 'width: ${width}px';`
+	);
+}
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
 const setDockVisible = visible => {
@@ -129,6 +178,8 @@ const setupApp = async () => {
 	// Crossover chooser
 	lockWindow(false);
 	setupCrosshairInput();
+	setOpacity(config.get('opacity'));
+	setSize(config.get('size'));
 };
 
 const createMainWindow = async () => {
@@ -146,7 +197,10 @@ const createMainWindow = async () => {
 		resizable: false,
 		show: false,
 		width: 200,
-		height: 300
+		height: 300,
+		webPreferences: {
+			nodeIntegration: true
+		}
 	});
 
 	win.setAlwaysOnTop(true, "floating", 1);
@@ -173,6 +227,22 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.on("ready", () => {
+
+	ipcMain.on('set_crosshair', (event, arg) => {
+	  console.log(`Set crosshair: ${arg}`)
+	  config.set('crosshair', arg)
+	})
+
+	ipcMain.on('set_opacity', (event, arg) => {
+	  console.log(`Set opacity: ${arg}`)
+	  setOpacity(arg)
+	})
+
+	ipcMain.on('set_size', (event, arg) => {
+	  console.log(`Set size: ${arg}`)
+	  setSize(arg)
+	})
+
 	/* Global KeyListner */
 	// CMD/CTRL + SHIFT + 0
 	globalShortcut.register("Control+Shift+X", () => {
@@ -231,29 +301,20 @@ app.on("activate", async () => {
 	}
 });
 
-// let resizeTimeout;
-// app.on('resize', (e)=>{
-//     clearTimeout(resizeTimeout);
-//     resizeTimeout = setTimeout(function(){
-//         let size = mainWindow.getSize();
-//         mainWindow.setSize(size[0], size[0]);
-//     }, 100);
-// });
 
 (async () => {
 	await app.whenReady();
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
-	mainWindow.on('move', () => {
-		console.log('moved')
+	mainWindow.nodeRequire = require;
+	const saveBounds = debounce(() => {
 		let bounds = mainWindow.getBounds()
 		config.set('position_x', bounds.x)
 		config.set('position_y', bounds.y)
+	}, 1000)
+	mainWindow.on('move', () => {
+		saveBounds()
 	})
 
 	setupApp();
-	const crosshair = config.get("crosshair");
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.crosshairImg').src = '${crosshairsPath}/${crosshair}.png'`
-	);
 })();
