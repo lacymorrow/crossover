@@ -138,7 +138,11 @@ const setOpacity = opacity => {
 		`document.querySelector('#output-opacity').innerText = '${opacity}';`
 	);
 	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#crosshairImg').style = 'opacity: ${opacity /
+		`document.querySelector('#crosshairImg').style.opacity = '${opacity /
+			100}';`
+	);
+	mainWindow.webContents.executeJavaScript(
+		`document.querySelector('.sight').style.opacity = '${opacity /
 			100}';`
 	);
 };

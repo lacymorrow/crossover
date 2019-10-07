@@ -83,6 +83,9 @@ window.pickr;
 	}, 1000);
 	pickr.on('change', (color, instance) => {
 		let hex = color.toHEXA().toString()
+		if(hex.length > 7) {
+			hex = hex.slice(0, 7)
+		}
 		document.querySelector('.sight').style.setProperty(`--sight-background`, `${hex}`);
 		dColorInput(hex);
 	})
@@ -93,7 +96,8 @@ window.pickr;
 	}, 1000);
 	opacityInput.addEventListener("input", e => {
 		opacityOutput.innerText = e.target.value;
-		crosshairImg.style = `opacity: ${e.target.value / 100}`;
+		crosshairImg.style.opacity = `${e.target.value / 100}`;
+		document.querySelector('.sight').style.opacity = `${e.target.value / 100}`;
 		dOpacityInput(e.target.value);
 	});
 
