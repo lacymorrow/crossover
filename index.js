@@ -122,9 +122,6 @@ const setupCrosshairInput = () => {
 const setColor = color => {
 	config.set("color", color);
 	mainWindow.webContents.executeJavaScript(
-		`pickr.setColor('${color}')`
-	);
-	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('.sight').style.setProperty('--sight-background', '${color}');`
 	);
 }
@@ -249,7 +246,11 @@ const moveWindow = direction => {
 };
 
 const setupApp = async () => {
+	console.log()
 	// Crossover chooser
+	mainWindow.webContents.executeJavaScript(
+		`pickr.setColor('${config.get('color')}')`
+	);
 	lockWindow(false);
 	setupCrosshairInput();
 	setColor(config.get('color'));

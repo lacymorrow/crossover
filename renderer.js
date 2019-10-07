@@ -78,16 +78,18 @@ window.pickr;
 	});
 
 	// Color
-	dColorInput = debounce(val => {
-		ipcRenderer.send("set_color", val);
-	}, 1000);
-	pickr.on('change', (color, instance) => {
+	const stripHex = color => {
 		let hex = color.toHEXA().toString()
 		if(hex.length > 7) {
-			hex = hex.slice(0, 7)
+			return hex.slice(0, 7)
 		}
-		document.querySelector('.sight').style.setProperty(`--sight-background`, `${hex}`);
-		dColorInput(hex);
+		return hex
+	}
+	pickr.on('change', (color, instance) => {
+		document.querySelector('.sight').style.setProperty(`--sight-background`, `${stripHex(color)}`);
+	})
+	pickr.on('save', (color, instance) => {
+		ipcRenderer.send("set_color", stripHex(color));
 	})
 
 	// Opacity
