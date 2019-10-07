@@ -15,7 +15,7 @@ const unhandled = require("electron-unhandled");
 const debug = require("electron-debug");
 const contextMenu = require("electron-context-menu");
 const config = require("./config");
-const menu = require("./menu");
+const menu = require("./src/menu");
 
 unhandled();
 debug();
@@ -299,7 +299,7 @@ const createMainWindow = async () => {
 		mainWindow = undefined;
 	});
 
-	await win.loadFile(path.join(__dirname, "index.html"));
+	await win.loadFile(path.join(__dirname, "src/index.html"));
 
 	return win;
 };

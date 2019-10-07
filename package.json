@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.1.3",
+	"version": "0.1.5",
 	"description": "A Crosshair Overlay for any platform.",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -14,7 +14,7 @@
 		"postinstall": "electron-builder install-app-deps",
 		"lint": "xo",
 		"test": "npm run lint",
-		"start": "sass index.scss:index.css -s compressed && electron .",
+		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "electron-builder --dir",
 		"dist": "rm -rf dist && electron-builder --macos --linux --windows",
 		"release": "np"
