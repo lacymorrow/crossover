@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "A Crosshair Overlay for any platform.",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -16,7 +16,7 @@
 		"test": "npm run lint",
 		"start": "sass index.scss:index.css -s compressed && electron .",
 		"pack": "electron-builder --dir",
-		"dist": "electron-builder --macos --linux --windows",
+		"dist": "rm -rf dist && electron-builder --macos --linux --windows",
 		"release": "np"
 	},
 	"dependencies": {
@@ -71,5 +71,8 @@
 			],
 			"category": "Game;Shooter"
 		}
+	},
+	"peerDependencies": {
+		"@simonwep/pickr": "^1.4.2"
 	}
 }

@@ -1,14 +1,16 @@
-'use strict';
-const Store = require('electron-store');
+"use strict";
+const Store = require("electron-store");
 
 module.exports = new Store({
 	defaults: {
-		// crosshair: 'leupold-dot',
+		crosshair: 'leupold-dot',
+		color: '#FFFFFF',
 		crosshair_index: 0,
 		opacity: 80,
 		position_x: -1,
 		position_y: -1,
+		sight: 'dot',
 		size: 80,
-		window_locked: false,
+		window_locked: false
 	}
 });

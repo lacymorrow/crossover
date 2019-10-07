@@ -1,7 +1,8 @@
-$border_color:        #c7c7c7;
-$border_color_focus:  #569aff;
-$border_color_hover:  #888888;
-$text_color:          #676767;
+$border_color: #c7c7c7;
+$border_color_focus: #569aff;
+$border_color_hover: #888888;
+$text_color: #676767;
+$main_color: #555;
 
 html,
 body {
@@ -13,8 +14,8 @@ body {
 
 /* Use OS default fonts */
 body {
-	color: #222;
-	font-size: 12px;
+	color: $main_color;
+	font-size: 11px;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -22,13 +23,36 @@ body {
 	font-feature-settings: "liga", "clig", "kern";
 }
 
+.help-text {
+	text-align: center;
+	letter-spacing: 1.1px;
+	margin: 20px 0 0 0;
+	align-items: flex-end;
+	font-size: 9px;
+	color: #666;
+	text-transform: uppercase;
+
+	span {
+		font-family: Monaco, "Courier New", monospace;
+		background: #EEE;
+		border: 1px #DDD;
+		padding: 4px;
+	}
+}
+
+.d-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
 ::selection {
 	background: transparent;
 	color: inherit;
 }
 
+/* Application Style */
 .container {
-	padding-top:15px;
+	padding-top: 15px;
 	overflow: hidden;
 	position: relative;
 	background: none;
@@ -36,9 +60,10 @@ body {
 	width: 100%;
 	height: 100%;
 	-webkit-user-select: none;
+	cursor: none;
 }
 
-.background, .settings-background {
+.background {
 	transition: background 1s ease;
 	border-radius: 5px;
 	position: absolute;
@@ -77,21 +102,23 @@ body {
 		font-size: 20px;
 		line-height: 20px;
 		color: #eee;
-		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee,
-			5px 5px #eee, 5px 10px #eee, 10px 0 #eee, 10px 5px #eee,
-			10px 10px #eee;
+		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee, 5px 5px #eee,
+			5px 10px #eee, 10px 0 #eee, 10px 5px #eee, 10px 10px #eee;
 	}
 }
 
-/* Application Style */
 #crosshair {
 	// Default width
 	width: 100px;
+	height: 100px;
+	position: relative;
 }
 
 .crosshair-wrapper {
 	position: relative;
-	height: 100px ;
+	height: 100px;
+	width: 100%;
+	padding-bottom: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -105,16 +132,25 @@ body {
 
 .settings {
 	display: none;
-	border-top: 1px solid rgba(255, 255, 255, 0.5);
-	padding: 15px;
-	margin-top: 15px;
+	padding: 15px 15px 10px 15px;
 	position: relative;
+	flex-direction: column;
 	&-background {
 		background: white;
+		transition: background 1s ease;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: -1;
 	}
 }
 
 .draggable {
+	.container {
+		cursor: inherit;
+	}
 	.crosshair-wrapper {
 		cursor: move;
 		cursor: -webkit-grab;
@@ -133,13 +169,132 @@ body {
 		display: block;
 	}
 	.settings {
+		display: flex;
+	}
+}
+
+
+/* Settings */
+.sight {
+	--sight-background: #ccc;
+	position: absolute;
+	display: none;
+	top: 50%;
+	left: 50%;
+	margin-left: -5%;
+	margin-top: -5%;
+	z-index: 1;
+	&.dot {
+		width: 10%;
+		height: 10%;
 		display: block;
+		border-radius: 50%;
+		background-color: var(--sight-background);
+	}
+	&.cross {
+		display: inline-block;
+		width: 50%;
+		height: 50%;
+		&::before {
+			position: absolute;
+			top: -50%;
+			left: 0;
+			margin-top: 10%;
+			margin-left: 10%;
+			display: block;
+			background: inherit;
+			content: "";
+			height: 100%;
+			width: 1px;
+			background-color: var(--sight-background);
+		}
+		&::after {
+			position: absolute;
+			top: 0;
+			left: -50%;
+			margin-top: 10%;
+			margin-left: 10%;
+			display: block;
+			background: inherit;
+			content: "";
+			height: 1px;
+			width: 100%;
+			background-color: var(--sight-background);
+		}
 	}
 }
 
 label {
 	display: block;
 	margin-top: 15px;
+}
+
+.pickr {
+	-webkit-app-region: no-drag;
+	display: inline-block;
+	margin-right: 10px;
+	button,
+	.pcr-button:after,
+	.pcr-button:before {
+		border-radius: 50%;
+	}
+}
+
+.setting-sight {
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: space-around;
+	label {
+		margin-top: 0;
+	}
+}
+.radio{
+  display: inline-block;
+  cursor: pointer;
+  user-select:none;
+  text-align: left;
+  &+.radio{
+    margin-left: 7px;
+  }
+  input{
+    display: none;
+    &+span{
+      display: inline-block;
+      position: relative;
+      padding-left: 20px;
+      &:before{
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border-radius: 50%;
+        margin-right: 5px;
+        width: 14px;
+        height: 14px;
+        border: 1px solid #ccc;
+        background: #fff;
+      }
+      &:after{
+        content: '';
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: $main_color;
+        position: absolute;
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        opacity: 0;
+        transform: scale(0,0);
+        transition: all .2s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+      }
+    }
+    &:checked+span:after{
+      opacity: 1;
+      transform: scale(1,1);
+    }
+  }
 }
 
 select {
@@ -176,47 +331,51 @@ select {
 	}
 }
 
-input[type=range]{
-  -webkit-appearance: none;
-  background: none;
-  cursor: pointer;
+output {
+	align-self: flex-end;
+	padding-left: 10px;
+}
+
+input[type="range"] {
+	-webkit-appearance: none;
+	background: none;
+	cursor: pointer;
+	flex: 1;
 
 	&::-webkit-slider-runnable-track {
-	  height: 5px;
-	  background: #ddd;
-	  border: none;
-	  border-radius: 3px;
+		height: 5px;
+		background: #ddd;
+		border: none;
+		border-radius: 3px;
 	}
 
 	&::-webkit-slider-thumb {
-	  -webkit-appearance: none;
-	  border: none;
-	  height: 16px;
-	  width: 16px;
-	  border-radius: 50%;
-	  background: #555;
-	  margin-top: -5px;
-	  position: relative;
+		-webkit-appearance: none;
+		border: none;
+		height: 16px;
+		width: 16px;
+		border-radius: 50%;
+		background: $main_color;
+		margin-top: -5px;
+		position: relative;
 	}
 
 	&:focus {
-	  outline: none;
-	  &::-webkit-slider-thumb:after {
-	    position: absolute;
-	    top: -35px;
-	    left: 50%;
-	    transform: translateX(-50%);
-	    background: #eee;
-	    border-radius: 5px;
-	    color: #555;
-	    padding: 5px 10px;
-	    border: 2px solid #555;
-	  }
+		outline: none;
+		&::-webkit-slider-thumb:after {
+			position: absolute;
+			top: -35px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: #eee;
+			border-radius: 5px;
+			color: $main_color;
+			padding: 5px 10px;
+			border: 2px solid $main_color;
+		}
 	}
 
 	&:focus::-webkit-slider-runnable-track {
-	  background: #ccc;
+		background: #ccc;
 	}
 }
-
-

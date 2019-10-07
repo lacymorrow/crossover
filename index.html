@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CrossOver</title>
+		<link rel="stylesheet" href="static/css/pickr.nano.min.css"/>
 		<link rel="stylesheet" href="index.css">
 	</head>
 	<body>
@@ -12,6 +13,7 @@
 			<div class="crosshair-wrapper">
 				<div id="crosshair">
 					<img id="crosshairImg" src="static/crosshairs/bullseye.png" draggable="false" />
+					<div class="sight dot">&nbsp;</div>
 				</div>
 				<div class="drag-me"></div>
 			</div>
@@ -20,17 +22,41 @@
 			<div class="settings">
 				<div class="settings-background"></div>
 
-				<select class="setting-crosshair" id="crosshairs">
-					<option value="bullseye">Bullseye</option>
-				</select>
+				<div class="setting-sight">
+					<label class="radio dot">
+					  <input name="radio" type="radio" value="dot" checked>
+					  <span>&bull;</span>
+					</label>
+					<label class="radio cross">
+					  <input name="radio" value="cross" type="radio">
+					  <span>&plus;</span>
+					</label>
+					<label class="radio off">
+					  <input name="radio" value="off" type="radio">
+					  <span>off</span>
+					</label>
+				</div>
 
-				<label for"setting-size">Size</label>
-				<input id="setting-size" type="range" min="1" max="100" step="1" value="100" />
-				<output id="output-size" for="setting-size">100</output>
+				<div>
+					<div class="color-picker"></div>
 
-				<label for"setting-opacity">Opacity</label>
-				<input id="setting-opacity" type="range" min="0" max="100" step="1" />
-				<output id="output-opacity" for="setting-opacity">50</output>
+					<select class="setting-crosshair" id="crosshairs">
+						<option value="bullseye">Bullseye</option>
+					</select>
+				</div>
+
+				<label for="setting-size">Size</label>
+				<div class="d-flex">
+					<input id="setting-size" type="range" min="1" max="100" step="1" value="100" />
+					<output id="output-size" for="setting-size">100</output>
+				</div>
+
+				<label for="setting-opacity">Opacity</label>
+				<div class="d-flex">
+					<input id="setting-opacity" type="range" min="0" max="100" step="1" />
+					<output id="output-opacity" for="setting-opacity">50</output>
+				</div>
+				<p class="help-text">Toggle: <span>CTRL</span>+<span>SHIFT</span>+<span>X</span>
 			</div>
 		</div>
 
