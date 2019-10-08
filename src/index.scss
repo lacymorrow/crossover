@@ -179,26 +179,27 @@ body {
 	display: none;
 	top: 50%;
 	left: 50%;
-	margin-left: -5%;
-	margin-top: -5%;
 	z-index: 1;
 	&.dot {
-		width: 10%;
-		height: 10%;
+		width: 8%;
+		height: 8%;
+		margin-left: -4%;
+		margin-top: -4%;
 		display: block;
 		border-radius: 50%;
 		background-color: var(--sight-background);
 	}
 	&.cross {
 		display: inline-block;
-		width: 50%;
-		height: 50%;
+		width: 20%;
+		height: 20%;
+		margin-left: -10%;
+		margin-top: -10%;
 		&::before {
 			position: absolute;
-			top: -50%;
-			left: 0;
-			margin-top: 10%;
-			margin-left: 10%;
+			top: 0;
+			left: 50%;
+			margin-left: 0;
 			display: block;
 			background: inherit;
 			content: "";
@@ -208,10 +209,9 @@ body {
 		}
 		&::after {
 			position: absolute;
-			top: 0;
-			left: -50%;
-			margin-top: 10%;
-			margin-left: 10%;
+			top: 50%;
+			left: 0;
+			margin-top: 0;
 			display: block;
 			background: inherit;
 			content: "";
