@@ -19,7 +19,7 @@ const menu = require("./src/menu");
 
 unhandled();
 debug();
-contextMenu();
+// contextMenu();
 
 /* Settings
 
@@ -194,6 +194,7 @@ const lockWindow = lock => {
 
 	config.set("window_locked", lock);
 	mainWindow.setClosable(!lock);
+	mainWindow.setIgnoreMouseEvents(lock)
 
 	if (lock) {
 		// Lock
@@ -274,6 +275,7 @@ const createMainWindow = async () => {
 		transparent: true,
 		hasShadow: false,
 		title: app.getName(),
+		fullscreenable: false,
 		resizable: false,
 		show: false,
 		width: 200,
@@ -284,9 +286,7 @@ const createMainWindow = async () => {
 	});
 
 	setDockVisible(false)
-	win.setAlwaysOnTop(true, "floating", 1);
 	win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-	win.setFullScreenable(false);
 	setDockVisible(true)
 
 	win.on("ready-to-show", () => {

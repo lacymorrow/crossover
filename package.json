@@ -1,8 +1,8 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.1.5",
-	"description": "A Crosshair Overlay for any platform.",
+	"version": "0.1.6",
+	"description": "A configurable Crosshair Overlay for any platform.",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
 	"author": {
@@ -20,6 +20,7 @@
 		"release": "np"
 	},
 	"dependencies": {
+		"@simonwep/pickr": "^1.4.2",
 		"electron-context-menu": "^0.15.0",
 		"electron-debug": "^3.0.0",
 		"electron-store": "^4.0.0",
