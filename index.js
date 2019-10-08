@@ -111,7 +111,7 @@ const setupCrosshairInput = () => {
 			resolve(crosshairs)
 		})
 	})
-	return pCrosshairs()
+	return pCrosshairs
 }
 
 const setColor = color => {
