@@ -154,12 +154,10 @@ body {
 	.crosshair-wrapper {
 		cursor: move;
 		cursor: -webkit-grab;
-		cursor: -moz-grab;
 		-webkit-app-region: drag;
 		&:active {
 			cursor: move;
 			cursor: -webkit-grabbing;
-			cursor: -moz-grabbing;
 		}
 	}
 	.background {
@@ -238,6 +236,10 @@ label {
 	.pcr-button:before {
 		border-radius: 50%;
 	}
+}
+
+.pcr-app {
+	-webkit-app-region: no-drag;
 }
 
 .setting-sight {

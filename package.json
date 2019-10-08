@@ -18,7 +18,7 @@
 		"lint": "xo --fix",
 		"test": "npm run lint",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
-		"pack": "electron-builder --dir",
+		"pack": "rm -f *.tgz && electron-builder --dir",
 		"dist": "rm -rf dist && electron-builder --macos --linux --windows",
 		"release": "np"
 	},
