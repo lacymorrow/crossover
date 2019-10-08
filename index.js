@@ -71,7 +71,7 @@ function prettify(str) {
 const setupCrosshairInput = () => {
 	// Crosshair select options
 	const crosshair = config.get('crosshair')
-	const pCrosshairs = new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		const crosshairs = []
 		fs.readdir(crosshairsPath, (err, dir) => {
 			if (err) reject(new Error(`Promise Errored: ${err}`, crosshairsPath))
@@ -111,7 +111,6 @@ const setupCrosshairInput = () => {
 			resolve(crosshairs)
 		})
 	})
-	return pCrosshairs
 }
 
 const setColor = color => {
