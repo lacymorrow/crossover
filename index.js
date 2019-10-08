@@ -14,7 +14,7 @@ const { is } = require("electron-util");
 const unhandled = require("electron-unhandled");
 const debug = require("electron-debug");
 const contextMenu = require("electron-context-menu");
-const config = require("./config");
+const config = require("./src/config");
 const menu = require("./src/menu");
 
 unhandled();
@@ -49,7 +49,7 @@ app.setAppUserModelId("com.lacymorrow.CrossOver");
 let mainWindow;
 
 // __static path
-const __static = process.env.NODE_ENV !== 'development' ? path.join(__dirname, '/static').replace(/\\/g, '\\\\') : 'static'
+const __static = process.env.NODE_ENV !== 'development' ? path.join(__dirname, '/src/static').replace(/\\/g, '\\\\') : 'static'
 
 // Crosshair images
 const crosshairsPath = path.join(__static, 'crosshairs');
@@ -80,7 +80,7 @@ const setupCrosshairInput = () => {
 	const crosshair = config.get("crosshair");
 	new Promise((resolve, reject) => {
 		fs.readdir(crosshairsPath, (err, dir) => {
-			if (err) reject(err);
+			if (err) reject(`Promise Errored: ${err}`, crosshairsPath);
 
 			mainWindow.webContents.executeJavaScript(
 				`document.querySelector("#crosshairs").options.length = 0;`
@@ -101,9 +101,9 @@ const setupCrosshairInput = () => {
 				);
 			}
 
-			// mainWindow.webContents.executeJavaScript(
-			// 	`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
-			// );
+			mainWindow.webContents.executeJavaScript(
+				`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
+			);
 			mainWindow.webContents.executeJavaScript(
 				`
 					for(let i = 0; i < document.querySelector("#crosshairs").options.length; i++) {
