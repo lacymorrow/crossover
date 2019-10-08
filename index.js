@@ -71,6 +71,7 @@ function prettify(str) {
 const setupCrosshairInput = () => {
 	// Crosshair select options
 	const crosshair = config.get('crosshair')
+	console.log(crosshair)
 
 	return new Promise((resolve, reject) => {
 		const crosshairs = []
@@ -91,9 +92,9 @@ const setupCrosshairInput = () => {
 				}
 			}
 
-			for (let i = 1; i <= crosshairs.length; i++) {
+			for (let i = 0; i < crosshairs.length; i++) {
 				mainWindow.webContents.executeJavaScript(
-					`document.querySelector("#crosshairs").options[${i}] = new Option('${prettify(
+					`document.querySelector("#crosshairs").options[${i+1}] = new Option('${prettify(
 						crosshairs[i]
 					)}', '${crosshairs[i]}');`
 				)
@@ -111,6 +112,7 @@ const setupCrosshairInput = () => {
 					`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
 				)
 			}
+
 			mainWindow.webContents.executeJavaScript(
 				`
 					for(let i = 0; i < document.querySelector("#crosshairs").options.length; i++) {
