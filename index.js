@@ -71,6 +71,7 @@ function prettify(str) {
 const setupCrosshairInput = () => {
 	// Crosshair select options
 	const crosshair = config.get('crosshair')
+
 	return new Promise((resolve, reject) => {
 		const crosshairs = []
 		fs.readdir(crosshairsPath, (err, dir) => {
@@ -78,6 +79,9 @@ const setupCrosshairInput = () => {
 
 			mainWindow.webContents.executeJavaScript(
 				`document.querySelector("#crosshairs").options.length = 0;`
+			)
+			mainWindow.webContents.executeJavaScript(
+				`document.querySelector("#crosshairs").options[0] = new Option('---', 'none');`
 			)
 
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
@@ -87,7 +91,7 @@ const setupCrosshairInput = () => {
 				}
 			}
 
-			for (let i = 0; i < crosshairs.length; i++) {
+			for (let i = 1; i <= crosshairs.length; i++) {
 				mainWindow.webContents.executeJavaScript(
 					`document.querySelector("#crosshairs").options[${i}] = new Option('${prettify(
 						crosshairs[i]
@@ -95,9 +99,18 @@ const setupCrosshairInput = () => {
 				)
 			}
 
-			mainWindow.webContents.executeJavaScript(
-				`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
-			)
+			if(crosshair === 'none'){
+				mainWindow.webContents.executeJavaScript(
+					`document.querySelector('#crosshairImg').style.display = 'none'`
+				)
+			} else {
+				mainWindow.webContents.executeJavaScript(
+					`document.querySelector('#crosshairImg').style.display = 'block'`
+				)
+				mainWindow.webContents.executeJavaScript(
+					`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
+				)
+			}
 			mainWindow.webContents.executeJavaScript(
 				`
 					for(let i = 0; i < document.querySelector("#crosshairs").options.length; i++) {

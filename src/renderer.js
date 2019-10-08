@@ -62,8 +62,13 @@
 	// Crosshair
 	crosshairsInput.addEventListener('change', () => {
 		const crosshair = crosshairsInput.value
-		crosshairImg.src = `static/crosshairs/${crosshair}.png`
-		ipcRenderer.send('set_crosshair', crosshairsInput.value)
+		if (crosshairsInput.value === 'none') {
+			crosshairImg.style.display = 'none'
+		} else {
+			crosshairImg.src = `static/crosshairs/${crosshair}.png`
+			crosshairImg.style.display = 'block'
+			ipcRenderer.send('set_crosshair', crosshairsInput.value)
+		}
 	})
 
 	// Color
