@@ -5,6 +5,9 @@
 	"description": "A configurable Crosshair Overlay for any platform.",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
+	"engines": {
+		"node": ">=10.0.0 <13.0.0"
+	},
 	"author": {
 		"name": "Lacy Morrow",
 		"email": "me@lacymorrow.com",
@@ -12,7 +15,7 @@
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
-		"lint": "xo",
+		"lint": "xo --fix",
 		"test": "npm run lint",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "electron-builder --dir",
@@ -38,7 +41,9 @@
 		"envs": [
 			"node",
 			"browser"
-		]
+		],
+		"semicolon": false,
+		"prettier": true
 	},
 	"np": {
 		"publish": false,

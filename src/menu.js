@@ -1,6 +1,6 @@
-"use strict";
-const path = require("path");
-const { app, Menu, shell, remote, BrowserWindow } = require("electron");
+'use strict'
+const path = require('path')
+const {app, Menu, shell, BrowserWindow} = require('electron')
 const {
 	is,
 	appMenu,
@@ -8,58 +8,58 @@ const {
 	openUrlMenuItem,
 	openNewGitHubIssue,
 	debugInfo
-} = require("electron-util");
-const config = require("./config");
+} = require('electron-util')
+const config = require('./config')
 
 const showPreferences = () => {
-	console.log("Show Preferences…");
-};
+	console.log('Show Preferences…')
+}
 
 const moveWindow = direction => {
-	let locked = config.get("window_locked");
+	const locked = config.get('window_locked')
 	if (!locked) {
-		let newBound;
-		let mainWindow = BrowserWindow.getFocusedWindow();
-		let bounds = mainWindow.getBounds();
+		let newBound
+		const mainWindow = BrowserWindow.getFocusedWindow()
+		const bounds = mainWindow.getBounds()
 		switch (direction) {
-			case "up":
-				newBound = bounds.y - 1;
-				config.set("position_y", newBound);
-				mainWindow.setBounds({ y: newBound });
-				break;
-			case "down":
-				newBound = bounds.y + 1;
-				config.set("position_y", newBound);
-				mainWindow.setBounds({ y: newBound });
+			case 'up':
+				newBound = bounds.y - 1
+				config.set('position_y', newBound)
+				mainWindow.setBounds({y: newBound})
+				break
+			case 'down':
+				newBound = bounds.y + 1
+				config.set('position_y', newBound)
+				mainWindow.setBounds({y: newBound})
 
-				break;
-			case "left":
-				newBound = bounds.x - 1;
-				config.set("position_x", newBound);
-				mainWindow.setBounds({ x: newBound });
-				break;
-			case "right":
-				newBound = bounds.x + 1;
-				config.set("position_x", newBound);
-				mainWindow.setBounds({ x: newBound });
-				break;
+				break
+			case 'left':
+				newBound = bounds.x - 1
+				config.set('position_x', newBound)
+				mainWindow.setBounds({x: newBound})
+				break
+			case 'right':
+				newBound = bounds.x + 1
+				config.set('position_x', newBound)
+				mainWindow.setBounds({x: newBound})
+				break
 			default:
-				break;
+				break
 		}
 	}
-};
+}
 
 const helpSubmenu = [
 	openUrlMenuItem({
-		label: "Website",
-		url: "https://github.com/lacymorrow/crossover"
+		label: 'Website',
+		url: 'https://github.com/lacymorrow/crossover'
 	}),
 	openUrlMenuItem({
-		label: "Source Code",
-		url: "https://github.com/lacymorrow/crossover"
+		label: 'Source Code',
+		url: 'https://github.com/lacymorrow/crossover'
 	}),
 	{
-		label: "Report an Issue…",
+		label: 'Report an Issue…',
 		click() {
 			const body = `
 <!-- Please succinctly describe your issue and steps to reproduce it. -->
@@ -67,172 +67,172 @@ const helpSubmenu = [
 
 ---
 
-${debugInfo()}`;
+${debugInfo()}`
 
 			openNewGitHubIssue({
-				user: "lacymorrow",
-				repo: "crossover",
+				user: 'lacymorrow',
+				repo: 'crossover',
 				body
-			});
+			})
 		}
 	}
-];
+]
 
 if (!is.macos) {
 	helpSubmenu.push(
 		{
-			type: "separator"
+			type: 'separator'
 		},
 		aboutMenuItem({
-			icon: path.join(__dirname, "static", "icon.png"),
-			text: "Created by Lacy Morrow"
+			icon: path.join(__dirname, 'static', 'icon.png'),
+			text: 'Created by Lacy Morrow'
 		})
-	);
+	)
 }
 
 const debugSubmenu = [
 	{
-		label: "Show Settings",
+		label: 'Show Settings',
 		click() {
-			config.openInEditor();
+			config.openInEditor()
 		}
 	},
 	{
-		label: "Show App Data",
+		label: 'Show App Data',
 		click() {
-			shell.openItem(app.getPath("userData"));
+			shell.openItem(app.getPath('userData'))
 		}
 	},
 	{
-		type: "separator"
+		type: 'separator'
 	},
 	{
-		label: "Delete Settings",
+		label: 'Delete Settings',
 		click() {
-			config.clear();
-			app.relaunch();
-			app.quit();
+			config.clear()
+			app.relaunch()
+			app.quit()
 		}
 	},
 	{
-		label: "Delete App Data",
+		label: 'Delete App Data',
 		click() {
-			shell.moveItemToTrash(app.getPath("userData"));
-			app.relaunch();
-			app.quit();
+			shell.moveItemToTrash(app.getPath('userData'))
+			app.relaunch()
+			app.quit()
 		}
 	}
-];
+]
 
 const macosTemplate = [
 	appMenu([
 		{
-			label: "Preferences…",
-			accelerator: "Command+,",
+			label: 'Preferences…',
+			accelerator: 'Command+,',
 			click() {
-				showPreferences();
+				showPreferences()
 			}
 		}
 	]),
 	{
-		role: "fileMenu",
+		role: 'fileMenu',
 		submenu: [
 			{
-				label: "Move Up",
-				accelerator: "Control+Shift+Up",
+				label: 'Move Up',
+				accelerator: 'Control+Shift+Up',
 				click() {
-					moveWindow("up");
+					moveWindow('up')
 				}
 			},
 			{
-				label: "Move Down",
-				accelerator: "Control+Shift+Down",
+				label: 'Move Down',
+				accelerator: 'Control+Shift+Down',
 				click() {
-					moveWindow("down");
+					moveWindow('down')
 				}
 			},
 			{
-				label: "Move Left",
-				accelerator: "Control+Shift+Left",
+				label: 'Move Left',
+				accelerator: 'Control+Shift+Left',
 				click() {
-					moveWindow("left");
+					moveWindow('left')
 				}
 			},
 			{
-				label: "Move Right",
-				accelerator: "Control+Shift+Right",
+				label: 'Move Right',
+				accelerator: 'Control+Shift+Right',
 				click() {
-					moveWindow("right");
+					moveWindow('right')
 				}
 			},
 			{
-				type: "separator"
+				type: 'separator'
 			},
 			{
-				role: "close"
+				role: 'close'
 			}
 		]
 	},
 	{
-		role: "editMenu"
+		role: 'editMenu'
 	},
 	{
-		role: "viewMenu"
+		role: 'viewMenu'
 	},
 	{
-		role: "windowMenu"
+		role: 'windowMenu'
 	},
 	{
-		role: "help",
+		role: 'help',
 		submenu: helpSubmenu
 	}
-];
+]
 
 // Linux and Windows
 const otherTemplate = [
 	{
-		role: "fileMenu",
+		role: 'fileMenu',
 		submenu: [
 			{
-				label: "Custom"
+				label: 'Custom'
 			},
 			{
-				type: "separator"
+				type: 'separator'
 			},
 			{
-				label: "Settings",
-				accelerator: "Control+,",
+				label: 'Settings',
+				accelerator: 'Control+,',
 				click() {
-					showPreferences();
+					showPreferences()
 				}
 			},
 			{
-				type: "separator"
+				type: 'separator'
 			},
 			{
-				role: "quit"
+				role: 'quit'
 			}
 		]
 	},
 	{
-		role: "editMenu"
+		role: 'editMenu'
 	},
 	{
-		role: "viewMenu"
+		role: 'viewMenu'
 	},
 	{
-		role: "help",
+		role: 'help',
 		submenu: helpSubmenu
 	}
-];
+]
 
-const template = process.platform === "darwin" ? macosTemplate : otherTemplate;
+const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
 
 if (is.development) {
 	template.push({
-		label: "Debug",
+		label: 'Debug',
 		submenu: debugSubmenu
-	});
+	})
 }
 
-module.exports = Menu.buildFromTemplate(template);
+module.exports = Menu.buildFromTemplate(template)

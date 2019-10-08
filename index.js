@@ -1,38 +1,30 @@
-"use strict";
-const fs = require("fs");
+'use strict'
+const fs = require('fs')
 
-const path = require("path");
-const {
-	app,
-	ipcMain,
-	globalShortcut,
-	BrowserWindow,
-	Menu
-} = require("electron");
-/// const {autoUpdater} = require('electron-updater');
-const { is } = require("electron-util");
-const unhandled = require("electron-unhandled");
-const debug = require("electron-debug");
-const contextMenu = require("electron-context-menu");
-const config = require("./src/config");
-const menu = require("./src/menu");
+const path = require('path')
+const {app, ipcMain, globalShortcut, BrowserWindow, Menu} = require('electron')
+// Const {autoUpdater} = require('electron-updater')
+const {is} = require('electron-util')
+const unhandled = require('electron-unhandled')
+const debug = require('electron-debug')
+// Const contextMenu = require('electron-context-menu')
 
-unhandled();
-debug();
-// contextMenu();
+const config = require('./src/config')
+const menu = require('./src/menu')
+
+unhandled()
+debug()
+// ContextMenu();
 
 /* Settings
 
-	- position
 	- hide shortcut
-	-
-
-	- color?
+	- help dialog (arrow shortcut, etc)
 
 */
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId("com.lacymorrow.CrossOver");
+app.setAppUserModelId('com.lacymorrow.CrossOver')
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -46,50 +38,52 @@ app.setAppUserModelId("com.lacymorrow.CrossOver");
 // }
 
 // Prevent window from being garbage collected
-let mainWindow;
+let mainWindow
 
 // __static path
-const __static = process.env.NODE_ENV !== 'development' ? path.join(__dirname, '/src/static').replace(/\\/g, '\\\\') : 'static'
+const __static =
+	process.env.NODE_ENV === 'development'
+		? 'static'
+		: path.join(__dirname, '/src/static').replace(/\\/g, '\\\\')
 
 // Crosshair images
-const crosshairsPath = path.join(__static, 'crosshairs');
+const crosshairsPath = path.join(__static, 'crosshairs')
 
 const debounce = (func, delay) => {
-	let debounceTimer;
-	return function() {
-		const context = this;
-		const args = arguments;
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => func.apply(context, args), delay);
-	};
-};
+	let debounceTimer
+	return function(...args) {
+		const context = this
+		clearTimeout(debounceTimer)
+		debounceTimer = setTimeout(() => func.apply(context, args), delay)
+	}
+}
 
 function prettify(str) {
 	// Title Case and spacing
 	str = str
-		.split("-")
+		.split('-')
 		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
-		.join(" ");
+		.join(' ')
 
-	return str;
+	return str
 }
 
 const setupCrosshairInput = () => {
 	// Crosshair select options
-	let crosshairs = [];
-	const crosshair = config.get("crosshair");
-	new Promise((resolve, reject) => {
+	const crosshair = config.get('crosshair')
+	const pCrosshairs = new Promise((resolve, reject) => {
+		const crosshairs = []
 		fs.readdir(crosshairsPath, (err, dir) => {
-			if (err) reject(`Promise Errored: ${err}`, crosshairsPath);
+			if (err) reject(new Error(`Promise Errored: ${err}`, crosshairsPath))
 
 			mainWindow.webContents.executeJavaScript(
 				`document.querySelector("#crosshairs").options.length = 0;`
-			);
+			)
 
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
-				let filename = path.basename(filepath, ".png");
+				const filename = path.basename(filepath, '.png')
 				if (!/^\..*/.test(filename)) {
-					crosshairs.push(filename);
+					crosshairs.push(filename)
 				}
 			}
 
@@ -98,12 +92,12 @@ const setupCrosshairInput = () => {
 					`document.querySelector("#crosshairs").options[${i}] = new Option('${prettify(
 						crosshairs[i]
 					)}', '${crosshairs[i]}');`
-				);
+				)
 			}
 
 			mainWindow.webContents.executeJavaScript(
 				`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
-			);
+			)
 			mainWindow.webContents.executeJavaScript(
 				`
 					for(let i = 0; i < document.querySelector("#crosshairs").options.length; i++) {
@@ -112,156 +106,156 @@ const setupCrosshairInput = () => {
 						}
 					};
 				`
-			);
+			)
 
-			resolve(crosshairs);
-		});
-	});
-};
+			resolve(crosshairs)
+		})
+	})
+	return pCrosshairs()
+}
 
 const setColor = color => {
-	config.set("color", color);
+	config.set('color', color)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('.sight').style.setProperty('--sight-background', '${color}');`
-	);
+	)
 }
 
 const setOpacity = opacity => {
-	config.set("opacity", opacity);
+	config.set('opacity', opacity)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#setting-opacity').value = '${opacity}';`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#output-opacity').innerText = '${opacity}';`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#crosshairImg').style.opacity = '${opacity /
 			100}';`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.sight').style.opacity = '${opacity /
-			100}';`
-	);
-};
+		`document.querySelector('.sight').style.opacity = '${opacity / 100}';`
+	)
+}
 
 const setPosition = (posX, posY) => {
-	config.set("position_x", posX);
-	config.set("position_y", posY);
-	mainWindow.setBounds({ x: posX, y: posY });
+	config.set('positionX', posX)
+	config.set('positionY', posY)
+	mainWindow.setBounds({x: posX, y: posY})
 }
 
 const setSight = className => {
-	config.set("sight", className);
+	config.set('sight', className)
 
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('.sight').classList.remove('dot', 'cross', 'off');`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('.sight').classList.add('${className}');`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('.radio.${className} input').checked = true;`
-	);
+	)
 }
 
 const setSize = size => {
-	config.set("size", size);
+	config.set('size', size)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#setting-size').value = '${size}';`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#output-size').innerText = '${size}';`
-	);
+	)
 	mainWindow.webContents.executeJavaScript(
 		`document.querySelector('#crosshair').style = 'width: ${size}px;height: ${size}px;';`
-	);
-};
+	)
+}
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
 const setDockVisible = visible => {
 	if (is.macos) {
 		if (visible) {
-			app.dock.show();
+			app.dock.show()
 		} else {
-			app.dock.hide();
+			app.dock.hide()
 		}
 	}
-};
+}
 
 // Allows dragging and setting options
 const lockWindow = lock => {
-	console.log(`Locked: ${lock}`);
+	console.log(`Locked: ${lock}`)
 
-	config.set("window_locked", lock);
-	mainWindow.setClosable(!lock);
+	config.set('windowLocked', lock)
+	mainWindow.setClosable(!lock)
 	mainWindow.setIgnoreMouseEvents(lock)
 
 	if (lock) {
 		// Lock
 		mainWindow.webContents.executeJavaScript(
 			'document.body.classList.remove("draggable")'
-		);
-		setDockVisible(false);
+		)
+		setDockVisible(false)
 	} else {
 		// Unlock
 		mainWindow.webContents.executeJavaScript(
 			'document.body.classList.add("draggable")'
-		);
-		setDockVisible(true);
-		mainWindow.show();
+		)
+		setDockVisible(true)
+		mainWindow.show()
 	}
-};
+}
 
 const moveWindow = direction => {
-	let locked = config.get("window_locked");
+	const locked = config.get('windowLocked')
 	if (!locked) {
-		let newBound;
-		let mainWindow = BrowserWindow.getFocusedWindow();
-		let bounds = mainWindow.getBounds();
+		let newBound
+		const mainWindow = BrowserWindow.getFocusedWindow()
+		const bounds = mainWindow.getBounds()
 		switch (direction) {
-			case "up":
-				newBound = bounds.y - 1;
-				config.set("position_y", newBound);
-				mainWindow.setBounds({ y: newBound });
-				break;
-			case "down":
-				newBound = bounds.y + 1;
-				config.set("position_y", newBound);
-				mainWindow.setBounds({ y: newBound });
+			case 'up':
+				newBound = bounds.y - 1
+				config.set('positionY', newBound)
+				mainWindow.setBounds({y: newBound})
+				break
+			case 'down':
+				newBound = bounds.y + 1
+				config.set('positionY', newBound)
+				mainWindow.setBounds({y: newBound})
 
-				break;
-			case "left":
-				newBound = bounds.x - 1;
-				config.set("position_x", newBound);
-				mainWindow.setBounds({ x: newBound });
-				break;
-			case "right":
-				newBound = bounds.x + 1;
-				config.set("position_x", newBound);
-				mainWindow.setBounds({ x: newBound });
-				break;
+				break
+			case 'left':
+				newBound = bounds.x - 1
+				config.set('positionX', newBound)
+				mainWindow.setBounds({x: newBound})
+				break
+			case 'right':
+				newBound = bounds.x + 1
+				config.set('positionX', newBound)
+				mainWindow.setBounds({x: newBound})
+				break
 			default:
-				break;
+				break
 		}
 	}
-};
+}
 
 const setupApp = async () => {
 	console.log()
 	// Crossover chooser
 	mainWindow.webContents.executeJavaScript(
 		`pickr.setColor('${config.get('color')}')`
-	);
-	lockWindow(false);
-	setupCrosshairInput();
-	setColor(config.get('color'));
-	setOpacity(config.get("opacity"));
-	setSight(config.get('sight'));
-	setSize(config.get("size"));
-	if (config.get('position_x') > -1) {
-		setPosition(config.get('position_x'), config.get('position_y'))
+	)
+	lockWindow(false)
+	setupCrosshairInput()
+	setColor(config.get('color'))
+	setOpacity(config.get('opacity'))
+	setSight(config.get('sight'))
+	setSize(config.get('size'))
+	if (config.get('positionX') > -1) {
+		setPosition(config.get('positionX'), config.get('positionY'))
 	}
-};
+}
 
 const createMainWindow = async () => {
 	const win = new BrowserWindow({
@@ -271,7 +265,7 @@ const createMainWindow = async () => {
 		maximizable: false,
 		minimizable: false,
 		skipTaskbar: true,
-		titleBarStyle: "customButtonsOnHover",
+		titleBarStyle: 'customButtonsOnHover',
 		transparent: true,
 		hasShadow: false,
 		title: app.getName(),
@@ -283,117 +277,116 @@ const createMainWindow = async () => {
 		webPreferences: {
 			nodeIntegration: true
 		}
-	});
+	})
 
 	setDockVisible(false)
-	win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+	win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
 	setDockVisible(true)
 
-	win.on("ready-to-show", () => {
-		win.show();
-	});
+	win.on('ready-to-show', () => {
+		win.show()
+	})
 
-	win.on("closed", () => {
+	win.on('closed', () => {
 		// Dereference the window
 		// For multiple windows store them in an array
-		mainWindow = undefined;
-	});
+		mainWindow = undefined
+	})
 
-	await win.loadFile(path.join(__dirname, "src/index.html"));
+	await win.loadFile(path.join(__dirname, 'src/index.html'))
 
-	return win;
-};
+	return win
+}
 
 // Prevent multiple instances of the app
 if (!app.requestSingleInstanceLock()) {
-	app.quit();
+	app.quit()
 }
 
-app.on("ready", () => {
-	ipcMain.on("set_crosshair", (event, arg) => {
-		console.log(`Set crosshair: ${arg}`);
-		config.set("crosshair", arg);
-	});
+app.on('ready', () => {
+	ipcMain.on('set_crosshair', (event, arg) => {
+		console.log(`Set crosshair: ${arg}`)
+		config.set('crosshair', arg)
+	})
 
-	ipcMain.on("set_color", (event, arg) => {
-		console.log(`Set color: ${arg}`);
-		config.set("color", arg);
-	});
+	ipcMain.on('set_color', (event, arg) => {
+		console.log(`Set color: ${arg}`)
+		config.set('color', arg)
+	})
 
-	ipcMain.on("set_opacity", (event, arg) => {
-		console.log(`Set opacity: ${arg}`);
-		setOpacity(arg);
-	});
+	ipcMain.on('set_opacity', (event, arg) => {
+		console.log(`Set opacity: ${arg}`)
+		setOpacity(arg)
+	})
 
-	ipcMain.on("set_sight", (event, arg) => {
-		console.log(`Set sight: ${arg}`);
-		setSight(arg);
-	});
+	ipcMain.on('set_sight', (event, arg) => {
+		console.log(`Set sight: ${arg}`)
+		setSight(arg)
+	})
 
-	ipcMain.on("set_size", (event, arg) => {
-		console.log(`Set size: ${arg}`);
-		setSize(arg);
-	});
+	ipcMain.on('set_size', (event, arg) => {
+		console.log(`Set size: ${arg}`)
+		setSize(arg)
+	})
 
-	ipcMain.on("quit", (event, arg) => {
-		app.quit();
-	});
+	ipcMain.on('quit', () => {
+		app.quit()
+	})
 
 	/* Global KeyListner */
 	// CMD/CTRL + SHIFT +
-	globalShortcut.register("Control+Shift+X", () => {
-		let locked = config.get("window_locked");
-		lockWindow(!locked);
-	});
+	globalShortcut.register('Control+Shift+X', () => {
+		const locked = config.get('windowLocked')
+		lockWindow(!locked)
+	})
 
 	globalShortcut.register('Control+Shift+Up', () => {
-		moveWindow("up");
+		moveWindow('up')
 	})
 	globalShortcut.register('Control+Shift+Down', () => {
-		moveWindow("down");
+		moveWindow('down')
 	})
 	globalShortcut.register('Control+Shift+Left', () => {
-		moveWindow("left");
+		moveWindow('left')
 	})
 	globalShortcut.register('Control+Shift+Right', () => {
-		moveWindow("right");
+		moveWindow('right')
 	})
-});
+})
 
-app.on("second-instance", () => {
+app.on('second-instance', () => {
 	if (mainWindow) {
 		if (mainWindow.isMinimized()) {
-			mainWindow.restore();
+			mainWindow.restore()
 		}
 
-		mainWindow.show();
+		mainWindow.show()
 	}
-});
+})
 
-app.on("window-all-closed", () => {
-	app.quit();
-});
+app.on('window-all-closed', () => {
+	app.quit()
+})
 
-app.on("activate", async () => {
+app.on('activate', async () => {
 	if (!mainWindow) {
-		mainWindow = await createMainWindow();
+		mainWindow = await createMainWindow()
 	}
-});
-
-(async () => {
-	await app.whenReady();
-	Menu.setApplicationMenu(menu);
-	mainWindow = await createMainWindow();
+})
+;(async () => {
+	await app.whenReady()
+	Menu.setApplicationMenu(menu)
+	mainWindow = await createMainWindow()
 
 	const saveBounds = debounce(() => {
-		let bounds = mainWindow.getBounds();
-		config.set("position_x", bounds.x);
-		config.set("position_y", bounds.y);
-	}, 1000);
+		const bounds = mainWindow.getBounds()
+		config.set('positionX', bounds.x)
+		config.set('positionY', bounds.y)
+	}, 1000)
 
-	mainWindow.on("move", () => {
-		saveBounds();
-	});
+	mainWindow.on('move', () => {
+		saveBounds()
+	})
 
-	setupApp();
-})();
+	setupApp()
+})()
