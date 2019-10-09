@@ -3,12 +3,12 @@ const fs = require('fs')
 
 const path = require('path')
 const {app, ipcMain, globalShortcut, BrowserWindow, Menu} = require('electron')
-// Const {autoUpdater} = require('electron-updater')
+const {autoUpdater} = require('electron-updater')
 const {is} = require('electron-util')
 const unhandled = require('electron-unhandled')
 const debug = require('electron-debug')
 // Const contextMenu = require('electron-context-menu')
-
+const {debounce} = require('./src/util')
 const config = require('./src/config')
 const menu = require('./src/menu')
 
@@ -28,14 +28,14 @@ app.setAppUserModelId('com.lacymorrow.CrossOver')
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-// if (!is.development) {
-// 	const FOUR_HOURS = 1000 * 60 * 60 * 4;
-// 	setInterval(() => {
-// 		autoUpdater.checkForUpdates();
-// 	}, FOUR_HOURS);
-//
-// 	autoUpdater.checkForUpdates();
-// }
+if (!is.development) {
+	const FOUR_HOURS = 1000 * 60 * 60 * 4;
+	setInterval(() => {
+		autoUpdater.checkForUpdates();
+	}, FOUR_HOURS);
+
+	autoUpdater.checkForUpdates();
+}
 
 // Prevent window from being garbage collected
 let mainWindow
@@ -49,17 +49,8 @@ const __static =
 // Crosshair images
 const crosshairsPath = path.join(__static, 'crosshairs')
 
-const debounce = (func, delay) => {
-	let debounceTimer
-	return function(...args) {
-		const context = this
-		clearTimeout(debounceTimer)
-		debounceTimer = setTimeout(() => func.apply(context, args), delay)
-	}
-}
-
+// Title Case and spacing
 function prettify(str) {
-	// Title Case and spacing
 	str = str
 		.split('-')
 		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
@@ -82,7 +73,7 @@ const setupCrosshairInput = () => {
 				`document.querySelector("#crosshairs").options.length = 0;`
 			)
 			mainWindow.webContents.executeJavaScript(
-				`document.querySelector("#crosshairs").options[0] = new Option('---', 'none');`
+				`document.querySelector("#crosshairs").options[0] = new Option('-----', 'none');`
 			)
 
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
@@ -201,6 +192,7 @@ const lockWindow = lock => {
 	console.log(`Locked: ${lock}`)
 
 	config.set('windowLocked', lock)
+	mainWindow.webContents.executeJavaScript(`coHidePickr()`)
 	mainWindow.setClosable(!lock)
 	mainWindow.setIgnoreMouseEvents(lock)
 
@@ -209,13 +201,11 @@ const lockWindow = lock => {
 		mainWindow.webContents.executeJavaScript(
 			'document.body.classList.remove("draggable")'
 		)
-		setDockVisible(false)
 	} else {
 		// Unlock
 		mainWindow.webContents.executeJavaScript(
 			'document.body.classList.add("draggable")'
 		)
-		setDockVisible(true)
 		mainWindow.show()
 	}
 }
@@ -273,6 +263,7 @@ const setupApp = async () => {
 
 const createMainWindow = async () => {
 	const win = new BrowserWindow({
+		type: 'toolbar',
 		alwaysOnTop: true,
 		frame: false,
 		closable: true,
@@ -348,12 +339,19 @@ app.on('ready', () => {
 	})
 
 	/* Global KeyListner */
-	// CMD/CTRL + SHIFT +
+
+	// Toggle CrossOver
 	globalShortcut.register('Control+Shift+X', () => {
 		const locked = config.get('windowLocked')
 		lockWindow(!locked)
 	})
 
+	// Hide CrossOver
+	globalShortcut.register('Control+Shift+C', () => {
+
+	})
+
+	// Single pixel movement
 	globalShortcut.register('Control+Shift+Up', () => {
 		moveWindow('up')
 	})

@@ -1,4 +1,18 @@
-;(() => {
+window.coHidePickr = () => {
+	if(window.pickr) {
+		window.pickr.hide()
+	}
+}
+
+// window.coHideApp = () => {
+// 	if (document.body.classList.contains('hidden')) {
+// 		document.body.classList.remove('hidden')
+// 	} else {
+// 		document.body.classList.add('hidden')
+// 	}
+// }
+
+(() => {
 	const {ipcRenderer} = require('electron')
 	const Pickr = require('@simonwep/pickr')
 	const {debounce} = require('./util')
@@ -91,6 +105,12 @@
 		})
 		.on('save', color => {
 			ipcRenderer.send('set_color', stripHex(color))
+		})
+		.on('show', () => {
+			document.body.classList.add("pickr-open")
+		})
+		.on('hide', () => {
+			document.body.classList.remove("pickr-open")
 		})
 
 	// Opacity

@@ -21,6 +21,9 @@ body {
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	text-rendering: optimizeLegibility;
 	font-feature-settings: "liga", "clig", "kern";
+	&.hidden {
+		display: none;
+	}
 }
 
 .help-text {
@@ -151,7 +154,7 @@ body {
 	.container {
 		cursor: inherit;
 	}
-	.crosshair-wrapper {
+	&:not(.pickr-open) .crosshair-wrapper * {
 		cursor: move;
 		cursor: -webkit-grab;
 		-webkit-app-region: drag;
@@ -238,8 +241,8 @@ label {
 	}
 }
 
-.pcr-app {
-	-webkit-app-region: no-drag;
+.pcr-app * {
+	-webkit-app-region: no-drag !important;
 }
 
 .setting-sight {
