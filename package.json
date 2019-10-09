@@ -46,6 +46,7 @@
 		"prettier": true
 	},
 	"np": {
+		"publish": false,
 		"releaseDraft": false
 	},
 	"build": {
