@@ -270,7 +270,13 @@ const setupApp = async () => {
 	setSize(config.get('size'))
 	if (config.get('positionX') > -1) {
 		setPosition(config.get('positionX'), config.get('positionY'))
+	} else {
+		centerWindow()
 	}
+}
+
+const centerWindow = () => {
+	mainWindow.center()
 }
 
 const createMainWindow = async () => {
@@ -344,6 +350,11 @@ app.on('ready', () => {
 	ipcMain.on('set_size', (event, arg) => {
 		console.log(`Set size: ${arg}`)
 		setSize(arg)
+	})
+
+	ipcMain.on('center', () => {
+		console.log(`Center window`)
+		centerWindow()
 	})
 
 	ipcMain.on('quit', () => {

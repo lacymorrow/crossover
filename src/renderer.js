@@ -71,6 +71,7 @@ window.coHidePickr = () => {
 
 	const sizeInput = document.querySelector('#setting-size')
 	const sizeOutput = document.querySelector('#output-size')
+	const centerWindowButton = document.querySelector('#center-window')
 
 	// Crosshair
 	crosshairsInput.addEventListener('change', () => {
@@ -84,6 +85,11 @@ window.coHidePickr = () => {
 		}
 
 		ipcRenderer.send('set_crosshair', crosshairsInput.value)
+	})
+
+	// Center window
+	centerWindowButton.addEventListener('click', () => {
+		ipcRenderer.send('center')
 	})
 
 	// Color
