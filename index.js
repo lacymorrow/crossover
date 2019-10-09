@@ -3,7 +3,7 @@ const fs = require('fs')
 
 const path = require('path')
 const {app, ipcMain, globalShortcut, BrowserWindow, Menu} = require('electron')
-const {autoUpdater} = require('electron-updater')
+// Const {autoUpdater} = require('electron-updater')
 const {is} = require('electron-util')
 const unhandled = require('electron-unhandled')
 const debug = require('electron-debug')
@@ -28,14 +28,14 @@ app.setAppUserModelId('com.lacymorrow.CrossOver')
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-if (!is.development) {
-	const FOUR_HOURS = 1000 * 60 * 60 * 4;
-	setInterval(() => {
-		autoUpdater.checkForUpdates();
-	}, FOUR_HOURS);
+// if (!is.development) {
+// 	const FOUR_HOURS = 1000 * 60 * 60 * 4
+// 	setInterval(() => {
+// 		autoUpdater.checkForUpdates()
+// 	}, FOUR_HOURS)
 
-	autoUpdater.checkForUpdates();
-}
+// 	autoUpdater.checkForUpdates()
+// }
 
 // Prevent window from being garbage collected
 let mainWindow
@@ -85,13 +85,12 @@ const setupCrosshairInput = () => {
 
 			for (let i = 0; i < crosshairs.length; i++) {
 				mainWindow.webContents.executeJavaScript(
-					`document.querySelector("#crosshairs").options[${i+1}] = new Option('${prettify(
-						crosshairs[i]
-					)}', '${crosshairs[i]}');`
+					`document.querySelector("#crosshairs").options[${i +
+						1}] = new Option('${prettify(crosshairs[i])}', '${crosshairs[i]}');`
 				)
 			}
 
-			if(crosshair === 'none'){
+			if (crosshair === 'none') {
 				mainWindow.webContents.executeJavaScript(
 					`document.querySelector('#crosshairImg').style.display = 'none'`
 				)
@@ -244,6 +243,19 @@ const moveWindow = direction => {
 	}
 }
 
+const resetSettings = () => {
+	config.delete('crosshair')
+	config.delete('color')
+	config.delete('opacity')
+	config.delete('positionX')
+	config.delete('positionY')
+	config.delete('sight')
+	config.delete('size')
+	config.delete('windowLocked')
+	mainWindow.setBounds({x: 100, y: 100})
+	setupApp()
+}
+
 const setupApp = async () => {
 	console.log()
 	// Crossover chooser
@@ -347,8 +359,10 @@ app.on('ready', () => {
 	})
 
 	// Hide CrossOver
-	globalShortcut.register('Control+Shift+C', () => {
+	globalShortcut.register('Control+Shift+E', () => {})
 
+	globalShortcut.register('Control+Shift+R', () => {
+		resetSettings()
 	})
 
 	// Single pixel movement

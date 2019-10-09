@@ -154,13 +154,16 @@ body {
 	.container {
 		cursor: inherit;
 	}
-	&:not(.pickr-open) .crosshair-wrapper * {
-		cursor: move;
-		cursor: -webkit-grab;
-		-webkit-app-region: drag;
-		&:active {
+	&:not(.pickr-open) {
+		.crosshair-wrapper,
+		.crosshair-wrapper * {
 			cursor: move;
-			cursor: -webkit-grabbing;
+			cursor: -webkit-grab;
+			-webkit-app-region: drag;
+			&:active {
+				cursor: move;
+				cursor: -webkit-grabbing;
+			}
 		}
 	}
 	.background {
