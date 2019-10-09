@@ -110,6 +110,8 @@ window.coHidePickr = () => {
 		})
 		.on('save', color => {
 			ipcRenderer.send('set_color', stripHex(color))
+
+			pickr.hide()
 		})
 		.on('show', () => {
 			document.body.classList.add('pickr-open')
