@@ -23,9 +23,11 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 Click and drag the crosshair to anywhere on any screen.
 
-`Control` + `Shift` + `X` to toggle the crosshair lock.
+`Control` + `Shift` + `X` to toggle the crosshair lock. This hides all settings and locks CrossOver in place.
 
-`Control` + `Shift` + `C` to hide CrossOver.
+`Control` + `Shift` + `E` to hide CrossOver in the background. Press again to show.
+
+`Control` + `Shift` + `R` to reset CrossOver configuration and move the window back to it's original position.
 
 While CrossOver is focused you can use `Control` + `Shift` + Arrow keys while unlocked to move single pixels.
 
@@ -34,4 +36,7 @@ To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
 ### Bugs
 
-Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. Tracked in #1.
+> https://github.com/lacymorrow/crossover/issues/1
+
+Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it.
+

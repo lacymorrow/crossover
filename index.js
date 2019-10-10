@@ -16,11 +16,9 @@ unhandled()
 debug()
 // ContextMenu();
 
-/* Settings
-
-	- hide shortcut
+/* TODO
+	- "hide" shortcut
 	- help dialog (arrow shortcut, etc)
-
 */
 
 // Note: Must match `build.appId` in package.json
@@ -39,6 +37,7 @@ app.setAppUserModelId('com.lacymorrow.CrossOver')
 
 // Prevent window from being garbage collected
 let mainWindow
+let windowHidden = false
 
 // __static path
 const __static =
@@ -49,8 +48,57 @@ const __static =
 // Crosshair images
 const crosshairsPath = path.join(__static, 'crosshairs')
 
+const createMainWindow = async () => {
+	const win = new BrowserWindow({
+		title: app.getName(),
+		type: 'toolbar',
+		titleBarStyle: 'customButtonsOnHover',
+		alwaysOnTop: true,
+		frame: false,
+		hasShadow: false,
+		closable: true,
+		fullscreenable: false,
+		maximizable: false,
+		minimizable: false,
+		resizable: false,
+		skipTaskbar: true,
+		transparent: true,
+		show: false,
+		width: 200,
+		height: 350,
+		webPreferences: {
+			nodeIntegration: true
+		}
+	})
+
+	setDockVisible(false)
+	win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+	setDockVisible(true)
+
+	win.on('ready-to-show', () => {
+		win.show()
+	})
+
+	win.on('closed', () => {
+		// Dereference the window
+		// For multiple windows store them in an array
+		mainWindow = undefined
+	})
+
+	await win.loadFile(path.join(__dirname, 'src/index.html'))
+
+	return win
+}
+
+// Save position to settings
+const saveBounds = debounce(() => {
+	const bounds = mainWindow.getBounds()
+	config.set('positionX', bounds.x)
+	config.set('positionY', bounds.y)
+}, 1000)
+
 // Title Case and spacing
-function prettify(str) {
+function prettyFilename(str) {
 	str = str
 		.split('-')
 		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
@@ -86,7 +134,7 @@ const setupCrosshairInput = () => {
 			for (let i = 0; i < crosshairs.length; i++) {
 				mainWindow.webContents.executeJavaScript(
 					`document.querySelector("#crosshairs").options[${i +
-						1}] = new Option('${prettify(crosshairs[i])}', '${crosshairs[i]}');`
+						1}] = new Option('${prettyFilename(crosshairs[i])}', '${crosshairs[i]}');`
 				)
 			}
 
@@ -186,6 +234,20 @@ const setDockVisible = visible => {
 	}
 }
 
+const centerWindow = () => {
+	mainWindow.center()
+}
+
+const hideWindow = () => {
+	if (windowHidden) {
+		mainWindow.show()
+	} else {
+		mainWindow.hide()
+	}
+
+	windowHidden = !windowHidden
+}
+
 // Allows dragging and setting options
 const lockWindow = lock => {
 	console.log(`Locked: ${lock}`)
@@ -252,13 +314,11 @@ const resetSettings = () => {
 	config.delete('sight')
 	config.delete('size')
 	config.delete('windowLocked')
-	mainWindow.setBounds({x: 100, y: 100})
 	setupApp()
 }
 
 const setupApp = async () => {
-	console.log()
-	// Crossover chooser
+	// Color chooser
 	mainWindow.webContents.executeJavaScript(
 		`pickr.setColor('${config.get('color')}')`
 	)
@@ -275,58 +335,36 @@ const setupApp = async () => {
 	}
 }
 
-const centerWindow = () => {
-	mainWindow.center()
-}
-
-const createMainWindow = async () => {
-	const win = new BrowserWindow({
-		type: 'toolbar',
-		alwaysOnTop: true,
-		frame: false,
-		closable: true,
-		maximizable: false,
-		minimizable: false,
-		skipTaskbar: true,
-		titleBarStyle: 'customButtonsOnHover',
-		transparent: true,
-		hasShadow: false,
-		title: app.getName(),
-		fullscreenable: false,
-		resizable: false,
-		show: false,
-		width: 200,
-		height: 350,
-		webPreferences: {
-			nodeIntegration: true
-		}
-	})
-
-	setDockVisible(false)
-	win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
-	setDockVisible(true)
-
-	win.on('ready-to-show', () => {
-		win.show()
-	})
-
-	win.on('closed', () => {
-		// Dereference the window
-		// For multiple windows store them in an array
-		mainWindow = undefined
-	})
-
-	await win.loadFile(path.join(__dirname, 'src/index.html'))
-
-	return win
-}
 
 // Prevent multiple instances of the app
 if (!app.requestSingleInstanceLock()) {
 	app.quit()
 }
 
+// Opening 2nd instance focuses app
+app.on('second-instance', () => {
+	if (mainWindow) {
+		if (mainWindow.isMinimized()) {
+			mainWindow.restore()
+		}
+
+		mainWindow.show()
+	}
+})
+
+app.on('window-all-closed', () => {
+	app.quit()
+})
+
+app.on('activate', async () => {
+	if (!mainWindow) {
+		mainWindow = await createMainWindow()
+	}
+})
+
 app.on('ready', () => {
+	/* IP Communication */
+
 	ipcMain.on('set_crosshair', (event, arg) => {
 		console.log(`Set crosshair: ${arg}`)
 		config.set('crosshair', arg)
@@ -361,7 +399,7 @@ app.on('ready', () => {
 		app.quit()
 	})
 
-	/* Global KeyListner */
+	/* Global KeyListners */
 
 	// Toggle CrossOver
 	globalShortcut.register('Control+Shift+X', () => {
@@ -370,8 +408,11 @@ app.on('ready', () => {
 	})
 
 	// Hide CrossOver
-	globalShortcut.register('Control+Shift+E', () => {})
+	globalShortcut.register('Control+Shift+E', () => {
+		hideWindow()
+	})
 
+	// Reset CrossOver
 	globalShortcut.register('Control+Shift+R', () => {
 		resetSettings()
 	})
@@ -391,35 +432,10 @@ app.on('ready', () => {
 	})
 })
 
-app.on('second-instance', () => {
-	if (mainWindow) {
-		if (mainWindow.isMinimized()) {
-			mainWindow.restore()
-		}
-
-		mainWindow.show()
-	}
-})
-
-app.on('window-all-closed', () => {
-	app.quit()
-})
-
-app.on('activate', async () => {
-	if (!mainWindow) {
-		mainWindow = await createMainWindow()
-	}
-})
 ;(async () => {
 	await app.whenReady()
 	Menu.setApplicationMenu(menu)
 	mainWindow = await createMainWindow()
-
-	const saveBounds = debounce(() => {
-		const bounds = mainWindow.getBounds()
-		config.set('positionX', bounds.x)
-		config.set('positionY', bounds.y)
-	}, 1000)
 
 	mainWindow.on('move', () => {
 		saveBounds()
