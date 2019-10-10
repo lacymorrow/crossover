@@ -4,13 +4,6 @@ window.coHidePickr = () => {
 	}
 }
 
-// Window.coHideApp = () => {
-// 	if (document.body.classList.contains('hidden')) {
-// 		document.body.classList.remove('hidden')
-// 	} else {
-// 		document.body.classList.add('hidden')
-// 	}
-// }
 ;(() => {
 	const {ipcRenderer} = require('electron')
 	const Pickr = require('@simonwep/pickr')
@@ -73,7 +66,7 @@ window.coHidePickr = () => {
 	const sizeOutput = document.querySelector('#output-size')
 	const centerWindowButton = document.querySelector('#center-window')
 
-	// Crosshair
+	// Crosshair Image
 	crosshairsInput.addEventListener('change', () => {
 		const crosshair = crosshairsInput.value
 
@@ -102,15 +95,19 @@ window.coHidePickr = () => {
 		return hex
 	}
 
+	const setColor = (color) => {
+		pickr.setColor(color)
+		document
+			.querySelector('.sight')
+			.style.setProperty(`--sight-background`, `${color}`)
+	}
+
 	pickr
 		.on('change', color => {
-			document
-				.querySelector('.sight')
-				.style.setProperty(`--sight-background`, `${stripHex(color)}`)
+			setColor(stripHex(color))
 		})
 		.on('save', color => {
-			ipcRenderer.send('set_color', stripHex(color))
-
+			ipcRenderer.send('save_color', stripHex(color))
 			pickr.hide()
 		})
 		.on('show', () => {
@@ -120,15 +117,29 @@ window.coHidePickr = () => {
 			document.body.classList.remove('pickr-open')
 		})
 
+	ipcRenderer.on('set_color', (event, arg) => {
+	  setColor(arg)
+	})
+
 	// Opacity
 	const dOpacityInput = debounce(val => {
-		ipcRenderer.send('set_opacity', val)
+		ipcRenderer.send('save_opacity', val)
 	}, 1000)
+
+	const setOpacity = (opacity) => {
+		opacityInput.value = opacity
+		opacityOutput.innerText = opacity
+		crosshairImg.style.opacity = `${opacity / 100}`
+		document.querySelector('.sight').style.opacity = `${opacity / 100}`
+		dOpacityInput(opacity)
+	}
+
 	opacityInput.addEventListener('input', e => {
-		opacityOutput.innerText = e.target.value
-		crosshairImg.style.opacity = `${e.target.value / 100}`
-		document.querySelector('.sight').style.opacity = `${e.target.value / 100}`
-		dOpacityInput(e.target.value)
+		setOpacity(e.target.value)
+	})
+
+	ipcRenderer.on('set_opacity', (event, arg) => {
+		setOpacity(arg)
 	})
 
 	// Size
@@ -142,10 +153,21 @@ window.coHidePickr = () => {
 	})
 
 	// Sight
+	const setSight = sight => {
+		document.querySelector('.sight').classList.remove('dot', 'cross', 'off')
+		document.querySelector('.sight').classList.add(sight)
+		document.querySelector(`.radio.${sight} input`).checked = true
+		ipcRenderer.send('save_sight', sight)
+	}
+
 	const sightInputs = document.querySelectorAll('.radio')
 	for (let i = 0; i < sightInputs.length; i++) {
 		sightInputs[i].addEventListener('change', e => {
-			ipcRenderer.send('set_sight', e.target.value)
+			setSight(e.target.value)
 		})
 	}
+
+	ipcRenderer.on('set_sight', (event, arg) => {
+		setSight(arg)
+	})
 })()

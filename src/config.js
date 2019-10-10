@@ -1,15 +1,20 @@
 'use strict'
 const Store = require('electron-store')
 
-module.exports = new Store({
-	defaults: {
-		crosshair: 'leupold-dot',
-		color: '#00BCD4',
-		opacity: 80,
-		positionX: -1,
-		positionY: -1,
-		sight: 'dot',
-		size: 80,
-		windowLocked: false
-	}
+const defaults = {
+	crosshair: 'leupold-dot',
+	color: '#00BCD4',
+	appOpacity: 80,
+	opacity: 80,
+	positionX: -1,
+	positionY: -1,
+	sight: 'dot',
+	size: 60,
+	windowLocked: false
+}
+
+module.exports.defaults = defaults
+
+module.exports.config = new Store({
+	defaults
 })

@@ -9,7 +9,7 @@ const unhandled = require('electron-unhandled')
 const debug = require('electron-debug')
 // Const contextMenu = require('electron-context-menu')
 const {debounce} = require('./src/util')
-const config = require('./src/config')
+const {config, defaults} = require('./src/config')
 const menu = require('./src/menu')
 
 unhandled()
@@ -107,10 +107,10 @@ function prettyFilename(str) {
 	return str
 }
 
+// Crosshair select options
 const setupCrosshairInput = () => {
-	// Crosshair select options
 	const crosshair = config.get('crosshair')
-	console.log(crosshair)
+	console.log(`Crosshair: ${crosshair}`)
 
 	return new Promise((resolve, reject) => {
 		const crosshairs = []
@@ -167,27 +167,11 @@ const setupCrosshairInput = () => {
 }
 
 const setColor = color => {
-	config.set('color', color)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.sight').style.setProperty('--sight-background', '${color}');`
-	)
+	mainWindow.webContents.send('set_color', color)
 }
 
 const setOpacity = opacity => {
-	config.set('opacity', opacity)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#setting-opacity').value = '${opacity}';`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#output-opacity').innerText = '${opacity}';`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#crosshairImg').style.opacity = '${opacity /
-			100}';`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.sight').style.opacity = '${opacity / 100}';`
-	)
+	mainWindow.webContents.send('set_opacity', opacity)
 }
 
 const setPosition = (posX, posY) => {
@@ -196,18 +180,8 @@ const setPosition = (posX, posY) => {
 	mainWindow.setBounds({x: posX, y: posY})
 }
 
-const setSight = className => {
-	config.set('sight', className)
-
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.sight').classList.remove('dot', 'cross', 'off');`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.sight').classList.add('${className}');`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('.radio.${className} input').checked = true;`
-	)
+const setSight = sight => {
+	mainWindow.webContents.send('set_sight', sight)
 }
 
 const setSize = size => {
@@ -236,6 +210,7 @@ const setDockVisible = visible => {
 
 const centerWindow = () => {
 	mainWindow.center()
+	saveBounds()
 }
 
 const hideWindow = () => {
@@ -306,35 +281,29 @@ const moveWindow = direction => {
 }
 
 const resetSettings = () => {
-	config.delete('crosshair')
-	config.delete('color')
-	config.delete('opacity')
-	config.delete('positionX')
-	config.delete('positionY')
-	config.delete('sight')
-	config.delete('size')
-	config.delete('windowLocked')
+	const keys = Object.keys(defaults)
+	for (let i = 0; i < keys.length; i++) {
+		config.set(keys[i], defaults[keys[i]])
+	}
+
+	centerWindow()
 	setupApp()
 }
 
 const setupApp = async () => {
 	// Color chooser
-	mainWindow.webContents.executeJavaScript(
-		`pickr.setColor('${config.get('color')}')`
-	)
+	setColor(config.get('color'))
 	lockWindow(false)
 	setupCrosshairInput()
-	setColor(config.get('color'))
-	setOpacity(config.get('opacity'))
+	setOpacity(config.get('appOpacity'))
 	setSight(config.get('sight'))
 	setSize(config.get('size'))
+
+	// Center app by default - set position if config exists
 	if (config.get('positionX') > -1) {
 		setPosition(config.get('positionX'), config.get('positionY'))
-	} else {
-		centerWindow()
 	}
 }
-
 
 // Prevent multiple instances of the app
 if (!app.requestSingleInstanceLock()) {
@@ -365,24 +334,24 @@ app.on('activate', async () => {
 app.on('ready', () => {
 	/* IP Communication */
 
+	ipcMain.on('save_color', (event, arg) => {
+		console.log(`Set color: ${arg}`)
+		config.set('color', arg)
+	})
+
 	ipcMain.on('set_crosshair', (event, arg) => {
 		console.log(`Set crosshair: ${arg}`)
 		config.set('crosshair', arg)
 	})
 
-	ipcMain.on('set_color', (event, arg) => {
-		console.log(`Set color: ${arg}`)
-		config.set('color', arg)
-	})
-
-	ipcMain.on('set_opacity', (event, arg) => {
+	ipcMain.on('save_opacity', (event, arg) => {
 		console.log(`Set opacity: ${arg}`)
-		setOpacity(arg)
+		config.set('appOpacity', arg)
 	})
 
-	ipcMain.on('set_sight', (event, arg) => {
+	ipcMain.on('save_sight', (event, arg) => {
 		console.log(`Set sight: ${arg}`)
-		setSight(arg)
+		config.set('sight', arg)
 	})
 
 	ipcMain.on('set_size', (event, arg) => {
