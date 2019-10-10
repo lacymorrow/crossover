@@ -23,9 +23,11 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 Click and drag the crosshair to anywhere on any screen.
 
-`Control` + `Shift` + `X` to toggle the crosshair lock. This hides all settings and locks CrossOver in place.
+Double-click the drag icon to center the crosshair on the current display.
 
-`Control` + `Shift` + `E` to hide CrossOver in the background. Press again to show.
+`Control` + `Shift` + `X` to save your settings lock CrossOver in place.
+
+`Control` + `Shift` + `E` to quickly hide or show CrossOver.
 
 `Control` + `Shift` + `R` to reset CrossOver configuration and move the window back to it's original position.
 

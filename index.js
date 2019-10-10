@@ -113,7 +113,7 @@ const getCrosshairImages = () => {
 }
 
 const setColor = color => {
-	mainWindow.webContents.send('set_color', color)
+	mainWindow.webContents.send('load_color', color)
 }
 
 const setOpacity = opacity => {

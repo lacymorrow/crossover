@@ -3,6 +3,7 @@
 	const Pickr = require('@simonwep/pickr')
 	const {debounce, prettyFilename} = require('./util')
 
+	const dragger = document.querySelector('.drag-me')
 	const crosshairEl = document.querySelector('#crosshair')
 	const crosshairsInput = document.querySelector('#crosshairs')
 	const crosshairImg = document.querySelector('#crosshairImg')
@@ -63,7 +64,6 @@
 	// Crosshair Image
 	const loadCrosshairs = crosshairsObj => {
 		const {crosshairs, current} = crosshairsObj
-		console.log(crosshairs)
 		crosshairsInput.options.length = 0
 		crosshairsInput.options[0] = new Option('-----', 'none')
 		for (let i = 0; i < crosshairs.length; i++) {
@@ -101,10 +101,6 @@
 		loadCrosshairs(arg)
 	})
 
-	ipcRenderer.on('set_crosshair', (event, arg) => {
-		setCrosshair(arg)
-	})
-
 	// Color
 	const stripHex = color => {
 		const hex = color.toHEXA().toString()
@@ -115,8 +111,12 @@
 		return hex
 	}
 
-	const setColor = color => {
+	const loadColor = color => {
 		pickr.setColor(color)
+		setColor(color)
+	}
+
+	const setColor = color => {
 		document
 			.querySelector('.sight')
 			.style.setProperty('--sight-background', `${color}`)
@@ -128,7 +128,6 @@
 		})
 		.on('save', color => {
 			ipcRenderer.send('save_color', stripHex(color))
-			pickr.hide()
 		})
 		.on('show', () => {
 			document.body.classList.add('pickr-open')
@@ -137,8 +136,8 @@
 			document.body.classList.remove('pickr-open')
 		})
 
-	ipcRenderer.on('set_color', (event, arg) => {
-		setColor(arg)
+	ipcRenderer.on('load_color', (event, arg) => {
+		loadColor(arg)
 	})
 
 	// Opacity
@@ -212,8 +211,7 @@
 	})
 
 	// Center window
-	centerWindowEl.addEventListener('click', () => {
+	dragger.addEventListener('dblclick', () => {
 		ipcRenderer.send('center_window')
 	})
-
 })()
