@@ -16,11 +16,6 @@ unhandled()
 debug()
 // ContextMenu();
 
-/* TODO
-	- "hide" shortcut
-	- help dialog (arrow shortcut, etc)
-*/
-
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId('com.lacymorrow.CrossOver')
 
@@ -41,9 +36,9 @@ let windowHidden = false
 
 // __static path
 const __static =
-	process.env.NODE_ENV === 'development'
-		? 'static'
-		: path.join(__dirname, '/src/static').replace(/\\/g, '\\\\')
+	process.env.NODE_ENV === 'development' ?
+		'static' :
+		path.join(__dirname, '/src/static').replace(/\\/g, '\\\\')
 
 // Crosshair images
 const crosshairsPath = path.join(__static, 'crosshairs')
@@ -115,13 +110,15 @@ const setupCrosshairInput = () => {
 	return new Promise((resolve, reject) => {
 		const crosshairs = []
 		fs.readdir(crosshairsPath, (err, dir) => {
-			if (err) reject(new Error(`Promise Errored: ${err}`, crosshairsPath))
+			if (err) {
+				reject(new Error(`Promise Errored: ${err}`, crosshairsPath))
+			}
 
 			mainWindow.webContents.executeJavaScript(
-				`document.querySelector("#crosshairs").options.length = 0;`
+				'document.querySelector("#crosshairs").options.length = 0;'
 			)
 			mainWindow.webContents.executeJavaScript(
-				`document.querySelector("#crosshairs").options[0] = new Option('-----', 'none');`
+				'document.querySelector("#crosshairs").options[0] = new Option(\'-----\', \'none\');'
 			)
 
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
@@ -134,17 +131,19 @@ const setupCrosshairInput = () => {
 			for (let i = 0; i < crosshairs.length; i++) {
 				mainWindow.webContents.executeJavaScript(
 					`document.querySelector("#crosshairs").options[${i +
-						1}] = new Option('${prettyFilename(crosshairs[i])}', '${crosshairs[i]}');`
+						1}] = new Option('${prettyFilename(crosshairs[i])}', '${
+						crosshairs[i]
+					}');`
 				)
 			}
 
 			if (crosshair === 'none') {
 				mainWindow.webContents.executeJavaScript(
-					`document.querySelector('#crosshairImg').style.display = 'none'`
+					'document.querySelector(\'#crosshairImg\').style.display = \'none\''
 				)
 			} else {
 				mainWindow.webContents.executeJavaScript(
-					`document.querySelector('#crosshairImg').style.display = 'block'`
+					'document.querySelector(\'#crosshairImg\').style.display = \'block\''
 				)
 				mainWindow.webContents.executeJavaScript(
 					`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
@@ -185,16 +184,7 @@ const setSight = sight => {
 }
 
 const setSize = size => {
-	config.set('size', size)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#setting-size').value = '${size}';`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#output-size').innerText = '${size}';`
-	)
-	mainWindow.webContents.executeJavaScript(
-		`document.querySelector('#crosshair').style = 'width: ${size}px;height: ${size}px;';`
-	)
+	mainWindow.webContents.send('set_size', size)
 }
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
@@ -227,23 +217,14 @@ const hideWindow = () => {
 const lockWindow = lock => {
 	console.log(`Locked: ${lock}`)
 
-	config.set('windowLocked', lock)
-	mainWindow.webContents.executeJavaScript(`coHidePickr()`)
 	mainWindow.setClosable(!lock)
 	mainWindow.setIgnoreMouseEvents(lock)
-
-	if (lock) {
-		// Lock
-		mainWindow.webContents.executeJavaScript(
-			'document.body.classList.remove("draggable")'
-		)
-	} else {
-		// Unlock
-		mainWindow.webContents.executeJavaScript(
-			'document.body.classList.add("draggable")'
-		)
+	mainWindow.webContents.send('lock_window', lock)
+	if (!lock) {
 		mainWindow.show()
 	}
+
+	config.set('windowLocked', lock)
 }
 
 const moveWindow = direction => {
@@ -255,24 +236,24 @@ const moveWindow = direction => {
 		switch (direction) {
 			case 'up':
 				newBound = bounds.y - 1
-				config.set('positionY', newBound)
 				mainWindow.setBounds({y: newBound})
+				config.set('positionY', newBound)
 				break
 			case 'down':
 				newBound = bounds.y + 1
-				config.set('positionY', newBound)
 				mainWindow.setBounds({y: newBound})
+				config.set('positionY', newBound)
 
 				break
 			case 'left':
 				newBound = bounds.x - 1
-				config.set('positionX', newBound)
 				mainWindow.setBounds({x: newBound})
+				config.set('positionX', newBound)
 				break
 			case 'right':
 				newBound = bounds.x + 1
-				config.set('positionX', newBound)
 				mainWindow.setBounds({x: newBound})
+				config.set('positionX', newBound)
 				break
 			default:
 				break
@@ -295,7 +276,7 @@ const setupApp = async () => {
 	setColor(config.get('color'))
 	lockWindow(false)
 	setupCrosshairInput()
-	setOpacity(config.get('appOpacity'))
+	setOpacity(config.get('opacity'))
 	setSight(config.get('sight'))
 	setSize(config.get('size'))
 
@@ -346,7 +327,7 @@ app.on('ready', () => {
 
 	ipcMain.on('save_opacity', (event, arg) => {
 		console.log(`Set opacity: ${arg}`)
-		config.set('appOpacity', arg)
+		config.set('opacity', arg)
 	})
 
 	ipcMain.on('save_sight', (event, arg) => {
@@ -354,13 +335,13 @@ app.on('ready', () => {
 		config.set('sight', arg)
 	})
 
-	ipcMain.on('set_size', (event, arg) => {
+	ipcMain.on('save_size', (event, arg) => {
 		console.log(`Set size: ${arg}`)
-		setSize(arg)
+		config.set('size', arg)
 	})
 
 	ipcMain.on('center', () => {
-		console.log(`Center window`)
+		console.log('Center window')
 		centerWindow()
 	})
 
@@ -399,9 +380,8 @@ app.on('ready', () => {
 	globalShortcut.register('Control+Shift+Right', () => {
 		moveWindow('right')
 	})
-})
-
-;(async () => {
+});
+(async () => {
 	await app.whenReady()
 	Menu.setApplicationMenu(menu)
 	mainWindow = await createMainWindow()

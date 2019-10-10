@@ -42,8 +42,7 @@
 			"node",
 			"browser"
 		],
-		"semicolon": false,
-		"prettier": true
+		"semicolon": false
 	},
 	"np": {
 		"publish": false,

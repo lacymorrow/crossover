@@ -1,13 +1,23 @@
-window.coHidePickr = () => {
-	if (window.pickr) {
-		window.pickr.hide()
-	}
-}
-
-;(() => {
+(() => {
 	const {ipcRenderer} = require('electron')
 	const Pickr = require('@simonwep/pickr')
 	const {debounce} = require('./util')
+
+	const crosshairEl = document.querySelector('#crosshair')
+	const crosshairsInput = document.querySelector('#crosshairs')
+	const crosshairImg = document.querySelector('#crosshairImg')
+	const opacityInput = document.querySelector('#setting-opacity')
+	const opacityOutput = document.querySelector('#output-opacity')
+	const sizeInput = document.querySelector('#setting-size')
+	const sizeOutput = document.querySelector('#output-size')
+	const centerWindowEl = document.querySelector('#center-window')
+
+	if (process.env.NODE_ENV !== 'development') {
+		window.__static = require('path')
+			.join(__dirname, '/static')
+			.replace(/\\/g, '\\\\')
+	}
+
 	const pickr = Pickr.create({
 		el: '.color-picker',
 		theme: 'nano', // Or 'monolith', or 'nano'
@@ -50,22 +60,6 @@ window.coHidePickr = () => {
 	})
 	window.pickr = pickr
 
-	if (process.env.NODE_ENV !== 'development')
-		window.__static = require('path')
-			.join(__dirname, '/static')
-			.replace(/\\/g, '\\\\')
-
-	const crosshairEl = document.querySelector('#crosshair')
-	const crosshairsInput = document.querySelector('#crosshairs')
-	const crosshairImg = document.querySelector('#crosshairImg')
-
-	const opacityInput = document.querySelector('#setting-opacity')
-	const opacityOutput = document.querySelector('#output-opacity')
-
-	const sizeInput = document.querySelector('#setting-size')
-	const sizeOutput = document.querySelector('#output-size')
-	const centerWindowButton = document.querySelector('#center-window')
-
 	// Crosshair Image
 	crosshairsInput.addEventListener('change', () => {
 		const crosshair = crosshairsInput.value
@@ -81,7 +75,7 @@ window.coHidePickr = () => {
 	})
 
 	// Center window
-	centerWindowButton.addEventListener('click', () => {
+	centerWindowEl.addEventListener('click', () => {
 		ipcRenderer.send('center')
 	})
 
@@ -95,11 +89,11 @@ window.coHidePickr = () => {
 		return hex
 	}
 
-	const setColor = (color) => {
+	const setColor = color => {
 		pickr.setColor(color)
 		document
 			.querySelector('.sight')
-			.style.setProperty(`--sight-background`, `${color}`)
+			.style.setProperty('--sight-background', `${color}`)
 	}
 
 	pickr
@@ -118,7 +112,7 @@ window.coHidePickr = () => {
 		})
 
 	ipcRenderer.on('set_color', (event, arg) => {
-	  setColor(arg)
+		setColor(arg)
 	})
 
 	// Opacity
@@ -126,7 +120,7 @@ window.coHidePickr = () => {
 		ipcRenderer.send('save_opacity', val)
 	}, 1000)
 
-	const setOpacity = (opacity) => {
+	const setOpacity = opacity => {
 		opacityInput.value = opacity
 		opacityOutput.innerText = opacity
 		crosshairImg.style.opacity = `${opacity / 100}`
@@ -144,12 +138,22 @@ window.coHidePickr = () => {
 
 	// Size
 	const dSizeInput = debounce(val => {
-		ipcRenderer.send('set_size', val)
+		ipcRenderer.send('save_size', val)
 	}, 1000)
+
+	const setSize = size => {
+		sizeInput.value = size;
+		sizeOutput.innerText = size;
+		crosshairEl.style = `width: ${size}px;height: ${size}px;`;
+		dSizeInput(size)
+	}
+
 	sizeInput.addEventListener('input', e => {
-		sizeOutput.innerText = e.target.value
-		crosshairEl.style = `width: ${e.target.value}px;height: ${e.target.value}px`
-		dSizeInput(e.target.value)
+		setSize(e.target.value)
+	})
+
+	ipcRenderer.on('set_size', (event, arg) => {
+		setSize(arg)
 	})
 
 	// Sight
@@ -169,5 +173,15 @@ window.coHidePickr = () => {
 
 	ipcRenderer.on('set_sight', (event, arg) => {
 		setSight(arg)
+	})
+
+	// Lock
+	ipcRenderer.on('lock_window', (event, arg) => {
+		pickr.hide()
+		if (arg) {
+			document.body.classList.remove("draggable")
+		} else {
+			document.body.classList.add("draggable")
+		}
 	})
 })()
