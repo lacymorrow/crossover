@@ -9,4 +9,15 @@ const debounce = (func, delay) => {
 	}
 }
 
+// Title Case and spacing
+function prettyFilename(str) {
+	str = str
+		.split('-')
+		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+		.join(' ')
+
+	return str
+}
+
+exports.prettyFilename = prettyFilename
 exports.debounce = debounce

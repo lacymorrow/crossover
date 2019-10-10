@@ -92,21 +92,7 @@ const saveBounds = debounce(() => {
 	config.set('positionY', bounds.y)
 }, 1000)
 
-// Title Case and spacing
-function prettyFilename(str) {
-	str = str
-		.split('-')
-		.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
-		.join(' ')
-
-	return str
-}
-
-// Crosshair select options
-const setupCrosshairInput = () => {
-	const crosshair = config.get('crosshair')
-	console.log(`Crosshair: ${crosshair}`)
-
+const getCrosshairImages = () => {
 	return new Promise((resolve, reject) => {
 		const crosshairs = []
 		fs.readdir(crosshairsPath, (err, dir) => {
@@ -114,51 +100,12 @@ const setupCrosshairInput = () => {
 				reject(new Error(`Promise Errored: ${err}`, crosshairsPath))
 			}
 
-			mainWindow.webContents.executeJavaScript(
-				'document.querySelector("#crosshairs").options.length = 0;'
-			)
-			mainWindow.webContents.executeJavaScript(
-				'document.querySelector("#crosshairs").options[0] = new Option(\'-----\', \'none\');'
-			)
-
 			for (let i = 0, filepath; (filepath = dir[i]); i++) {
 				const filename = path.basename(filepath, '.png')
 				if (!/^\..*/.test(filename)) {
 					crosshairs.push(filename)
 				}
 			}
-
-			for (let i = 0; i < crosshairs.length; i++) {
-				mainWindow.webContents.executeJavaScript(
-					`document.querySelector("#crosshairs").options[${i +
-						1}] = new Option('${prettyFilename(crosshairs[i])}', '${
-						crosshairs[i]
-					}');`
-				)
-			}
-
-			if (crosshair === 'none') {
-				mainWindow.webContents.executeJavaScript(
-					'document.querySelector(\'#crosshairImg\').style.display = \'none\''
-				)
-			} else {
-				mainWindow.webContents.executeJavaScript(
-					'document.querySelector(\'#crosshairImg\').style.display = \'block\''
-				)
-				mainWindow.webContents.executeJavaScript(
-					`document.querySelector('#crosshairImg').src = 'static/crosshairs/${crosshair}.png'`
-				)
-			}
-
-			mainWindow.webContents.executeJavaScript(
-				`
-					for(let i = 0; i < document.querySelector("#crosshairs").options.length; i++) {
-						if (document.querySelector("#crosshairs").options[i].value == '${crosshair}') {
-							document.querySelector("#crosshairs").options[i].selected = true;
-						}
-					};
-				`
-			)
 
 			resolve(crosshairs)
 		})
@@ -273,9 +220,9 @@ const resetSettings = () => {
 
 const setupApp = async () => {
 	// Color chooser
-	setColor(config.get('color'))
+	mainWindow.webContents.send('load_crosshairs', {crosshairs: await getCrosshairImages(), current: config.get('crosshair')})
 	lockWindow(false)
-	setupCrosshairInput()
+	setColor(config.get('color'))
 	setOpacity(config.get('opacity'))
 	setSight(config.get('sight'))
 	setSize(config.get('size'))
@@ -320,7 +267,7 @@ app.on('ready', () => {
 		config.set('color', arg)
 	})
 
-	ipcMain.on('set_crosshair', (event, arg) => {
+	ipcMain.on('save_crosshair', (event, arg) => {
 		console.log(`Set crosshair: ${arg}`)
 		config.set('crosshair', arg)
 	})
@@ -340,7 +287,7 @@ app.on('ready', () => {
 		config.set('size', arg)
 	})
 
-	ipcMain.on('center', () => {
+	ipcMain.on('center_window', () => {
 		console.log('Center window')
 		centerWindow()
 	})

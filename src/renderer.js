@@ -1,7 +1,7 @@
 (() => {
 	const {ipcRenderer} = require('electron')
 	const Pickr = require('@simonwep/pickr')
-	const {debounce} = require('./util')
+	const {debounce, prettyFilename} = require('./util')
 
 	const crosshairEl = document.querySelector('#crosshair')
 	const crosshairsInput = document.querySelector('#crosshairs')
@@ -61,9 +61,22 @@
 	window.pickr = pickr
 
 	// Crosshair Image
-	crosshairsInput.addEventListener('change', () => {
-		const crosshair = crosshairsInput.value
+	const loadCrosshairs = crosshairsObj => {
+		const {crosshairs, current} = crosshairsObj
+		console.log(crosshairs)
+		crosshairsInput.options.length = 0
+		crosshairsInput.options[0] = new Option('-----', 'none')
+		for (let i = 0; i < crosshairs.length; i++) {
+			crosshairsInput.options[i + 1] = new Option(prettyFilename(crosshairs[i]), crosshairs[i])
+			if (crosshairs[i] === current) {
+				crosshairsInput.options[i + 1].selected = true
+			}
+		}
 
+		setCrosshair(current)
+	}
+
+	const setCrosshair = crosshair => {
 		if (crosshairsInput.value === 'none') {
 			crosshairImg.style.display = 'none'
 		} else {
@@ -71,12 +84,25 @@
 			crosshairImg.style.display = 'block'
 		}
 
-		ipcRenderer.send('set_crosshair', crosshairsInput.value)
+		for (let i = 0; i < crosshairsInput.options.length; i++) {
+			if (crosshairsInput.options[i].value === crosshair) {
+				crosshairsInput.options[i].selected = true
+			}
+		}
+
+		ipcRenderer.send('save_crosshair', crosshairsInput.value)
+	}
+
+	crosshairsInput.addEventListener('change', e => {
+		setCrosshair(e.target.value)
 	})
 
-	// Center window
-	centerWindowEl.addEventListener('click', () => {
-		ipcRenderer.send('center')
+	ipcRenderer.on('load_crosshairs', (event, arg) => {
+		loadCrosshairs(arg)
+	})
+
+	ipcRenderer.on('set_crosshair', (event, arg) => {
+		setCrosshair(arg)
 	})
 
 	// Color
@@ -142,9 +168,9 @@
 	}, 1000)
 
 	const setSize = size => {
-		sizeInput.value = size;
-		sizeOutput.innerText = size;
-		crosshairEl.style = `width: ${size}px;height: ${size}px;`;
+		sizeInput.value = size
+		sizeOutput.innerText = size
+		crosshairEl.style = `width: ${size}px;height: ${size}px;`
 		dSizeInput(size)
 	}
 
@@ -179,9 +205,15 @@
 	ipcRenderer.on('lock_window', (event, arg) => {
 		pickr.hide()
 		if (arg) {
-			document.body.classList.remove("draggable")
+			document.body.classList.remove('draggable')
 		} else {
-			document.body.classList.add("draggable")
+			document.body.classList.add('draggable')
 		}
 	})
+
+	// Center window
+	centerWindowEl.addEventListener('click', () => {
+		ipcRenderer.send('center_window')
+	})
+
 })()
