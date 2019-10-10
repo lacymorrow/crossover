@@ -11,7 +11,6 @@
 	const opacityOutput = document.querySelector('#output-opacity')
 	const sizeInput = document.querySelector('#setting-size')
 	const sizeOutput = document.querySelector('#output-size')
-	const centerWindowEl = document.querySelector('#center-window')
 
 	if (process.env.NODE_ENV !== 'development') {
 		window.__static = require('path')
