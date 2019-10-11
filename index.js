@@ -48,6 +48,7 @@ const createMainWindow = async () => {
 		title: app.getName(),
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
+		backgroundColor: '#FFFFFFFF',
 		alwaysOnTop: true,
 		frame: false,
 		hasShadow: false,

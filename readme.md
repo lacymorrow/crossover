@@ -1,13 +1,13 @@
 # CrossOver
 
-> A CrossHair Overlay for any platform.
+> 🎯 A Crosshair Overlay for any screen
 
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
 
-### Features
+# Features
 
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -17,7 +17,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 - Persistant settings remembers your choices automatically
 
 
-### Usage
+# Usage
 
 > ❌ marks the spot...
 
@@ -36,9 +36,13 @@ While CrossOver is focused you can use `Control` + `Shift` + Arrow keys while un
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
 
-### Bugs
+# Bugs
 
-> https://github.com/lacymorrow/crossover/issues/1
+#### Hidden by fullscreen apps
 
-Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it.
+Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ - https://github.com/lacymorrow/crossover/issues/1
+
+#### Transparency not working
+
+CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - https://github.com/lacymorrow/crossover/issues/5
 
