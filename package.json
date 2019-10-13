@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -21,7 +21,7 @@
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"dist": "rm -rf dist && electron-builder --macos --linux --windows",
 		"release": "np",
-	    "electron-toolkit": "electron ./node_modules/electron-toolkit"
+		"electron-toolkit": "electron ./node_modules/electron-toolkit"
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.4.2",
