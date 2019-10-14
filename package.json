@@ -90,6 +90,7 @@
 			]
 		},
 		"win": {
+			"publish": "github",
 			"verifyUpdateCodeSignature": false
 		}
 	},
