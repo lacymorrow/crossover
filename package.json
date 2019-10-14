@@ -19,16 +19,14 @@
 		"test": "npm run lint",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
-		"dist": "rm -rf dist && electron-builder --macos --linux --windows",
-		"release": "np",
-		"electron-toolkit": "electron ./node_modules/electron-toolkit"
+		"dist": "rm -rf dist && export electron-builder --macos --linux --windows",
+		"release": "np"
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.4.2",
 		"electron-context-menu": "^0.15.0",
 		"electron-debug": "^3.0.0",
 		"electron-store": "^4.0.0",
-		"electron-toolkit": "^1.0.24",
 		"electron-unhandled": "^3.0.0",
 		"electron-updater": "^4.0.6",
 		"electron-util": "^0.12.0"
