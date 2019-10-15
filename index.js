@@ -19,6 +19,10 @@ debug()
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId('com.lacymorrow.CrossOver')
 
+app.setLoginItemSettings({
+	openAtLogin: true
+})
+
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
 if (!is.development) {
