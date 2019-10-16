@@ -19,10 +19,6 @@ debug()
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId('com.lacymorrow.CrossOver')
 
-app.setLoginItemSettings({
-	openAtLogin: true
-})
-
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
 if (!is.development) {
@@ -165,6 +161,11 @@ const hideWindow = () => {
 	windowHidden = !windowHidden
 }
 
+const toggleWindowLock = () => {
+	const locked = config.get('windowLocked')
+	lockWindow(!locked)
+}
+
 // Allows dragging and setting options
 const lockWindow = lock => {
 	console.log(`Locked: ${lock}`)
@@ -305,8 +306,10 @@ app.on('ready', () => {
 
 	// Toggle CrossOver
 	globalShortcut.register('Control+Shift+X', () => {
-		const locked = config.get('windowLocked')
-		lockWindow(!locked)
+		toggleWindowLock()
+	})
+	globalShortcut.register('CommandOrControl+,', () => {
+		toggleWindowLock()
 	})
 
 	// Hide CrossOver

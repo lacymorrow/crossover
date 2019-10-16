@@ -11,6 +11,20 @@ const {
 } = require('electron-util')
 const config = require('./config')
 
+const showBootLaunch = () => {
+	if (app.getLoginItemSettings().openAtLogin) {
+		console.log('Set open at login: true')
+		app.setLoginItemSettings({
+			openAtLogin: false
+		})
+	} else {
+		console.log('Set open at login: false')
+		app.setLoginItemSettings({
+			openAtLogin: true
+		})
+	}
+}
+
 const showPreferences = () => {
 	console.log('Show Preferences…')
 }
@@ -126,6 +140,14 @@ const debugSubmenu = [
 
 const macosTemplate = [
 	appMenu([
+		{
+			label: 'Open at startup',
+			type: 'checkbox',
+			checked: false,
+			click() {
+				showBootLaunch()
+			}
+		},
 		{
 			label: 'Preferences…',
 			accelerator: 'Command+,',
