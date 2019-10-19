@@ -57,7 +57,7 @@ const createMainWindow = async () => {
 		maximizable: false,
 		minimizable: false,
 		resizable: false,
-		skipTaskbar: true,
+		skipTaskbar: false,
 		transparent: true,
 		show: false,
 		width: 200,
@@ -147,7 +147,10 @@ const setDockVisible = visible => {
 }
 
 const centerWindow = () => {
+	mainWindow.hide()
 	mainWindow.center()
+	mainWindow.setBounds({y: mainWindow.getBounds().y + 250})
+	mainWindow.show()
 	saveBounds()
 }
 
