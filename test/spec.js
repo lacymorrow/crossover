@@ -11,7 +11,7 @@ test.before(t => {
 	return t.context.app.start()
 })
 
-test.after(t => {
+test.after.always(t => {
 	if (t.context.app && t.context.app.isRunning()) {
 		return t.context.app.stop()
 	}
@@ -22,9 +22,18 @@ test('shows an initial window', async t => {
 	t.is(count, 1)
 })
 
-test('is properly visible', async t => {
-	t.plan(3)
+test('is accessible', async t => {
+	const audit = await t.context.app.client.auditAccessibility()
+	if (audit.failed) {
+		console.error(audit.message)
+		// Fail test
+		// t.fail()
+	}
 
+	t.pass()
+})
+
+test('is properly visible', async t => {
 	const focused = await t.context.app.browserWindow.isFocused()
 	t.is(focused, true)
 
@@ -38,13 +47,12 @@ test('is properly visible', async t => {
 test('has working devtools', async t => {
 	const open = await t.context.app.browserWindow.isDevToolsOpened()
 	t.is(open, false)
-	// t.context.app.browserWindow.webContents.openDevTools()
+	// T.context.app.browserWindow.webContents.openDevTools()
 	// open = await t.context.app.browserWindow.isDevToolsOpened()
 	// t.is(open, true)
 })
 
 test('has working window bounds', async t => {
-	t.plan(4)
 	const bounds = await t.context.app.browserWindow.getBounds()
 	t.true(bounds.width > 0)
 	t.true(bounds.height > 0)
@@ -57,3 +65,4 @@ test('has working window bounds', async t => {
 	t.is(newBounds.x, bounds.x)
 	t.is(newBounds.y, bounds.y)
 })
+
