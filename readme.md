@@ -20,6 +20,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
 
+---
+
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
   <img width="700" height="400" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
 </p>
