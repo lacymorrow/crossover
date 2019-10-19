@@ -16,7 +16,7 @@
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
 		"lint": "xo --fix",
-		"test": "npm run lint",
+		"test": "npm run lint && ava",
 		"replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
@@ -33,6 +33,7 @@
 		"electron-util": "^0.12.0"
 	},
 	"devDependencies": {
+		"ava": "^2.4.0",
 		"electron": "^6.0.7",
 		"electron-builder": "^21.2.0",
 		"husky": "^3.0.8",

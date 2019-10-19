@@ -6,14 +6,14 @@ const {app, ipcMain, globalShortcut, BrowserWindow, Menu} = require('electron')
 const {autoUpdater} = require('electron-updater')
 const {is} = require('electron-util')
 const unhandled = require('electron-unhandled')
-const debug = require('electron-debug')
+// Const debug = require('electron-debug')
 // Const contextMenu = require('electron-context-menu')
 const {debounce} = require('./src/util')
 const {config, defaults} = require('./src/config')
 const menu = require('./src/menu')
 
 unhandled()
-debug()
+// Debug()
 // ContextMenu();
 
 // Note: Must match `build.appId` in package.json
