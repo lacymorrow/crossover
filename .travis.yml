@@ -9,7 +9,7 @@ matrix:
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
     - os: linux
-      services: docker
+      services: xvfb
       language: generic
 
   cache:
@@ -33,9 +33,6 @@ matrix:
       npm test
   before_cache:
     - rm -rf $HOME/.cache/electron-builder/wine
-
-  services:
-    - xvfb
 
   notifications:
     email:

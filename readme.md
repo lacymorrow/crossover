@@ -1,8 +1,12 @@
 <p align="center">
-  <img width="170" height="170" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
+  <img width="170" height="170" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
 # CrossOver
+[![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover)
+[![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true
+)](https://ci.appveyor.com/project/status/lacymorrow/crossover)
+
 
 > 🎯 A Crosshair Overlay for any screen
 
@@ -45,6 +49,14 @@ Double-click the drag icon to center the crosshair on the current display.
 While CrossOver is focused you can use <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Arrows</kbd> while unlocked to move single pixels.
 
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
+
+<p align="center">
+  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
+  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/moa-delta.png">
+  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/blackout.png">
+  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/leica-magnus.png">
+  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/bull-ring-post.png">
+</p>
 
 
 # Bugs
