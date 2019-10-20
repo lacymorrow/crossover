@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" height="300" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
+  <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
 # CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
@@ -30,6 +30,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
 
+
 # Usage
 
 > ❌ marks the spot...
@@ -47,6 +48,7 @@ Double-click the drag icon to center the crosshair on the current display.
 While CrossOver is focused you can use <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Arrows</kbd> while unlocked to move single pixels.
 
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
+
 
 <p align="center">
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
