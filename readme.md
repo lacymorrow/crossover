@@ -2,7 +2,7 @@
   <img width="170" height="170" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
-# CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/status/lacymorrow/crossover)
+# CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 
 > 🎯 A Crosshair Overlay for any screen
