@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="170" height="170" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
+  <img width="300" height="300" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
 # CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
@@ -20,6 +20,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Customize crosshair size, color, and opacity
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
+- Tested via Spectron
 
 ---
 

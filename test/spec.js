@@ -3,6 +3,8 @@ const path = require('path')
 const {Application} = require('spectron')
 const test = require('ava')
 
+const delay = time => new Promise(resolve => setTimeout(resolve, time))
+
 test.before(t => {
 	t.context.app = new Application({
 		path: electronPath,
@@ -56,6 +58,9 @@ test('has working window bounds', async t => {
 	const bounds = await t.context.app.browserWindow.getBounds()
 	t.true(bounds.width > 0)
 	t.true(bounds.height > 0)
+
+	// Windows builds need time to process - else race condition
+	await delay(500)
 
 	bounds.x += 10
 	bounds.y += 10
