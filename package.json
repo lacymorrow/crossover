@@ -5,6 +5,15 @@
 	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
+	"homepage": "https://github.com/lacymorrow/crossover",
+	"author": {
+		"name": "Lacy Morrow",
+		"email": "me@lacymorrow.com",
+		"url": "http://lacymorrow.com"
+	},
+	"bugs": {
+		"url": "https://github.com/lacymorrow/crossover/issues"
+	},
 	"engines": {
 		"node": ">=10.0.0 <13.0.0"
 	},
@@ -20,7 +29,7 @@
 		"replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
-		"dist": "rm -rf dist && electron-builder --macos --linux --windows && yarn replacespaces",
+		"dist": "rm -rf dist && electron-builder --macos --linux --windows && npm run replacespaces",
 		"release": "np"
 	},
 	"dependencies": {
