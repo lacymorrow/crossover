@@ -15,6 +15,9 @@ const menu = require('./src/menu')
 unhandled()
 // Debug()
 // ContextMenu();
+try {
+	require('electron-reloader')(module)
+} catch (_) {}
 
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId('com.lacymorrow.CrossOver')

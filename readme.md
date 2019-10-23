@@ -11,7 +11,7 @@ CrossOver allows you to place a customizable crosshair overlay above any applica
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 
-# Features
+## Features
 
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -33,7 +33,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 ---
 
 
-# Usage
+## Usage
 
 > ❌ marks the spot...
 
@@ -41,16 +41,16 @@ Click and drag the crosshair to anywhere on any screen.
 
 Double-click the drag icon to center the crosshair on the current display.
 
-<kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> to save your settings lock CrossOver in place.
-
-<kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> to quickly hide or show CrossOver.
-
-<kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> to reset CrossOver configuration and move the window back to it's original position.
-
-While CrossOver is focused you can use <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Arrows</kbd> while unlocked to move single pixels.
-
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
+#### Keyboard Shortcuts
+
+Description            | Keys
+-----------------------| -----------------------
+Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Shift</kbd><kbd>X</kbd>
+Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>E</kbd>
+Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Shift</kbd><kbd>R</kbd>
+Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
 
 <p align="center">
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
@@ -61,7 +61,35 @@ To quit in Windows, toggle the app unlocked and right-click > `Close`.
 </p>
 
 
-# Bugs
+## Dev
+
+Built with [Electron](https://electronjs.org).
+
+### Run
+
+```
+$ npm install && npm start
+```
+
+### Build
+
+_wine_ and _mono_ must be installed for Windows builds (_macOS_)
+
+```
+$ npm run build
+```
+
+
+### Publish
+
+```
+$ npm run release
+```
+
+Then edit the automatically created GitHub Releases draft and publish.
+
+
+## Bugs
 
 #### Hidden by fullscreen apps
 
