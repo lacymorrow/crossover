@@ -196,16 +196,7 @@ const macosTemplate = [
 		]
 	},
 	{
-		role: 'editMenu',
-		submenu: [
-			{
-				label: 'Move Up',
-				accelerator: 'Control+Shift+Up',
-				click() {
-					moveWindow('up')
-				}
-			}
-		]
+		role: 'editMenu'
 	},
 	{
 		role: 'viewMenu'

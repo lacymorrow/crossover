@@ -48,7 +48,7 @@ const crosshairsPath = path.join(__static, 'crosshairs')
 
 const createMainWindow = async () => {
 	const win = new BrowserWindow({
-		title: app.getName(),
+		title: app.name,
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
@@ -176,7 +176,7 @@ const toggleWindowLock = () => {
 const lockWindow = lock => {
 	console.log(`Locked: ${lock}`)
 
-	mainWindow.setClosable(!lock)
+	mainWindow.closable = !lock
 	mainWindow.setIgnoreMouseEvents(lock)
 	mainWindow.webContents.send('lock_window', lock)
 	if (!lock) {
