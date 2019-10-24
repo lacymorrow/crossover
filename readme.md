@@ -10,6 +10,8 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
+[Download CrossOver](https://github.com/lacymorrow/crossover/releases)
+
 
 ## Features
 
@@ -31,6 +33,36 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
 
 ---
+
+
+## Install
+
+#### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases)
+
+Select the installation files for your operating system:
+
+ - Mac: **CrossOver-x.x.x.dmg**
+ - Windows: **CrossOver-Setup-x.x.x.exe**
+
+_* Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. *_
+
+_* Because this app is Free and Open-Source, we cannot afford to sign our code. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time.*_
+
+###### Windows
+
+> Windows protected your PC.
+
+- Click `More Info`
+- Click `Run Anyway`
+
+###### Mac
+
+> "CrossOver" cannot be opened because the developer cannot be verified.
+
+- Locate the `CrossOver` app
+- Hold Control while you click the app icon, then choose Open from the shortcut menu
+
+_* Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491) *_
 
 
 ## Usage
