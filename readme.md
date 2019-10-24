@@ -44,9 +44,7 @@ Select the installation files for your operating system:
  - Mac: **CrossOver-x.x.x.dmg**
  - Windows: **CrossOver-Setup-x.x.x.exe**
 
-**_ Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. _**
-
-**_ Because this app is Free and Open-Source, we cannot afford to sign our code. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._**
+##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
 
 ###### Windows
 
@@ -62,7 +60,7 @@ Select the installation files for your operating system:
 - Locate the `CrossOver` app
 - Hold Control while you click the app icon, then choose Open from the shortcut menu
 
-**_ Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491) _**
+###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
 
 ## Usage
