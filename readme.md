@@ -10,9 +10,6 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
-## [Download CrossOver](https://github.com/lacymorrow/crossover/releases)
-
-
 <p align="center">
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/moa-delta.png">
@@ -20,6 +17,9 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/leica-magnus.png">
   <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/bull-ring-post.png">
 </p>
+
+### [Download CrossOver](https://github.com/lacymorrow/crossover/releases)
+
 
 ## Features
 
