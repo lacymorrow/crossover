@@ -10,14 +10,6 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
-<p align="center">
-  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
-  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/moa-delta.png">
-  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/blackout.png">
-  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/leica-magnus.png">
-  <img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/bull-ring-post.png">
-</p>
-
 ### [Download CrossOver](https://github.com/lacymorrow/crossover/releases)
 
 
@@ -31,8 +23,6 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
 - Tested via Spectron
-
----
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
   <img width="700" height="400" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
@@ -89,6 +79,17 @@ Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><
 Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>E</kbd>
 Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Shift</kbd><kbd>R</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/ballistic-firedot.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/moa-delta.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/blackout.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/leica-magnus.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/bull-ring-post.png">
+</p>
+
+---
 
 
 ## Dev
