@@ -28,9 +28,9 @@ matrix:
 
       node --version
       npm --version
-
       npm install
       npm test
+
   before_cache:
     - rm -rf $HOME/.cache/electron-builder/wine
 
