@@ -4,6 +4,7 @@ matrix:
 platform:
   - x86
   - x64
+
 build: off
 
 os: unstable
@@ -29,7 +30,8 @@ test_script:
   - node --version
   - npm --version
   - npm test
+  - |
+    if [[ "$PLATFORM" == "x64" ]]; then
+      npx electron-builder --windows
+    fi
 
-x64:
-  after_test:
-    - npx electron-builder --windows
