@@ -60,7 +60,7 @@ test('has working window bounds', async t => {
 	t.true(bounds.height > 0)
 
 	// Windows builds need time to process - else race condition
-	await delay(500)
+	await delay(1000)
 
 	bounds.x += 10
 	bounds.y += 10
