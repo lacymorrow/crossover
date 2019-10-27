@@ -1,14 +1,17 @@
-build: off
-
-os: unstable
+matrix:
+  fast_finish: true
 
 platform:
   - x86
   - x64
+build: off
+
+os: unstable
 
 branches:
   only:
     - master
+    - release
 
 skip_tags: true
 
@@ -26,4 +29,4 @@ test_script:
   - node --version
   - npm --version
   - npm test
-  - npx electron-builder --windows && npm run replacespaces
+  - npx electron-builder --windows
