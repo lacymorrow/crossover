@@ -30,7 +30,5 @@ test_script:
   - cmd: node --version
   - cmd: npm --version
   - cmd: npm test
-  - ps: |
-    if($env:TARGET_ARCH -eq 'x86')
-      {npx electron-builder --windows}
+  - cmd: if %platform%==x64 npx electron-builder --windows
 
