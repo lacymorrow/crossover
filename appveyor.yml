@@ -26,3 +26,4 @@ test_script:
   - node --version
   - npm --version
   - npm test
+  - electron-builder --macos --linux --windows && npm run replacespaces
