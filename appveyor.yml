@@ -29,4 +29,7 @@ test_script:
   - node --version
   - npm --version
   - npm test
-  - npx electron-builder --windows
+
+x64:
+  after_test:
+    - npx electron-builder --windows
