@@ -27,11 +27,10 @@ install:
   - npm install
 
 test_script:
-  - node --version
-  - npm --version
-  - npm test
-  - |
-    if [[ "$PLATFORM" == "x64" ]]; then
-      npx electron-builder --windows
-    fi
+  - cmd: node --version
+  - cmd: npm --version
+  - cmd: npm test
+  - ps: |
+    if($env:TARGET_ARCH -eq 'x86')
+      {npx electron-builder --windows}
 
