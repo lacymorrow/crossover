@@ -33,7 +33,7 @@ const moveWindow = direction => {
 	const locked = config.get('window_locked')
 	if (!locked) {
 		let newBound
-		const mainWindow = BrowserWindow.getFocusedWindow()
+		const mainWindow = BrowserWindow.getAllWindows()[0]
 		const bounds = mainWindow.getBounds()
 		switch (direction) {
 			case 'up':

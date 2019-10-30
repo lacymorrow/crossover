@@ -35,7 +35,7 @@ if (!is.development) {
 
 // Prevent window from being garbage collected
 let mainWindow
-let windowHidden = false
+let windowHidden = false // Maintain hidden state
 
 // __static path
 const __static =
@@ -190,7 +190,7 @@ const moveWindow = direction => {
 	const locked = config.get('windowLocked')
 	if (!locked) {
 		let newBound
-		const mainWindow = BrowserWindow.getFocusedWindow()
+		const mainWindow = BrowserWindow.getAllWindows()[0]
 		const bounds = mainWindow.getBounds()
 		switch (direction) {
 			case 'up':
@@ -346,10 +346,16 @@ app.on('ready', () => {
 	await app.whenReady()
 	Menu.setApplicationMenu(menu)
 	mainWindow = await createMainWindow()
-
+	console.log(mainWindow)
 	mainWindow.on('move', () => {
 		saveBounds()
 	})
+
+	mainWindow.crossover = {
+		config,
+		moveWindow,
+		setColor
+	}
 
 	setupApp()
 })()
