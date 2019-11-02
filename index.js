@@ -7,17 +7,17 @@ const {autoUpdater} = require('electron-updater')
 const {is, showAboutWindow} = require('electron-util')
 const unhandled = require('electron-unhandled')
 const debug = require('electron-debug')
-const contextMenu = require('electron-context-menu')
 const {debounce} = require('./src/util')
 const {config, defaults} = require('./src/config')
 const menu = require('./src/menu')
+// const contextMenu = require('electron-context-menu')
+// contextMenu()
 
 unhandled()
 debug({
 	showDevTools: false,
 	devToolsMode: 'undocked'
 })
-contextMenu()
 
 try {
 	require('electron-reloader')(module)
