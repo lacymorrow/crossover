@@ -14,7 +14,7 @@ const menu = require('./src/menu')
 
 unhandled()
 debug()
-contextMenu();
+contextMenu()
 
 try {
 	require('electron-reloader')(module)
@@ -226,7 +226,7 @@ const aboutWindow = () => {
 		icon: path.join(__dirname, 'static', 'Icon.png'),
 		copyright: 'Copyright © Lacy Morrow',
 		text: 'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow.'
-	});
+	})
 }
 
 const resetSettings = () => {
