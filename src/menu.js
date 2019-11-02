@@ -98,7 +98,7 @@ if (!is.macos) {
 			type: 'separator'
 		},
 		aboutMenuItem({
-			icon: path.join(__dirname, 'static', 'icon.png'),
+			icon: path.join(__dirname, 'static', 'Icon.png'),
 			text: 'Created by Lacy Morrow'
 		})
 	)

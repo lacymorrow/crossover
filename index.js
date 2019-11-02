@@ -4,17 +4,18 @@ const fs = require('fs')
 const path = require('path')
 const {app, ipcMain, globalShortcut, BrowserWindow, Menu} = require('electron')
 const {autoUpdater} = require('electron-updater')
-const {is} = require('electron-util')
+const {is, showAboutWindow} = require('electron-util')
 const unhandled = require('electron-unhandled')
-// Const debug = require('electron-debug')
-// Const contextMenu = require('electron-context-menu')
+const debug = require('electron-debug')
+const contextMenu = require('electron-context-menu')
 const {debounce} = require('./src/util')
 const {config, defaults} = require('./src/config')
 const menu = require('./src/menu')
 
 unhandled()
-// Debug()
-// ContextMenu();
+debug()
+contextMenu();
+
 try {
 	require('electron-reloader')(module)
 } catch (_) {}
@@ -220,6 +221,14 @@ const moveWindow = direction => {
 	}
 }
 
+const aboutWindow = () => {
+	showAboutWindow({
+		icon: path.join(__dirname, 'static', 'Icon.png'),
+		copyright: 'Copyright © Lacy Morrow',
+		text: 'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow.'
+	});
+}
+
 const resetSettings = () => {
 	const keys = Object.keys(defaults)
 	for (let i = 0; i < keys.length; i++) {
@@ -328,6 +337,11 @@ app.on('ready', () => {
 		resetSettings()
 	})
 
+	// About CrossOver
+	globalShortcut.register('Control+Shift+T', () => {
+		aboutWindow()
+	})
+
 	// Single pixel movement
 	globalShortcut.register('Control+Shift+Up', () => {
 		moveWindow('up')
@@ -346,7 +360,6 @@ app.on('ready', () => {
 	await app.whenReady()
 	Menu.setApplicationMenu(menu)
 	mainWindow = await createMainWindow()
-	console.log(mainWindow)
 	mainWindow.on('move', () => {
 		saveBounds()
 	})
