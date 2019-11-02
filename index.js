@@ -13,7 +13,10 @@ const {config, defaults} = require('./src/config')
 const menu = require('./src/menu')
 
 unhandled()
-debug()
+debug({
+	showDevTools: false,
+	devToolsMode: 'undocked'
+})
 contextMenu()
 
 try {
