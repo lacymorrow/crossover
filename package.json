@@ -83,12 +83,7 @@
 		"linux": {
 			"target": [
 				"AppImage",
-				"apk",
-				"deb",
-				"freebsd",
-				"pacman",
-				"rpm",
-				"snap"
+				"deb"
 			],
 			"category": "Game;Shooter"
 		},
@@ -101,11 +96,8 @@
 		},
 		"win": {
 			"target": [
-				"msi",
 				"nsis",
-				"nsis-web",
-				"portable",
-				"squirrel"
+				"portable"
 			],
 			"publish": "github",
 			"verifyUpdateCodeSignature": false
