@@ -71,6 +71,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
+---
 
 ## Usage
 
