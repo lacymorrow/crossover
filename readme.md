@@ -32,15 +32,26 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ---
 
-
 ## Install
 
-#### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases)
+*macOS 10.10+, Linux, and Windows 7+ are supported.*
 
-Select the installation files for your operating system:
+#### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases/latest)
 
- - Mac: **CrossOver-x.x.x.dmg**
- - Windows: **CrossOver-Setup-x.x.x.exe**
+**Windows**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
+
+**macOS**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
+
+**Linux**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+
+*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
+
 
 ##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
 
