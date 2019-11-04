@@ -21,7 +21,7 @@
 		"postinstall": "electron-builder install-app-deps",
 		"lint": "xo --fix",
 		"test": "npm run lint && ava -v",
-		"replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
+		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"dist": "rm -rf dist && electron-builder --macos --linux",
