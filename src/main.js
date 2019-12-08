@@ -245,7 +245,6 @@ const resetSettings = () => {
 const setupApp = async () => {
 	// Color chooser
 	mainWindow.webContents.send('load_crosshairs', {crosshairs: await getCrosshairImages(), current: config.get('crosshair')})
-	lockWindow(false)
 	setColor(config.get('color'))
 	setOpacity(config.get('opacity'))
 	setSight(config.get('sight'))
@@ -255,6 +254,9 @@ const setupApp = async () => {
 	if (config.get('positionX') > -1) {
 		setPosition(config.get('positionX'), config.get('positionY'))
 	}
+
+	// Set lock state
+	lockWindow(config.get('windowLocked'))
 }
 
 // Prevent multiple instances of the app
