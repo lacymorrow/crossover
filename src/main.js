@@ -28,7 +28,7 @@ app.setAppUserModelId('com.lacymorrow.CrossOver')
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-if (!is.development) {
+if (!is.development && !is.linux) {
 	const FOUR_HOURS = 1000 * 60 * 60 * 4
 	setInterval(() => {
 		autoUpdater.checkForUpdates()
