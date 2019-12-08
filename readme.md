@@ -91,6 +91,7 @@ Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><
 Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>E</kbd>
 Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Shift</kbd><kbd>R</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+Display the "About" window details                        | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
 
 <p align="center">
 	<br />

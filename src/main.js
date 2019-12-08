@@ -341,7 +341,7 @@ app.on('ready', () => {
 	})
 
 	// About CrossOver
-	globalShortcut.register('Control+Shift+T', () => {
+	globalShortcut.register('Control+Shift+A', () => {
 		aboutWindow()
 	})
 
