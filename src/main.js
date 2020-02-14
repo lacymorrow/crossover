@@ -325,7 +325,7 @@ app.on('ready', () => {
 	/* Global KeyListners */
 
 	// Toggle CrossOver
-	globalShortcut.register('Control+Shift+X', () => {
+	globalShortcut.register('Control+Shift+Alt+X', () => {
 		toggleWindowLock()
 	})
 	globalShortcut.register('CommandOrControl+,', () => {
@@ -333,31 +333,31 @@ app.on('ready', () => {
 	})
 
 	// Hide CrossOver
-	globalShortcut.register('Control+Shift+E', () => {
+	globalShortcut.register('Control+Shift+Alt+E', () => {
 		hideWindow()
 	})
 
 	// Reset CrossOver
-	globalShortcut.register('Control+Shift+R', () => {
+	globalShortcut.register('Control+Shift+Alt+R', () => {
 		resetSettings()
 	})
 
 	// About CrossOver
-	globalShortcut.register('Control+Shift+A', () => {
+	globalShortcut.register('Control+Shift+Alt+A', () => {
 		aboutWindow()
 	})
 
 	// Single pixel movement
-	globalShortcut.register('Control+Shift+Up', () => {
+	globalShortcut.register('Control+Shift+Alt+Up', () => {
 		moveWindow('up')
 	})
-	globalShortcut.register('Control+Shift+Down', () => {
+	globalShortcut.register('Control+Shift+Alt+Down', () => {
 		moveWindow('down')
 	})
-	globalShortcut.register('Control+Shift+Left', () => {
+	globalShortcut.register('Control+Shift+Alt+Left', () => {
 		moveWindow('left')
 	})
-	globalShortcut.register('Control+Shift+Right', () => {
+	globalShortcut.register('Control+Shift+Alt+Right', () => {
 		moveWindow('right')
 	})
 })

@@ -161,28 +161,28 @@ const macosTemplate = [
 		submenu: [
 			{
 				label: 'Move Up',
-				accelerator: 'Control+Shift+Up',
+				accelerator: 'Control+Shift+Alt+Up',
 				click() {
 					moveWindow('up')
 				}
 			},
 			{
 				label: 'Move Down',
-				accelerator: 'Control+Shift+Down',
+				accelerator: 'Control+Shift+Alt+Down',
 				click() {
 					moveWindow('down')
 				}
 			},
 			{
 				label: 'Move Left',
-				accelerator: 'Control+Shift+Left',
+				accelerator: 'Control+Shift+Alt+Left',
 				click() {
 					moveWindow('left')
 				}
 			},
 			{
 				label: 'Move Right',
-				accelerator: 'Control+Shift+Right',
+				accelerator: 'Control+Shift+Alt+Right',
 				click() {
 					moveWindow('right')
 				}
