@@ -87,11 +87,13 @@ To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
 Description            | Keys
 -----------------------| -----------------------
-Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Shift</kbd><kbd>X</kbd>
-Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>E</kbd>
-Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Shift</kbd><kbd>R</kbd>
-Display the "About" window details                        | <kbd>Control</kbd><kbd>Shift</kbd><kbd>A</kbd>
-Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>X</kbd>
+Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>E</kbd>
+Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>R</kbd>
+Display the "About" window details                        | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>A</kbd>
+Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+
+###### <kbd>Option</kbd> is <kbd>Alt</kbd> on a Mac
 
 <p align="center">
 	<br />
