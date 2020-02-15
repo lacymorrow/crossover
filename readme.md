@@ -32,15 +32,26 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ---
 
-
 ## Install
 
-#### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases)
+*macOS 10.10+, Linux, and Windows 7+ are supported.*
 
-Select the installation files for your operating system:
+#### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases/latest)
 
- - Mac: **CrossOver-x.x.x.dmg**
- - Windows: **CrossOver-Setup-x.x.x.exe**
+**Windows**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
+
+**macOS**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
+
+**Linux**
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+
+*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
+
 
 ##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
 
@@ -60,6 +71,7 @@ Select the installation files for your operating system:
 
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
+---
 
 ## Usage
 
@@ -75,10 +87,13 @@ To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
 Description            | Keys
 -----------------------| -----------------------
-Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Shift</kbd><kbd>X</kbd>
-Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>E</kbd>
-Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Shift</kbd><kbd>R</kbd>
-Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>X</kbd>
+Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>E</kbd>
+Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>R</kbd>
+Display the "About" window details                        | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>A</kbd>
+Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+
+###### <kbd>Option</kbd> is <kbd>Alt</kbd> on a Mac
 
 <p align="center">
 	<br />
