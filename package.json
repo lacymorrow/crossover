@@ -15,7 +15,7 @@
 		"url": "https://github.com/lacymorrow/crossover/issues"
 	},
 	"engines": {
-		"node": ">=10.0.0 <13.0.0"
+		"node": ">=10 <14"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
@@ -52,7 +52,17 @@
 			"node",
 			"browser"
 		],
-		"semicolon": false
+		"rules": {
+			"array-bracket-spacing": ["error", "always"],
+			"padded-blocks": [
+			    "error",
+			    { "blocks": "always", "switches": "always", "classes": "always" }
+			],
+			"object-curly-spacing": ["error", "always"],
+			"space-in-parens": ["error", "always"]
+		},
+		"semicolon": false,
+		"space": false
 	},
 	"np": {
 		"publish": false,

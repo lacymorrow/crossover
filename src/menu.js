@@ -1,6 +1,6 @@
 'use strict'
-const path = require('path')
-const {app, Menu, shell, BrowserWindow} = require('electron')
+const path = require( 'path' )
+const { app, Menu, shell, BrowserWindow } = require( 'electron' )
 const {
 	is,
 	appMenu,
@@ -8,73 +8,88 @@ const {
 	openUrlMenuItem,
 	openNewGitHubIssue,
 	debugInfo
-} = require('electron-util')
-const config = require('./config')
+} = require( 'electron-util' )
+const config = require( './config' )
 
 const showBootLaunch = () => {
-	if (app.getLoginItemSettings().openAtLogin) {
-		console.log('Set open at login: true')
-		app.setLoginItemSettings({
+
+	if ( app.getLoginItemSettings().openAtLogin ) {
+
+		console.log( 'Set open at login: true' )
+		app.setLoginItemSettings( {
 			openAtLogin: false
-		})
+		} )
+
 	} else {
-		console.log('Set open at login: false')
-		app.setLoginItemSettings({
+
+		console.log( 'Set open at login: false' )
+		app.setLoginItemSettings( {
 			openAtLogin: true
-		})
+		} )
+
 	}
+
 }
 
 const showPreferences = () => {
-	console.log('Show Preferences…')
+
+	console.log( 'Show Preferences…' )
+
 }
 
 const moveWindow = direction => {
-	const locked = config.get('window_locked')
-	if (!locked) {
+
+	const locked = config.get( 'window_locked' )
+	if ( !locked ) {
+
 		let newBound
 		const mainWindow = BrowserWindow.getAllWindows()[0]
 		const bounds = mainWindow.getBounds()
-		switch (direction) {
+		switch ( direction ) {
+
 			case 'up':
 				newBound = bounds.y - 1
-				config.set('position_y', newBound)
-				mainWindow.setBounds({y: newBound})
+				config.set( 'position_y', newBound )
+				mainWindow.setBounds( { y: newBound } )
 				break
 			case 'down':
 				newBound = bounds.y + 1
-				config.set('position_y', newBound)
-				mainWindow.setBounds({y: newBound})
+				config.set( 'position_y', newBound )
+				mainWindow.setBounds( { y: newBound } )
 
 				break
 			case 'left':
 				newBound = bounds.x - 1
-				config.set('position_x', newBound)
-				mainWindow.setBounds({x: newBound})
+				config.set( 'position_x', newBound )
+				mainWindow.setBounds( { x: newBound } )
 				break
 			case 'right':
 				newBound = bounds.x + 1
-				config.set('position_x', newBound)
-				mainWindow.setBounds({x: newBound})
+				config.set( 'position_x', newBound )
+				mainWindow.setBounds( { x: newBound } )
 				break
 			default:
 				break
+
 		}
+
 	}
+
 }
 
 const helpSubmenu = [
-	openUrlMenuItem({
+	openUrlMenuItem( {
 		label: 'Website',
 		url: 'https://github.com/lacymorrow/crossover'
-	}),
-	openUrlMenuItem({
+	} ),
+	openUrlMenuItem( {
 		label: 'Source Code',
 		url: 'https://github.com/lacymorrow/crossover'
-	}),
+	} ),
 	{
 		label: 'Report an Issue…',
 		click() {
+
 			const body = `
 <!-- Please succinctly describe your issue and steps to reproduce it. -->
 
@@ -83,38 +98,45 @@ const helpSubmenu = [
 
 ${debugInfo()}`
 
-			openNewGitHubIssue({
+			openNewGitHubIssue( {
 				user: 'lacymorrow',
 				repo: 'crossover',
 				body
-			})
+			} )
+
 		}
 	}
 ]
 
-if (!is.macos) {
+if ( !is.macos ) {
+
 	helpSubmenu.push(
 		{
 			type: 'separator'
 		},
-		aboutMenuItem({
-			icon: path.join(__dirname, 'static', 'Icon.png'),
+		aboutMenuItem( {
+			icon: path.join( __dirname, 'static', 'Icon.png' ),
 			text: 'Created by Lacy Morrow'
-		})
+		} )
 	)
+
 }
 
 const debugSubmenu = [
 	{
 		label: 'Show Settings',
 		click() {
+
 			config.openInEditor()
+
 		}
 	},
 	{
 		label: 'Show App Data',
 		click() {
-			shell.openItem(app.getPath('userData'))
+
+			shell.openItem( app.getPath( 'userData' ) )
+
 		}
 	},
 	{
@@ -123,39 +145,47 @@ const debugSubmenu = [
 	{
 		label: 'Delete Settings',
 		click() {
+
 			config.clear()
 			app.relaunch()
 			app.quit()
+
 		}
 	},
 	{
 		label: 'Delete App Data',
 		click() {
-			shell.moveItemToTrash(app.getPath('userData'))
+
+			shell.moveItemToTrash( app.getPath( 'userData' ) )
 			app.relaunch()
 			app.quit()
+
 		}
 	}
 ]
 
 const macosTemplate = [
-	appMenu([
+	appMenu( [
 		{
 			label: 'Open at startup',
 			type: 'checkbox',
 			checked: false,
 			click() {
+
 				showBootLaunch()
+
 			}
 		},
 		{
 			label: 'Preferences…',
 			accelerator: 'Command+,',
 			click() {
+
 				showPreferences()
+
 			}
 		}
-	]),
+	] ),
 	{
 		role: 'fileMenu',
 		submenu: [
@@ -163,28 +193,36 @@ const macosTemplate = [
 				label: 'Move Up',
 				accelerator: 'Control+Shift+Alt+Up',
 				click() {
-					moveWindow('up')
+
+					moveWindow( 'up' )
+
 				}
 			},
 			{
 				label: 'Move Down',
 				accelerator: 'Control+Shift+Alt+Down',
 				click() {
-					moveWindow('down')
+
+					moveWindow( 'down' )
+
 				}
 			},
 			{
 				label: 'Move Left',
 				accelerator: 'Control+Shift+Alt+Left',
 				click() {
-					moveWindow('left')
+
+					moveWindow( 'left' )
+
 				}
 			},
 			{
 				label: 'Move Right',
 				accelerator: 'Control+Shift+Alt+Right',
 				click() {
-					moveWindow('right')
+
+					moveWindow( 'right' )
+
 				}
 			},
 			{
@@ -225,7 +263,9 @@ const otherTemplate = [
 				label: 'Settings',
 				accelerator: 'Control+,',
 				click() {
+
 					showPreferences()
+
 				}
 			},
 			{
@@ -250,11 +290,13 @@ const otherTemplate = [
 
 const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
 
-if (is.development) {
-	template.push({
+if ( is.development ) {
+
+	template.push( {
 		label: 'Debug',
 		submenu: debugSubmenu
-	})
+	} )
+
 }
 
-module.exports = Menu.buildFromTemplate(template)
+module.exports = Menu.buildFromTemplate( template )
