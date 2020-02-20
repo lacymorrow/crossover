@@ -53,16 +53,41 @@
 			"browser"
 		],
 		"rules": {
-			"array-bracket-spacing": ["error", "always"],
-			"padded-blocks": [
-			    "error",
-			    { "blocks": "always", "switches": "always", "classes": "always" }
+			"array-bracket-spacing": [
+				"error",
+				"always"
 			],
-			"object-curly-spacing": ["error", "always"],
-			"space-in-parens": ["error", "always"]
+			"padded-blocks": [
+				"error",
+				{
+					"blocks": "always",
+					"switches": "always",
+					"classes": "always"
+				}
+			],
+			"padding-line-between-statements": [
+				"error",
+				{
+					"blankLine": "always",
+					"prev": "multiline-block-like",
+					"next": "*"
+				},
+				{
+					"blankLine": "always",
+					"prev": "*",
+					"next": "return"
+				}
+			],
+			"object-curly-spacing": [
+				"error",
+				"always"
+			],
+			"space-in-parens": [
+				"error",
+				"always"
+			]
 		},
-		"semicolon": false,
-		"space": false
+		"semicolon": false
 	},
 	"np": {
 		"publish": false,

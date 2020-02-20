@@ -11,6 +11,7 @@ test.before( t => {
 		path: electronPath,
 		args: [ path.join( __dirname, '..' ) ]
 	} )
+
 	return t.context.app.start()
 
 } )
