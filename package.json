@@ -94,7 +94,7 @@
 		"releaseDraft": false
 	},
 	"build": {
-		"appId": "com.lacymorrow.CrossOver",
+		"appId": "com.lacymorrow.crossover",
 		"publish": "github",
 		"mac": {
 			"category": "public.app-category.utilities",
