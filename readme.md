@@ -40,11 +40,13 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 **Windows**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
+[**Download**](https://github.com/user/repo/releases/latest/CrossOver-Setup-0.2.17.exe
+) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
 
 **macOS**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
+[**Download**](https://github.com/user/repo/releases/latest/CrossOver-0.2.17.dmg
+) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
 
 **Linux**
 
@@ -107,7 +109,7 @@ Move the crosshair a single pixel                          | <kbd>Control</kbd><
 ---
 
 
-## Dev
+## Development
 
 Built with [Electron](https://electronjs.org).
 
