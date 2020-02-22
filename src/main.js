@@ -15,7 +15,7 @@ const menu = require( './menu' )
 
 unhandled()
 debug( {
-	showDevTools: is.development,
+	showDevTools: false,
 	devToolsMode: 'undocked'
 } )
 
