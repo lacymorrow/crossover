@@ -47,7 +47,6 @@ if ( !is.development && !is.linux ) {
 let mainWindow
 let windowHidden = false // Maintain hidden state
 
-
 // __static path
 const __static =
 	process.env.NODE_ENV === 'development' ?

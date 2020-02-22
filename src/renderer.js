@@ -15,7 +15,7 @@
 	const sizeOutput = document.querySelector( '#output-size' )
 
 	if ( !is.development ) {
-		
+
 		window.__static = require( 'path' )
 			.join( __dirname, '/static' )
 			.replace( /\\/g, '\\\\' )
