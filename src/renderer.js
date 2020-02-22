@@ -164,6 +164,8 @@
 		} )
 		.on( 'save', color => {
 
+			pickr.hide()
+
 			ipcRenderer.send( 'save_color', stripHex( color ) )
 
 		} )
