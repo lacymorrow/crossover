@@ -95,6 +95,8 @@
 	},
 	"build": {
 		"appId": "com.lacymorrow.crossover",
+		"productName": "CrossOver",
+		"copyright": "Copyright © Lacy Morrow",
 		"publish": "github",
 		"mac": {
 			"category": "public.app-category.utilities",
