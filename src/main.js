@@ -15,7 +15,7 @@ const menu = require( './menu' )
 
 unhandled()
 debug( {
-	showDevTools: false,
+	showDevTools: is.development,
 	devToolsMode: 'undocked'
 } )
 
@@ -26,7 +26,7 @@ try {
 } catch ( _ ) {}
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId( 'com.lacymorrow.CrossOver' )
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -46,6 +46,7 @@ if ( !is.development && !is.linux ) {
 // Prevent window from being garbage collected
 let mainWindow
 let windowHidden = false // Maintain hidden state
+
 
 // __static path
 const __static =

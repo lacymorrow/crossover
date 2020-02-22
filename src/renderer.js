@@ -1,6 +1,7 @@
 ( () => {
 
 	const { ipcRenderer } = require( 'electron' )
+	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
 	const { debounce, prettyFilename } = require( './util' )
 
@@ -13,8 +14,8 @@
 	const sizeInput = document.querySelector( '#setting-size' )
 	const sizeOutput = document.querySelector( '#output-size' )
 
-	if ( process.env.NODE_ENV !== 'development' ) {
-
+	if ( !is.development ) {
+		
 		window.__static = require( 'path' )
 			.join( __dirname, '/static' )
 			.replace( /\\/g, '\\\\' )
