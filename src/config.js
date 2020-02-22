@@ -1,5 +1,5 @@
 'use strict'
-const Store = require('electron-store')
+const Store = require( 'electron-store' )
 
 const defaults = {
 	crosshair: 'leupold-dot',
@@ -15,6 +15,6 @@ const defaults = {
 
 module.exports.defaults = defaults
 
-module.exports.config = new Store({
+module.exports.config = new Store( {
 	defaults
-})
+} )

@@ -1,24 +1,27 @@
-(() => {
-	const {ipcRenderer} = require('electron')
-	const Pickr = require('@simonwep/pickr')
-	const {debounce, prettyFilename} = require('./util')
+( () => {
 
-	const dragger = document.querySelector('.drag-me')
-	const crosshairEl = document.querySelector('#crosshair')
-	const crosshairsInput = document.querySelector('#crosshairs')
-	const crosshairImg = document.querySelector('#crosshairImg')
-	const opacityInput = document.querySelector('#setting-opacity')
-	const opacityOutput = document.querySelector('#output-opacity')
-	const sizeInput = document.querySelector('#setting-size')
-	const sizeOutput = document.querySelector('#output-size')
+	const { ipcRenderer } = require( 'electron' )
+	const Pickr = require( '@simonwep/pickr' )
+	const { debounce, prettyFilename } = require( './util' )
 
-	if (process.env.NODE_ENV !== 'development') {
-		window.__static = require('path')
-			.join(__dirname, '/static')
-			.replace(/\\/g, '\\\\')
+	const dragger = document.querySelector( '.drag-me' )
+	const crosshairEl = document.querySelector( '#crosshair' )
+	const crosshairsInput = document.querySelector( '#crosshairs' )
+	const crosshairImg = document.querySelector( '#crosshairImg' )
+	const opacityInput = document.querySelector( '#setting-opacity' )
+	const opacityOutput = document.querySelector( '#output-opacity' )
+	const sizeInput = document.querySelector( '#setting-size' )
+	const sizeOutput = document.querySelector( '#output-size' )
+
+	if ( process.env.NODE_ENV !== 'development' ) {
+
+		window.__static = require( 'path' )
+			.join( __dirname, '/static' )
+			.replace( /\\/g, '\\\\' )
+
 	}
 
-	const pickr = Pickr.create({
+	const pickr = Pickr.create( {
 		el: '.color-picker',
 		theme: 'nano', // Or 'monolith', or 'nano'
 
@@ -57,160 +60,234 @@
 				save: true
 			}
 		}
-	})
+	} )
 	window.pickr = pickr
 
 	// Crosshair Image
 	const loadCrosshairs = crosshairsObj => {
-		const {crosshairs, current} = crosshairsObj
+
+		const { crosshairs, current } = crosshairsObj
 		crosshairsInput.options.length = 0
-		crosshairsInput.options[0] = new Option('-----', 'none')
-		for (let i = 0; i < crosshairs.length; i++) {
-			crosshairsInput.options[i + 1] = new Option(prettyFilename(crosshairs[i]), crosshairs[i])
-			if (crosshairs[i] === current) {
+		crosshairsInput.options[0] = new Option( '-----', 'none' )
+		for ( let i = 0; i < crosshairs.length; i++ ) {
+
+			crosshairsInput.options[i + 1] = new Option(
+				prettyFilename( crosshairs[i] ),
+				crosshairs[i]
+			)
+			if ( crosshairs[i] === current ) {
+
 				crosshairsInput.options[i + 1].selected = true
+
 			}
+
 		}
 
-		setCrosshair(current)
+		setCrosshair( current )
+
 	}
 
 	const setCrosshair = crosshair => {
-		if (crosshairsInput.value === 'none') {
+
+		if ( crosshairsInput.value === 'none' ) {
+
 			crosshairImg.style.display = 'none'
+
 		} else {
+
 			crosshairImg.src = `static/crosshairs/${crosshair}.png`
 			crosshairImg.style.display = 'block'
+
 		}
 
-		for (let i = 0; i < crosshairsInput.options.length; i++) {
-			if (crosshairsInput.options[i].value === crosshair) {
+		for ( let i = 0; i < crosshairsInput.options.length; i++ ) {
+
+			if ( crosshairsInput.options[i].value === crosshair ) {
+
 				crosshairsInput.options[i].selected = true
+
 			}
+
 		}
 
-		ipcRenderer.send('save_crosshair', crosshairsInput.value)
+		ipcRenderer.send( 'save_crosshair', crosshairsInput.value )
+
 	}
 
-	crosshairsInput.addEventListener('change', e => {
-		setCrosshair(e.target.value)
-	})
+	crosshairsInput.addEventListener( 'change', e => {
 
-	ipcRenderer.on('load_crosshairs', (event, arg) => {
-		loadCrosshairs(arg)
-	})
+		setCrosshair( e.target.value )
+
+	} )
+
+	ipcRenderer.on( 'load_crosshairs', ( event, arg ) => {
+
+		loadCrosshairs( arg )
+
+	} )
 
 	// Color
 	const stripHex = color => {
+
 		const hex = color.toHEXA().toString()
-		if (hex.length > 7) {
-			return hex.slice(0, 7)
+		if ( hex.length > 7 ) {
+
+			return hex.slice( 0, 7 )
+
 		}
 
 		return hex
+
 	}
 
 	const loadColor = color => {
-		pickr.setColor(color)
-		setColor(color)
+
+		pickr.setColor( color )
+		setColor( color )
+
 	}
 
 	const setColor = color => {
+
 		document
-			.querySelector('.sight')
-			.style.setProperty('--sight-background', `${color}`)
+			.querySelector( '.sight' )
+			.style.setProperty( '--sight-background', `${color}` )
+
 	}
 
 	pickr
-		.on('change', color => {
-			setColor(stripHex(color))
-		})
-		.on('save', color => {
-			ipcRenderer.send('save_color', stripHex(color))
-		})
-		.on('show', () => {
-			document.body.classList.add('pickr-open')
-		})
-		.on('hide', () => {
-			document.body.classList.remove('pickr-open')
-		})
+		.on( 'change', color => {
 
-	ipcRenderer.on('load_color', (event, arg) => {
-		loadColor(arg)
-	})
+			setColor( stripHex( color ) )
+
+		} )
+		.on( 'save', color => {
+
+			ipcRenderer.send( 'save_color', stripHex( color ) )
+
+		} )
+		.on( 'show', () => {
+
+			document.body.classList.add( 'pickr-open' )
+
+		} )
+		.on( 'hide', () => {
+
+			document.body.classList.remove( 'pickr-open' )
+
+		} )
+
+	ipcRenderer.on( 'load_color', ( event, arg ) => {
+
+		loadColor( arg )
+
+	} )
 
 	// Opacity
-	const dOpacityInput = debounce(val => {
-		ipcRenderer.send('save_opacity', val)
-	}, 1000)
+	const dOpacityInput = debounce( val => {
+
+		ipcRenderer.send( 'save_opacity', val )
+
+	}, 1000 )
 
 	const setOpacity = opacity => {
+
 		opacityInput.value = opacity
 		opacityOutput.innerText = opacity
 		crosshairImg.style.opacity = `${opacity / 100}`
-		document.querySelector('.sight').style.opacity = `${opacity / 100}`
-		dOpacityInput(opacity)
+		document.querySelector( '.sight' ).style.opacity = `${opacity / 100}`
+		dOpacityInput( opacity )
+
 	}
 
-	opacityInput.addEventListener('input', e => {
-		setOpacity(e.target.value)
-	})
+	opacityInput.addEventListener( 'input', e => {
 
-	ipcRenderer.on('set_opacity', (event, arg) => {
-		setOpacity(arg)
-	})
+		setOpacity( e.target.value )
+
+	} )
+
+	ipcRenderer.on( 'set_opacity', ( event, arg ) => {
+
+		setOpacity( arg )
+
+	} )
 
 	// Size
-	const dSizeInput = debounce(val => {
-		ipcRenderer.send('save_size', val)
-	}, 1000)
+	const dSizeInput = debounce( val => {
+
+		ipcRenderer.send( 'save_size', val )
+
+	}, 1000 )
 
 	const setSize = size => {
+
 		sizeInput.value = size
 		sizeOutput.innerText = size
 		crosshairEl.style = `width: ${size}px;height: ${size}px;`
-		dSizeInput(size)
+		dSizeInput( size )
+
 	}
 
-	sizeInput.addEventListener('input', e => {
-		setSize(e.target.value)
-	})
+	sizeInput.addEventListener( 'input', e => {
 
-	ipcRenderer.on('set_size', (event, arg) => {
-		setSize(arg)
-	})
+		setSize( e.target.value )
+
+	} )
+
+	ipcRenderer.on( 'set_size', ( event, arg ) => {
+
+		setSize( arg )
+
+	} )
 
 	// Sight
 	const setSight = sight => {
-		document.querySelector('.sight').classList.remove('dot', 'cross', 'off')
-		document.querySelector('.sight').classList.add(sight)
-		document.querySelector(`.radio.${sight} input`).checked = true
-		ipcRenderer.send('save_sight', sight)
+
+		document.querySelector( '.sight' ).classList.remove( 'dot', 'cross', 'off' )
+		document.querySelector( '.sight' ).classList.add( sight )
+		document.querySelector( `.radio.${sight} input` ).checked = true
+		ipcRenderer.send( 'save_sight', sight )
+
 	}
 
-	const sightInputs = document.querySelectorAll('.radio')
-	for (let i = 0; i < sightInputs.length; i++) {
-		sightInputs[i].addEventListener('change', e => {
-			setSight(e.target.value)
-		})
+	const sightInputs = document.querySelectorAll( '.radio' )
+	for ( let i = 0; i < sightInputs.length; i++ ) {
+
+		sightInputs[i].addEventListener( 'change', e => {
+
+			setSight( e.target.value )
+
+		} )
+
 	}
 
-	ipcRenderer.on('set_sight', (event, arg) => {
-		setSight(arg)
-	})
+	ipcRenderer.on( 'set_sight', ( event, arg ) => {
+
+		setSight( arg )
+
+	} )
 
 	// Lock
-	ipcRenderer.on('lock_window', (event, arg) => {
+	ipcRenderer.on( 'lock_window', ( event, arg ) => {
+
 		pickr.hide()
-		if (arg) {
-			document.body.classList.remove('draggable')
+		if ( arg ) {
+
+			document.body.classList.remove( 'draggable' )
+
 		} else {
-			document.body.classList.add('draggable')
+
+			document.body.classList.add( 'draggable' )
+
 		}
-	})
+
+	} )
 
 	// Center window
-	dragger.addEventListener('dblclick', () => {
-		ipcRenderer.send('center_window')
-	})
-})()
+	dragger.addEventListener( 'dblclick', () => {
+
+		ipcRenderer.send( 'center_window' )
+
+	} )
+
+} )()
