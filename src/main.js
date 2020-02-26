@@ -114,25 +114,36 @@ const saveBounds = debounce( () => {
 
 }, 1000 )
 
-const getCrosshairImages = () => {
+const getCrosshairImages = async () => {
+
+	// How many levels deep to recurse
+	return getImages( crosshairsPath, 3 )
+
+}
+
+const getImages = ( directory, level ) => {
 
 	return new Promise( ( resolve, reject ) => {
 
-		const crosshairs = []
-		fs.readdir( crosshairsPath, ( err, dir ) => {
+		let crosshairs = []
+		fs.readdir( directory, async ( err, dir ) => {
 
 			if ( err ) {
 
-				reject( new Error( `Promise Errored: ${err}`, crosshairsPath ) )
+				reject( new Error( `Promise Errored: ${err}`, directory ) )
 
 			}
 
 			for ( let i = 0, filepath; ( filepath = dir[i] ); i++ ) {
+				// console.log(path.join(directory, filepath))
+				const stat = fs.lstatSync(path.join(directory, filepath))
 
-				const filename = path.basename( filepath, '.png' )
-				if ( !/^\..*/.test( filename ) ) {
-
-					crosshairs.push( filename )
+				if(stat.isDirectory() && level > 0) {
+					const next = await getImages(path.join(directory, filepath), level-1)
+					crosshairs = crosshairs.concat(next)
+				} else if (stat.isFile() && !/^\..*|premade|.*\.docx$/.test( filepath ) ) {
+					// Filename
+					crosshairs.push( path.join(directory.replace(crosshairsPath, ''), filepath) )
 
 				}
 

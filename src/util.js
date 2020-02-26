@@ -1,4 +1,4 @@
-// Utilities
+/* Utilities */
 
 const debounce = ( func, delay ) => {
 
@@ -16,6 +16,12 @@ const debounce = ( func, delay ) => {
 
 // Title Case and spacing
 function prettyFilename( str ) {
+
+	// Remove path
+	str = str.split('/').pop()
+
+	// Remove extension
+	str = str.split('.').shift()
 
 	str = str
 		.split( '-' )

@@ -1,5 +1,6 @@
 ( () => {
 
+	const path = require( 'path' )
 	const { ipcRenderer } = require( 'electron' )
 	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
@@ -16,7 +17,7 @@
 
 	if ( !is.development ) {
 
-		window.__static = require( 'path' )
+		window.__static = path
 			.join( __dirname, '/static' )
 			.replace( /\\/g, '\\\\' )
 
@@ -96,7 +97,7 @@
 
 		} else {
 
-			crosshairImg.src = `static/crosshairs/${crosshair}.png`
+			crosshairImg.src = path.join( 'static/crosshairs/', crosshair )
 			crosshairImg.style.display = 'block'
 
 		}
