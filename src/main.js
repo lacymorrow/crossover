@@ -123,6 +123,8 @@ const getCrosshairImages = async () => {
 
 const getImages = ( directory, level ) => {
 
+	console.log(directory, level)
+
 	return new Promise( ( resolve, reject ) => {
 
 		let crosshairs = []
@@ -444,11 +446,6 @@ app.on( 'ready', () => {
 
 	// Toggle CrossOver
 	globalShortcut.register( 'Control+Shift+Alt+X', () => {
-
-		toggleWindowLock()
-
-	} )
-	globalShortcut.register( 'CommandOrControl+,', () => {
 
 		toggleWindowLock()
 
