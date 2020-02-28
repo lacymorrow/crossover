@@ -147,7 +147,6 @@ const getImages = ( directory, level ) => {
 
 					const dirpath = directory.replace( crosshairsPath, '' )
 
-					console.log( directory )
 					// Filename
 					crosshairs.push( path.join( dirpath, filepath ) )
 
@@ -177,7 +176,7 @@ const setOpacity = opacity => {
 
 const setPosition = ( posX, posY ) => {
 
-	console.log('Set XY: ', posX, posY)
+	console.log( 'Set XY:', posX, posY )
 
 	config.set( 'positionX', posX )
 	config.set( 'positionY', posY )

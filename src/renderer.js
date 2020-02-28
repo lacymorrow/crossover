@@ -81,16 +81,18 @@
 
 		const gr = document.createElement( 'OPTGROUP' )
 		let label = path.dirname( files[0] )
-		if (label.indexOf('/') === 0) {
-			label = label.slice(1)
+		if ( label.indexOf( '/' ) === 0 ) {
+
+			label = label.slice( 1 )
+
 		}
+
 		gr.label = label
 
 		for ( let i = 0; i < files.length; i++ ) {
 
 			if ( typeof files[i] === 'string' ) {
 
-				console.log(files[i])
 				const opt = newOption( files[i] )
 				gr.append( opt )
 
