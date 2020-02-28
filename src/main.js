@@ -117,17 +117,15 @@ const saveBounds = debounce( () => {
 const getCrosshairImages = async () => {
 
 	// How many levels deep to recurse
-	return getImages( crosshairsPath, 3 )
+	return getImages( crosshairsPath, 2 )
 
 }
 
 const getImages = ( directory, level ) => {
 
-	console.log(directory, level)
-
 	return new Promise( ( resolve, reject ) => {
 
-		let crosshairs = []
+		const crosshairs = []
 		fs.readdir( directory, async ( err, dir ) => {
 
 			if ( err ) {
@@ -137,15 +135,21 @@ const getImages = ( directory, level ) => {
 			}
 
 			for ( let i = 0, filepath; ( filepath = dir[i] ); i++ ) {
-				// console.log(path.join(directory, filepath))
-				const stat = fs.lstatSync(path.join(directory, filepath))
 
-				if(stat.isDirectory() && level > 0) {
-					const next = await getImages(path.join(directory, filepath), level-1)
-					crosshairs = crosshairs.concat(next)
-				} else if (stat.isFile() && !/^\..*|premade|.*\.docx$/.test( filepath ) ) {
+				const stat = fs.lstatSync( path.join( directory, filepath ) )
+
+				if ( stat.isDirectory() && level > 0 ) {
+
+					const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+					crosshairs.push( next )
+
+				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
+
+					const dirpath = directory.replace( crosshairsPath, '' )
+
+					console.log( directory )
 					// Filename
-					crosshairs.push( path.join(directory.replace(crosshairsPath, ''), filepath) )
+					crosshairs.push( path.join( dirpath, filepath ) )
 
 				}
 
@@ -172,6 +176,8 @@ const setOpacity = opacity => {
 }
 
 const setPosition = ( posX, posY ) => {
+
+	console.log('Set XY: ', posX, posY)
 
 	config.set( 'positionX', posX )
 	config.set( 'positionY', posY )
@@ -307,7 +313,7 @@ const aboutWindow = () => {
 		icon: path.join( __static, 'Icon.png' ),
 		copyright: 'Copyright © Lacy Morrow',
 		text:
-			'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow.'
+			'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.'
 	} )
 
 }
@@ -403,8 +409,16 @@ app.on( 'ready', () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		console.log( `Set crosshair: ${arg}` )
-		config.set( 'crosshair', arg )
+		if ( arg ) {
+
+			console.log( `Set crosshair: ${arg}` )
+			config.set( 'crosshair', arg )
+
+		} else {
+
+			console.log( 'Not setting null crosshair.' )
+
+		}
 
 	} )
 

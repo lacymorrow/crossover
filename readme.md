@@ -30,6 +30,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
 
+###### _Thanks to Reddit user /u/IrisFlame for the premade library of crosshairs!_
+
 ---
 
 ## Install

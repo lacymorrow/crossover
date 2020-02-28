@@ -18,10 +18,10 @@ const debounce = ( func, delay ) => {
 function prettyFilename( str ) {
 
 	// Remove path
-	str = str.split('/').pop()
+	str = str.split( '/' ).pop()
 
 	// Remove extension
-	str = str.split('.').shift()
+	str = str.split( '.' ).shift()
 
 	str = str
 		.split( '-' )

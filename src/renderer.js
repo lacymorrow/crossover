@@ -65,27 +65,84 @@
 	} )
 	window.pickr = pickr
 
-	// Crosshair Image
-	const loadCrosshairs = crosshairsObj => {
+	// Create option elements
+	const newOption = option => {
 
-		const { crosshairs, current } = crosshairsObj
-		crosshairsInput.options.length = 0
-		crosshairsInput.options[0] = new Option( '-----', 'none' )
-		for ( let i = 0; i < crosshairs.length; i++ ) {
+		const opt = document.createElement( 'OPTION' )
+		opt.textContent = prettyFilename( option )
+		opt.value = option
 
-			crosshairsInput.options[i + 1] = new Option(
-				prettyFilename( crosshairs[i] ),
-				crosshairs[i]
-			)
-			if ( crosshairs[i] === current ) {
+		return opt
 
-				crosshairsInput.options[i + 1].selected = true
+	}
+
+	// Setup optgroup elements
+	const createOptGroup = files => {
+
+		const gr = document.createElement( 'OPTGROUP' )
+		let label = path.dirname( files[0] )
+		if (label.indexOf('/') === 0) {
+			label = label.slice(1)
+		}
+		gr.label = label
+
+		for ( let i = 0; i < files.length; i++ ) {
+
+			if ( typeof files[i] === 'string' ) {
+
+				console.log(files[i])
+				const opt = newOption( files[i] )
+				gr.append( opt )
 
 			}
 
 		}
 
+		crosshairsInput.append( gr )
+
+	}
+
+	const setSelected = crosshair => {
+
+		for ( let i = 0; i < crosshairsInput.options.length; i++ ) {
+
+			if ( crosshairsInput.options[i].value === crosshair ) {
+
+				crosshairsInput.options[i].selected = true
+				break
+
+			}
+
+		}
+
+	}
+
+	// Crosshair Images -> <select> input
+	const loadCrosshairs = crosshairsObj => {
+
+		const { crosshairs, current } = crosshairsObj
+
+		// Set the image src before loading the list
 		setCrosshair( current )
+
+		crosshairsInput.options.length = 0
+		crosshairsInput.options[0] = new Option( '-----', 'none' )
+		for ( let i = 0; i < crosshairs.length; i++ ) {
+
+			if ( typeof crosshairs[i] === 'string' ) {
+
+				const opt = newOption( crosshairs[i] )
+				crosshairsInput.append( opt )
+
+			} else if ( typeof crosshairs[i] === 'object' ) {
+
+				createOptGroup( crosshairs[i] )
+
+			}
+
+		}
+
+		setSelected( current )
 
 	}
 
