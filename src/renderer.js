@@ -14,6 +14,7 @@
 	const opacityOutput = document.querySelector( '#output-opacity' )
 	const sizeInput = document.querySelector( '#setting-size' )
 	const sizeOutput = document.querySelector( '#output-size' )
+	const systemModifier = document.querySelector( '#system-modifier' )
 
 	if ( !is.development ) {
 
@@ -352,5 +353,15 @@
 		ipcRenderer.send( 'center_window' )
 
 	} )
+
+		// System Modifier
+	const setSystemModifier = str => {
+		if (!str) {
+			str = 'Alt'
+		}
+		systemModifier.innerText = str
+	}
+
+	setSystemModifier( is.macos ? 'OPTION' : 'ALT' )
 
 } )()
