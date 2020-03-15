@@ -1,11 +1,13 @@
 ( () => {
 
+	// Imports
 	const path = require( 'path' )
 	const { ipcRenderer } = require( 'electron' )
 	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
 	const { debounce, prettyFilename } = require( './util' )
 
+	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
 	const crosshairEl = document.querySelector( '#crosshair' )
 	const crosshairsInput = document.querySelector( '#crosshairs' )
@@ -16,6 +18,7 @@
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
 
+	// Set development image path
 	if ( !is.development ) {
 
 		window.__static = path
@@ -24,6 +27,10 @@
 
 	}
 
+	// Set System Modifier
+	systemModifier.innerText = is.macos ? 'OPTION' : 'ALT'
+
+	// Create color picker
 	const pickr = Pickr.create( {
 		el: '.color-picker',
 		theme: 'nano', // Or 'monolith', or 'nano'
@@ -353,15 +360,5 @@
 		ipcRenderer.send( 'center_window' )
 
 	} )
-
-		// System Modifier
-	const setSystemModifier = str => {
-		if (!str) {
-			str = 'Alt'
-		}
-		systemModifier.innerText = str
-	}
-
-	setSystemModifier( is.macos ? 'OPTION' : 'ALT' )
 
 } )()
