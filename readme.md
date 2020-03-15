@@ -113,7 +113,9 @@ Move the crosshair a single pixel                          | <kbd>Control</kbd>-
 
 ## Development
 
-Built with [Electron](https://electronjs.org).
+Built with [Electron](https://electronjs.org). Simple HTML and Javascript, no framework.
+
+Start developing in `src/main.js` and `src/renderer.js`.
 
 ### Run
 
