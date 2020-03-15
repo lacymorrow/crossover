@@ -5,7 +5,7 @@
 # CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 
-> 🎯 A Crosshair Overlay for any screen
+> 🎯 A Crosshair Overlay for any game and screen
 
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
@@ -25,7 +25,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Tested via Spectron
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="700" height="400" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
+  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
@@ -91,11 +91,11 @@ To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
 Description            | Keys
 -----------------------| -----------------------
-Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>X</kbd>
-Quickly hide/show the application                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>E</kbd>
-Reset all settings and center the window                   | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>R</kbd>
-Display the "About" window details                        | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>A</kbd>
-Move the crosshair a single pixel                          | <kbd>Control</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>Arrows</kbd>
+Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
+Quickly hide/show the application                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>E</kbd>
+Reset all settings and center the window                   | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
+Display the "About" window details                        | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
+Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
 ###### <kbd>Option</kbd> is <kbd>Alt</kbd> on a Mac
 
@@ -143,9 +143,9 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 #### Hidden by fullscreen apps
 
-Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ - https://github.com/lacymorrow/crossover/issues/1
+Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ - [https://github.com/lacymorrow/crossover/issues/1]
 
 #### Transparency not working
 
-CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - https://github.com/lacymorrow/crossover/issues/5
+CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - [https://github.com/lacymorrow/crossover/issues/5]
 
