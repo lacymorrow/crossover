@@ -16,11 +16,10 @@ body {
 body {
 	color: $main_color;
 	font-size: 11px;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue',
+		sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 	text-rendering: optimizeLegibility;
-	font-feature-settings: "liga", "clig", "kern";
+	font-feature-settings: 'liga', 'clig', 'kern';
 	&.hidden {
 		display: none;
 	}
@@ -36,9 +35,9 @@ body {
 	text-transform: uppercase;
 
 	span {
-		font-family: Monaco, "Courier New", monospace;
-		background: #EEE;
-		border: 1px #DDD;
+		font-family: Monaco, 'Courier New', monospace;
+		background: #eee;
+		border: 1px #ddd;
 		padding: 4px;
 	}
 }
@@ -98,15 +97,15 @@ body {
 		cursor: -moz-grabbing;
 	}
 	&:before {
-		content: ".";
+		content: '.';
 		position: absolute;
 		top: 0;
 		left: 10px;
 		font-size: 20px;
 		line-height: 20px;
 		color: #eee;
-		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee, 5px 5px #eee,
-			5px 10px #eee, 10px 0 #eee, 10px 5px #eee, 10px 10px #eee;
+		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee, 5px 5px #eee, 5px 10px #eee, 10px 0 #eee, 10px 5px #eee,
+			10px 10px #eee;
 	}
 }
 
@@ -178,8 +177,14 @@ body {
 	}
 }
 
-
 /* Settings */
+
+label {
+	display: block;
+	margin-top: 15px;
+}
+
+// Radio input
 .sight {
 	--sight-background: #ccc;
 	position: absolute;
@@ -208,7 +213,7 @@ body {
 			margin-left: 0;
 			display: block;
 			background: inherit;
-			content: "";
+			content: '';
 			height: 100%;
 			width: 1px;
 			background-color: var(--sight-background);
@@ -220,7 +225,7 @@ body {
 			margin-top: 0;
 			display: block;
 			background: inherit;
-			content: "";
+			content: '';
 			height: 1px;
 			width: 100%;
 			background-color: var(--sight-background);
@@ -228,11 +233,7 @@ body {
 	}
 }
 
-label {
-	display: block;
-	margin-top: 15px;
-}
-
+// Color picker
 .pickr {
 	-webkit-app-region: no-drag;
 	display: inline-block;
@@ -256,53 +257,53 @@ label {
 		margin-top: 0;
 	}
 }
-.radio{
-  display: inline-block;
-  cursor: pointer;
-  user-select:none;
-  text-align: left;
-  &+.radio{
-    margin-left: 7px;
-  }
-  input{
-    display: none;
-    &+span{
-      display: inline-block;
-      position: relative;
-      padding-left: 20px;
-      &:before{
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        border-radius: 50%;
-        margin-right: 5px;
-        width: 14px;
-        height: 14px;
-        border: 1px solid #ccc;
-        background: #fff;
-      }
-      &:after{
-        content: '';
-        display: block;
-        width: 10px;
-        height: 10px;
-        background: $main_color;
-        position: absolute;
-        border-radius: 50%;
-        top: 3px;
-        left: 3px;
-        opacity: 0;
-        transform: scale(0,0);
-        transition: all .2s cubic-bezier(0.64, 0.57, 0.67, 1.53);
-      }
-    }
-    &:checked+span:after{
-      opacity: 1;
-      transform: scale(1,1);
-    }
-  }
+.radio {
+	display: inline-block;
+	cursor: pointer;
+	user-select: none;
+	text-align: left;
+	& + .radio {
+		margin-left: 7px;
+	}
+	input {
+		display: none;
+		& + span {
+			display: inline-block;
+			position: relative;
+			padding-left: 20px;
+			&:before {
+				content: '';
+				display: block;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				border-radius: 50%;
+				margin-right: 5px;
+				width: 14px;
+				height: 14px;
+				border: 1px solid #ccc;
+				background: #fff;
+			}
+			&:after {
+				content: '';
+				display: block;
+				width: 10px;
+				height: 10px;
+				background: $main_color;
+				position: absolute;
+				border-radius: 50%;
+				top: 3px;
+				left: 3px;
+				opacity: 0;
+				transform: scale(0, 0);
+				transition: all 0.2s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+			}
+		}
+		&:checked + span:after {
+			opacity: 1;
+			transform: scale(1, 1);
+		}
+	}
 }
 
 select {
@@ -311,7 +312,7 @@ select {
 	-webkit-appearance: none;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 	text-indent: 0.01px;
-	text-overflow: "";
+	text-overflow: '';
 	padding: 0.5em 3em 0.5em 0.5em;
 	border: 1px solid $border_color;
 	border-radius: 0;
@@ -345,7 +346,7 @@ output {
 	padding-left: 10px;
 }
 
-input[type="range"] {
+input[type='range'] {
 	-webkit-appearance: none;
 	background: none;
 	cursor: pointer;
