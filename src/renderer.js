@@ -9,7 +9,7 @@
 
 	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
-	const crosshairEl = document.querySelector( '#crosshair' )
+	const crosshairElement = document.querySelector( '#crosshair' )
 	const crosshairsInput = document.querySelector( '#crosshairs' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
@@ -28,7 +28,7 @@
 	}
 
 	// Set System Modifier
-	systemModifier.innerText = is.macos ? 'OPTION' : 'ALT'
+	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
 
 	// Create color picker
 	const pickr = Pickr.create( {
@@ -97,11 +97,11 @@
 
 		gr.label = label
 
-		for ( let i = 0; i < files.length; i++ ) {
+		for ( const element of files ) {
 
-			if ( typeof files[i] === 'string' ) {
+			if ( typeof element === 'string' ) {
 
-				const opt = newOption( files[i] )
+				const opt = newOption( element )
 				gr.append( opt )
 
 			}
@@ -128,25 +128,25 @@
 	}
 
 	// Crosshair Images -> <select> input
-	const loadCrosshairs = crosshairsObj => {
+	const loadCrosshairs = crosshairsObject => {
 
-		const { crosshairs, current } = crosshairsObj
+		const { crosshairs, current } = crosshairsObject
 
 		// Set the image src before loading the list
 		setCrosshair( current )
 
 		crosshairsInput.options.length = 0
 		crosshairsInput.options[0] = new Option( '-----', 'none' )
-		for ( let i = 0; i < crosshairs.length; i++ ) {
+		for ( const element of crosshairs ) {
 
-			if ( typeof crosshairs[i] === 'string' ) {
+			if ( typeof element === 'string' ) {
 
-				const opt = newOption( crosshairs[i] )
+				const opt = newOption( element )
 				crosshairsInput.append( opt )
 
-			} else if ( typeof crosshairs[i] === 'object' ) {
+			} else if ( typeof element === 'object' ) {
 
-				createOptGroup( crosshairs[i] )
+				createOptGroup( element )
 
 			}
 
@@ -183,9 +183,9 @@
 
 	}
 
-	crosshairsInput.addEventListener( 'change', e => {
+	crosshairsInput.addEventListener( 'change', event => {
 
-		setCrosshair( e.target.value )
+		setCrosshair( event.target.value )
 
 	} )
 
@@ -255,25 +255,25 @@
 	} )
 
 	// Opacity
-	const dOpacityInput = debounce( val => {
+	const dOpacityInput = debounce( value => {
 
-		ipcRenderer.send( 'save_opacity', val )
+		ipcRenderer.send( 'save_opacity', value )
 
 	}, 1000 )
 
 	const setOpacity = opacity => {
 
 		opacityInput.value = opacity
-		opacityOutput.innerText = opacity
+		opacityOutput.textContent = opacity
 		crosshairImg.style.opacity = `${opacity / 100}`
 		document.querySelector( '.sight' ).style.opacity = `${opacity / 100}`
 		dOpacityInput( opacity )
 
 	}
 
-	opacityInput.addEventListener( 'input', e => {
+	opacityInput.addEventListener( 'input', event => {
 
-		setOpacity( e.target.value )
+		setOpacity( event.target.value )
 
 	} )
 
@@ -284,24 +284,24 @@
 	} )
 
 	// Size
-	const dSizeInput = debounce( val => {
+	const dSizeInput = debounce( value => {
 
-		ipcRenderer.send( 'save_size', val )
+		ipcRenderer.send( 'save_size', value )
 
 	}, 1000 )
 
 	const setSize = size => {
 
 		sizeInput.value = size
-		sizeOutput.innerText = size
-		crosshairEl.style = `width: ${size}px;height: ${size}px;`
+		sizeOutput.textContent = size
+		crosshairElement.style = `width: ${size}px;height: ${size}px;`
 		dSizeInput( size )
 
 	}
 
-	sizeInput.addEventListener( 'input', e => {
+	sizeInput.addEventListener( 'input', event => {
 
-		setSize( e.target.value )
+		setSize( event.target.value )
 
 	} )
 
@@ -322,11 +322,11 @@
 	}
 
 	const sightInputs = document.querySelectorAll( '.radio' )
-	for ( let i = 0; i < sightInputs.length; i++ ) {
+	for ( const element of sightInputs ) {
 
-		sightInputs[i].addEventListener( 'change', e => {
+		element.addEventListener( 'change', event => {
 
-			setSight( e.target.value )
+			setSight( event.target.value )
 
 		} )
 

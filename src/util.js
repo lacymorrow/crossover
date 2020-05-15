@@ -15,20 +15,20 @@ const debounce = ( func, delay ) => {
 }
 
 // Title Case and spacing
-function prettyFilename( str ) {
+function prettyFilename( string ) {
 
 	// Remove path
-	str = str.split( '/' ).pop()
+	string = string.split( '/' ).pop()
 
 	// Remove extension
-	str = str.split( '.' ).shift()
+	string = string.split( '.' ).shift()
 
-	str = str
+	string = string
 		.split( '-' )
-		.map( w => w[0].toUpperCase() + w.substr( 1 ).toLowerCase() )
+		.map( w => w[0].toUpperCase() + w.slice( 1 ).toLowerCase() )
 		.join( ' ' )
 
-	return str
+	return string
 
 }
 

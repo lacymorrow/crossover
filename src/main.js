@@ -82,9 +82,9 @@ const createMainWindow = async () => {
 		height: 350,
 		webPreferences: {
 			nativeWindowOpen: true,
-			nodeIntegration: true,
+			nodeIntegration: true
 
-			// sandbox: true,
+			// Sandbox: true,
 
 		}
 	} )
@@ -328,9 +328,9 @@ const aboutWindow = () => {
 const resetSettings = () => {
 
 	const keys = Object.keys( defaults )
-	for ( let i = 0; i < keys.length; i++ ) {
+	for ( const element of keys ) {
 
-		config.set( keys[i], defaults[keys[i]] )
+		config.set( element, defaults[element] )
 
 	}
 
