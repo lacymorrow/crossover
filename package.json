@@ -44,7 +44,7 @@
 		"electron-reloader": "^1.0.1",
 		"husky": "^4.2.5",
 		"np": "^6.2.3",
-		"spectron": "^10.0.1",
+		"spectron": "^8.0.0",
 		"xo": "^0.30.0"
 	},
 	"xo": {
