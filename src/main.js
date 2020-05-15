@@ -30,18 +30,22 @@ app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-if ( !is.development && !is.linux ) {
+try {
 
-	const FOUR_HOURS = 1000 * 60 * 60 * 4
-	setInterval( () => {
+	if ( !is.development && !is.linux ) {
+
+		const FOUR_HOURS = 1000 * 60 * 60 * 4
+		setInterval( () => {
+
+			autoUpdater.checkForUpdates()
+
+		}, FOUR_HOURS )
 
 		autoUpdater.checkForUpdates()
 
-	}, FOUR_HOURS )
+	}
 
-	autoUpdater.checkForUpdates()
-
-}
+} catch ( _ ) {}
 
 // Prevent window from being garbage collected
 let mainWindow
@@ -77,7 +81,9 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
+			nativeWindowOpen: true,
 			nodeIntegration: true,
+
 			// sandbox: true,
 
 		}
