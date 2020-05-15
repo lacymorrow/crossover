@@ -77,7 +77,9 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			// sandbox: true,
+
 		}
 	} )
 
