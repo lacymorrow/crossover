@@ -13,6 +13,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
 
+Double-click the crosshair to select your sight. Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place.
+
 
 ## Features
 
