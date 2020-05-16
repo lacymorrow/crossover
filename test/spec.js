@@ -44,7 +44,7 @@ test( 'is accessible', async t => {
 test( 'shows an initial window', async t => {
 
 	const count = await t.context.app.client.getWindowCount()
-	t.is( count, 1 )
+	t.is( count, 2 )
 
 } )
 
