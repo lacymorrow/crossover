@@ -50,7 +50,7 @@
 		const p = document.createElement( 'P' )
 		const img = document.createElement( 'IMG' )
 
-		div.classList.add('crosshair-option')
+		div.classList.add( 'crosshair-option' )
 		p.textContent = name
 
 		img.alt = name
@@ -63,10 +63,10 @@
 
 		}
 
-		img.addEventListener( 'click', ( event ) => {
+		img.addEventListener( 'click', event => {
 
-			document.querySelector( '.current' ).classList.remove('current')
-			event.target.classList.add('current')
+			document.querySelector( '.current' ).classList.remove( 'current' )
+			event.target.classList.add( 'current' )
 			setCrosshair( file )
 
 		} )
@@ -98,7 +98,7 @@
 
 		}
 
-		title.classList.add('group-label')
+		title.classList.add( 'group-label' )
 		title.textContent = label
 
 		chooserElement.append( title )
