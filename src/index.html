@@ -21,6 +21,17 @@
 			<div class="settings">
 				<div class="settings-background"></div>
 
+				<div>
+					<div class="color-picker"></div>
+
+					<select class="setting-crosshair" id="crosshairs">
+						<option value="leupold-dot.png">Bullseye</option>
+					</select>
+
+					<button id="select-crosshair-button">Choose</button>
+
+				</div>
+
 				<div class="setting-sight">
 					<label class="radio dot">
 					  <input name="radio" type="radio" value="dot" checked>
@@ -34,14 +45,6 @@
 					  <input name="radio" value="off" type="radio">
 					  <span>off</span>
 					</label>
-				</div>
-
-				<div>
-					<div class="color-picker"></div>
-
-					<select class="setting-crosshair" id="crosshairs">
-						<option value="leupold-dot.png">Bullseye</option>
-					</select>
 				</div>
 
 				<label for="setting-size">Size</label>
@@ -59,8 +62,7 @@
 			</div>
 		</div>
 
-		<script>
-			require('./renderer');
-		</script>
+		<script src="./renderer.js"></script>
+
 	</body>
 </html>

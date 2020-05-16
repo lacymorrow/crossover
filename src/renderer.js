@@ -14,6 +14,7 @@
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
 	const opacityOutput = document.querySelector( '#output-opacity' )
+	const selectCrosshairBtn = document.querySelector( '#select-crosshair-button' )
 	const sizeInput = document.querySelector( '#setting-size' )
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
@@ -27,7 +28,7 @@
 
 	}
 
-	// Set System Modifier
+	// Set System Modifier on first load
 	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
 
 	// Create color picker
@@ -358,6 +359,13 @@
 	dragger.addEventListener( 'dblclick', () => {
 
 		ipcRenderer.send( 'center_window' )
+
+	} )
+
+	selectCrosshairBtn.addEventListener( 'click', () => {
+
+		// Send open request with current crosshair
+		ipcRenderer.send( 'open_chooser', crosshairsInput.value )
 
 	} )
 

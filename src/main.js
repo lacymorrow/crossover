@@ -49,6 +49,7 @@ try {
 
 // Prevent window from being garbage collected
 let mainWindow
+let chooserWindow
 let windowHidden = false // Maintain hidden state
 
 // __static path
@@ -81,8 +82,9 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
-			nativeWindowOpen: true,
-			nodeIntegration: true
+			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
+
+			// preload: path.join( __dirname, 'preload.js' )
 
 			// Sandbox: true,
 
@@ -104,10 +106,30 @@ const createMainWindow = async () => {
 		// Dereference the window
 		// For multiple windows store them in an array
 		mainWindow = undefined
+		chooserWindow = undefined
 
 	} )
 
 	await win.loadFile( path.join( __dirname, 'index.html' ) )
+
+	return win
+
+}
+
+const createChildWindow = async mainWindow => {
+
+	const win = new BrowserWindow( {
+		parent: mainWindow,
+		modal: true,
+		show: false,
+		nodeIntegration: false, // Is default value after Electron v5
+		enableRemoteModule: false, // Turn off remote
+		webPreferences: {
+			preload: path.join( __dirname, 'preload-settings.js' )
+		}
+	} )
+
+	await win.loadFile( path.join( __dirname, 'settings.html' ) )
 
 	return win
 
@@ -341,11 +363,19 @@ const resetSettings = () => {
 
 const setupApp = async () => {
 
+	// Setup crosshair chooser
+
 	// Color chooser
 	mainWindow.webContents.send( 'load_crosshairs', {
 		crosshairs: await getCrosshairImages(),
 		current: config.get( 'crosshair' )
 	} )
+
+	chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await getCrosshairImages(),
+		current: config.get( 'crosshair' )
+	} )
+
 	setColor( config.get( 'color' ) )
 	setOpacity( config.get( 'opacity' ) )
 	setSight( config.get( 'sight' ) )
@@ -406,6 +436,25 @@ app.on( 'activate', async () => {
 app.on( 'ready', () => {
 
 	/* IP Communication */
+	ipcMain.on( 'open_chooser', ( event, arg ) => {
+
+		if ( chooserWindow ) {
+
+			chooserWindow.show()
+
+		}
+
+	} )
+
+	ipcMain.on( 'close_chooser', ( event, arg ) => {
+
+		if ( chooserWindow ) {
+
+			chooserWindow.hide()
+
+		}
+
+	} )
 
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
@@ -420,6 +469,12 @@ app.on( 'ready', () => {
 
 			console.log( `Set crosshair: ${arg}` )
 			config.set( 'crosshair', arg )
+
+			if ( chooserWindow ) {
+
+				chooserWindow.hide()
+
+			}
 
 		} else {
 
@@ -518,6 +573,16 @@ app.on( 'ready', () => {
 
 	} )
 
+	globalShortcut.register( 'Escape', () => {
+
+		if ( chooserWindow ) {
+
+			chooserWindow.hide()
+
+		}
+
+	} )
+
 } )
 
 module.exports = async () => {
@@ -525,6 +590,8 @@ module.exports = async () => {
 	await app.whenReady()
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
+	chooserWindow = await createChildWindow( mainWindow )
+
 	mainWindow.on( 'move', () => {
 
 		saveBounds()
