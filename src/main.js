@@ -257,7 +257,9 @@ const centerWindow = () => {
 
 	mainWindow.hide()
 	mainWindow.center()
-	mainWindow.setBounds( { y: mainWindow.getBounds().y + 250 } )
+	const bounds = mainWindow.getBounds()
+	// Recenter bounds because electron isn't perfect
+	mainWindow.setBounds( { x: bounds.x - 10, y: bounds.y + 250 } )
 	mainWindow.show()
 	saveBounds()
 
