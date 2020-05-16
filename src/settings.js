@@ -6,7 +6,7 @@
 	// Crosshair Images -> <select> input
 	const loadCrosshairs = crosshairsObject => {
 
-		const { crosshairs, current } = crosshairsObject
+		const { crosshairs } = crosshairsObject
 
 		// Create "No crosshair" option
 
@@ -65,7 +65,7 @@
 
 		} )
 
-		div.append(img, p)
+		div.append( img, p )
 
 		return div
 
