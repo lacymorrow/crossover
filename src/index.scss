@@ -390,6 +390,31 @@ input[type='range'] {
 }
 
 /* Crosshair chooser */
+#settings-container {
+	height: 100vh;
+	width: 100vw;
+	background: transparent;
+}
+
 #crosshair-chooser {
-	background: red;
+	border-radius: 5px;
+	background: white;
+	overflow-y: auto;
+	height: 100vh;
+
+	div {
+		width: 100%;
+		padding: 1em;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	img {
+		margin: 1em;
+		padding: 1em;
+		height: 64px;
+		border: 1px solid #bbb;
+		border-radius: 3px;
+	}
 }

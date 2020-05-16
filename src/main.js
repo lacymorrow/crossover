@@ -82,7 +82,7 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
-			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
+			nodeIntegration: true // We don't absolutely need this, but renderer require's some things
 
 			// preload: path.join( __dirname, 'preload.js' )
 
@@ -122,6 +122,7 @@ const createChildWindow = async mainWindow => {
 		parent: mainWindow,
 		modal: true,
 		show: false,
+		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
 		enableRemoteModule: false, // Turn off remote
 		webPreferences: {
@@ -436,7 +437,7 @@ app.on( 'activate', async () => {
 app.on( 'ready', () => {
 
 	/* IP Communication */
-	ipcMain.on( 'open_chooser', ( event, arg ) => {
+	ipcMain.on( 'open_chooser', ( ..._ ) => {
 
 		if ( chooserWindow ) {
 
@@ -446,7 +447,7 @@ app.on( 'ready', () => {
 
 	} )
 
-	ipcMain.on( 'close_chooser', ( event, arg ) => {
+	ipcMain.on( 'close_chooser', ( ..._ ) => {
 
 		if ( chooserWindow ) {
 
@@ -468,8 +469,8 @@ app.on( 'ready', () => {
 		if ( arg ) {
 
 			console.log( `Set crosshair: ${arg}` )
+			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-
 			if ( chooserWindow ) {
 
 				chooserWindow.hide()

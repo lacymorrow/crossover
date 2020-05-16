@@ -157,9 +157,15 @@
 
 	}
 
+	ipcRenderer.on( 'load_crosshairs', ( event, arg ) => {
+
+		loadCrosshairs( arg )
+
+	} )
+
 	const setCrosshair = crosshair => {
 
-		if ( crosshairsInput.value === 'none' ) {
+		if ( crosshair === 'none' ) {
 
 			crosshairImg.style.display = 'none'
 
@@ -170,6 +176,7 @@
 
 		}
 
+		// Set selected option
 		for ( let i = 0; i < crosshairsInput.options.length; i++ ) {
 
 			if ( crosshairsInput.options[i].value === crosshair ) {
@@ -180,8 +187,6 @@
 
 		}
 
-		ipcRenderer.send( 'save_crosshair', crosshairsInput.value )
-
 	}
 
 	crosshairsInput.addEventListener( 'change', event => {
@@ -190,9 +195,9 @@
 
 	} )
 
-	ipcRenderer.on( 'load_crosshairs', ( event, arg ) => {
+	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
 
-		loadCrosshairs( arg )
+		setCrosshair( arg )
 
 	} )
 
