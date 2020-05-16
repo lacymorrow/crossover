@@ -7,14 +7,21 @@
 
 > 🎯 Adjustable gaming Crosshair Overlay for any screen
 
-CrossOver allows you to place a customizable crosshair overlay above any application window.
-Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
+# Quick Start
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
-##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
-Double-click the crosshair to select your sight. Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place.
+- Double-click the crosshair to select your sight
+- Click and drag the grip icon to move Crossover around
+- Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> and arrow keys for fine-tuning
+- <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
+- Double-click the grip icon to reset your position to center.
 
+
+
+CrossOver allows you to place a customizable crosshair overlay above any application window.
+Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 ## Features
 
@@ -26,6 +33,8 @@ Double-click the crosshair to select your sight. Use <kbd>Control</kbd>-<kbd>Alt
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
 - Tested via Spectron
+
+### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
   <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
