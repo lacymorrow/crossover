@@ -148,7 +148,10 @@ const saveBounds = debounce( () => {
 const getCrosshairImages = async () => {
 
 	// How many levels deep to recurse
-	return getImages( crosshairsPath, 2 )
+	const crosshairsObject = await getImages( crosshairsPath, 2 )
+	config.set( 'crosshairsObject', crosshairsObject )
+
+	return crosshairsObject
 
 }
 
@@ -364,11 +367,15 @@ const resetSettings = () => {
 
 const setupApp = async () => {
 
-	// Setup crosshair chooser
+	// Set to previously selected crosshair
+	const currentCrosshair = config.get( 'crosshair' )
+	if ( currentCrosshair ) {
 
-	// Color chooser
-	mainWindow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
+		mainWindow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
 
+	}
+
+	// Setup crosshair chooser, must come before the check below
 	chooserWindow.webContents.send( 'load_crosshairs', {
 		crosshairs: await getCrosshairImages(),
 		current: config.get( 'crosshair' )
