@@ -30,11 +30,8 @@
 	// Title Case and spacing
 	function prettyFilename( string ) {
 
-		// Remove path
-		string = string.split( '/' ).pop()
-
-		// Remove extension
-		string = string.split( '.' ).shift()
+		// Remove path and extension
+		string = window.crossover.path.parse( string ).name
 
 		string = string
 			.split( '-' )

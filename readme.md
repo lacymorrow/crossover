@@ -7,6 +7,10 @@
 
 > 🎯 Adjustable gaming Crosshair Overlay for any screen
 
+CrossOver allows you to place a customizable crosshair overlay above any application window.
+Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
+
+
 # Quick Start
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
@@ -18,10 +22,6 @@
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
 - Double-click the grip icon to reset your position to center.
 
-
-
-CrossOver allows you to place a customizable crosshair overlay above any application window.
-Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 ## Features
 
