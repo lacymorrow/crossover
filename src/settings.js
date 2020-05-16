@@ -6,7 +6,7 @@
 	// Crosshair Images -> <select> input
 	const loadCrosshairs = crosshairsObject => {
 
-		const { crosshairs } = crosshairsObject
+		const { crosshairs, current } = crosshairsObject
 
 		// Create "No crosshair" option
 
@@ -14,12 +14,12 @@
 
 			if ( typeof element === 'string' ) {
 
-				const img = createImage( element )
+				const img = createImage( element, current )
 				chooserElement.append( img )
 
 			} else if ( typeof element === 'object' ) {
 
-				createGroup( element )
+				createGroup( element, current )
 
 			}
 
@@ -43,21 +43,30 @@
 	}
 
 	// Create option elements
-	const createImage = file => {
+	const createImage = ( file, current ) => {
 
 		const name = prettyFilename( file )
 		const div = document.createElement( 'DIV' )
 		const p = document.createElement( 'P' )
 		const img = document.createElement( 'IMG' )
 
-		div.classList = 'crosshair-option'
+		div.classList.add('crosshair-option')
 		p.textContent = name
 
 		img.alt = name
 		img.draggable = false
 		img.src = window.crossover.path.join( 'static/crosshairs/', file )
-		img.addEventListener( 'click', () => {
 
+		if ( current === file ) {
+
+			img.classList = 'current'
+
+		}
+
+		img.addEventListener( 'click', ( event ) => {
+
+			document.querySelector( '.current' ).classList.remove('current')
+			event.target.classList.add('current')
 			setCrosshair( file )
 
 		} )
@@ -69,7 +78,7 @@
 	}
 
 	// Setup optgroup elements
-	const createGroup = files => {
+	const createGroup = ( files, current ) => {
 
 		const group = document.createElement( 'DIV' )
 		const title = document.createElement( 'P' )
@@ -82,14 +91,14 @@
 
 			if ( typeof element === 'string' ) {
 
-				const img = createImage( element )
+				const img = createImage( element, current )
 				group.append( img )
 
 			}
 
 		}
 
-		title.classList = 'group-label'
+		title.classList.add('group-label')
 		title.textContent = label
 
 		chooserElement.append( title )

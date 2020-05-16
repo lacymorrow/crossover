@@ -9,7 +9,7 @@ const {
 	openNewGitHubIssue,
 	debugInfo
 } = require( 'electron-util' )
-const config = require( './config' )
+const { config } = require( './config' )
 
 const showBootLaunch = () => {
 
@@ -43,7 +43,7 @@ const moveWindow = direction => {
 	if ( !locked ) {
 
 		let newBound
-		const mainWindow = BrowserWindow.getAllWindows()[0]
+		const mainWindow = BrowserWindow.getAllWindows()[1]
 		const bounds = mainWindow.getBounds()
 		switch ( direction ) {
 
@@ -227,6 +227,15 @@ const macosTemplate = [
 			},
 			{
 				type: 'separator'
+			},
+			{
+				label: 'Close Chooser',
+				accelerator: 'Escape',
+				click() {
+
+					BrowserWindow.getAllWindows()[0].hide()
+
+				}
 			},
 			{
 				role: 'close'

@@ -375,14 +375,14 @@ const setupApp = async () => {
 	const currentCrosshair = config.get( 'crosshair' )
 	if ( currentCrosshair ) {
 
-		mainWindow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
+		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
 	}
 
 	// Setup crosshair chooser, must come before the check below
 	chooserWindow.webContents.send( 'load_crosshairs', {
 		crosshairs: await getCrosshairImages(),
-		current: config.get( 'crosshair' )
+		current: currentCrosshair
 	} )
 
 	setColor( config.get( 'color' ) )
@@ -569,16 +569,6 @@ app.on( 'ready', () => {
 	globalShortcut.register( 'Control+Shift+Alt+Right', () => {
 
 		moveWindow( 'right' )
-
-	} )
-
-	globalShortcut.register( 'Escape', () => {
-
-		if ( chooserWindow ) {
-
-			chooserWindow.hide()
-
-		}
 
 	} )
 

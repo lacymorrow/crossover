@@ -465,6 +465,7 @@ input[type='range'] {
 		border-radius: 3px;
 		transition: border-color .2s ease-in;
 
+		&.current,
 		&:hover {
 			border-color: #2466d8;
 		}
