@@ -10,7 +10,8 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
-### [Download CrossOver](https://github.com/lacymorrow/crossover/releases)
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
 
 
 ## Features
