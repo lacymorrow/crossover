@@ -12,7 +12,7 @@
 
 			<div class="crosshair-wrapper">
 				<div id="crosshair">
-					<img id="crosshairImg" alt="Crosshair" src="static/crosshairs/leupold-dot.png" draggable="false" />
+					<img id="crosshairImg" alt="Crosshair" src="static/crosshairs/Actual/leupold-dot.png" draggable="false" />
 					<div class="sight dot">&nbsp;</div>
 				</div>
 				<div class="drag-me"></div>
@@ -20,6 +20,15 @@
 
 			<div class="settings">
 				<div class="settings-background"></div>
+
+				<div>
+					<div class="color-picker"></div>
+
+					<button id="select-crosshair-button">Choose Crosshair</button>
+
+				</div>
+
+				<label for="setting-sight">Dot</label>
 
 				<div class="setting-sight">
 					<label class="radio dot">
@@ -36,31 +45,22 @@
 					</label>
 				</div>
 
-				<div>
-					<div class="color-picker"></div>
-
-					<select class="setting-crosshair" id="crosshairs">
-						<option value="leupold-dot.png">Bullseye</option>
-					</select>
-				</div>
-
 				<label for="setting-size">Size</label>
 				<div class="d-flex">
-					<input id="setting-size" type="range" min="1" max="100" step="1" value="100" />
-					<output id="output-size" for="setting-size">100</output>
+					<input id="setting-size" type="range" min="5" max="100" step="1" value="100" />
+					<output id="output-size" for="setting-size">100</output><sup>%</sup>
 				</div>
 
 				<label for="setting-opacity">Opacity</label>
 				<div class="d-flex">
 					<input id="setting-opacity" type="range" min="0" max="100" step="1" />
-					<output id="output-opacity" for="setting-opacity">50</output>
+					<output id="output-opacity" for="setting-opacity">50</output><sup>%</sup>
 				</div>
 				<p class="help-text"><span>CTRL</span>+<span id="system-modifier">ALT</span>+<span>SHFT</span>+<span>X</span>
 			</div>
 		</div>
 
-		<script>
-			require('./renderer');
-		</script>
+		<script src="./renderer.js"></script>
+
 	</body>
 </html>

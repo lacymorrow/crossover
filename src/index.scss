@@ -4,6 +4,10 @@ $border_color_hover: #888888;
 $text_color: #676767;
 $main_color: #555;
 
+* {
+	box-sizing: border-box;
+}
+
 html,
 body {
 	padding: 0;
@@ -182,6 +186,7 @@ body {
 label {
 	display: block;
 	margin-top: 15px;
+	margin-bottom: 4px;
 }
 
 .sight {
@@ -249,9 +254,8 @@ label {
 }
 
 .setting-sight {
-	margin-bottom: 10px;
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	label {
 		margin-top: 0;
 	}
@@ -386,5 +390,89 @@ input[type='range'] {
 
 	&:focus::-webkit-slider-runnable-track {
 		background: #ccc;
+	}
+}
+
+#select-crosshair-button {
+	cursor: pointer;
+	border: none;
+	outline: none;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: underline;
+	color: #2466d8;
+	background-color: transparent;
+}
+
+/* Crosshair chooser */
+
+#settings-container {
+	height: 100vh;
+	width: 100vw;
+	background: transparent;
+}
+
+#settings-wrapper {
+	border-radius: 5px;
+	background: white;
+	padding: 1em 0;
+	height: 100%;
+	width: 100%;
+}
+
+#crosshair-chooser {
+	height: 100%;
+	width: 100%;
+
+	overflow-y: auto;
+
+	p {
+		display: inline-block;
+	}
+
+	.crosshair-option {
+		display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    justify-content: start;
+	}
+
+	.group-label {
+		display: block;
+		padding: 0 1em;
+		font-size: 20px;
+		color: #2466d8;
+		margin-bottom: 0;
+	}
+
+	&>div {
+		width: 100%;
+		padding: 0 1em 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		margin-left: -0.5em;
+		margin-right: -0.5em;
+	}
+
+	img {
+		cursor: pointer;
+		box-sizing: content-box;
+		margin: 1em;
+		padding: 1em;
+		height: 64px;
+		border: 1px	dashed #ddd;
+		border-radius: 3px;
+		transition: border-color .2s ease-in;
+
+		&:hover {
+			border-color: #2466d8;
+		}
+
+		&::after {
+			content: 'hello';
+
+		}
 	}
 }
