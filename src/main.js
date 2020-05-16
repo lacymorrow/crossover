@@ -106,7 +106,6 @@ const createMainWindow = async () => {
 		// Dereference the window
 		// For multiple windows store them in an array
 		mainWindow = undefined
-		chooserWindow = undefined
 
 	} )
 
@@ -122,9 +121,14 @@ const createChildWindow = async mainWindow => {
 		parent: mainWindow,
 		modal: true,
 		show: false,
+		type: 'toolbar',
+		frame: false,
+		hasShadow: false,
+		fullscreenable: false,
+		maximizable: false,
+		minimizable: false,
 		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
-		enableRemoteModule: false, // Turn off remote
 		webPreferences: {
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
