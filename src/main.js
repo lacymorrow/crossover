@@ -367,10 +367,7 @@ const setupApp = async () => {
 	// Setup crosshair chooser
 
 	// Color chooser
-	mainWindow.webContents.send( 'load_crosshairs', {
-		crosshairs: await getCrosshairImages(),
-		current: config.get( 'crosshair' )
-	} )
+	mainWindow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
 
 	chooserWindow.webContents.send( 'load_crosshairs', {
 		crosshairs: await getCrosshairImages(),
@@ -439,19 +436,9 @@ app.on( 'ready', () => {
 	/* IP Communication */
 	ipcMain.on( 'open_chooser', ( ..._ ) => {
 
-		if ( chooserWindow ) {
+		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
 			chooserWindow.show()
-
-		}
-
-	} )
-
-	ipcMain.on( 'close_chooser', ( ..._ ) => {
-
-		if ( chooserWindow ) {
-
-			chooserWindow.hide()
 
 		}
 

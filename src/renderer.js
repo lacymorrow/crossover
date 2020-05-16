@@ -5,12 +5,11 @@
 	const { ipcRenderer } = require( 'electron' )
 	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
-	const { debounce, prettyFilename } = require( './util' )
+	const { debounce } = require( './util' )
 
 	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
 	const crosshairElement = document.querySelector( '#crosshair' )
-	const crosshairsInput = document.querySelector( '#crosshairs' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
 	const opacityOutput = document.querySelector( '#output-opacity' )
@@ -35,6 +34,8 @@
 	const pickr = Pickr.create( {
 		el: '.color-picker',
 		theme: 'nano', // Or 'monolith', or 'nano'
+		closeOnScroll: true,
+		position: 'right-start',
 
 		swatches: [
 			'rgba(244, 67, 54, 1)',
@@ -56,7 +57,7 @@
 		components: {
 			// Main components
 			preview: true,
-			opacity: false,
+			opacity: true,
 			hue: true,
 
 			// Input / output Options
@@ -74,95 +75,6 @@
 	} )
 	window.pickr = pickr
 
-	// Create option elements
-	const newOption = option => {
-
-		const opt = document.createElement( 'OPTION' )
-		opt.textContent = prettyFilename( option )
-		opt.value = option
-
-		return opt
-
-	}
-
-	// Setup optgroup elements
-	const createOptGroup = files => {
-
-		const gr = document.createElement( 'OPTGROUP' )
-		let label = path.dirname( files[0] )
-		if ( label.indexOf( '/' ) === 0 ) {
-
-			label = label.slice( 1 )
-
-		}
-
-		gr.label = label
-
-		for ( const element of files ) {
-
-			if ( typeof element === 'string' ) {
-
-				const opt = newOption( element )
-				gr.append( opt )
-
-			}
-
-		}
-
-		crosshairsInput.append( gr )
-
-	}
-
-	const setSelected = crosshair => {
-
-		for ( let i = 0; i < crosshairsInput.options.length; i++ ) {
-
-			if ( crosshairsInput.options[i].value === crosshair ) {
-
-				crosshairsInput.options[i].selected = true
-				break
-
-			}
-
-		}
-
-	}
-
-	// Crosshair Images -> <select> input
-	const loadCrosshairs = crosshairsObject => {
-
-		const { crosshairs, current } = crosshairsObject
-
-		// Set the image src before loading the list
-		setCrosshair( current )
-
-		crosshairsInput.options.length = 0
-		crosshairsInput.options[0] = new Option( '-----', 'none' )
-		for ( const element of crosshairs ) {
-
-			if ( typeof element === 'string' ) {
-
-				const opt = newOption( element )
-				crosshairsInput.append( opt )
-
-			} else if ( typeof element === 'object' ) {
-
-				createOptGroup( element )
-
-			}
-
-		}
-
-		setSelected( current )
-
-	}
-
-	ipcRenderer.on( 'load_crosshairs', ( event, arg ) => {
-
-		loadCrosshairs( arg )
-
-	} )
-
 	const setCrosshair = crosshair => {
 
 		if ( crosshair === 'none' ) {
@@ -176,24 +88,7 @@
 
 		}
 
-		// Set selected option
-		for ( let i = 0; i < crosshairsInput.options.length; i++ ) {
-
-			if ( crosshairsInput.options[i].value === crosshair ) {
-
-				crosshairsInput.options[i].selected = true
-
-			}
-
-		}
-
 	}
-
-	crosshairsInput.addEventListener( 'change', event => {
-
-		setCrosshair( event.target.value )
-
-	} )
 
 	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
 
@@ -367,10 +262,17 @@
 
 	} )
 
+	crosshairElement.addEventListener( 'dblclick', () => {
+
+		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+
+	} )
+
+	// Button to open crosshair chooser
 	selectCrosshairBtn.addEventListener( 'click', () => {
 
 		// Send open request with current crosshair
-		ipcRenderer.send( 'open_chooser', crosshairsInput.value )
+		ipcRenderer.send( 'open_chooser', crosshairImg.src )
 
 	} )
 

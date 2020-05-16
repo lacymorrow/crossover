@@ -49,10 +49,15 @@
 	const createImage = file => {
 
 		const name = prettyFilename( file )
+		const div = document.createElement( 'DIV' )
+		const p = document.createElement( 'P' )
 		const img = document.createElement( 'IMG' )
+
+		div.classList = 'crosshair-option'
+		p.textContent = name
+
 		img.alt = name
 		img.draggable = false
-		img.title = name
 		img.src = window.crossover.path.join( 'static/crosshairs/', file )
 		img.addEventListener( 'click', () => {
 
@@ -60,7 +65,9 @@
 
 		} )
 
-		return img
+		div.append(img, p)
+
+		return div
 
 	}
 
@@ -68,6 +75,7 @@
 	const createGroup = files => {
 
 		const group = document.createElement( 'DIV' )
+		const title = document.createElement( 'P' )
 
 		// Split path into name
 		let label = window.crossover.path.dirname( files[0] )
@@ -78,8 +86,6 @@
 			label = label.slice( 1 )
 
 		}
-
-		group.title = label
 
 		for ( const element of files ) {
 
@@ -92,6 +98,10 @@
 
 		}
 
+		title.classList = 'group-label'
+		title.textContent = label
+
+		chooserElement.append( title )
 		chooserElement.append( group )
 
 	}
@@ -104,7 +114,7 @@
 
 	window.crossover.receive( 'load_crosshairs', data => {
 
-		console.log( `Loaded crosshairsObject: ${JSON.stringify(data)}` )
+		console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
 		loadCrosshairs( data )
 
 	} )
