@@ -74,15 +74,9 @@
 		const group = document.createElement( 'DIV' )
 		const title = document.createElement( 'P' )
 
-		// Split path into name
+		// Split path into name and remove slashes
 		let label = window.crossover.path.dirname( files[0] )
-
-		// Remove slash
-		if ( label.indexOf( '/' ) === 0 ) {
-
-			label = label.slice( 1 )
-
-		}
+		label = window.crossover.path.parse( label ).name
 
 		for ( const element of files ) {
 

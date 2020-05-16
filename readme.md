@@ -16,11 +16,11 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/CrossOver.exe)
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
-- Double-click the crosshair to select your sight
+- Choose a crosshair from over 50 sights
 - Click and drag the grip icon to move Crossover around
-- Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> and arrow keys for fine-tuning
+- Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd> and arrow keys for fine-tuning
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
-- Double-click the grip icon to reset your position to center.
+- <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset and recenter
 
 
 ## Features

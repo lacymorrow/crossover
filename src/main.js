@@ -348,7 +348,7 @@ const aboutWindow = () => {
 
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
-		copyright: 'Copyright © Lacy Morrow',
+		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text:
 			'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.'
 	} )
