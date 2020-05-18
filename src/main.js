@@ -118,7 +118,7 @@ const createMainWindow = async () => {
 const createChildWindow = async mainWindow => {
 
 	const win = new BrowserWindow( {
-		parent: mainWindow,
+		// parent: mainWindow,
 		modal: true,
 		show: false,
 		type: 'toolbar',
@@ -582,6 +582,9 @@ module.exports = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
+	mainWindow.setAlwaysOnTop(true, 'pop-up-menu')
+
+	chooserWindow.setAlwaysOnTop(true, 'pop-up-menu')
 
 	mainWindow.on( 'move', () => {
 

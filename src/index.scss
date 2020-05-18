@@ -405,6 +405,12 @@ input[type='range'] {
 
 /* Crosshair chooser */
 
+#chooser {
+	width: 500px;
+	height: 300px;
+	background: white;
+}
+
 #settings-container {
 	height: 100vh;
 	width: 100vw;
