@@ -115,7 +115,7 @@ const createMainWindow = async () => {
 
 }
 
-const createChildWindow = async mainWindow => {
+const createChildWindow = async _ => {
 
 	const win = new BrowserWindow( {
 		// Parent: mainWindow,
