@@ -99,6 +99,8 @@ Double-click the drag icon to center the crosshair on the current display.
 
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
+###### On a Mac, the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
+
 #### Keyboard Shortcuts
 
 Description            | Keys
@@ -109,7 +111,6 @@ Reset all settings and center the window                   | <kbd>Control</kbd>-
 Display the "About" window details                        | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
-###### <kbd>Option</kbd> is <kbd>Alt</kbd> on a Mac
 
 <p align="center">
 	<br />
