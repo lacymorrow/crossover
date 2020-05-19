@@ -159,6 +159,11 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ - [https://github.com/lacymorrow/crossover/issues/1]
 
+#### Sight is deformed or off by 1 pixel
+
+Due to limitations in chrome we are unable to generate sub-pixel graphics, although there may be a way...
+
+
 #### Transparency not working
 
 CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - [https://github.com/lacymorrow/crossover/issues/5]
