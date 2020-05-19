@@ -270,7 +270,6 @@ const centerWindow = () => {
 
 	}
 
-
 	mainWindow.show()
 	saveBounds()
 
