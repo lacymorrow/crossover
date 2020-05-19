@@ -258,8 +258,19 @@ const centerWindow = () => {
 	mainWindow.hide()
 	mainWindow.center()
 	const bounds = mainWindow.getBounds()
+
 	// Recenter bounds because electron isn't perfect
-	mainWindow.setBounds( { x: bounds.x - 10, y: bounds.y + 250 } )
+	if ( is.macos ) {
+
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 250 } )
+
+	} else {
+
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 130 } )
+
+	}
+
+
 	mainWindow.show()
 	saveBounds()
 
