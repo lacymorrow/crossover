@@ -262,7 +262,7 @@ const centerWindow = () => {
 	// Recenter bounds because electron isn't perfect
 	if ( is.macos ) {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 250 } )
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
 
 	} else {
 
