@@ -54,12 +54,12 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 **Windows**
 
-[**Download**](https://github.com/user/repo/releases/latest/CrossOver-Setup-0.2.17.exe
+[**Download**](https://github.com/user/repo/releases/latest/download/CrossOver.exe
 ) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
 
 **macOS**
 
-[**Download**](https://github.com/user/repo/releases/latest/CrossOver-0.2.17.dmg
+[**Download**](https://github.com/user/repo/releases/latest
 ) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
 
 **Linux**
