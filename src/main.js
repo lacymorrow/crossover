@@ -452,12 +452,12 @@ app.on( 'ready', () => {
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
 			chooserWindow.show()
-			globalShortcut.register( 'Escape' , () => {
+			globalShortcut.register( 'Escape', () => {
 
 				chooserWindow.hide()
 				globalShortcut.unregister( 'Escape' )
 
-			})
+			} )
 
 		}
 
@@ -588,9 +588,9 @@ module.exports = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
-	mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	chooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+	chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	mainWindow.on( 'move', () => {
 
