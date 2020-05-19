@@ -255,7 +255,7 @@
 
 	} )
 
-	// Center window
+	// Center window on double click
 	dragger.addEventListener( 'dblclick', () => {
 
 		ipcRenderer.send( 'center_window' )

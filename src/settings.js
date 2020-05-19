@@ -65,9 +65,17 @@
 
 		img.addEventListener( 'click', event => {
 
-			document.querySelector( '.current' ).classList.remove( 'current' )
-			event.target.classList.add( 'current' )
 			setCrosshair( file )
+
+			// Set 'selected' border color
+			const current = document.querySelector( '.current' )
+			if ( current ) {
+
+				current.classList.remove( 'current' )
+
+			}
+
+			event.target.classList.add( 'current' )
 
 		} )
 

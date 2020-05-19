@@ -118,7 +118,7 @@ const createMainWindow = async () => {
 const createChildWindow = async _ => {
 
 	const win = new BrowserWindow( {
-		// Parent: mainWindow,
+		parent: mainWindow,
 		modal: true,
 		show: false,
 		type: 'toolbar',
@@ -452,6 +452,12 @@ app.on( 'ready', () => {
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
 			chooserWindow.show()
+			globalShortcut.register( 'Escape' , () => {
+
+				chooserWindow.hide()
+				globalShortcut.unregister( 'Escape' )
+
+			})
 
 		}
 
