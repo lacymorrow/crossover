@@ -266,7 +266,7 @@ const centerWindow = () => {
 
 	} else {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 130 } )
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
 
 	}
 
