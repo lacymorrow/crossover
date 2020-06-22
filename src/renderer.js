@@ -292,7 +292,11 @@
 	dragDrop.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+
+		// Prevent flickering on Windows
+		if ( event.target === dragDrop ) {
+			dragDrop.classList.remove( 'dropping' )
+		}
 
 	} )
 

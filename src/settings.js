@@ -1,7 +1,7 @@
 ( () => {
 
 	// DOM elements
-	const dragDrop = document.querySelector( '#settings-container' )
+	const containerElement = document.querySelector( '#settings-container' )
 	const chooserElement = document.querySelector( '#crosshair-chooser' )
 
 	// Crosshair Images -> <select> input
@@ -130,31 +130,37 @@
 
 	// Drag and drop Custom Image
 	// for drop events to fire, must cancel dragover and dragleave events
-	dragDrop.addEventListener( 'dragover', event => {
+	chooserElement.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
-		dragDrop.classList.add( 'dropping' )
+		containerElement.classList.add( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'dragleave', event => {
+	chooserElement.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+
+		console.log(event.target, chooserElement)
+
+		// Prevent flickering on Windows
+		if ( event.target === chooserElement ) {
+			containerElement.classList.remove( 'dropping' )
+		}
 
 	} )
 
-	dragDrop.addEventListener( 'dragend', event => {
+	chooserElement.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+		containerElement.classList.remove( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'drop', event => {
+	chooserElement.addEventListener( 'drop', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+		containerElement.classList.remove( 'dropping' )
 
 		// Send file path to main
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )

@@ -96,7 +96,7 @@ body {
 	height: 38px;
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	right: -4px;
 	cursor: move;
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
@@ -145,7 +145,7 @@ body {
 
 .settings {
 	display: none;
-	padding: 15px 15px 10px 15px;
+	padding: 10px 10px 5px 10px;
 	margin: 0 -4px -4px -4px; // Offset .dropping border
 	position: relative;
 	flex-direction: column;

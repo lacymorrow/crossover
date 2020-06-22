@@ -121,9 +121,10 @@ const createChildWindow = async _ => {
 		parent: mainWindow,
 		modal: true,
 		show: false,
-		// type: 'toolbar',
-		// frame: false,
+		type: 'toolbar',
+		frame: false,
 		// hasShadow: false,
+		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
 		// maximizable: false,
 		// minimizable: false,
@@ -304,6 +305,19 @@ const toggleWindowLock = () => {
 
 }
 
+// Switch window type when hiding chooser
+const hideChooserWindow = () => {
+	if (chooserWindow) {
+
+		chooserWindow.hide()
+
+	}
+	
+	globalShortcut.unregister( 'Escape' )
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+}
+
 // Allows dragging and setting options
 const lockWindow = lock => {
 
@@ -473,13 +487,9 @@ app.on( 'ready', () => {
 
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
+			mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 			chooserWindow.show()
-			globalShortcut.register( 'Escape', () => {
-
-				chooserWindow.hide()
-				globalShortcut.unregister( 'Escape' )
-
-			} )
+			globalShortcut.register( 'Escape', hideChooserWindow )
 
 		}
 
@@ -500,11 +510,7 @@ app.on( 'ready', () => {
 			console.log( `Set custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-			if ( chooserWindow ) {
-
-				chooserWindow.hide()
-
-			}
+			hideChooserWindow()
 
 		}
 
@@ -517,11 +523,7 @@ app.on( 'ready', () => {
 			console.log( `Set crosshair: ${arg}` )
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-			if ( chooserWindow ) {
-
-				chooserWindow.hide()
-
-			}
+			hideChooserWindow()
 
 		} else {
 
