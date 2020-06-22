@@ -68,7 +68,7 @@ const createMainWindow = async () => {
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
-		AlwaysOnTop: true,
+		alwaysOnTop: true,
 		frame: false,
 		hasShadow: false,
 		closable: true,
