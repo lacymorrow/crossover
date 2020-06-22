@@ -8,7 +8,7 @@ const { centerWindow, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults } = require( './config' )
+const { config, defaults, supportedImageFileTypes } = require( './config' )
 const menu = require( './menu' )
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -495,13 +495,17 @@ app.on( 'ready', () => {
 
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-		console.log( arg )
-
-		if ( arg && fs.lstatSync( arg ).isFile() ) {
+		// Is it a file and does it have a supported extension?
+		if ( fs.lstatSync( arg ).isFile() && supportedImageFileTypes.includes( path.extname( arg ) ) ) {
 
 			console.log( `Set custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
+			if ( chooserWindow ) {
+
+				chooserWindow.hide()
+
+			}
 
 		}
 
