@@ -418,14 +418,18 @@ input[type='range'] {
 	height: 100vh;
 	width: 100vw;
 	background: transparent;
+	padding: 4px 4px 4px 4px;
+
+	&.dropping {
+		// box-shadow: inset 0 0 10px $border_color_focus;
+		padding: 0 0 0 0;
+		border: 4px dashed $border_color_focus;
+	}
 }
 
 #settings-wrapper {
-	border-radius: 5px;
 	background: white;
-	padding: 1em 0;
 	height: 100%;
-	width: 100%;
 }
 
 #crosshair-chooser {

@@ -121,14 +121,16 @@ const createChildWindow = async _ => {
 		parent: mainWindow,
 		modal: true,
 		show: false,
-		type: 'toolbar',
-		frame: false,
-		hasShadow: false,
+		// type: 'toolbar',
+		// frame: false,
+		// hasShadow: false,
 		fullscreenable: false,
-		maximizable: false,
-		minimizable: false,
-		transparent: false,
+		// maximizable: false,
+		// minimizable: false,
+		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
+		width: 600,
+		height: 500,
 		webPreferences: {
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
@@ -183,11 +185,8 @@ const getImages = ( directory, level ) => {
 
 				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-					// Const dirpath = directory.replace( crosshairsPath, '' )
-					const dirpath = directory
-
 					// Filename
-					crosshairs.push( path.join( dirpath, filepath ) )
+					crosshairs.push( path.join( directory, filepath ) )
 
 				}
 
@@ -632,7 +631,7 @@ module.exports = async () => {
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	chooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+	// chooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 
