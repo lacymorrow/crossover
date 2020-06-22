@@ -13,6 +13,10 @@ const defaults = {
 	windowLocked: false
 }
 
+const supportedImageFileTypes = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
+
+module.exports.supportedImageFileTypes = supportedImageFileTypes
+
 module.exports.defaults = defaults
 
 module.exports.config = new Store( {

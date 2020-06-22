@@ -4,11 +4,11 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
-const { is, showAboutWindow } = require( 'electron-util' )
+const { centerWindow, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults } = require( './config' )
+const { config, defaults, supportedImageFileTypes } = require( './config' )
 const menu = require( './menu' )
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -68,7 +68,7 @@ const createMainWindow = async () => {
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
-		alwaysOnTop: true,
+		AlwaysOnTop: true,
 		frame: false,
 		hasShadow: false,
 		closable: true,
@@ -123,12 +123,15 @@ const createChildWindow = async _ => {
 		show: false,
 		type: 'toolbar',
 		frame: false,
-		hasShadow: false,
+		// HasShadow: false,
+		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
-		maximizable: false,
-		minimizable: false,
+		// Maximizable: false,
+		// minimizable: false,
 		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
+		width: 600,
+		height: 500,
 		webPreferences: {
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
@@ -183,10 +186,8 @@ const getImages = ( directory, level ) => {
 
 				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-					const dirpath = directory.replace( crosshairsPath, '' )
-
 					// Filename
-					crosshairs.push( path.join( dirpath, filepath ) )
+					crosshairs.push( path.join( directory, filepath ) )
 
 				}
 
@@ -253,24 +254,30 @@ const setDockVisible = visible => {
 
 }
 
-const centerWindow = () => {
+const centerApp = () => {
 
-	mainWindow.hide()
-	mainWindow.center()
-	const bounds = mainWindow.getBounds()
+	// MainWindow.hide()
+	// mainWindow.center()
+	// const bounds = mainWindow.getBounds()
 
-	// Recenter bounds because electron isn't perfect
-	if ( is.macos ) {
+	// // Recenter bounds because electron isn't perfect
+	// if ( is.macos ) {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
+	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
 
-	} else {
+	// } else {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
+	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
 
-	}
+	// }
 
-	mainWindow.show()
+	// mainWindow.show()
+
+	centerWindow( {
+		window: mainWindow,
+		animated: true
+	} )
+
 	saveBounds()
 
 }
@@ -295,6 +302,20 @@ const toggleWindowLock = () => {
 
 	const locked = config.get( 'windowLocked' )
 	lockWindow( !locked )
+
+}
+
+// Switch window type when hiding chooser
+const hideChooserWindow = () => {
+
+	if ( chooserWindow ) {
+
+		chooserWindow.hide()
+
+	}
+
+	globalShortcut.unregister( 'Escape' )
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 }
 
@@ -376,7 +397,7 @@ const resetSettings = () => {
 
 	}
 
-	centerWindow()
+	centerApp()
 	setupApp()
 
 }
@@ -457,17 +478,19 @@ app.on( 'activate', async () => {
 app.on( 'ready', () => {
 
 	/* IP Communication */
+	ipcMain.on( 'log', ( event, arg ) => {
+
+		console.log( arg )
+
+	} )
+
 	ipcMain.on( 'open_chooser', ( ..._ ) => {
 
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
+			mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 			chooserWindow.show()
-			globalShortcut.register( 'Escape', () => {
-
-				chooserWindow.hide()
-				globalShortcut.unregister( 'Escape' )
-
-			} )
+			globalShortcut.register( 'Escape', hideChooserWindow )
 
 		}
 
@@ -480,6 +503,20 @@ app.on( 'ready', () => {
 
 	} )
 
+	ipcMain.on( 'save_custom_image', ( event, arg ) => {
+
+		// Is it a file and does it have a supported extension?
+		if ( fs.lstatSync( arg ).isFile() && supportedImageFileTypes.includes( path.extname( arg ) ) ) {
+
+			console.log( `Set custom image: ${arg}` )
+			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
+			config.set( 'crosshair', arg )
+			hideChooserWindow()
+
+		}
+
+	} )
+
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
 		if ( arg ) {
@@ -487,11 +524,7 @@ app.on( 'ready', () => {
 			console.log( `Set crosshair: ${arg}` )
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-			if ( chooserWindow ) {
-
-				chooserWindow.hide()
-
-			}
+			hideChooserWindow()
 
 		} else {
 
@@ -525,7 +558,7 @@ app.on( 'ready', () => {
 	ipcMain.on( 'center_window', () => {
 
 		console.log( 'Center window' )
-		centerWindow()
+		centerApp()
 
 	} )
 
@@ -598,9 +631,10 @@ module.exports = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// ChooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 

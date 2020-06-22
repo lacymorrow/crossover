@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.3.6",
+	"version": "0.3.8",
 	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -15,7 +15,7 @@
 		"url": "https://github.com/lacymorrow/crossover/issues"
 	},
 	"engines": {
-		"node": ">=10 <14"
+		"node": ">=10 <=14"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",

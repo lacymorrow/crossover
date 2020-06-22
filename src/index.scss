@@ -58,7 +58,7 @@ body {
 
 /* Application Style */
 .container {
-	padding-top: 15px;
+	padding: 15px 4px 4px 4px;
 	overflow: hidden;
 	position: relative;
 	background: none;
@@ -67,6 +67,12 @@ body {
 	height: 100%;
 	-webkit-user-select: none;
 	cursor: none;
+
+	&.dropping {
+		// box-shadow: inset 0 0 10px $border_color_focus;
+		padding: 11px 0 0 0;
+		border: 4px dashed $border_color_focus;
+	}
 }
 
 .background {
@@ -90,7 +96,7 @@ body {
 	height: 38px;
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	right: -4px;
 	cursor: move;
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
@@ -139,7 +145,8 @@ body {
 
 .settings {
 	display: none;
-	padding: 15px 15px 10px 15px;
+	padding: 10px 10px 5px 10px;
+	margin: 0 -4px -4px -4px; // Offset .dropping border
 	position: relative;
 	flex-direction: column;
 	&-background {
@@ -181,7 +188,9 @@ body {
 	}
 }
 
-/* Settings */
+/*
+ * Settings
+ */
 
 label {
 	display: block;
@@ -409,14 +418,18 @@ input[type='range'] {
 	height: 100vh;
 	width: 100vw;
 	background: transparent;
+	padding: 4px 4px 4px 4px;
+
+	&.dropping {
+		// box-shadow: inset 0 0 10px $border_color_focus;
+		padding: 0 0 0 0;
+		border: 4px dashed $border_color_focus;
+	}
 }
 
 #settings-wrapper {
-	border-radius: 5px;
 	background: white;
-	padding: 1em 0;
 	height: 100%;
-	width: 100%;
 }
 
 #crosshair-chooser {
