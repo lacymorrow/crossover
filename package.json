@@ -15,7 +15,7 @@
 		"url": "https://github.com/lacymorrow/crossover/issues"
 	},
 	"engines": {
-		"node": ">=10 <14"
+		"node": ">=10 <=14"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",

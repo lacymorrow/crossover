@@ -4,7 +4,7 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
-const { is, showAboutWindow } = require( 'electron-util' )
+const { centerWindow, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -68,7 +68,7 @@ const createMainWindow = async () => {
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
-		alwaysOnTop: true,
+		// AlwaysOnTop: true,
 		frame: false,
 		hasShadow: false,
 		closable: true,
@@ -127,7 +127,7 @@ const createChildWindow = async _ => {
 		fullscreenable: false,
 		maximizable: false,
 		minimizable: false,
-		transparent: true,
+		transparent: false,
 		nodeIntegration: false, // Is default value after Electron v5
 		webPreferences: {
 			preload: path.join( __dirname, 'preload-settings.js' )
@@ -253,24 +253,30 @@ const setDockVisible = visible => {
 
 }
 
-const centerWindow = () => {
+const centerApp = () => {
 
-	mainWindow.hide()
-	mainWindow.center()
-	const bounds = mainWindow.getBounds()
+	// MainWindow.hide()
+	// mainWindow.center()
+	// const bounds = mainWindow.getBounds()
 
-	// Recenter bounds because electron isn't perfect
-	if ( is.macos ) {
+	// // Recenter bounds because electron isn't perfect
+	// if ( is.macos ) {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
+	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
 
-	} else {
+	// } else {
 
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
+	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
 
-	}
+	// }
 
-	mainWindow.show()
+	// mainWindow.show()
+
+	centerWindow( {
+		window: mainWindow,
+		animated: true
+	} )
+
 	saveBounds()
 
 }
@@ -376,7 +382,7 @@ const resetSettings = () => {
 
 	}
 
-	centerWindow()
+	centerApp()
 	setupApp()
 
 }
@@ -457,6 +463,12 @@ app.on( 'activate', async () => {
 app.on( 'ready', () => {
 
 	/* IP Communication */
+	ipcMain.on( 'log', ( event, arg ) => {
+
+		console.log( arg )
+
+	} )
+
 	ipcMain.on( 'open_chooser', ( ..._ ) => {
 
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
@@ -477,6 +489,18 @@ app.on( 'ready', () => {
 
 		console.log( `Set color: ${arg}` )
 		config.set( 'color', arg )
+
+	} )
+
+	ipcMain.on( 'save_custom_image', ( event, arg ) => {
+
+		console.log(arg)
+		if ( arg && fs.lstatSync( arg ).isFile() ) {
+
+			console.log( `Set custom image: ${arg}` )
+			config.set( 'crosshair', arg )
+
+		}
 
 	} )
 
@@ -525,7 +549,7 @@ app.on( 'ready', () => {
 	ipcMain.on( 'center_window', () => {
 
 		console.log( 'Center window' )
-		centerWindow()
+		centerApp()
 
 	} )
 
@@ -598,9 +622,10 @@ module.exports = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	// mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	mainWindow.on( 'move', () => {
 

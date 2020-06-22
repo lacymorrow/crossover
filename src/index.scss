@@ -58,7 +58,7 @@ body {
 
 /* Application Style */
 .container {
-	padding-top: 15px;
+	padding: 15px 3px 3px 3px;
 	overflow: hidden;
 	position: relative;
 	background: none;
@@ -67,6 +67,12 @@ body {
 	height: 100%;
 	-webkit-user-select: none;
 	cursor: none;
+
+	&.dropping {
+		// box-shadow: inset 0 0 10px $border_color_focus;
+		padding: 12px 0 0 0;
+		border: 3px dashed $border_color_focus;
+	}
 }
 
 .background {
@@ -181,7 +187,9 @@ body {
 	}
 }
 
-/* Settings */
+/*
+ * Settings
+ */
 
 label {
 	display: block;

@@ -9,6 +9,7 @@
 
 	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
+	const dragDrop = document.querySelector( '#drag-file' )
 	const crosshairElement = document.querySelector( '#crosshair' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
@@ -273,6 +274,45 @@
 
 		// Send open request with current crosshair
 		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+
+	} )
+
+	dragDrop.addEventListener( 'dragover', () => {
+
+		dragDrop.classList.add( 'dropping' )
+		return false
+
+	} )
+
+	dragDrop.addEventListener( 'dragleave', () => {
+
+		dragDrop.classList.remove( 'dropping' )
+		return false
+
+	} )
+
+	dragDrop.addEventListener( 'dragend', () => {
+
+		dragDrop.classList.remove( 'dropping' )
+		return false
+	} )
+
+	dragDrop.addEventListener( 'drop', event => {
+
+		ipcRenderer.send( 'log', 'filepath' )
+		event.preventDefault()
+
+		// Only allow single file (if multiple)
+
+		// if ( event.dataTransfer.files.length > 1 ) {
+
+		// 	return false
+
+		// }
+
+		const filepath = event.dataTransfer.files[0].path
+		ipcRenderer.send( 'log', filepath )
+		// ipcRenderer.send( 'save_custom_image', filepath )
 
 	} )
 
