@@ -123,10 +123,10 @@ const createChildWindow = async _ => {
 		show: false,
 		type: 'toolbar',
 		frame: false,
-		// hasShadow: false,
+		// HasShadow: false,
 		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
-		// maximizable: false,
+		// Maximizable: false,
 		// minimizable: false,
 		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
@@ -307,12 +307,13 @@ const toggleWindowLock = () => {
 
 // Switch window type when hiding chooser
 const hideChooserWindow = () => {
-	if (chooserWindow) {
+
+	if ( chooserWindow ) {
 
 		chooserWindow.hide()
 
 	}
-	
+
 	globalShortcut.unregister( 'Escape' )
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
@@ -633,7 +634,7 @@ module.exports = async () => {
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	// chooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+	// ChooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 

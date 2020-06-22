@@ -141,11 +141,13 @@
 
 		event.preventDefault()
 
-		console.log(event.target, chooserElement)
+		console.log( event.target, chooserElement )
 
 		// Prevent flickering on Windows
 		if ( event.target === chooserElement ) {
+
 			containerElement.classList.remove( 'dropping' )
+
 		}
 
 	} )

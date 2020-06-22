@@ -295,7 +295,9 @@
 
 		// Prevent flickering on Windows
 		if ( event.target === dragDrop ) {
+
 			dragDrop.classList.remove( 'dropping' )
+
 		}
 
 	} )
