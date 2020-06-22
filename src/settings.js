@@ -55,7 +55,7 @@
 
 		img.alt = name
 		img.draggable = false
-		img.src = window.crossover.path.join( 'static/crosshairs/', file )
+		img.src = file
 
 		if ( current === file ) {
 

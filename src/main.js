@@ -183,7 +183,8 @@ const getImages = ( directory, level ) => {
 
 				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-					const dirpath = directory.replace( crosshairsPath, '' )
+					// Const dirpath = directory.replace( crosshairsPath, '' )
+					const dirpath = directory
 
 					// Filename
 					crosshairs.push( path.join( dirpath, filepath ) )
@@ -494,10 +495,12 @@ app.on( 'ready', () => {
 
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-		console.log(arg)
+		console.log( arg )
+
 		if ( arg && fs.lstatSync( arg ).isFile() ) {
 
 			console.log( `Set custom image: ${arg}` )
+			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
 
 		}

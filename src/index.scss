@@ -146,6 +146,7 @@ body {
 .settings {
 	display: none;
 	padding: 15px 15px 10px 15px;
+	margin: 0 -3px -3px -3px; // Offset .dropping border
 	position: relative;
 	flex-direction: column;
 	&-background {

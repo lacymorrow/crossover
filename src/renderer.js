@@ -19,15 +19,6 @@
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
 
-	// Set development image path
-	if ( !is.development ) {
-
-		window.__static = path
-			.join( __dirname, '/static' )
-			.replace( /\\/g, '\\\\' )
-
-	}
-
 	// Set System Modifier on first load
 	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
 
@@ -84,7 +75,7 @@
 
 		} else {
 
-			crosshairImg.src = path.join( 'static/crosshairs/', crosshair )
+			crosshairImg.src = crosshair
 			crosshairImg.style.display = 'block'
 
 		}
@@ -94,6 +85,19 @@
 	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
 
 		setCrosshair( arg )
+
+	} )
+
+	const setCustomImage = filepath => {
+
+		crosshairImg.src = filepath
+		crosshairImg.style.display = 'block'
+
+	}
+
+	ipcRenderer.on( 'set_custom_image', ( event, arg ) => {
+
+		setCustomImage( arg )
 
 	} )
 
@@ -277,42 +281,36 @@
 
 	} )
 
-	dragDrop.addEventListener( 'dragover', () => {
+	// Drag and drop Custom Image
+	// for drop events to fire, must cancel dragover and dragleave events
+	dragDrop.addEventListener( 'dragover', ( event ) => {
 
+		event.preventDefault()
 		dragDrop.classList.add( 'dropping' )
-		return false
 
 	} )
 
-	dragDrop.addEventListener( 'dragleave', () => {
+	dragDrop.addEventListener( 'dragleave', ( event ) => {
 
+		event.preventDefault()
 		dragDrop.classList.remove( 'dropping' )
-		return false
 
 	} )
 
-	dragDrop.addEventListener( 'dragend', () => {
+	dragDrop.addEventListener( 'dragend', ( event ) => {
 
+		event.preventDefault()
 		dragDrop.classList.remove( 'dropping' )
-		return false
+
 	} )
 
 	dragDrop.addEventListener( 'drop', event => {
 
-		ipcRenderer.send( 'log', 'filepath' )
 		event.preventDefault()
+		dragDrop.classList.remove( 'dropping' )
 
-		// Only allow single file (if multiple)
-
-		// if ( event.dataTransfer.files.length > 1 ) {
-
-		// 	return false
-
-		// }
-
-		const filepath = event.dataTransfer.files[0].path
-		ipcRenderer.send( 'log', filepath )
-		// ipcRenderer.send( 'save_custom_image', filepath )
+		// Send file path to main
+		ipcRenderer.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
 	} )
 
