@@ -1,7 +1,6 @@
 ( () => {
 
 	// Imports
-	const path = require( 'path' )
 	const { ipcRenderer } = require( 'electron' )
 	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
@@ -283,21 +282,21 @@
 
 	// Drag and drop Custom Image
 	// for drop events to fire, must cancel dragover and dragleave events
-	dragDrop.addEventListener( 'dragover', ( event ) => {
+	dragDrop.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
 		dragDrop.classList.add( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'dragleave', ( event ) => {
+	dragDrop.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
 		dragDrop.classList.remove( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'dragend', ( event ) => {
+	dragDrop.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
 		dragDrop.classList.remove( 'dropping' )
