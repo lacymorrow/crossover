@@ -68,7 +68,7 @@ const createMainWindow = async () => {
 		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
-		// AlwaysOnTop: true,
+		AlwaysOnTop: true,
 		frame: false,
 		hasShadow: false,
 		closable: true,
@@ -631,8 +631,8 @@ module.exports = async () => {
 	chooserWindow = await createChildWindow( mainWindow )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	// mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	// chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+	chooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 
