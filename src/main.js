@@ -28,6 +28,15 @@ try {
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
+// Fix for Linux transparency issues
+if ( is.linux ) {
+
+	app.commandLine.appendSwitch('enable-transparent-visuals')
+	app.commandLine.appendSwitch('disable-gpu')
+	app.disableHardwareAcceleration()
+
+}
+
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
 try {
@@ -492,14 +501,24 @@ app.on( 'ready', () => {
 
 	} )
 
-	ipcMain.on( 'open_chooser', ( ..._ ) => {
+	ipcMain.on( 'open_chooser', async ( ..._ ) => {
 
-		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
+		// Don't do anything if locked
+		if ( config.get( 'windowLocked' ) ) {
 
-			chooserWindow.show()
-			globalShortcut.register( 'Escape', hideChooserWindow )
+			return
 
 		}
+
+		if ( !chooserWindow ) {
+
+			chooserWindow = await createChildWindow( mainWindow )
+
+		}
+
+		// Create shortcut to close chooser
+		globalShortcut.register( 'Escape', hideChooserWindow )
+		chooserWindow.show()
 
 	} )
 
