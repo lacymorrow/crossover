@@ -123,7 +123,7 @@
 
 	window.crossover.receive( 'load_crosshairs', data => {
 
-		// console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
+		// Console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
 		loadCrosshairs( data )
 
 	} )
