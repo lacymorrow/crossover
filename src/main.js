@@ -305,6 +305,33 @@ const toggleWindowLock = () => {
 
 }
 
+// Allows dragging and setting options
+const lockWindow = lock => {
+
+	console.log( `Locked: ${lock}` )
+
+	mainWindow.closable = !lock
+	mainWindow.setIgnoreMouseEvents( lock )
+	mainWindow.webContents.send( 'lock_window', lock )
+
+	if ( lock ) {
+
+		mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+	} else {
+
+		// Allow dragging to Window on Mac
+		mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+
+		// Bring window to front
+		mainWindow.show()
+
+	}
+
+	config.set( 'windowLocked', lock )
+
+}
+
 // Switch window type when hiding chooser
 const hideChooserWindow = () => {
 
@@ -315,25 +342,6 @@ const hideChooserWindow = () => {
 	}
 
 	globalShortcut.unregister( 'Escape' )
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-
-}
-
-// Allows dragging and setting options
-const lockWindow = lock => {
-
-	console.log( `Locked: ${lock}` )
-
-	mainWindow.closable = !lock
-	mainWindow.setIgnoreMouseEvents( lock )
-	mainWindow.webContents.send( 'lock_window', lock )
-	if ( !lock ) {
-
-		mainWindow.show()
-
-	}
-
-	config.set( 'windowLocked', lock )
 
 }
 
@@ -488,7 +496,6 @@ app.on( 'ready', () => {
 
 		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
 
-			mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 			chooserWindow.show()
 			globalShortcut.register( 'Escape', hideChooserWindow )
 

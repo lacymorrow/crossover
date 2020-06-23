@@ -123,7 +123,7 @@
 
 	window.crossover.receive( 'load_crosshairs', data => {
 
-		console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
+		// console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
 		loadCrosshairs( data )
 
 	} )
@@ -140,8 +140,6 @@
 	chooserElement.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-
-		console.log( event.target, chooserElement )
 
 		// Prevent flickering on Windows
 		if ( event.target === chooserElement ) {

@@ -470,7 +470,7 @@ input[type='range'] {
 
 	.group-label {
 		display: block;
-		padding: 0 1em;
+		padding: 0 0.5em;
 		font-size: 20px;
 		color: #2466d8;
 		margin-bottom: 0;
@@ -478,20 +478,20 @@ input[type='range'] {
 
 	&>div {
 		width: 100%;
-		padding: 0 1em 0;
+		padding: 0 0.5em 0;
+		margin-left: -0.25em;
+		margin-right: -0.25em;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: center;
-		margin-left: -0.5em;
-		margin-right: -0.5em;
 	}
 
 	img {
 		cursor: pointer;
 		box-sizing: content-box;
-		margin: 1em;
-		padding: 1em;
+		margin: 0.5em;
+		padding: 0.5em;
 		height: 64px;
 		border: 1px	dashed #ddd;
 		border-radius: 3px;
