@@ -4,7 +4,7 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
-const { centerWindow, is, showAboutWindow } = require( 'electron-util' )
+const { is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -31,9 +31,16 @@ app.setAppUserModelId( 'com.lacymorrow.crossover' )
 // Fix for Linux transparency issues
 if ( is.linux ) {
 
-	app.commandLine.appendSwitch('enable-transparent-visuals')
-	app.commandLine.appendSwitch('disable-gpu')
+	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+	app.commandLine.appendSwitch( 'disable-gpu' )
 	app.disableHardwareAcceleration()
+
+}
+
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
+
+	app.quit()
 
 }
 
@@ -265,27 +272,27 @@ const setDockVisible = visible => {
 
 const centerApp = () => {
 
-	// MainWindow.hide()
-	// mainWindow.center()
-	// const bounds = mainWindow.getBounds()
+	mainWindow.hide()
+	mainWindow.center()
+	const bounds = mainWindow.getBounds()
 
-	// // Recenter bounds because electron isn't perfect
-	// if ( is.macos ) {
+	// Recenter bounds because electron isn't perfect
+	if ( is.macos ) {
 
-	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
 
-	// } else {
+	} else {
 
-	// 	mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
+		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
 
-	// }
+	}
 
-	// mainWindow.show()
+	mainWindow.show()
 
-	centerWindow( {
-		window: mainWindow,
-		animated: true
-	} )
+	// centerWindow( {
+	// 	window: mainWindow,
+	// 	animated: true
+	// } )
 
 	saveBounds()
 
@@ -452,47 +459,7 @@ const setupApp = async () => {
 
 }
 
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
-
-	app.quit()
-
-}
-
-// Opening 2nd instance focuses app
-app.on( 'second-instance', () => {
-
-	if ( mainWindow ) {
-
-		if ( mainWindow.isMinimized() ) {
-
-			mainWindow.restore()
-
-		}
-
-		mainWindow.show()
-
-	}
-
-} )
-
-app.on( 'window-all-closed', () => {
-
-	app.quit()
-
-} )
-
-app.on( 'activate', async () => {
-
-	if ( !mainWindow ) {
-
-		mainWindow = await createMainWindow()
-
-	}
-
-} )
-
-app.on( 'ready', () => {
+const registerComms = () => {
 
 	/* IP Communication */
 	ipcMain.on( 'log', ( event, arg ) => {
@@ -649,7 +616,43 @@ app.on( 'ready', () => {
 
 	} )
 
+}
+
+// Opening 2nd instance focuses app
+app.on( 'second-instance', () => {
+
+	if ( mainWindow ) {
+
+		if ( mainWindow.isMinimized() ) {
+
+			mainWindow.restore()
+
+		}
+
+		mainWindow.show()
+
+	}
+
 } )
+
+app.on( 'window-all-closed', () => {
+
+	app.quit()
+
+} )
+
+app.on( 'activate', async () => {
+
+	if ( !mainWindow ) {
+
+		mainWindow = await createMainWindow()
+
+	}
+
+} )
+
+// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+app.on( 'ready', () => setTimeout( registerComms, 400 ) )
 
 module.exports = async () => {
 
