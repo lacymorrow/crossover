@@ -289,7 +289,7 @@ const centerApp = () => {
 
 	mainWindow.show()
 
-	// centerWindow( {
+	// CenterWindow( {
 	// 	window: mainWindow,
 	// 	animated: true
 	// } )
