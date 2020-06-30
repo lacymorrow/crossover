@@ -2,7 +2,7 @@
 const Store = require( 'electron-store' )
 
 const defaults = {
-	crosshair: 'Actual/leupold-dot.png',
+	crosshair: 'static/crosshairs/Actual/leupold-dot.png',
 	color: '#FFF83B',
 	appOpacity: 80,
 	opacity: 80,
