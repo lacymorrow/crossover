@@ -1,7 +1,6 @@
 ( () => {
 
 	// Imports
-	const path = require( 'path' )
 	const { ipcRenderer } = require( 'electron' )
 	const { is } = require( 'electron-util' )
 	const Pickr = require( '@simonwep/pickr' )
@@ -9,6 +8,7 @@
 
 	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
+	const dragDrop = document.querySelector( '#drag-file' )
 	const crosshairElement = document.querySelector( '#crosshair' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
@@ -17,15 +17,6 @@
 	const sizeInput = document.querySelector( '#setting-size' )
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
-
-	// Set development image path
-	if ( !is.development ) {
-
-		window.__static = path
-			.join( __dirname, '/static' )
-			.replace( /\\/g, '\\\\' )
-
-	}
 
 	// Set System Modifier on first load
 	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
@@ -83,7 +74,7 @@
 
 		} else {
 
-			crosshairImg.src = path.join( 'static/crosshairs/', crosshair )
+			crosshairImg.src = crosshair
 			crosshairImg.style.display = 'block'
 
 		}
@@ -93,6 +84,19 @@
 	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
 
 		setCrosshair( arg )
+
+	} )
+
+	const setCustomImage = filepath => {
+
+		crosshairImg.src = filepath
+		crosshairImg.style.display = 'block'
+
+	}
+
+	ipcRenderer.on( 'set_custom_image', ( event, arg ) => {
+
+		setCustomImage( arg )
 
 	} )
 
@@ -273,6 +277,45 @@
 
 		// Send open request with current crosshair
 		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+
+	} )
+
+	// Drag and drop Custom Image
+	// for drop events to fire, must cancel dragover and dragleave events
+	dragDrop.addEventListener( 'dragover', event => {
+
+		event.preventDefault()
+		dragDrop.classList.add( 'dropping' )
+
+	} )
+
+	dragDrop.addEventListener( 'dragleave', event => {
+
+		event.preventDefault()
+
+		// Prevent flickering on Windows
+		if ( event.target === dragDrop ) {
+
+			dragDrop.classList.remove( 'dropping' )
+
+		}
+
+	} )
+
+	dragDrop.addEventListener( 'dragend', event => {
+
+		event.preventDefault()
+		dragDrop.classList.remove( 'dropping' )
+
+	} )
+
+	dragDrop.addEventListener( 'drop', event => {
+
+		event.preventDefault()
+		dragDrop.classList.remove( 'dropping' )
+
+		// Send file path to main
+		ipcRenderer.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
 	} )
 

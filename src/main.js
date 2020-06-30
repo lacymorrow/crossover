@@ -8,7 +8,7 @@ const { is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults } = require( './config' )
+const { config, defaults, supportedImageFileTypes } = require( './config' )
 const menu = require( './menu' )
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -27,6 +27,22 @@ try {
 
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
+
+// Fix for Linux transparency issues
+if ( is.linux ) {
+
+	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+	app.commandLine.appendSwitch( 'disable-gpu' )
+	app.disableHardwareAcceleration()
+
+}
+
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
+
+	app.quit()
+
+}
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -123,12 +139,15 @@ const createChildWindow = async _ => {
 		show: false,
 		type: 'toolbar',
 		frame: false,
-		hasShadow: false,
+		// HasShadow: false,
+		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
-		maximizable: false,
-		minimizable: false,
+		// Maximizable: false,
+		// minimizable: false,
 		transparent: true,
 		nodeIntegration: false, // Is default value after Electron v5
+		width: 600,
+		height: 500,
 		webPreferences: {
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
@@ -183,10 +202,8 @@ const getImages = ( directory, level ) => {
 
 				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-					const dirpath = directory.replace( crosshairsPath, '' )
-
 					// Filename
-					crosshairs.push( path.join( dirpath, filepath ) )
+					crosshairs.push( path.join( directory, filepath ) )
 
 				}
 
@@ -253,7 +270,7 @@ const setDockVisible = visible => {
 
 }
 
-const centerWindow = () => {
+const centerApp = () => {
 
 	mainWindow.hide()
 	mainWindow.center()
@@ -271,6 +288,12 @@ const centerWindow = () => {
 	}
 
 	mainWindow.show()
+
+	// CenterWindow( {
+	// 	window: mainWindow,
+	// 	animated: true
+	// } )
+
 	saveBounds()
 
 }
@@ -306,13 +329,35 @@ const lockWindow = lock => {
 	mainWindow.closable = !lock
 	mainWindow.setIgnoreMouseEvents( lock )
 	mainWindow.webContents.send( 'lock_window', lock )
-	if ( !lock ) {
 
+	if ( lock ) {
+
+		mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+	} else {
+
+		// Allow dragging to Window on Mac
+		mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+
+		// Bring window to front
 		mainWindow.show()
 
 	}
 
 	config.set( 'windowLocked', lock )
+
+}
+
+// Switch window type when hiding chooser
+const hideChooserWindow = () => {
+
+	if ( chooserWindow ) {
+
+		chooserWindow.hide()
+
+	}
+
+	globalShortcut.unregister( 'Escape' )
 
 }
 
@@ -376,7 +421,7 @@ const resetSettings = () => {
 
 	}
 
-	centerWindow()
+	centerApp()
 	setupApp()
 
 }
@@ -414,62 +459,33 @@ const setupApp = async () => {
 
 }
 
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
-
-	app.quit()
-
-}
-
-// Opening 2nd instance focuses app
-app.on( 'second-instance', () => {
-
-	if ( mainWindow ) {
-
-		if ( mainWindow.isMinimized() ) {
-
-			mainWindow.restore()
-
-		}
-
-		mainWindow.show()
-
-	}
-
-} )
-
-app.on( 'window-all-closed', () => {
-
-	app.quit()
-
-} )
-
-app.on( 'activate', async () => {
-
-	if ( !mainWindow ) {
-
-		mainWindow = await createMainWindow()
-
-	}
-
-} )
-
-app.on( 'ready', () => {
+const registerComms = () => {
 
 	/* IP Communication */
-	ipcMain.on( 'open_chooser', ( ..._ ) => {
+	ipcMain.on( 'log', ( event, arg ) => {
 
-		if ( chooserWindow && !config.get( 'windowLocked' ) ) {
+		console.log( arg )
 
-			chooserWindow.show()
-			globalShortcut.register( 'Escape', () => {
+	} )
 
-				chooserWindow.hide()
-				globalShortcut.unregister( 'Escape' )
+	ipcMain.on( 'open_chooser', async ( ..._ ) => {
 
-			} )
+		// Don't do anything if locked
+		if ( config.get( 'windowLocked' ) ) {
+
+			return
 
 		}
+
+		if ( !chooserWindow ) {
+
+			chooserWindow = await createChildWindow( mainWindow )
+
+		}
+
+		// Create shortcut to close chooser
+		globalShortcut.register( 'Escape', hideChooserWindow )
+		chooserWindow.show()
 
 	} )
 
@@ -480,6 +496,20 @@ app.on( 'ready', () => {
 
 	} )
 
+	ipcMain.on( 'save_custom_image', ( event, arg ) => {
+
+		// Is it a file and does it have a supported extension?
+		if ( fs.lstatSync( arg ).isFile() && supportedImageFileTypes.includes( path.extname( arg ) ) ) {
+
+			console.log( `Set custom image: ${arg}` )
+			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
+			config.set( 'crosshair', arg )
+			hideChooserWindow()
+
+		}
+
+	} )
+
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
 		if ( arg ) {
@@ -487,11 +517,7 @@ app.on( 'ready', () => {
 			console.log( `Set crosshair: ${arg}` )
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-			if ( chooserWindow ) {
-
-				chooserWindow.hide()
-
-			}
+			hideChooserWindow()
 
 		} else {
 
@@ -525,7 +551,7 @@ app.on( 'ready', () => {
 	ipcMain.on( 'center_window', () => {
 
 		console.log( 'Center window' )
-		centerWindow()
+		centerApp()
 
 	} )
 
@@ -590,7 +616,43 @@ app.on( 'ready', () => {
 
 	} )
 
+}
+
+// Opening 2nd instance focuses app
+app.on( 'second-instance', () => {
+
+	if ( mainWindow ) {
+
+		if ( mainWindow.isMinimized() ) {
+
+			mainWindow.restore()
+
+		}
+
+		mainWindow.show()
+
+	}
+
 } )
+
+app.on( 'window-all-closed', () => {
+
+	app.quit()
+
+} )
+
+app.on( 'activate', async () => {
+
+	if ( !mainWindow ) {
+
+		mainWindow = await createMainWindow()
+
+	}
+
+} )
+
+// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+app.on( 'ready', () => setTimeout( registerComms, 400 ) )
 
 module.exports = async () => {
 
@@ -598,9 +660,10 @@ module.exports = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	chooserWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// ChooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 

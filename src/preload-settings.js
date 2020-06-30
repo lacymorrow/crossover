@@ -11,7 +11,7 @@ window.crossover = {
 	send: ( channel, data ) => {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'save_crosshair', 'close_chooser', 'get_crosshairs' ] )
+		const validChannels = new Set( [ 'log', 'save_crosshair', 'save_custom_image', 'close_chooser', 'get_crosshairs' ] )
 
 		if ( validChannels.has( channel ) ) {
 
