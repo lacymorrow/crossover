@@ -93,11 +93,12 @@
 	},
 	"np": {
 		"publish": false,
-		"releaseDraft": false
+		"releaseDraft": true
 	},
 	"build": {
 		"appId": "com.lacymorrow.crossover",
 		"productName": "CrossOver",
+		"artifactName": "${productName}-${version}-${arch}.${ext}",
 		"copyright": "Copyright © Lacy Morrow",
 		"publish": "github",
 		"mac": {
@@ -139,6 +140,10 @@
 			]
 		},
 		"win": {
+			"archs": [
+				"x86",
+				"x64"
+			],
 			"target": [
 				"nsis",
 				"portable"
