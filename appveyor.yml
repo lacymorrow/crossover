@@ -30,5 +30,7 @@ test_script:
   - cmd: node --version
   - cmd: npm --version
   - cmd: npm test
-#  - cmd: if %platform%==x64 npx electron-builder --windows
+  - cmd: npx electron-builder --windows
+  # - cmd: if %platform%==x64 npx electron-builder --windows
+
 
