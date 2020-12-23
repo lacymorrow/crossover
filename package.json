@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.3.14",
+	"version": "0.3.15",
 	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
