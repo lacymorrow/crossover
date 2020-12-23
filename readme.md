@@ -173,3 +173,11 @@ Due to limitations in chrome we are unable to generate sub-pixel graphics, altho
 
 Black window appears behind CrossOver. CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - [https://github.com/lacymorrow/crossover/issues/5]
 
+
+## Credits
+
+An extra big thanks to the crosshair providers, as this wouldn't be possible without them:
+
+- Reddit user [/u/IrisFlame](https://www.reddit.com/user/irisflame/)
+
+- [Kenney.nl Crosshair Pack](https://kenney.nl/assets/crosshair-pack) (_donate to him, not me_)
