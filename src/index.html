@@ -13,7 +13,17 @@
 			<div class="crosshair-wrapper">
 				<div id="crosshair">
 					<img id="crosshairImg" alt="Crosshair" src="static/crosshairs/Actual/leupold-dot.png" draggable="false" onError="this.onerror=null;this.src='static/crosshairs/Actual/leupold-dot.png';" />
-					<div class="sight dot">&nbsp;</div>
+					<div class="sight dot">
+
+						<svg id="cross" viewBox="0 0 100 100">
+						    <rect y="49.5" width="16" height="1" x="42"></rect>
+						    <rect x="49.5" width="1" height="16" y="42"></rect>
+						</svg>
+
+						<svg id="dot" viewBox="0 0 100 100">
+							<circle r="2" cy="50%" cx="50%"></circle>
+						</svg>
+					</div>
 				</div>
 				<div class="drag-me"></div>
 			</div>

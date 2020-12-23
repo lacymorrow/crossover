@@ -201,49 +201,31 @@ label {
 .sight {
 	--sight-background: #ccc;
 	position: absolute;
-	display: none;
-	top: 50%;
-	left: 50%;
 	z-index: 1;
+
+	svg {
+		display: none;
+		width: 100%;
+		height: 100%;
+
+		* {
+			fill: var(--sight-background);
+		}
+	}
+
+	// Selectively show/hide
 	&.dot {
-		width: 5%;
-		height: 5%;
-		transform: translate(-50%, -50%);
-		display: block;
-		border-radius: 50%;
-		background-color: var(--sight-background);
+		#dot {
+			display: block;
+		}
 	}
+
 	&.cross {
-		display: inline-block;
-		width: 20%;
-		height: 20%;
-		margin-left: -10%;
-		margin-top: -10%;
-		&::before {
-			position: absolute;
-			top: 0;
-			left: 50%;
-			margin-left: 0;
+		#cross {
 			display: block;
-			background: inherit;
-			content: '';
-			height: 100%;
-			width: 1px;
-			background-color: var(--sight-background);
-		}
-		&::after {
-			position: absolute;
-			top: 50%;
-			left: 0;
-			margin-top: 0;
-			display: block;
-			background: inherit;
-			content: '';
-			height: 1px;
-			width: 100%;
-			background-color: var(--sight-background);
 		}
 	}
+
 }
 
 // Color picker

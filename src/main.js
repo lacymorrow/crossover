@@ -2,13 +2,14 @@
 const fs = require( 'fs' )
 
 const path = require( 'path' )
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require( 'electron' )
+const electron = require( 'electron' )
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
 const { is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults, supportedImageFileTypes } = require( './config' )
+const { config, defaults, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -276,6 +277,7 @@ const centerApp = () => {
 	mainWindow.center()
 	const bounds = mainWindow.getBounds()
 
+	// This is my way
 	// Recenter bounds because electron isn't perfect
 	if ( is.macos ) {
 
@@ -289,6 +291,7 @@ const centerApp = () => {
 
 	mainWindow.show()
 
+	// This is the Electron way
 	// CenterWindow( {
 	// 	window: mainWindow,
 	// 	animated: true
@@ -499,7 +502,7 @@ const registerComms = () => {
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
 		// Is it a file and does it have a supported extension?
-		if ( fs.lstatSync( arg ).isFile() && supportedImageFileTypes.includes( path.extname( arg ) ) ) {
+		if ( fs.lstatSync( arg ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( arg ) ) ) {
 
 			console.log( `Set custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
@@ -570,12 +573,27 @@ const registerComms = () => {
 
 	} )
 
+	// Center CrossOver
+	globalShortcut.register( 'Control+Shift+Alt+C', () => {
+
+		centerApp()
+
+	} )
+
 	// Hide CrossOver
 	globalShortcut.register( 'Control+Shift+Alt+E', () => {
 
 		hideWindow()
 
 	} )
+
+	// // Move CrossOver to next monitor - this code actually fullscreens too...
+	// globalShortcut.register( 'Control+Shift+Alt+M', () => {
+
+	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
+	// 	mainWindow.setBounds(currentScreen.workArea)
+
+	// } )
 
 	// Reset CrossOver
 	globalShortcut.register( 'Control+Shift+Alt+R', () => {

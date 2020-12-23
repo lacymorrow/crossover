@@ -122,7 +122,12 @@
 		"linux": {
 			"target": [
 				"AppImage",
-				"deb"
+				"apk",
+				"deb",
+				"freebsd",
+				"pacman",
+				"rpm",
+				"snap"
 			],
 			"category": "Game;Shooter"
 		},
