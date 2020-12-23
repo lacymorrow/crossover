@@ -25,14 +25,13 @@ const CENTER_APP_OFFFSET_Y = 200
 
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
 
-
 module.exports = {
 	config,
 
-	defaults: defaults,
+	defaults,
 
 	CENTER_APP_OFFFSET_X,
 	CENTER_APP_OFFFSET_Y,
 
-	SUPPORTED_IMAGE_FILE_TYPES,
+	SUPPORTED_IMAGE_FILE_TYPES
 }
