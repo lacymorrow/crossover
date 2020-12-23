@@ -140,11 +140,8 @@
 			]
 		},
 		"win": {
-			"archs": [
-				"x86",
-				"x64"
-			],
 			"target": [
+
 				"nsis",
 				"portable"
 			],
