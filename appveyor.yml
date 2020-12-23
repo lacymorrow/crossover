@@ -1,3 +1,5 @@
+image: Visual Studio 2017
+
 matrix:
   fast_finish: true
 
@@ -21,15 +23,16 @@ environment:
 
 cache:
   - node_modules -> package.json
+  - '%USERPROFILE%\.electron'
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm install
+  - yarn
 
-test_script:
+build_script:
   - cmd: node --version
   - cmd: npm --version
-  - cmd: npm test
+  - cmd: yarn test
   - cmd: npx electron-builder --windows
   # - cmd: if %platform%==x64 npx electron-builder --windows
 
