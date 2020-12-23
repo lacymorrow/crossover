@@ -2,7 +2,8 @@
 const fs = require( 'fs' )
 
 const path = require( 'path' )
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = require( 'electron' )
+const electron = require( 'electron' )
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
 const { is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
@@ -585,6 +586,14 @@ const registerComms = () => {
 		hideWindow()
 
 	} )
+
+	// // Move CrossOver to next monitor - this code actually fullscreens too...
+	// globalShortcut.register( 'Control+Shift+Alt+M', () => {
+
+	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
+	// 	mainWindow.setBounds(currentScreen.workArea)
+
+	// } )
 
 	// Reset CrossOver
 	globalShortcut.register( 'Control+Shift+Alt+R', () => {

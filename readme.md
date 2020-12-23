@@ -16,7 +16,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
-- Choose a crosshair from over 50 sights
+- Choose a crosshair from over 50 included
 - Click and drag the grip icon to move Crossover around
 - Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd> and arrow keys for fine-tuning
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
@@ -95,7 +95,9 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 Click and drag the crosshair to anywhere on any screen.
 
-Double-click the drag icon to center the crosshair on the current display.
+Click 'Choose Crosshair' to select from tons of preloaded crosshairs.
+
+Drag an image to the window to use your own custom crosshair.
 
 To quit in Windows, toggle the app unlocked and right-click > `Close`.
 
@@ -107,10 +109,12 @@ Description            | Keys
 -----------------------| -----------------------
 Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 Quickly hide/show the application                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>E</kbd>
+Center the crosshair window                                | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>C</kbd>
 Reset all settings and center the window                   | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
-Display the "About" window details                        | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
+Display the "About" window details                         | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
+(_MacOS only_) Double-click the drag icon or to center the crosshair on the current display.
 
 <p align="center">
 	<br />
@@ -167,5 +171,5 @@ Due to limitations in chrome we are unable to generate sub-pixel graphics, altho
 
 #### Transparency not working
 
-CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - [https://github.com/lacymorrow/crossover/issues/5]
+Black window appears behind CrossOver. CrossOver will not hide settings when locked. Crosshair loses opacity (becomes opaque). _Linux (debian)_ - [https://github.com/lacymorrow/crossover/issues/5]
 
