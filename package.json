@@ -126,7 +126,6 @@
 				"AppImage",
 				"apk",
 				"deb",
-				"rpm",
 				"freebsd",
 				"pacman",
 				"snap"
@@ -149,13 +148,13 @@
 			"verifyUpdateCodeSignature": false
 		},
 		"portable": {
-	      "unicode": false,
-	      "artifactName": "${productName}-${version}.${ext}"
-	    },
-	    "nsis": {
-          "unicode": false,
-          "artifactName": "${productName}-Setup-${version}.${ext}"
-        }
+			"unicode": false,
+			"artifactName": "${productName}-${version}.${ext}"
+		},
+		"nsis": {
+			"unicode": false,
+			"artifactName": "${productName}-Setup-${version}.${ext}"
+		}
 	},
 	"husky": {
 		"hooks": {
