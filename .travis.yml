@@ -16,29 +16,22 @@ matrix:
       language: node_js
       node_js: '12'
 
-  cache:
-    directories:
-      - node_modules
-      - $HOME/.cache/electron
-      - $HOME/.cache/electron-builder
+cache:
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
 
-  script:
-    - |
-      if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        export DISPLAY=:99.0
-        sh -e /etc/init.d/xvfb start
-        sleep 3
-      fi
+script:
+  - node --version
+  - npm --version
+  - npm install
+  - echo 'yes'
 
-    - node --version
-    - npm --version
-    - npm install
-    - echo 'yes'
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
 
-  before_cache:
-    - rm -rf $HOME/.cache/electron-builder/wine
-
-  notifications:
-    email:
-      on_success: never
-      on_failure: change
+notifications:
+  email:
+    on_success: never
+    on_failure: change
