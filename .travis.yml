@@ -10,7 +10,8 @@ matrix:
 
     - os: linux
       services: xvfb
-      language: generic
+      language: node_js
+      node_js: '12'
 
     - os: windows
       language: node_js
