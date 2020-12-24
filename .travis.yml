@@ -16,6 +16,11 @@ matrix:
     - os: windows
       language: node_js
       node_js: '12'
+      script:
+        - node --version
+        - npm --version
+        - npm install
+        - npm run build
 
 cache:
   directories:
@@ -28,6 +33,8 @@ script:
   - npm --version
   - npm install
   - npm test
+
+
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
