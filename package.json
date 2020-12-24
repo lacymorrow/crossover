@@ -149,11 +149,11 @@
 		},
 		"portable": {
 			"unicode": false,
-			"artifactName": "${productName}-${version}.${ext}"
+			"artifactName": "${productName}-Portable-${version}.${ext}"
 		},
 		"nsis": {
 			"unicode": false,
-			"artifactName": "${productName}-Setup-${version}.${ext}"
+			"artifactName": "${productName}-${version}.${ext}"
 		}
 	},
 	"husky": {
