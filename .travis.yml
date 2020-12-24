@@ -13,10 +13,10 @@ matrix:
             - rpmbuild
       script:
         - node --version
-        - npm --version
-        - npm install
-        - npm test
-        - npm run build
+        - yarn --version
+        - yarn install
+        - yarn test
+        - yarn run build
 
     - os: linux
       services: xvfb
@@ -24,18 +24,19 @@ matrix:
       node_js: '12'
       script:
         - node --version
-        - npm --version
-        - npm install
-        - npm test
+        - yarn --version
+        - yarn install
+        - yarn test
 
     - os: windows
       language: node_js
       node_js: '12'
       script:
         - node --version
-        - npm --version
-        - npm install
-        - npm run build:windows
+        - yarn --version
+        - yarn install
+        - yarn test
+    #     - npm run build:windows
 
 cache:
   directories:
