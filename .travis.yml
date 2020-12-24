@@ -10,7 +10,7 @@ matrix:
       addons:
         homebrew:
             packages:
-              - rpmbuild
+            - rpmbuild
       script:
         - node --version
         - npm --version
