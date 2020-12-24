@@ -28,17 +28,18 @@ matrix:
         - yarn install
         - yarn test
 
-    - os: windows
-      language: node_js
-      node_js: '12'
-      script:
-        - node --version
-        - yarn --version
-        - yarn install
-        - yarn test
+    # - os: windows
+    #   language: node_js
+    #   node_js: '12'
+    #   script:
+    #     - node --version
+    #     - yarn --version
+    #     - yarn install
+    #     - yarn test  # Travis CI Windows doesn't support a GUI
     #     - npm run build:windows
 
 cache:
+  yarn: true
   directories:
     - node_modules
     - $HOME/.cache/electron
