@@ -9,7 +9,7 @@ matrix:
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       homebrew:
           packages:
-          - rpmbuild
+            - rpmbuild
       script:
         - node --version
         - npm --version
