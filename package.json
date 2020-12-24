@@ -141,7 +141,6 @@
 		},
 		"win": {
 			"target": [
-				"msi",
 				"nsis",
 				"portable"
 			],
