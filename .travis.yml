@@ -27,8 +27,7 @@ script:
   - node --version
   - npm --version
   - npm install
-  - echo 'yes'
-
+  - npm test
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
