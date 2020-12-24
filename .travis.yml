@@ -7,11 +7,22 @@ matrix:
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+      script:
+        - node --version
+        - npm --version
+        - npm install
+        - npm test
+        - npm run build
 
     - os: linux
       services: xvfb
       language: node_js
       node_js: '12'
+      script:
+        - node --version
+        - npm --version
+        - npm install
+        - npm test
 
     - os: windows
       language: node_js
@@ -28,12 +39,7 @@ cache:
     - $HOME/.cache/electron
     - $HOME/.cache/electron-builder
 
-script:
-  - node --version
-  - npm --version
-  - npm install
-  - npm test
-  - npm run build
+
 
 
 before_cache:
