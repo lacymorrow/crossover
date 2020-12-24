@@ -93,7 +93,7 @@
 		"semicolon": false
 	},
 	"np": {
-		"publish": true,
+		"publish": false,
 		"releaseDraft": true
 	},
 	"build": {
