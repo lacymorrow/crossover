@@ -25,7 +25,7 @@
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
-		"build": "rm -rf dist && electron-builder --macos --linux && npm run sh:replacespaces && npm run sh:copyexe",
+		"build": "rm -rf dist && electron-builder --macos --linux",
 		"build:windows": "electron-builder --win --ia32 --x64",
 		"release": "np"
 	},
