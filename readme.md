@@ -20,10 +20,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Click and drag the grip icon to move Crossover around
 - Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd> and arrow keys for fine-tuning
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
-- <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset and recenter
 
-
-## Features
+# Features
 
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -46,46 +44,46 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ---
 
-## Install
+# Install
 
 *macOS 10.10+, Linux, and Windows 7+ are supported.*
 
 #### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases/latest)
 
-**Windows**
+##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
+
+##### Windows
 
 [**Download**](https://github.com/user/repo/releases/latest/download/CrossOver.exe
 ) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
-
-**macOS**
-
-[**Download**](https://github.com/user/repo/releases/latest
-) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
-
-**Linux**
-
-[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
-
-*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
-
-
-##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
-
-###### Windows
 
 > Windows protected your PC.
 
 - Click `More Info`
 - Click `Run Anyway`
 
-###### Mac
+
+##### macOS
+
+[**Download**](https://github.com/user/repo/releases/latest
+) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
+
 
 > "CrossOver" cannot be opened because the developer cannot be verified.
 
 - Locate the `CrossOver` app
 - Hold Control while you click the app icon, then choose Open from the shortcut menu
 
+
+##### Linux
+
+[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+
+*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
+
+
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
+
 
 ---
 
@@ -93,15 +91,13 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 > ❌ marks the spot...
 
-Click and drag the crosshair to anywhere on any screen.
+** To move: ** Click and drag the crosshair to anywhere on any screen.
 
-Click 'Choose Crosshair' to select from tons of preloaded crosshairs.
+** To change the reticle: ** Click 'Choose Crosshair' to select from tons of preloaded crosshairs.
 
-Drag an image to the window to use your own custom crosshair.
+** To customize the sight: ** Choose between a dot cross or none. Click on the color pallate to change colors
 
-To quit in Windows, toggle the app unlocked and right-click > `Close`.
-
-###### On a Mac, the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
+** To use your own: ** Drag an image to the window to use your own custom crosshair.
 
 #### Keyboard Shortcuts
 
@@ -114,7 +110,12 @@ Reset all settings and center the window                   | <kbd>Control</kbd>-
 Display the "About" window details                         | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
-(_MacOS only_) Double-click the drag icon or to center the crosshair on the current display.
+###### (_MacOS_) The <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
+
+###### (_MacOS_) Double-click the drag icon or to center the crosshair on the current display.
+
+###### (_Windows_) To quit in Windows, toggle the app unlocked and right-click > `Close`.
+
 
 <p align="center">
 	<br />
