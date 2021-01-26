@@ -5,7 +5,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { is, showAboutWindow } = require( 'electron-util' )
+const { appLaunchTimestamp, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -410,7 +410,7 @@ const aboutWindow = () => {
 		icon: path.join( __static, 'Icon.png' ),
 		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text:
-			'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.'
+			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && appLaunchTimestamp + '| ' + debugInfo()}`
 	} )
 
 }
