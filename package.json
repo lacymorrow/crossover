@@ -44,6 +44,7 @@
 		"electron-builder": "^22.9.1",
 		"electron-builder-squirrel-windows": "^22.9.1",
 		"electron-reloader": "^1.2.0",
+		"eslint-config-xo": "^0.34.0",
 		"husky": "^4.2.5",
 		"np": "^7.2.0",
 		"sass": "^1.26.5",

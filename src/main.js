@@ -1,11 +1,15 @@
 'use strict'
+
+// GetWindowBoundsCentered
+// centerWindow
+
 const fs = require( 'fs' )
 
 const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { appLaunchTimestamp, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
+const { appLaunchTimestamp, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -291,14 +295,14 @@ const centerApp = () => {
 
 	}
 
-	mainWindow.show()
-
-	// This is the Electron way
+	// This is the Sindre way
 	// CenterWindow( {
 	// 	window: mainWindow,
 	// 	animated: true
 	// } )
 
+	mainWindow.show()
+	// Save game
 	saveBounds()
 
 }

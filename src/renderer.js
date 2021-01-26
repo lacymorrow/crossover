@@ -1,8 +1,9 @@
+/* global feather, Pickr */
+
 ( () => {
 
 	// DOM elements
 	const centerer = document.querySelector( '.center-me' )
-	const dragger = document.querySelector( '.drag-me' )
 	const dragDrop = document.querySelector( '#drag-file' )
 	const crosshairElement = document.querySelector( '#crosshair' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
@@ -17,8 +18,11 @@
 	systemModifier.textContent = window.crossover.isMacOs ? 'OPTION' : 'ALT'
 
 	// Render icons
-	feather.replace()
+	if ( feather ) {
 
+		feather.replace()
+
+	}
 
 	// Create color picker
 	const pickr = Pickr.create( {
@@ -260,6 +264,7 @@
 
 	// Center window on double click
 	centerer.addEventListener( 'dblclick', () => {
+
 		window.crossover.send( 'center_window' )
 
 	} )
