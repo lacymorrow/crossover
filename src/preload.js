@@ -46,7 +46,6 @@ if ( !process.env.NODE_ENV === 'test' ) {
    * @see https://www.electronjs.org/docs/api/context-bridge
    */
 	contextBridge.exposeInMainWorld( 'crossover', api )
-	console.log('expose')
 
 } else {
 
@@ -82,5 +81,7 @@ if ( !process.env.NODE_ENV === 'test' ) {
 	window.electronRequire = require
 
 	window.crossover = api
+
+	window.testing = true
 
 }
