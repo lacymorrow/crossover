@@ -24,11 +24,11 @@ debug( {
 	devToolsMode: 'undocked'
 } )
 
-try {
+// try {
 
-	require( 'electron-reloader' )( module )
+// 	require( 'electron-reloader' )( module )
 
-} catch {}
+// } catch {}
 
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
@@ -73,11 +73,12 @@ let mainWindow
 let chooserWindow
 let windowHidden = false // Maintain hidden state
 
+// Test settings for Spectron https://github.com/electron-userland/spectron/issues/693
+const TESTING = process.env.NODE_ENV === 'test';
+console.log(TESTING)
+
 // __static path
-const __static =
-	process.env.NODE_ENV === 'development' ?
-		'static' :
-		path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
+const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
@@ -103,9 +104,9 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
-			contextIsolation: true,
-			enableRemoteModule: true,
-			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
+			contextIsolation: !TESTING,
+			enableRemoteModule: TESTING,
+			nodeIntegration: TESTING,
 			preload: path.join( __dirname, 'preload.js' )
 
 		}
@@ -153,9 +154,9 @@ const createChildWindow = async _ => {
 		width: 600,
 		height: 500,
 		webPreferences: {
-			nodeIntegration: false, // Is default value after Electron v5
 			contextIsolation: true, // Protect against prototype pollution
 			enableRemoteModule: false, // Turn off remote
+			nodeIntegration: false, // Is default value after Electron v5
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
 	} )
@@ -414,9 +415,9 @@ const aboutWindow = () => {
 
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
-		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow  ${TESTING && 'Testing'} ${is.development && ' | ' + debugInfo()}`,
 		text:
-			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && appLaunchTimestamp + '| ' + debugInfo()}`
+			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.`
 	} )
 
 }
