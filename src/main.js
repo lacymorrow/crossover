@@ -99,11 +99,11 @@ const createMainWindow = async () => {
 		width: 200,
 		height: 350,
 		webPreferences: {
-			nodeIntegration: true // We don't absolutely need this, but renderer require's some things
+			contextIsolation: true,
+			enableRemoteModule: true,
+			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
+			preload: path.join( __dirname, 'preload.js' )
 
-			// preload: path.join( __dirname, 'preload.js' )
-
-			// Sandbox: true,
 
 		}
 	} )
@@ -150,6 +150,9 @@ const createChildWindow = async _ => {
 		width: 600,
 		height: 500,
 		webPreferences: {
+			nodeIntegration: false, // is default value after Electron v5
+			contextIsolation: true, // protect against prototype pollution
+			enableRemoteModule: false, // turn off remote
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
 	} )

@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"ava": "^3.8.2",
-		"electron": "^9.4.1",
+		"electron": "^11.2.1",
 		"electron-builder": "^22.9.1",
 		"electron-builder-squirrel-windows": "^22.9.1",
 		"electron-reloader": "^1.2.0",

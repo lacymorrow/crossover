@@ -1,10 +1,5 @@
 ( () => {
-
-	// Imports
-	const { ipcRenderer } = require( 'electron' )
-	const { is } = require( 'electron-util' )
-	const Pickr = require( '@simonwep/pickr' )
-	const { debounce } = require( './util' )
+	// const Pickr = require( '@simonwep/pickr' )
 
 	// DOM elements
 	const dragger = document.querySelector( '.drag-me' )
@@ -19,7 +14,7 @@
 	const systemModifier = document.querySelector( '#system-modifier' )
 
 	// Set System Modifier on first load
-	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
+	systemModifier.textContent = window.crossover.isMacOs ? 'OPTION' : 'ALT'
 
 	// Create color picker
 	const pickr = Pickr.create( {
@@ -81,7 +76,7 @@
 
 	}
 
-	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
+	window.crossover.receive( 'set_crosshair', arg => {
 
 		setCrosshair( arg )
 
@@ -94,7 +89,7 @@
 
 	}
 
-	ipcRenderer.on( 'set_custom_image', ( event, arg ) => {
+	window.crossover.receive( 'set_custom_image', arg => {
 
 		setCustomImage( arg )
 
@@ -116,7 +111,7 @@
 
 	const loadColor = color => {
 
-		pickr.setColor( color )
+		window.pickr.setColor( color )
 		setColor( color )
 
 	}
@@ -129,7 +124,7 @@
 
 	}
 
-	pickr
+	window.pickr
 		.on( 'change', color => {
 
 			setColor( stripHex( color ) )
@@ -137,32 +132,32 @@
 		} )
 		.on( 'save', color => {
 
-			pickr.hide()
+			window.window.pickr.hide()
 
-			ipcRenderer.send( 'save_color', stripHex( color ) )
+			window.crossover.send( 'save_color', stripHex( color ) )
 
 		} )
 		.on( 'show', () => {
 
-			document.body.classList.add( 'pickr-open' )
+			document.body.classList.add( 'window.pickr-open' )
 
 		} )
 		.on( 'hide', () => {
 
-			document.body.classList.remove( 'pickr-open' )
+			document.body.classList.remove( 'window.pickr-open' )
 
 		} )
 
-	ipcRenderer.on( 'load_color', ( event, arg ) => {
+	window.crossover.receive( 'load_color', arg => {
 
 		loadColor( arg )
 
 	} )
 
 	// Opacity
-	const dOpacityInput = debounce( value => {
+	const dOpacityInput = window.crossover.debounce( value => {
 
-		ipcRenderer.send( 'save_opacity', value )
+		window.crossover.send( 'save_opacity', value )
 
 	}, 1000 )
 
@@ -182,16 +177,16 @@
 
 	} )
 
-	ipcRenderer.on( 'set_opacity', ( event, arg ) => {
+	window.crossover.receive( 'set_opacity', arg => {
 
 		setOpacity( arg )
 
 	} )
 
 	// Size
-	const dSizeInput = debounce( value => {
+	const dSizeInput = window.crossover.debounce( value => {
 
-		ipcRenderer.send( 'save_size', value )
+		window.crossover.send( 'save_size', value )
 
 	}, 1000 )
 
@@ -210,7 +205,7 @@
 
 	} )
 
-	ipcRenderer.on( 'set_size', ( event, arg ) => {
+	window.crossover.receive( 'set_size', arg => {
 
 		setSize( arg )
 
@@ -222,7 +217,7 @@
 		document.querySelector( '.sight' ).classList.remove( 'dot', 'cross', 'off' )
 		document.querySelector( '.sight' ).classList.add( sight )
 		document.querySelector( `.radio.${sight} input` ).checked = true
-		ipcRenderer.send( 'save_sight', sight )
+		window.crossover.send( 'save_sight', sight )
 
 	}
 
@@ -237,16 +232,16 @@
 
 	}
 
-	ipcRenderer.on( 'set_sight', ( event, arg ) => {
+	window.crossover.receive( 'set_sight', arg => {
 
 		setSight( arg )
 
 	} )
 
 	// Lock
-	ipcRenderer.on( 'lock_window', ( event, arg ) => {
+	window.crossover.receive( 'lock_window', arg => {
 
-		pickr.hide()
+		window.pickr.hide()
 		if ( arg ) {
 
 			document.body.classList.remove( 'draggable' )
@@ -262,13 +257,13 @@
 	// Center window on double click
 	dragger.addEventListener( 'dblclick', () => {
 
-		ipcRenderer.send( 'center_window' )
+		window.crossover.send( 'center_window' )
 
 	} )
 
 	crosshairElement.addEventListener( 'dblclick', () => {
 
-		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+		window.crossover.send( 'open_chooser', crosshairImg.src )
 
 	} )
 
@@ -276,7 +271,7 @@
 	selectCrosshairBtn.addEventListener( 'click', () => {
 
 		// Send open request with current crosshair
-		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+		window.crossover.send( 'open_chooser', crosshairImg.src )
 
 	} )
 
@@ -315,7 +310,7 @@
 		dragDrop.classList.remove( 'dropping' )
 
 		// Send file path to main
-		ipcRenderer.send( 'save_custom_image', event.dataTransfer.files[0].path )
+		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
 	} )
 
