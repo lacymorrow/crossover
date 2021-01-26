@@ -30,6 +30,12 @@ test.after.always( t => {
 
 } )
 
+test( 'sanity', t => {
+
+	t.pass()
+
+} )
+
 test( 'is accessible', async t => {
 
 	const audit = await t.context.app.client.auditAccessibility()

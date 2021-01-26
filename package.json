@@ -20,7 +20,8 @@
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
 		"lint": "xo --fix",
-		"test": "npm run lint && ava -v",
+		"test": "npm run lint",
+		"ava": "ava -v",
 		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
@@ -48,7 +49,7 @@
 		"husky": "^4.2.5",
 		"np": "^7.2.0",
 		"sass": "^1.26.5",
-		"spectron": "^11.0.0",
+		"spectron": "^13.0.0",
 		"xo": "^0.37.1"
 	},
 	"xo": {

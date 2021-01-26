@@ -105,7 +105,7 @@ const createMainWindow = async () => {
 		webPreferences: {
 			contextIsolation: true,
 			enableRemoteModule: true,
-			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
+			nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
 			preload: path.join( __dirname, 'preload.js' )
 
 		}
