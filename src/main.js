@@ -5,7 +5,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { appLaunchTimestamp, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { appLaunchTimestamp, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -104,7 +104,6 @@ const createMainWindow = async () => {
 			nodeIntegration: true, // We don't absolutely need this, but renderer require's some things
 			preload: path.join( __dirname, 'preload.js' )
 
-
 		}
 	} )
 
@@ -150,9 +149,9 @@ const createChildWindow = async _ => {
 		width: 600,
 		height: 500,
 		webPreferences: {
-			nodeIntegration: false, // is default value after Electron v5
-			contextIsolation: true, // protect against prototype pollution
-			enableRemoteModule: false, // turn off remote
+			nodeIntegration: false, // Is default value after Electron v5
+			contextIsolation: true, // Protect against prototype pollution
+			enableRemoteModule: false, // Turn off remote
 			preload: path.join( __dirname, 'preload-settings.js' )
 		}
 	} )

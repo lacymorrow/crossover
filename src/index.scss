@@ -56,6 +56,13 @@ body {
 	color: inherit;
 }
 
+/* Icon Styles */
+.feather {
+	// stroke:whitesmoke;
+	width: 20px;
+	height: 20px;
+}
+
 /* Application Style */
 .container {
 	padding: 15px 4px 4px 4px;
@@ -86,36 +93,30 @@ body {
 	z-index: -1;
 }
 
+.center-me {
+	display: none;
+	position: absolute;
+	bottom: 1px;
+	right: 0;
+	-webkit-user-select: none;
+	z-index: 2;
+	filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
+	.feather {
+		stroke:rgba(255,255,255,0.6);
+	}
+}
+
 .drag-me {
 	display: none;
-	// border: 1px solid #eee;
-	border-top: none;
-	border-left: none;
-	background: rgba(100, 100, 100, 1);
-	width: 35px;
-	height: 38px;
 	position: absolute;
-	bottom: 0;
-	right: -4px;
-	cursor: move;
-	cursor: -webkit-grab;
-	cursor: -moz-grab;
+	top: -10px;
+	right: 0;
 	-webkit-user-select: none;
-	&:active {
-		cursor: move;
-		cursor: -webkit-grabbing;
-		cursor: -moz-grabbing;
-	}
-	&:before {
-		content: '.';
-		position: absolute;
-		top: 0;
-		left: 10px;
-		font-size: 20px;
-		line-height: 20px;
-		color: #eee;
-		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee, 5px 5px #eee, 5px 10px #eee, 10px 0 #eee, 10px 5px #eee,
-			10px 10px #eee;
+	z-index: 2;
+	.feather {
+		// stroke:rgba(255,255,255,0.8);
+		width: 12px;
+		height: 12px;
 	}
 }
 
@@ -168,12 +169,11 @@ body {
 	&:not(.pickr-open) {
 		.crosshair-wrapper,
 		.crosshair-wrapper * {
-			cursor: move;
-			cursor: -webkit-grab;
+			// This is the magic to make things draggable
 			-webkit-app-region: drag;
+			cursor: move;
 			&:active {
-				cursor: move;
-				cursor: -webkit-grabbing;
+				cursor: crosshair;
 			}
 		}
 	}
@@ -182,6 +182,20 @@ body {
 	}
 	.drag-me {
 		display: block;
+
+		// Dragging hand cursor
+		cursor: grab;
+		&:active {
+			cursor: move;
+			cursor: grabbing;
+		}
+	}
+	.center-me {
+		// Allow center on double-click (Windows; https://github.com/lacymorrow/crossover/issues/32)
+		-webkit-app-region: no-drag;
+		display: block;
+
+		cursor: default;
 	}
 	.settings {
 		display: flex;

@@ -1,7 +1,7 @@
 ( () => {
-	// const Pickr = require( '@simonwep/pickr' )
 
 	// DOM elements
+	const centerer = document.querySelector( '.center-me' )
 	const dragger = document.querySelector( '.drag-me' )
 	const dragDrop = document.querySelector( '#drag-file' )
 	const crosshairElement = document.querySelector( '#crosshair' )
@@ -15,6 +15,10 @@
 
 	// Set System Modifier on first load
 	systemModifier.textContent = window.crossover.isMacOs ? 'OPTION' : 'ALT'
+
+	// Render icons
+	feather.replace()
+
 
 	// Create color picker
 	const pickr = Pickr.create( {
@@ -255,8 +259,7 @@
 	} )
 
 	// Center window on double click
-	dragger.addEventListener( 'dblclick', () => {
-
+	centerer.addEventListener( 'dblclick', () => {
 		window.crossover.send( 'center_window' )
 
 	} )

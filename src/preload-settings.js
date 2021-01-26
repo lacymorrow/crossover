@@ -7,9 +7,9 @@ const {
 	ipcRenderer
 } = require( 'electron' )
 
-contextBridge.exposeInMainWorld('crossover', {
-  path,
-  send: ( channel, data ) => {
+contextBridge.exposeInMainWorld( 'crossover', {
+	path,
+	send: ( channel, data ) => {
 
   	// Whitelist channels
   	const validChannels = new Set( [ 'log', 'save_crosshair', 'save_custom_image', 'close_chooser', 'get_crosshairs' ] )
@@ -20,9 +20,9 @@ contextBridge.exposeInMainWorld('crossover', {
 
   	}
 
-  },
+	},
 
-  receive: ( channel, func ) => {
+	receive: ( channel, func ) => {
 
   	const validChannels = new Set( [ 'load_crosshairs' ] )
 
@@ -33,5 +33,5 @@ contextBridge.exposeInMainWorld('crossover', {
 
   	}
 
-  }
-})
+	}
+} )

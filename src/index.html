@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="vendor/pickr/pickr.nano.min.css"/>
 		<link rel="stylesheet" href="index.css">
 		<script type="text/javascript" src="vendor/pickr/pickr.min.js"></script>
+		<script type="text/javascript" src="vendor/feather/feather-icons.min.js"></script>
 	</head>
 	<body>
 		<div class="container" id="drag-file">
@@ -26,7 +27,8 @@
 						</svg>
 					</div>
 				</div>
-				<div class="drag-me"></div>
+				<div class="center-me"><i data-feather="target"></i></div>
+				<div class="drag-me"><i data-feather="move"></i></div>
 			</div>
 
 			<div class="settings">
@@ -44,15 +46,15 @@
 				<div class="setting-sight">
 					<label class="radio dot">
 					  <input name="radio" type="radio" value="dot" checked>
-					  <span>&bull;</span>
+					  <span><i data-feather="disc"></i></span>
 					</label>
 					<label class="radio cross">
 					  <input name="radio" value="cross" type="radio">
-					  <span>&plus;</span>
+					  <span><i data-feather="plus-circle"></i></span>
 					</label>
 					<label class="radio off">
 					  <input name="radio" value="off" type="radio">
-					  <span>off</span>
+					  <span><i data-feather="eye-off"></i></span>
 					</label>
 				</div>
 
