@@ -24,7 +24,7 @@ try {
 
 	require( 'electron-reloader' )( module )
 
-} catch ( _ ) {}
+} catch {}
 
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
@@ -62,7 +62,7 @@ try {
 
 	}
 
-} catch ( _ ) {}
+} catch {}
 
 // Prevent window from being garbage collected
 let mainWindow
@@ -184,11 +184,11 @@ const getImages = ( directory, level ) => {
 	return new Promise( ( resolve, reject ) => {
 
 		const crosshairs = []
-		fs.readdir( directory, async ( err, dir ) => {
+		fs.promises.readdir( directory, async ( error, dir ) => {
 
-			if ( err ) {
+			if ( error ) {
 
-				reject( new Error( `Promise Errored: ${err}`, directory ) )
+				reject( new Error( `Promise Errored: ${error}`, directory ) )
 
 			}
 
