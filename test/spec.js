@@ -3,7 +3,11 @@ const path = require( 'path' )
 const { Application } = require( 'spectron' )
 const test = require( 'ava' )
 
-const delay = time => new Promise( resolve => setTimeout( resolve, time ) )
+const delay = time => new Promise( resolve => {
+
+	setTimeout( resolve, time )
+
+} )
 
 test.before( t => {
 
