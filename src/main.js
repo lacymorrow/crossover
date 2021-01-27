@@ -9,7 +9,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { appLaunchTimestamp, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -52,7 +52,6 @@ try {
 
 // } catch {}
 
-
 /* App setup */
 
 // Note: Must match `build.appId` in package.json
@@ -69,8 +68,8 @@ if ( !app.requestSingleInstanceLock() ) {
 // app.commandLine.appendSwitch( 'enable-native-gpu-memory-buffers' )
 app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 app.commandLine.appendSwitch( 'disable-gpu' )
-app.disableHardwareAcceleration();
-app.disableDomainBlockingFor3DAPIs();
+app.disableHardwareAcceleration()
+app.disableDomainBlockingFor3DAPIs()
 
 // Fix for Linux transparency issues
 if ( is.linux ) {
@@ -421,11 +420,12 @@ const moveWindow = direction => {
 }
 
 const aboutWindow = () => {
-	console.dir(app.getGPUFeatureStatus())
-	// console.dir(app.getAppMetrics());
+
+	console.dir( app.getGPUFeatureStatus() )
+	// Console.dir(app.getAppMetrics());
 	// app.getGPUInfo('complete').then(completeObj => {
- //        console.dir(completeObj);
- //    });
+	//        console.dir(completeObj);
+	//    });
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
