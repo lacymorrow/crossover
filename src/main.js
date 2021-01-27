@@ -65,11 +65,8 @@ if ( !app.requestSingleInstanceLock() ) {
 }
 
 // Disable hardware acceleration
-// app.commandLine.appendSwitch( 'enable-native-gpu-memory-buffers' )
-// app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 // app.commandLine.appendSwitch( 'disable-gpu' )
 // app.disableHardwareAcceleration()
-// app.disableDomainBlockingFor3DAPIs()
 
 // Fix for Linux transparency issues
 if ( is.linux ) {

@@ -27,6 +27,7 @@
 		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"build": "rm -rf dist && electron-builder --macos --linux",
+		"build:all": "rm -rf dist && electron-builder --macos --linux --win --ia32 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
 		"release": "np"
 	},
@@ -129,8 +130,7 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman",
-				"snap"
+				"pacman"
 			],
 			"category": "Game;Shooter"
 		},
