@@ -448,6 +448,9 @@ const resetSettings = () => {
 
 const setupApp = async () => {
 
+	// IPC and Shortcuts
+	registerComms()
+
 	// Set to previously selected crosshair
 	const currentCrosshair = config.get( 'crosshair' )
 	if ( currentCrosshair ) {
@@ -686,12 +689,7 @@ app.on( 'activate', async () => {
 
 } )
 
-// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-app.on( 'ready', () => setTimeout( registerComms, 400 ) )
-
-module.exports = async () => {
-
-	await app.whenReady()
+const ready = () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
@@ -712,5 +710,13 @@ module.exports = async () => {
 	}
 
 	setupApp()
+}
+
+module.exports = async () => {
+
+	await app.whenReady()
+
+	// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+	setTimeout( ready, 400 )
 
 }
