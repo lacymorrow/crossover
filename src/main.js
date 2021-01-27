@@ -15,43 +15,16 @@ const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
 const { config, defaults, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
+
+// Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
 unhandled()
 debug( {
-	showDevTools: false,
+	showDevTools: is.development,
 	devToolsMode: 'undocked'
 } )
-
-// try {
-
-// 	require( 'electron-reloader' )( module )
-
-// } catch {}
-
-// Note: Must match `build.appId` in package.json
-app.setAppUserModelId( 'com.lacymorrow.crossover' )
-
-// Disable hardware acceleration
-app.disableHardwareAcceleration(); 
-app.disableDomainBlockingFor3DAPIs(); 
-
-// Fix for Linux transparency issues
-if ( is.linux ) {
-
-	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-	app.commandLine.appendSwitch( 'disable-gpu' )
-	app.disableHardwareAcceleration()
-
-}
-
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
-
-	app.quit()
-
-}
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -72,16 +45,49 @@ try {
 
 } catch {}
 
+// Electron reloader is janky sometimes
+// try {
+
+// 	require( 'electron-reloader' )( module )
+
+// } catch {}
+
+
+/* App setup */
+
+// Note: Must match `build.appId` in package.json
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
+
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
+
+	app.quit()
+
+}
+
+// Disable hardware acceleration
+// app.commandLine.appendSwitch( 'enable-native-gpu-memory-buffers' )
+app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+app.commandLine.appendSwitch( 'disable-gpu' )
+app.disableHardwareAcceleration();
+app.disableDomainBlockingFor3DAPIs();
+
+// Fix for Linux transparency issues
+if ( is.linux ) {
+
+	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+	app.commandLine.appendSwitch( 'disable-gpu' )
+	app.disableHardwareAcceleration()
+
+}
+
 // Prevent window from being garbage collected
 let mainWindow
 let chooserWindow
 let windowHidden = false // Maintain hidden state
 
 // __static path
-const __static =
-	process.env.NODE_ENV === 'development' ?
-		'static' :
-		path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
+const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
@@ -417,14 +423,14 @@ const moveWindow = direction => {
 const aboutWindow = () => {
 	console.dir(app.getGPUFeatureStatus())
 	// console.dir(app.getAppMetrics());
-	// app.getGPUInfo('complete').then(completeObj => { 
- //        console.dir(completeObj); 
- //    }); 
+	// app.getGPUInfo('complete').then(completeObj => {
+ //        console.dir(completeObj);
+ //    });
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
-		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow ${app.getAppMetrics()}`,
+		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text:
-			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && appLaunchTimestamp + '| ' + debugInfo()}`
+			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} ${app.getGPUFeatureStatus()}`
 	} )
 
 }
@@ -695,7 +701,6 @@ module.exports = async () => {
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	// ChooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 	mainWindow.on( 'move', () => {
 
