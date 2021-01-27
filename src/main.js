@@ -690,6 +690,7 @@ app.on( 'activate', async () => {
 } )
 
 const ready = async () => {
+
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
@@ -710,6 +711,7 @@ const ready = async () => {
 	}
 
 	setupApp()
+
 }
 
 module.exports = async () => {
