@@ -130,7 +130,8 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman"
+				"pacman",
+				"snap"
 			],
 			"category": "Game;Shooter"
 		},

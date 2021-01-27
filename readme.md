@@ -5,7 +5,7 @@
 # CrossOver [![TravisCI Status](https://travis-ci.org/lacymorrow/crossover.svg?branch=master)](https://travis-ci.org/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 
-> 🎯 Adjustable gaming Crosshair Overlay for any screen
+> 🎯 Adjustable Crosshair Overlay for any screen
 
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
@@ -16,15 +16,19 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
-- Choose a crosshair from over 50 included
-- Click and drag the grip icon to move Crossover around
+- Choose a crosshair from over 50 included or drop a custom image
+- Click and drag the crosshair to move Crossover around
+- Double-click the bullseye ◎ to center
 - Use <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd> and arrow keys for fine-tuning
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset and recenter
 
+[See usage...](#usage)
+
 
 ## Features
 
+- Fast and lightweight
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
 - Support for multiple monitors
@@ -32,7 +36,6 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Customize crosshair size, color, and opacity
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
-- Tested via Spectron
 
 ### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
 
@@ -64,7 +67,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 **Linux**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+[**Download**](https://github.com/user/repo/releases/latest) the file appropriate to your system.
 
 *The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
 
@@ -181,3 +184,6 @@ An extra big thanks to the crosshair providers, as this wouldn't be possible wit
 - Reddit user [/u/IrisFlame](https://www.reddit.com/user/irisflame/)
 
 - [Kenney.nl Crosshair Pack](https://kenney.nl/assets/crosshair-pack) (_donate to him, not me_)
+
+
+> Gaming, Crosshair, Crossover App
