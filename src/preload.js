@@ -6,7 +6,8 @@ const {
 const { is } = require( 'electron-util' )
 const { debounce, deepFreeze } = require( './util' )
 
-console.log( 'ENV:', process.env.NODE_ENV, is.development )
+console.log( 'Dev:', is.development )
+console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
 	debounce,

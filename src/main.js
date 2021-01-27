@@ -24,14 +24,18 @@ debug( {
 	devToolsMode: 'undocked'
 } )
 
-try {
+// try {
 
-	require( 'electron-reloader' )( module )
+// 	require( 'electron-reloader' )( module )
 
-} catch {}
+// } catch {}
 
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
+
+// Disable hardware acceleration
+app.disableHardwareAcceleration(); 
+app.disableDomainBlockingFor3DAPIs(); 
 
 // Fix for Linux transparency issues
 if ( is.linux ) {
@@ -411,10 +415,14 @@ const moveWindow = direction => {
 }
 
 const aboutWindow = () => {
-
+	console.dir(app.getGPUFeatureStatus())
+	// console.dir(app.getAppMetrics());
+	// app.getGPUInfo('complete').then(completeObj => { 
+ //        console.dir(completeObj); 
+ //    }); 
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
-		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow ${app.getAppMetrics()}`,
 		text:
 			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && appLaunchTimestamp + '| ' + debugInfo()}`
 	} )
