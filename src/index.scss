@@ -96,8 +96,8 @@ body {
 .center-me {
 	display: none;
 	position: absolute;
-	bottom: 1px;
-	right: 0;
+	top: 1px;
+	left: 0;
 	-webkit-user-select: none;
 	z-index: 2;
 	filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
@@ -109,7 +109,7 @@ body {
 .drag-me {
 	display: none;
 	position: absolute;
-	top: -10px;
+	top: 1px;
 	right: 0;
 	-webkit-user-select: none;
 	z-index: 2;
@@ -171,10 +171,6 @@ body {
 		.crosshair-wrapper * {
 			// This is the magic to make things draggable
 			-webkit-app-region: drag;
-			cursor: move;
-			&:active {
-				cursor: crosshair;
-			}
 		}
 	}
 	.background {
@@ -182,23 +178,23 @@ body {
 	}
 	.drag-me {
 		display: block;
-
-		// Dragging hand cursor
-		cursor: grab;
-		&:active {
-			cursor: move;
-			cursor: grabbing;
-		}
 	}
 	.center-me {
 		// Allow center on double-click (Windows; https://github.com/lacymorrow/crossover/issues/32)
 		-webkit-app-region: no-drag;
 		display: block;
+		cursor: crosshair;
 
-		cursor: default;
 	}
 	.settings {
 		display: flex;
+	}
+
+	&.mac:not(.pickr-open) .crosshair-wrapper * {
+		cursor: grab;
+		&:active {
+			cursor: grabbing;
+		}
 	}
 }
 

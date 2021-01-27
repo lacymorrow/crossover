@@ -66,10 +66,10 @@ if ( !app.requestSingleInstanceLock() ) {
 
 // Disable hardware acceleration
 // app.commandLine.appendSwitch( 'enable-native-gpu-memory-buffers' )
-app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-app.commandLine.appendSwitch( 'disable-gpu' )
-app.disableHardwareAcceleration()
-app.disableDomainBlockingFor3DAPIs()
+// app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+// app.commandLine.appendSwitch( 'disable-gpu' )
+// app.disableHardwareAcceleration()
+// app.disableDomainBlockingFor3DAPIs()
 
 // Fix for Linux transparency issues
 if ( is.linux ) {
@@ -421,7 +421,7 @@ const moveWindow = direction => {
 
 const aboutWindow = () => {
 
-	console.dir( app.getGPUFeatureStatus() )
+	// console.dir( app.getGPUFeatureStatus() )
 	// Console.dir(app.getAppMetrics());
 	// app.getGPUInfo('complete').then(completeObj => {
 	//        console.dir(completeObj);
@@ -430,7 +430,7 @@ const aboutWindow = () => {
 		icon: path.join( __static, 'Icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text:
-			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} ${app.getGPUFeatureStatus()}`
+			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
 	} )
 
 }

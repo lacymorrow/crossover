@@ -14,8 +14,18 @@
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
 
-	// Set System Modifier on first load
-	systemModifier.textContent = window.crossover.isMacOs ? 'OPTION' : 'ALT'
+	// OS Specific
+	if (window.crossover.isMacOs){
+		
+		// Set class
+		document.body.classList.add('mac')
+
+		// Set System Modifier on first load
+		systemModifier.textContent = 'OPTION'
+
+	} else {
+		systemModifier.textContent = 'ALT'
+	}
 
 	// Render icons
 	if ( feather ) {
