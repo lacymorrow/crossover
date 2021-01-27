@@ -689,7 +689,7 @@ app.on( 'activate', async () => {
 
 } )
 
-const ready = () => {
+const ready = async () => {
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
 	chooserWindow = await createChildWindow( mainWindow )
