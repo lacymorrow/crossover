@@ -421,7 +421,7 @@ const moveWindow = direction => {
 
 const aboutWindow = () => {
 
-	// console.dir( app.getGPUFeatureStatus() )
+	// Console.dir( app.getGPUFeatureStatus() )
 	// Console.dir(app.getAppMetrics());
 	// app.getGPUInfo('complete').then(completeObj => {
 	//        console.dir(completeObj);
