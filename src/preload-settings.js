@@ -7,7 +7,6 @@ const {
 const { is } = require( 'electron-util' )
 const { debounce } = require( './util' )
 
-
 contextBridge.exposeInMainWorld( 'crossover', {
 	debounce,
 	isMacOs: is.macos,

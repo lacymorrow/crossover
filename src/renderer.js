@@ -176,11 +176,13 @@
 
 		event.preventDefault()
 
-		console.log(event.target)
+		console.log( event.target )
 
 		// Prevent flickering on Windows
 		if ( window.crossover.isMacOs ) {
+
 			container.classList.remove( 'dropping' )
+
 		} else if ( event.target === wrapper ) {
 
 			container.classList.remove( 'dropping' )

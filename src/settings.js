@@ -3,7 +3,6 @@
 ( () => {
 
 	// DOM elements
-	const containerElement = document.querySelector( '#settings-container' )
 	const wrapperElement = document.querySelector( '#settings-container' )
 	const opacityInput = document.querySelector( '#setting-opacity' )
 	const opacityOutput = document.querySelector( '#output-opacity' )
@@ -93,13 +92,9 @@
 
 	}
 
-	const loadColor = color => {
+	const setColor = color => {
 
 		window.pickr.setColor( color )
-
-	}
-
-	const setColor = color => {
 
 	}
 
@@ -129,7 +124,7 @@
 
 	window.crossover.receive( 'load_color', arg => {
 
-		loadColor( arg )
+		setColor( arg )
 
 	} )
 
@@ -239,7 +234,9 @@
 
 		// Prevent flickering on Windows
 		if ( window.crossover.isMacOs ) {
+
 			wrapperElement.classList.remove( 'dropping' )
+
 		} else if ( event.target === wrapperElement ) {
 
 			wrapperElement.classList.remove( 'dropping' )

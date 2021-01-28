@@ -108,7 +108,7 @@
 		}
 
 		// Text replacement on first group'
-		title.textContent = (label === 'Actual') ? 'Real Crosshairs' : label
+		title.textContent = ( label === 'Actual' ) ? 'Real Crosshairs' : label
 		title.classList.add( 'group-label' )
 
 		chooserElement.append( title )
@@ -144,7 +144,9 @@
 
 		// Prevent flickering on Windows
 		if ( window.crossover.isMacOs ) {
+
 			containerElement.classList.remove( 'dropping' )
+
 		} else if ( event.target === chooserElement ) {
 
 			containerElement.classList.remove( 'dropping' )

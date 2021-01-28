@@ -1,6 +1,6 @@
 'use strict'
 
-// improve escapeAction to be window-aware
+// Improve escapeAction to be window-aware
 // GetWindowBoundsCentered
 // centerWindow
 
@@ -79,7 +79,9 @@ if ( is.linux ) {
 }
 
 // Prevent window from being garbage collected
-let mainWindow, chooserWindow, settingsWindow
+let mainWindow
+let chooserWindow
+let settingsWindow
 let windowHidden = false // Maintain hidden state
 
 // __static path
@@ -143,9 +145,10 @@ const createMainWindow = async () => {
 }
 
 const createChildWindow = async ( parent, windowName ) => {
+
 	const VALID_WINDOWS = [ 'chooser', 'settings' ]
 
-	let preferences = {
+	const preferences = {
 		parent,
 		modal: true,
 		show: false,
@@ -174,9 +177,11 @@ const createChildWindow = async ( parent, windowName ) => {
 
 	}
 
-	if (windowName === 'settings'){
+	if ( windowName === 'settings' ) {
+
 		preferences.width = 200
 		preferences.height = 250
+
 	}
 
 	const win = new BrowserWindow( preferences )
@@ -304,7 +309,7 @@ const setDockVisible = visible => {
 
 const centerApp = () => {
 
-	// mainWindow.hide()
+	// MainWindow.hide()
 	// mainWindow.center()
 	// const bounds = mainWindow.getBounds()
 
@@ -451,9 +456,11 @@ const aboutWindow = () => {
 }
 
 const escapeAction = () => {
+
 	hideChooserWindow()
 	hideSettingsWindow()
 	globalShortcut.unregister( 'Escape' )
+
 }
 
 const resetSettings = () => {
@@ -513,6 +520,7 @@ const setupApp = async () => {
 }
 
 const registerEvents = () => {
+
 	mainWindow.on( 'move', () => {
 
 		saveBounds()
@@ -520,15 +528,22 @@ const registerEvents = () => {
 	} )
 
 	// Close windows if clicked away
-	if (!is.development){
-		chooserWindow.on( 'blur', () =>{
-			chooserWindow.hide()
-		})
+	if ( !is.development ) {
 
-		settingsWindow.on( 'blur', () =>{
+		chooserWindow.on( 'blur', () => {
+
+			chooserWindow.hide()
+
+		} )
+
+		settingsWindow.on( 'blur', () => {
+
 			settingsWindow.hide()
-		})
+
+		} )
+
 	}
+
 }
 
 const dOpacityInput = debounce( arg => {
@@ -572,9 +587,12 @@ const registerIpc = () => {
 		}
 
 		// Create shortcut to close chooser
-		if (!globalShortcut.isRegistered('Escape')){
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
 			globalShortcut.register( 'Escape', escapeAction )
+
 		}
+
 		chooserWindow.show()
 		const bounds = chooserWindow.getBounds()
 		chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
@@ -599,8 +617,10 @@ const registerIpc = () => {
 		}
 
 		// Create shortcut to close window
-		if (!globalShortcut.isRegistered('Escape')){
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
 			globalShortcut.register( 'Escape', escapeAction )
+
 		}
 
 		settingsWindow.show()
@@ -650,7 +670,7 @@ const registerIpc = () => {
 	ipcMain.on( 'save_opacity', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_opacity', arg ) // Pass to renderer
-		dOpacityInput(arg)
+		dOpacityInput( arg )
 
 	} )
 
