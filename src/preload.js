@@ -16,7 +16,7 @@ const api = {
 	send: ( channel, data ) => {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'open_settings', 'center_window', 'open_chooser', 'save_custom_image' ] )
+		const validChannels = new Set( [ 'open_settings', 'center_window', 'open_chooser', 'save_custom_image', 'quit' ] )
 
 		if ( validChannels.has( channel ) ) {
 

@@ -4,6 +4,7 @@
 
 	// DOM elements
 	const wrapper = document.querySelector( '.crosshair-wrapper' )
+	const closeBtn = document.querySelector( '.close-button' )
 	const centerBtn = document.querySelector( '.center-button' )
 	const settingsBtn = document.querySelector( '.settings-button' )
 	const container = document.querySelector( '.container' )
@@ -132,6 +133,13 @@
 			document.body.classList.add( 'draggable' )
 
 		}
+
+	} )
+
+	// Close window
+	closeBtn.addEventListener( 'click', () => {
+
+		window.crossover.send( 'quit' )
 
 	} )
 

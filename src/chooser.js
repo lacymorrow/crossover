@@ -139,6 +139,7 @@
 
 	} )
 
+	// Close window
 	closeBtn.addEventListener( 'click', () => {
 
 		window.crossover.send( 'close_chooser' )
