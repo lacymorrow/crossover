@@ -160,9 +160,15 @@ button {
 .drag-button {
 	top: 2px;
 	right: 2px;
+	left: 30px;
 	.feather {
 		width: 12px;
 		height: 12px;
+	}
+
+	.aligner {
+		display: flex;
+		justify-content: flex-end;
 	}
 }
 
@@ -175,8 +181,8 @@ button {
 }
 
 .crosshair-wrapper {
-	// Top is draggable
-	padding-top: 25px;
+	// Top will be converted to padding on mac to draggable
+	margin-top: 25px;
 	margin-bottom: 25px;
 	position: relative;
 	height: 100px;

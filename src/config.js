@@ -26,7 +26,7 @@ const config = new Store( {
 } )
 
 // Constants
-const APP_HEIGHT = 125
+const APP_HEIGHT = 150
 const CHILD_WINDOW_OFFSET = 25
 
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
