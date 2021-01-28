@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld( 'crossover', {
 
 	receive: ( channel, func ) => {
 
-		const validChannels = new Set( [ 'load_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight' ] )
+		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight' ] )
 
 		if ( validChannels.has( channel ) ) {
 

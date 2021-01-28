@@ -169,24 +169,6 @@ button {
 	height: auto;
 }
 
-.settings {
-	display: none;
-	padding: 10px 10px 5px 10px;
-	margin: 0 -4px -4px -4px; // Offset .dropping border
-	position: relative;
-	flex-direction: column;
-	&-background {
-		background: white;
-		transition: background 1s ease;
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		z-index: -1;
-	}
-}
-
 .draggable {
 	.crosshair-wrapper,
 	.crosshair-wrapper * {

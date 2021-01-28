@@ -92,9 +92,15 @@
 
 	}
 
-	const setColor = color => {
+	const loadColor = color => {
 
 		window.pickr.setColor( color )
+
+	}
+
+	const setColor = color => {
+
+		window.crossover.send( 'save_color', color )
 
 	}
 
@@ -106,25 +112,25 @@
 		} )
 		.on( 'save', color => {
 
-			window.window.pickr.hide()
+			window.pickr.hide()
 
-			window.crossover.send( 'save_color', stripHex( color ) )
+			setColor( stripHex( color ) )
 
 		} )
 		.on( 'show', () => {
 
-			document.body.classList.add( 'window.pickr-open' )
+			document.body.classList.add( 'pickr-open' )
 
 		} )
 		.on( 'hide', () => {
 
-			document.body.classList.remove( 'window.pickr-open' )
+			document.body.classList.remove( 'pickr-open' )
 
 		} )
 
-	window.crossover.receive( 'load_color', arg => {
+	window.crossover.receive( 'set_color', arg => {
 
-		setColor( arg )
+		loadColor( arg )
 
 	} )
 

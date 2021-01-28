@@ -26,7 +26,7 @@ const api = {
 
 	receive: ( channel, func ) => {
 
-		const validChannels = new Set( [ 'load_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight', 'lock_window' ] )
+		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight', 'lock_window' ] )
 
 		if ( validChannels.has( channel ) ) {
 

@@ -252,8 +252,8 @@ const getImages = ( directory, level ) => {
 
 const setColor = color => {
 
-	mainWindow.webContents.send( 'load_color', color )
-	settingsWindow.webContents.send( 'load_color', color )
+	mainWindow.webContents.send( 'set_color', color )
+	settingsWindow.webContents.send( 'set_color', color )
 
 }
 
@@ -546,6 +546,13 @@ const registerEvents = () => {
 
 }
 
+const dColorInput = debounce( arg => {
+
+	console.log( `Set color: ${arg}` )
+	config.set( 'color', arg )
+
+}, 400 )
+
 const dOpacityInput = debounce( arg => {
 
 	console.log( `Set opacity: ${arg}` )
@@ -631,8 +638,9 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
-		console.log( `Set color: ${arg}` )
-		config.set( 'color', arg )
+		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
+		console.log( arg )
+		dColorInput( arg )
 
 	} )
 

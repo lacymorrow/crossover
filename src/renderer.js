@@ -60,13 +60,6 @@
 	} )
 
 	// Color
-	const loadColor = color => {
-
-		setColor( color )
-
-	}
-
-	// Color
 	const setColor = color => {
 
 		document
@@ -75,9 +68,9 @@
 
 	}
 
-	window.crossover.receive( 'load_color', arg => {
+	window.crossover.receive( 'set_color', arg => {
 
-		loadColor( arg )
+		setColor( arg )
 
 	} )
 
