@@ -186,7 +186,8 @@ button {
 	margin-bottom: 25px;
 	position: relative;
 	height: 100px;
-	width: 100%;
+	width: 150px;
+	margin: 10px 25px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -199,6 +200,7 @@ button {
 }
 
 .draggable {
+	.drag-button,
 	.crosshair-wrapper,
 	.crosshair-wrapper * {
 		// This is the magic to make things draggable
