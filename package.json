@@ -18,18 +18,21 @@
 		"node": "14.15.x"
 	},
 	"scripts": {
-		"postinstall": "electron-builder install-app-deps",
+		"ava": "ava -v",
 		"lint": "xo --fix",
 		"test": "npm run lint",
-		"ava": "ava -v",
-		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
-		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
-		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
-		"pack": "rm -f *.tgz && electron-builder --dir",
+		"css": "sass src/index.scss:src/index.css -s compressed",
+		"start": "npm run css && electron .",
 		"build": "rm -rf dist && electron-builder --macos --linux",
-		"build:all": "rm -rf dist && electron-builder --macos --linux --win --ia32 --x64",
+		"build:all": "rm -rf dist && electron-builder -mwl --ia32 --x64",
+		"build:linux": "rm -rf dist && electron-builder --linux --ia32 --x64",
+		"build:mac": "rm -rf dist && electron-builder --macos --arm64 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
-		"release": "np"
+		"release": "np",
+		"pack": "rm -f *.tgz && electron-builder --dir",
+		"postinstall": "electron-builder install-app-deps",
+		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
+		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;"
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.6.0",
@@ -130,7 +133,9 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman"
+				"pacman",
+				"snap",
+				"rpm"
 			],
 			"category": "Game;Shooter"
 		},
