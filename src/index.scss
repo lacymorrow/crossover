@@ -133,13 +133,13 @@ button {
 	user-select: inherit;
 }
 
-.main .close-button {
+.main.close-button {
 	display: none;
 	right: auto;
 	left: 1px;
 }
 
-.linux .main .close-button {
+.linux .main.close-button {
 	display: block;
 }
 
@@ -209,7 +209,7 @@ button {
 		background: rgba(255, 255, 255, 0.5);
 	}
 
-	.button {
+	.button:not(.main) {
 		display: block;
 	}
 
