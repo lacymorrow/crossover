@@ -181,13 +181,11 @@ button {
 }
 
 .crosshair-wrapper {
-	// Top will be converted to padding on mac to draggable
-	margin-top: 25px;
-	margin-bottom: 25px;
+	// This controls what is draggable
+	margin: 25px auto;
 	position: relative;
 	height: 100px;
 	width: 150px;
-	margin: 10px 25px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
