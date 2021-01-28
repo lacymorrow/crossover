@@ -4,18 +4,17 @@ const {
 	ipcRenderer
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { debounce, deepFreeze } = require( './util' )
+const { deepFreeze } = require( './util' )
 
 console.log( 'Dev:', is.development )
 console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
-	debounce,
 	isMacOs: is.macos,
 	send: ( channel, data ) => {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'save_color', 'save_opacity', 'save_size', 'save_sight', 'center_window', 'open_chooser', 'save_custom_image' ] )
+		const validChannels = new Set( [ 'open_settings', 'center_window', 'open_chooser', 'save_custom_image' ] )
 
 		if ( validChannels.has( channel ) ) {
 
@@ -56,6 +55,6 @@ if ( contextBridge.internalContextBridge && contextBridge.internalContextBridge.
 	window.crossover = deepFreeze( api )
 	window.testing = true
 	// Github.com/electron-userland/spectron#node-integration
-	window.electronRequire = require
+	// window.electronRequire = require
 
 }

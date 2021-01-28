@@ -3,17 +3,17 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CrossOver</title>
-		<link rel="stylesheet" href="vendor/pickr/pickr.nano.min.css"/>
 		<link rel="stylesheet" href="index.css">
-		<script type="text/javascript" src="vendor/pickr/pickr.min.js"></script>
 		<script type="text/javascript" src="vendor/feather/feather-icons.min.js"></script>
 	</head>
 	<body>
 		<div class="container" id="drag-file">
 			<div class="background"></div>
 
-			<div class="center-me"><i data-feather="target"></i></div>
-			<div class="drag-me"><i data-feather="move"></i></div>
+			<button class="settings-button button"><i data-feather="settings"></i></button>
+			<button class="center-button button"><i data-feather="target"></i></button>
+			<div class="drag-button button"><i data-feather="move"></i></div>
+
 			<div class="crosshair-wrapper">
 				<div id="crosshair">
 					<img id="crosshairImg" alt="Crosshair" src="static/crosshairs/Actual/leupold-dot.png" draggable="false" onError="this.onerror=null;this.src='static/crosshairs/Actual/leupold-dot.png';" />
@@ -29,47 +29,6 @@
 						</svg>
 					</div>
 				</div>
-			</div>
-
-			<div class="settings">
-				<div class="settings-background"></div>
-
-				<div>
-					<div class="color-picker"></div>
-
-					<button id="select-crosshair-button">Choose Crosshair</button>
-
-				</div>
-
-				<label for="setting-sight">Sight</label>
-
-				<div class="setting-sight">
-					<label class="radio dot">
-					  <input name="radio" type="radio" value="dot" checked>
-					  <span><i data-feather="disc"></i></span>
-					</label>
-					<label class="radio cross">
-					  <input name="radio" value="cross" type="radio">
-					  <span><i data-feather="plus-circle"></i></span>
-					</label>
-					<label class="radio off">
-					  <input name="radio" value="off" type="radio">
-					  <span><i data-feather="eye-off"></i></span>
-					</label>
-				</div>
-
-				<label for="setting-size">Size</label>
-				<div class="d-flex">
-					<input id="setting-size" type="range" min="5" max="100" step="1" value="100" />
-					<output id="output-size" for="setting-size">100</output><sup>%</sup>
-				</div>
-
-				<label for="setting-opacity">Opacity</label>
-				<div class="d-flex">
-					<input id="setting-opacity" type="range" min="0" max="100" step="1" />
-					<output id="output-opacity" for="setting-opacity">50</output><sup>%</sup>
-				</div>
-				<p class="help-text"><span>CTRL</span>+<span id="system-modifier">ALT</span>+<span>SHFT</span>+<span>X</span></p>
 			</div>
 		</div>
 

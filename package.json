@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -130,8 +130,7 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman",
-				"snap"
+				"pacman"
 			],
 			"category": "Game;Shooter"
 		},

@@ -20,8 +20,8 @@ const config = new Store( {
 } )
 
 // Constants
-const CENTER_APP_OFFFSET_X = 132
-const CENTER_APP_OFFFSET_Y = 200
+const APP_HEIGHT = 125
+const CHILD_WINDOW_OFFSET = 25
 
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
 
@@ -30,8 +30,8 @@ module.exports = {
 
 	defaults,
 
-	CENTER_APP_OFFFSET_X,
-	CENTER_APP_OFFFSET_Y,
+	APP_HEIGHT,
+	CHILD_WINDOW_OFFSET,
 
 	SUPPORTED_IMAGE_FILE_TYPES
 }

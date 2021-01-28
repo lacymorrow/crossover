@@ -1,166 +1,264 @@
+/* global feather, Pickr */
+
 ( () => {
 
 	// DOM elements
 	const containerElement = document.querySelector( '#settings-container' )
-	const chooserElement = document.querySelector( '#crosshair-chooser' )
+	const wrapperElement = document.querySelector( '#settings-container' )
+	const opacityInput = document.querySelector( '#setting-opacity' )
+	const opacityOutput = document.querySelector( '#output-opacity' )
+	const selectCrosshairBtn = document.querySelector( '#select-crosshair-button' )
+	const sizeInput = document.querySelector( '#setting-size' )
+	const sizeOutput = document.querySelector( '#output-size' )
+	const systemModifier = document.querySelector( '#system-modifier' )
 
-	// Crosshair Images -> <select> input
-	const loadCrosshairs = crosshairsObject => {
+	// OS Specific
+	if ( window.crossover.isMacOs ) {
 
-		const { crosshairs, current } = crosshairsObject
+		// Set class
+		document.body.classList.add( 'mac' )
 
-		// Create "No crosshair" option
+		// Set System Modifier on first load
+		systemModifier.textContent = 'OPTION'
 
-		for ( const element of crosshairs ) {
+	} else {
 
-			if ( typeof element === 'string' ) {
-
-				const img = createImage( element, current )
-				chooserElement.append( img )
-
-			} else if ( typeof element === 'object' ) {
-
-				createGroup( element, current )
-
-			}
-
-		}
+		systemModifier.textContent = 'ALT'
 
 	}
 
-	// Title Case and spacing
-	function prettyFilename( string ) {
+	// Render icons
+	if ( feather ) {
 
-		// Remove path and extension
-		string = window.crossover.path.parse( string ).name
-
-		string = string
-			.split( '-' )
-			.map( w => w[0].toUpperCase() + w.slice( 1 ).toLowerCase() )
-			.join( ' ' )
-
-		return string
+		feather.replace()
 
 	}
 
-	// Create option elements
-	const createImage = ( file, current ) => {
+	// Create color picker
+	const pickr = Pickr.create( {
+		el: '.color-picker',
+		theme: 'nano', // Or 'monolith', or 'nano'
+		closeOnScroll: true,
+		position: 'right-start',
 
-		const name = prettyFilename( file )
-		const div = document.createElement( 'DIV' )
-		const p = document.createElement( 'P' )
-		const img = document.createElement( 'IMG' )
+		swatches: [
+			'rgba(244, 67, 54, 1)',
+			'rgba(233, 30, 99, 0.95)',
+			'rgba(156, 39, 176, 0.9)',
+			'rgba(103, 58, 183, 0.85)',
+			'rgba(63, 81, 181, 0.8)',
+			'rgba(33, 150, 243, 0.75)',
+			'rgba(3, 169, 244, 0.7)',
+			'rgba(0, 188, 212, 0.7)',
+			'rgba(0, 150, 136, 0.75)',
+			'rgba(76, 175, 80, 0.8)',
+			'rgba(139, 195, 74, 0.85)',
+			'rgba(205, 220, 57, 0.9)',
+			'rgba(255, 235, 59, 0.95)',
+			'rgba(255, 193, 7, 1)'
+		],
 
-		div.classList.add( 'crosshair-option' )
-		p.textContent = name
+		components: {
+			// Main components
+			preview: true,
+			opacity: true,
+			hue: true,
 
-		img.alt = name
-		img.draggable = false
-		img.src = file
+			// Input / output Options
+			interaction: {
+				hex: false,
+				rgba: false,
+				hsla: false,
+				hsva: false,
+				cmyk: false,
+				input: true,
+				clear: false,
+				save: true
+			}
+		}
+	} )
+	window.pickr = pickr
 
-		if ( current === file ) {
+	// Color
+	const stripHex = color => {
 
-			img.classList = 'current'
+		const hex = color.toHEXA().toString()
+		if ( hex.length > 7 ) {
+
+			return hex.slice( 0, 7 )
 
 		}
 
-		img.addEventListener( 'click', event => {
+		return hex
 
-			setCrosshair( file )
+	}
 
-			// Set 'selected' border color
-			const current = document.querySelector( '.current' )
-			if ( current ) {
+	const loadColor = color => {
 
-				current.classList.remove( 'current' )
+		window.pickr.setColor( color )
 
-			}
+	}
 
-			event.target.classList.add( 'current' )
+	const setColor = color => {
+
+	}
+
+	window.pickr
+		.on( 'change', color => {
+
+			setColor( stripHex( color ) )
+
+		} )
+		.on( 'save', color => {
+
+			window.window.pickr.hide()
+
+			window.crossover.send( 'save_color', stripHex( color ) )
+
+		} )
+		.on( 'show', () => {
+
+			document.body.classList.add( 'window.pickr-open' )
+
+		} )
+		.on( 'hide', () => {
+
+			document.body.classList.remove( 'window.pickr-open' )
 
 		} )
 
-		div.append( img, p )
+	window.crossover.receive( 'load_color', arg => {
 
-		return div
+		loadColor( arg )
+
+	} )
+
+	// Opacity
+	const setOpacity = opacity => {
+
+		opacityInput.value = opacity
+		opacityOutput.textContent = opacity
+		window.crossover.send( 'save_opacity', opacity )
 
 	}
 
-	// Setup optgroup elements
-	const createGroup = ( files, current ) => {
+	opacityInput.addEventListener( 'input', event => {
 
-		const group = document.createElement( 'DIV' )
-		const title = document.createElement( 'P' )
+		setOpacity( event.target.value )
 
-		// Split path into name and remove slashes
-		let label = window.crossover.path.dirname( files[0] )
-		label = window.crossover.path.parse( label ).name
+	} )
 
-		for ( const element of files ) {
+	window.crossover.receive( 'set_opacity', arg => {
 
-			if ( typeof element === 'string' ) {
+		setOpacity( arg )
 
-				const img = createImage( element, current )
-				group.append( img )
+	} )
 
-			}
+	// Size
+	const setSize = size => {
+
+		sizeInput.value = size
+		sizeOutput.textContent = size
+		window.crossover.send( 'save_size', size )
+
+	}
+
+	sizeInput.addEventListener( 'input', event => {
+
+		setSize( event.target.value )
+
+	} )
+
+	window.crossover.receive( 'set_size', arg => {
+
+		setSize( arg )
+
+	} )
+
+	// Sight
+	const setSight = sight => {
+
+		document.querySelector( `.radio.${sight} input` ).checked = true
+		window.crossover.send( 'save_sight', sight )
+
+	}
+
+	const sightInputs = document.querySelectorAll( '.radio' )
+	for ( const element of sightInputs ) {
+
+		element.addEventListener( 'change', event => {
+
+			setSight( event.target.value )
+
+		} )
+
+	}
+
+	window.crossover.receive( 'set_sight', arg => {
+
+		setSight( arg )
+
+	} )
+
+	// Lock
+	window.crossover.receive( 'lock_window', arg => {
+
+		window.pickr.hide()
+		if ( arg ) {
+
+			document.body.classList.remove( 'draggable' )
+
+		} else {
+
+			document.body.classList.add( 'draggable' )
 
 		}
 
-		title.classList.add( 'group-label' )
-		title.textContent = label
+	} )
 
-		chooserElement.append( title )
-		chooserElement.append( group )
+	// Button to open crosshair chooser
+	selectCrosshairBtn.addEventListener( 'click', () => {
 
-	}
-
-	const setCrosshair = crosshair => {
-
-		window.crossover.send( 'save_crosshair', crosshair )
-
-	}
-
-	window.crossover.receive( 'load_crosshairs', data => {
-
-		// Console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
-		loadCrosshairs( data )
+		// Send open request with current crosshair
+		window.crossover.send( 'open_chooser' )
 
 	} )
 
 	// Drag and drop Custom Image
 	// for drop events to fire, must cancel dragover and dragleave events
-	chooserElement.addEventListener( 'dragover', event => {
+	wrapperElement.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
-		containerElement.classList.add( 'dropping' )
+		wrapperElement.classList.add( 'dropping' )
 
 	} )
 
-	chooserElement.addEventListener( 'dragleave', event => {
+	wrapperElement.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
 
 		// Prevent flickering on Windows
-		if ( event.target === chooserElement ) {
+		if ( window.crossover.isMacOs ) {
+			wrapperElement.classList.remove( 'dropping' )
+		} else if ( event.target === wrapperElement ) {
 
-			containerElement.classList.remove( 'dropping' )
+			wrapperElement.classList.remove( 'dropping' )
 
 		}
 
 	} )
 
-	chooserElement.addEventListener( 'dragend', event => {
+	wrapperElement.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
-		containerElement.classList.remove( 'dropping' )
+		wrapperElement.classList.remove( 'dropping' )
 
 	} )
 
-	chooserElement.addEventListener( 'drop', event => {
+	wrapperElement.addEventListener( 'drop', event => {
 
 		event.preventDefault()
-		containerElement.classList.remove( 'dropping' )
+		wrapperElement.classList.remove( 'dropping' )
 
 		// Send file path to main
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
