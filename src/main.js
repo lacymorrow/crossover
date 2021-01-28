@@ -66,7 +66,7 @@ if ( !app.requestSingleInstanceLock() ) {
 }
 
 // Fix for Linux transparency issues
-if ( is.linux || config.get('app').DISABLE_GPU ) {
+if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
 
 	// Disable hardware acceleration
 	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
@@ -312,7 +312,7 @@ const centerApp = () => {
 	} )
 
 	mainWindow.show()
-	
+
 	// Save game
 	saveBounds()
 
