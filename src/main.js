@@ -124,12 +124,6 @@ const createMainWindow = async () => {
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 	setDockVisible( true )
 
-	win.on( 'ready-to-show', () => {
-
-		win.show()
-
-	} )
-
 	win.on( 'closed', () => {
 
 		// Dereference the window
@@ -477,48 +471,6 @@ const resetSettings = () => {
 
 }
 
-const setupApp = async () => {
-
-	// Window Events
-	registerEvents()
-
-	// IPC
-	registerIpc()
-
-	// Keyboard shortcuts
-	registerShortcuts()
-
-	// Set to previously selected crosshair
-	const currentCrosshair = config.get( 'crosshair' )
-	if ( currentCrosshair ) {
-
-		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
-
-	}
-
-	// Setup crosshair chooser, must come before the check below
-	chooserWindow.webContents.send( 'load_crosshairs', {
-		crosshairs: await getCrosshairImages(),
-		current: currentCrosshair
-	} )
-
-	setColor( config.get( 'color' ) )
-	setOpacity( config.get( 'opacity' ) )
-	setSight( config.get( 'sight' ) )
-	setSize( config.get( 'size' ) )
-
-	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) > -1 ) {
-
-		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
-
-	}
-
-	// Set lock state
-	lockWindow( config.get( 'windowLocked' ) )
-
-}
-
 const registerEvents = () => {
 
 	mainWindow.on( 'move', () => {
@@ -820,6 +772,48 @@ const registerShortcuts = () => {
 		moveWindow( 'right' )
 
 	} )
+
+}
+
+const setupApp = async () => {
+
+	// Window Events
+	registerEvents()
+
+	// IPC
+	registerIpc()
+
+	// Keyboard shortcuts
+	registerShortcuts()
+
+	// Set to previously selected crosshair
+	const currentCrosshair = config.get( 'crosshair' )
+	if ( currentCrosshair ) {
+
+		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
+
+	}
+
+	// Setup crosshair chooser, must come before the check below
+	chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await getCrosshairImages(),
+		current: currentCrosshair
+	} )
+
+	setColor( config.get( 'color' ) )
+	setOpacity( config.get( 'opacity' ) )
+	setSight( config.get( 'sight' ) )
+	setSize( config.get( 'size' ) )
+
+	// Center app by default - set position if config exists
+	if ( config.get( 'positionX' ) > -1 ) {
+
+		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
+
+	}
+
+	// Set lock state
+	lockWindow( config.get( 'windowLocked' ) )
 
 }
 
