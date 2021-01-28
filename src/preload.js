@@ -11,6 +11,7 @@ console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBri
 
 const api = {
 	debounce,
+	isLinux: is.linux,
 	isMacOs: is.macos,
 	send: ( channel, data ) => {
 
