@@ -67,6 +67,8 @@ button {
 .container,
 #settings-container,
 #chooser-container {
+	user-select: none;
+
 	&.dropping:before {
 		content: '';
 		position: absolute;
@@ -95,7 +97,6 @@ button {
 	border-radius: 5px;
 	width: 100%;
 	height: 100%;
-	-webkit-user-select: none;
 	cursor: none;
 }
 
@@ -111,9 +112,10 @@ button {
 }
 
 .button {
+	user-select: none;
 	display: none;
 	position: absolute;
-	-webkit-user-select: none;
+	user-select: none;
 	z-index: 2;
 	.feather {
 		stroke:rgba(0,0,0,0.5);
@@ -164,7 +166,7 @@ button {
 }
 
 #crosshairImg {
-	-webkit-user-select: none;
+	user-select: none;
 	width: 100%;
 	height: auto;
 }
@@ -177,7 +179,7 @@ button {
 	}
 
 	.container {
-		cursor: crosshair;
+		cursor: inherit;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 	}
@@ -221,6 +223,9 @@ label {
 	display: block;
 	margin-top: 15px;
 	margin-bottom: 4px;
+	&:first-of-type {
+		margin-top: 0;
+	}
 }
 
 .sight {
@@ -426,6 +431,7 @@ input[type='range'] {
 	width: 100vw;
 	padding: 4px;
 	background: white;
+	border: 4px solid #111;
 }
 
 #settings-container {
@@ -447,7 +453,7 @@ input[type='range'] {
 	overflow-y: auto;
 
 	&::-webkit-scrollbar-track {
-		-webkit-box-shadow: none;
+		box-shadow: none;
 		border: none;
 		background-color: transparent;
 	}
@@ -461,7 +467,7 @@ input[type='range'] {
 	&::-webkit-scrollbar-thumb {
 		opacity: 0.9;
 		border-radius: 10px;
-		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+		box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 		background-color: #555;
 	}
 

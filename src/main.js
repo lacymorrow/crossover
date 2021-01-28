@@ -528,7 +528,7 @@ const registerEvents = () => {
 	} )
 
 	// Close windows if clicked away
-	if ( !is.development ) {
+	// if ( true || !is.development ) {
 
 		chooserWindow.on( 'blur', () => {
 
@@ -542,7 +542,7 @@ const registerEvents = () => {
 
 		} )
 
-	}
+	// }
 
 }
 
@@ -639,7 +639,6 @@ const registerIpc = () => {
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
-		console.log( arg )
 		dColorInput( arg )
 
 	} )
