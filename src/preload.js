@@ -4,12 +4,13 @@ const {
 	ipcRenderer
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { deepFreeze } = require( './util' )
+const { debounce, deepFreeze } = require( './util' )
 
 console.log( 'Dev:', is.development )
 console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
+	debounce,
 	isMacOs: is.macos,
 	send: ( channel, data ) => {
 

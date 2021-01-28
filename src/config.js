@@ -11,7 +11,13 @@ const defaults = {
 	positionY: -1,
 	sight: 'dot',
 	size: 60,
-	windowLocked: false
+	windowLocked: false,
+
+	app: {
+		DISABLE_GPU: false,
+		OS_STARTUP: false,
+		WINDOW_FRAME: false
+	}
 }
 
 // Initialize app state

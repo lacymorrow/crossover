@@ -6,8 +6,16 @@ const debounce = ( func, delay ) => {
 
 	return function ( ...args ) {
 
-		const context = this
 		clearTimeout( debounceTimer )
+
+		// Pass { abort: true } to cancel
+		if ( args[0] && args[0].abort ) {
+
+			return
+
+		}
+
+		const context = this
 		debounceTimer = setTimeout( () => func.apply( context, args ), delay )
 
 	}

@@ -119,6 +119,11 @@ button {
 	.feather {
 		stroke:rgba(0,0,0,0.5);
 	}
+	&:hover {
+		.feather {
+			stroke:rgba(0,0,0,0.4);
+		}
+	}
 }
 
 .close-button {
@@ -227,7 +232,7 @@ button {
 
 label {
 	display: block;
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-bottom: 4px;
 	&:first-of-type {
 		margin-top: 0;
@@ -451,6 +456,10 @@ input[type='range'] {
 #chooser-wrapper,
 #settings-wrapper {
 	height: 100%;
+}
+
+#settings-wrapper {
+	padding: 0 2px;
 }
 
 #crosshair-chooser {

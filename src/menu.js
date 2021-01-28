@@ -80,7 +80,7 @@ const moveWindow = direction => {
 const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Website',
-		url: 'https://github.com/lacymorrow/crossover'
+		url: 'https://www.electronjs.org/apps/crossover'
 	} ),
 	openUrlMenuItem( {
 		label: 'Source Code',
@@ -164,6 +164,48 @@ const debugSubmenu = [
 	}
 ]
 
+const editSubmenu = [
+	{
+		label: 'Move Up',
+		accelerator: 'Control+Shift+Alt+Up',
+		click() {
+
+			moveWindow( 'up' )
+
+		}
+	},
+	{
+		label: 'Move Down',
+		accelerator: 'Control+Shift+Alt+Down',
+		click() {
+
+			moveWindow( 'down' )
+
+		}
+	},
+	{
+		label: 'Move Left',
+		accelerator: 'Control+Shift+Alt+Left',
+		click() {
+
+			moveWindow( 'left' )
+
+		}
+	},
+	{
+		label: 'Move Right',
+		accelerator: 'Control+Shift+Alt+Right',
+		click() {
+
+			moveWindow( 'right' )
+
+		}
+	},
+	{
+		role: 'close'
+	}
+]
+
 const macosTemplate = [
 	appMenu( [
 		{
@@ -187,66 +229,11 @@ const macosTemplate = [
 		}
 	] ),
 	{
-		role: 'fileMenu',
-		submenu: [
-			{
-				label: 'Move Up',
-				accelerator: 'Control+Shift+Alt+Up',
-				click() {
-
-					moveWindow( 'up' )
-
-				}
-			},
-			{
-				label: 'Move Down',
-				accelerator: 'Control+Shift+Alt+Down',
-				click() {
-
-					moveWindow( 'down' )
-
-				}
-			},
-			{
-				label: 'Move Left',
-				accelerator: 'Control+Shift+Alt+Left',
-				click() {
-
-					moveWindow( 'left' )
-
-				}
-			},
-			{
-				label: 'Move Right',
-				accelerator: 'Control+Shift+Alt+Right',
-				click() {
-
-					moveWindow( 'right' )
-
-				}
-			},
-			{
-				type: 'separator'
-			},
-			{
-				label: 'Close Chooser',
-				accelerator: 'Escape',
-				click() {
-
-					BrowserWindow.getAllWindows()[0].hide()
-
-				}
-			},
-			{
-				role: 'close'
-			}
-		]
+		role: 'fileMenu'
 	},
 	{
-		role: 'editMenu'
-	},
-	{
-		role: 'viewMenu'
+		role: 'editMenu',
+		submenu: editSubmenu
 	},
 	{
 		role: 'windowMenu'
@@ -263,7 +250,15 @@ const otherTemplate = [
 		role: 'fileMenu',
 		submenu: [
 			{
-				label: 'Custom'
+				label: 'Open at startup',
+				type: 'checkbox',
+				checked: false,
+				click() {
+
+					console.log( 'boot' )
+					// ShowBootLaunch()
+
+				}
 			},
 			{
 				type: 'separator'
@@ -286,10 +281,8 @@ const otherTemplate = [
 		]
 	},
 	{
-		role: 'editMenu'
-	},
-	{
-		role: 'viewMenu'
+		role: 'editMenu',
+		submenu: editSubmenu
 	},
 	{
 		role: 'help',

@@ -137,15 +137,23 @@
 
 	} )
 
-	centerBtn.addEventListener( 'click', () => {
+	// Open Chooser
+	const dOpenChooser = window.crossover.debounce( () => {
 
 		window.crossover.send( 'open_chooser', crosshairImg.src )
+
+	}, 300 )
+
+	centerBtn.addEventListener( 'click', () => {
+
+		dOpenChooser()
 
 	} )
 
 	// Center window on double click
 	centerBtn.addEventListener( 'dblclick', () => {
 
+		dOpenChooser( { abort: true } )
 		window.crossover.send( 'center_window' )
 
 	} )

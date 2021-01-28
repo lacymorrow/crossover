@@ -187,3 +187,5 @@ An extra big thanks to the crosshair providers, as this wouldn't be possible wit
 
 
 > Gaming, Crosshair, Crossover App
+
+See CrossOver in the [Electron Apps library](https://www.electronjs.org/apps/crossover)

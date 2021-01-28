@@ -65,13 +65,10 @@ if ( !app.requestSingleInstanceLock() ) {
 
 }
 
-// Disable hardware acceleration
-// app.commandLine.appendSwitch( 'disable-gpu' )
-// app.disableHardwareAcceleration()
-
 // Fix for Linux transparency issues
-if ( is.linux ) {
+if ( is.linux || config.get('app').DISABLE_GPU ) {
 
+	// Disable hardware acceleration
 	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 	app.commandLine.appendSwitch( 'disable-gpu' )
 	app.disableHardwareAcceleration()
@@ -147,7 +144,7 @@ const createChildWindow = async ( parent, windowName ) => {
 		modal: true,
 		show: false,
 		type: 'toolbar',
-		frame: false,
+		frame: config.get( 'app' ).WINDOW_FRAME,
 		hasShadow: true,
 		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
@@ -303,6 +300,7 @@ const setDockVisible = visible => {
 
 const centerApp = () => {
 
+	// Electron way
 	// MainWindow.hide()
 	// mainWindow.center()
 	// const bounds = mainWindow.getBounds()
@@ -314,6 +312,7 @@ const centerApp = () => {
 	} )
 
 	mainWindow.show()
+	
 	// Save game
 	saveBounds()
 
@@ -476,6 +475,25 @@ const registerEvents = () => {
 	mainWindow.on( 'move', () => {
 
 		saveBounds()
+
+	} )
+
+	// Reopen settings/chooser if killed
+	chooserWindow.on( 'close', async () => {
+
+		mainWindow.hide()
+		await createChooser()
+		registerEvents()
+		mainWindow.show()
+
+	} )
+
+	settingsWindow.on( 'close', async () => {
+
+		mainWindow.hide()
+		await createSettings()
+		registerEvents()
+		mainWindow.show()
 
 	} )
 
@@ -775,10 +793,31 @@ const registerShortcuts = () => {
 
 }
 
-const setupApp = async () => {
+const createChooser = async currentCrosshair => {
 
-	// Window Events
-	registerEvents()
+	if ( !currentCrosshair ) {
+
+		currentCrosshair = config.get( 'crosshair' )
+
+	}
+
+	chooserWindow = await createChildWindow( mainWindow, 'chooser' )
+
+	// Setup crosshair chooser, must come before the check below
+	chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await getCrosshairImages(),
+		current: currentCrosshair
+	} )
+
+}
+
+const createSettings = async () => {
+
+	settingsWindow = await createChildWindow( mainWindow, 'settings' )
+
+}
+
+const setupApp = async () => {
 
 	// IPC
 	registerIpc()
@@ -788,17 +827,15 @@ const setupApp = async () => {
 
 	// Set to previously selected crosshair
 	const currentCrosshair = config.get( 'crosshair' )
+
+	// Create child windows
+	await createSettings()
+
 	if ( currentCrosshair ) {
 
 		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
 	}
-
-	// Setup crosshair chooser, must come before the check below
-	chooserWindow.webContents.send( 'load_crosshairs', {
-		crosshairs: await getCrosshairImages(),
-		current: currentCrosshair
-	} )
 
 	setColor( config.get( 'color' ) )
 	setOpacity( config.get( 'opacity' ) )
@@ -813,7 +850,12 @@ const setupApp = async () => {
 	}
 
 	// Set lock state, timeout makes it pretty
-	setTimeout(() => lockWindow( config.get( 'windowLocked' ) ), 500 )
+	setTimeout( () => lockWindow( config.get( 'windowLocked' ) ), 500 )
+
+	await createChooser( currentCrosshair )
+
+	// Window Events after windows are created
+	registerEvents()
 
 }
 
@@ -854,8 +896,6 @@ const ready = async () => {
 
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
-	settingsWindow = await createChildWindow( mainWindow, 'settings' )
-	chooserWindow = await createChildWindow( mainWindow, 'chooser' )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
