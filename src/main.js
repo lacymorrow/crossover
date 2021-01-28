@@ -346,8 +346,8 @@ const lockWindow = lock => {
 
 	console.log( `Locked: ${lock}` )
 
-	chooserWindow.hide()
-	settingsWindow.hide()
+	hideChooserWindow()
+	hideSettingsWindow()
 	mainWindow.closable = !lock
 	mainWindow.setIgnoreMouseEvents( lock )
 	mainWindow.webContents.send( 'lock_window', lock )
@@ -481,7 +481,7 @@ const registerEvents = () => {
 	// Reopen settings/chooser if killed
 	chooserWindow.on( 'close', async () => {
 
-		mainWindow.hide()
+		hideWindow()
 		await createChooser()
 		registerEvents()
 		mainWindow.show()
@@ -490,7 +490,7 @@ const registerEvents = () => {
 
 	settingsWindow.on( 'close', async () => {
 
-		mainWindow.hide()
+		hideWindow()
 		await createSettings()
 		registerEvents()
 		mainWindow.show()
@@ -502,13 +502,13 @@ const registerEvents = () => {
 
 		chooserWindow.on( 'blur', () => {
 
-			chooserWindow.hide()
+			hideChooserWindow()
 
 		} )
 
 		settingsWindow.on( 'blur', () => {
 
-			settingsWindow.hide()
+			hideSettingsWindow()
 
 		} )
 
