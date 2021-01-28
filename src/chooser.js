@@ -1,8 +1,18 @@
+/* global feather */
+
 ( () => {
 
 	// DOM elements
 	const containerElement = document.querySelector( '#chooser-container' )
 	const chooserElement = document.querySelector( '#crosshair-chooser' )
+	const closeBtn = document.querySelector( '.close-button' )
+
+	// Render icons
+	if ( feather ) {
+
+		feather.replace()
+
+	}
 
 	// Crosshair Images -> <select> input
 	const loadCrosshairs = crosshairsObject => {
@@ -126,6 +136,12 @@
 
 		// Console.log( `Loaded crosshairsObject: ${JSON.stringify( data )}` )
 		loadCrosshairs( data )
+
+	} )
+
+	closeBtn.addEventListener( 'click', () => {
+
+		window.crossover.send( 'close_chooser' )
 
 	} )
 

@@ -115,11 +115,17 @@ button {
 	user-select: none;
 	display: none;
 	position: absolute;
-	user-select: none;
 	z-index: 2;
 	.feather {
 		stroke:rgba(0,0,0,0.5);
 	}
+}
+
+.close-button {
+	display: block;
+	top: 3px;
+	right: -1px;
+	user-select: inherit;
 }
 
 .settings-button {
@@ -431,13 +437,14 @@ input[type='range'] {
 	width: 100vw;
 	padding: 4px;
 	background: white;
-	border: 4px solid #111;
+	border: 3px solid #111;
 }
 
 #settings-container {
 }
 
 #chooser-container {
+	padding-top: 25px;
 	border-radius: 5px;
 }
 
@@ -488,6 +495,9 @@ input[type='range'] {
 		font-size: 20px;
 		// color: #2466d8; // Blue
 		margin-bottom: 0;
+		&:first-of-type {
+			margin-top: 0;
+		}
 	}
 
 	// Collection wrapper

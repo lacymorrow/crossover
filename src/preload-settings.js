@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld( 'crossover', {
 	send: ( channel, data ) => {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'save_color', 'save_opacity', 'save_size', 'save_sight', 'center_window', 'open_chooser', 'save_custom_image' ] )
+		const validChannels = new Set( [ 'save_color', 'save_opacity', 'save_size', 'save_sight', 'center_window', 'open_chooser', 'save_custom_image', 'close_settings' ] )
 
 		if ( validChannels.has( channel ) ) {
 

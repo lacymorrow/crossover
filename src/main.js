@@ -527,22 +527,22 @@ const registerEvents = () => {
 
 	} )
 
-	// Close windows if clicked away
-	// if ( true || !is.development ) {
+	// Close windows if clicked away (mac only)
+	if ( !is.development ) {
 
-	chooserWindow.on( 'blur', () => {
+		chooserWindow.on( 'blur', () => {
 
-		chooserWindow.hide()
+			chooserWindow.hide()
 
-	} )
+		} )
 
-	settingsWindow.on( 'blur', () => {
+		settingsWindow.on( 'blur', () => {
 
-		settingsWindow.hide()
+			settingsWindow.hide()
 
-	} )
+		} )
 
-	// }
+	}
 
 }
 
@@ -601,8 +601,21 @@ const registerIpc = () => {
 		}
 
 		chooserWindow.show()
-		const bounds = chooserWindow.getBounds()
-		chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		// Modal placement is different per OS
+		if ( is.macos ) {
+
+			const bounds = chooserWindow.getBounds()
+			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		} else {
+
+			centerWindow( {
+				window: chooserWindow,
+				animated: true
+			} )
+
+		}
 
 	} )
 
@@ -631,8 +644,33 @@ const registerIpc = () => {
 		}
 
 		settingsWindow.show()
-		const bounds = settingsWindow.getBounds()
-		settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		// Modal placement is different per OS
+		if ( is.macos ) {
+
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		} else {
+
+			centerWindow( {
+				window: settingsWindow,
+				animated: true
+			} )
+
+		}
+
+	} )
+
+	ipcMain.on( 'close_chooser', _ => {
+
+		hideChooserWindow()
+
+	} )
+
+	ipcMain.on( 'close_settings', _ => {
+
+		hideSettingsWindow()
 
 	} )
 

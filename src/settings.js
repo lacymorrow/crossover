@@ -10,6 +10,7 @@
 	const sizeInput = document.querySelector( '#setting-size' )
 	const sizeOutput = document.querySelector( '#output-size' )
 	const systemModifier = document.querySelector( '#system-modifier' )
+	const closeBtn = document.querySelector( '.close-button' )
 
 	// OS Specific
 	if ( window.crossover.isMacOs ) {
@@ -214,6 +215,13 @@
 			document.body.classList.add( 'draggable' )
 
 		}
+
+	} )
+
+	// Close
+	closeBtn.addEventListener( 'click', () => {
+
+		window.crossover.send( 'close_settings' )
 
 	} )
 
