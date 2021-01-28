@@ -530,17 +530,17 @@ const registerEvents = () => {
 	// Close windows if clicked away
 	// if ( true || !is.development ) {
 
-		chooserWindow.on( 'blur', () => {
+	chooserWindow.on( 'blur', () => {
 
-			chooserWindow.hide()
+		chooserWindow.hide()
 
-		} )
+	} )
 
-		settingsWindow.on( 'blur', () => {
+	settingsWindow.on( 'blur', () => {
 
-			settingsWindow.hide()
+		settingsWindow.hide()
 
-		} )
+	} )
 
 	// }
 
