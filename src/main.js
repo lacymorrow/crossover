@@ -833,6 +833,7 @@ const setupApp = async () => {
 
 	if ( currentCrosshair ) {
 
+		console.log( `Set crosshair: ${currentCrosshair}` )
 		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
 	}
