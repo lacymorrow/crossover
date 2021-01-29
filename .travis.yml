@@ -24,7 +24,7 @@ jobs:
         - yarn --version
         - yarn install
         - yarn test
-        - yarn run build
+        - yarn run build:all
 
     - os: linux
       services: xvfb
