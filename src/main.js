@@ -5,7 +5,6 @@
 // GetWindowBoundsCentered
 // centerWindow
 
-
 // const NativeExtension = require('bindings')('NativeExtension');
 const fs = require( 'fs' )
 const path = require( 'path' )
@@ -941,7 +940,7 @@ const ready = async () => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	console.log(mainWindow.getNativeWindowHandle())
+	console.log( mainWindow.getNativeWindowHandle() )
 
 	setupApp()
 
