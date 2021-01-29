@@ -155,7 +155,7 @@ Works     | OS       | Notes
 ✅  | MacOS x64 _(Intel)_  |
 ✅  | Windows 10 ia32  |
 ✅  | Windows 10 x64  | Custom cursors do not show in draggable taskbar area
-❌  | Arch  | Tested in v2021.01.01
+❓  | Arch  | Tested in v2021.01.01
 ✅  | Fedora | Tested in v33 (Shortcut conflicts with desktop switching)
 ✅  | Mint  | Tested in v20.1
 ✅  | Ubuntu  | Tested in v20.04.1
@@ -223,4 +223,4 @@ An extra big thanks to the crosshair providers, as this wouldn't be possible wit
 
 See CrossOver in the [Electron Apps library](https://www.electronjs.org/apps/crossover)
 
-Created by [Lacy Morrow](http://lacymorrow.com)   <a href="https://www.buymeacoffee.com/lm" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+Created by [Lacy Morrow](http://lacymorrow.com)   <a href="https://www.buymeacoffee.com/lm" target="_blank"><img width="217" height="60" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
