@@ -108,7 +108,7 @@ const createMainWindow = async () => {
 		width: 200,
 		height: APP_HEIGHT,
 		webPreferences: {
-			contextIsolation: true,
+			contextIsolation: !is.linux,
 			enableRemoteModule: true,
 			nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
 			preload: path.join( __dirname, 'preload.js' )
