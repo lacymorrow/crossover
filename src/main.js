@@ -403,8 +403,9 @@ const moveWindow = direction => {
 	const locked = config.get( 'windowLocked' )
 	if ( !locked ) {
 
+		console.log('Move ', direction)
 		let newBound
-		const mainWindow = BrowserWindow.getAllWindows()[0]
+		// const mainWindow = BrowserWindow.getAllWindows()[0]
 		const bounds = mainWindow.getBounds()
 		switch ( direction ) {
 

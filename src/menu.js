@@ -43,7 +43,7 @@ const moveWindow = direction => {
 	if ( !locked ) {
 
 		let newBound
-		const mainWindow = BrowserWindow.getAllWindows()[1]
+		const mainWindow = BrowserWindow.getAllWindows()[2]
 		const bounds = mainWindow.getBounds()
 		switch ( direction ) {
 
