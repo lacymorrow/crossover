@@ -12,6 +12,7 @@ matrix:
             packages:
             - rpmbuild
             update: true
+
       # install: HOMEBREW_NO_AUTO_UPDATE=1 brew install rpmbuild
       script:
         - node --version
