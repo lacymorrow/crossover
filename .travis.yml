@@ -7,12 +7,12 @@ matrix:
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-      # addons:
-      #   homebrew:
-      #       packages:
-      #       - rpmbuild
-      #       update: true
-      install: HOMEBREW_NO_AUTO_UPDATE=1 brew install rpmbuild
+      addons:
+        homebrew:
+            packages:
+            - rpmbuild
+            update: true
+      # install: HOMEBREW_NO_AUTO_UPDATE=1 brew install rpmbuild
       script:
         - node --version
         - yarn --version
