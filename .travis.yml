@@ -3,14 +3,16 @@ matrix:
     - os: osx
       osx_image: xcode10.2
       language: node_js
-      node_js: '12'
+      node_js: '14.15.4'
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-      addons:
-        homebrew:
-            packages:
-            - rpmbuild
+      # addons:
+      #   homebrew:
+      #       packages:
+      #       - rpmbuild
+      #       update: true
+      install: HOMEBREW_NO_AUTO_UPDATE=1 brew install rpmbuild
       script:
         - node --version
         - yarn --version
@@ -28,15 +30,15 @@ matrix:
         - yarn install
         - yarn test
 
-    # - os: windows
-    #   language: node_js
-    #   node_js: '12'
-    #   script:
-    #     - node --version
-    #     - yarn --version
-    #     - yarn install
-    #     - yarn test  # Travis CI Windows doesn't support a GUI
-    #     - npm run build:windows
+    - os: windows
+      language: node_js
+      node_js: '12'
+      script:
+        - node --version
+        - yarn --version
+        - yarn install
+        - yarn test  # Travis CI Windows doesn't support a GUI
+        - npm run build:windows
 
 cache:
   yarn: true
