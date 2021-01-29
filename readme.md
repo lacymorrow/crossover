@@ -13,8 +13,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Quick Start
 
-### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
-##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
+### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
 
 - Choose a crosshair from over 50 included or drop a custom image
 - Click and drag the crosshair to move Crossover around
@@ -37,7 +36,9 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Persistant settings remembers your choices automatically
 - Automatically updates in the background to keep your features fresh
 
-### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
+
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
   <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
@@ -94,17 +95,15 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ## Usage
 
-> ❌ marks the spot...
+> ❌  marks the spot...
 
-Click and drag the crosshair to anywhere on any screen.
+**Position:** Click and drag the crosshair to anywhere on any screen. Double-click the bullseye to center the app.
 
-Click 'Choose Crosshair' to select from tons of preloaded crosshairs.
+**Choose Crosshair:** Click the bullseye ◎ to select from tons of preloaded crosshairs. Drag an image to the window to use your own custom crosshair.
 
-Drag an image to the window to use your own custom crosshair.
+**Customize** settings using the "gear" icon.
 
-Unlock the app to quit. In Windows: right-click > `Close`.
-
-###### On a Mac, the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
+**Unlock the app to quit**. In Windows: right-click > `Close`.
 
 #### Keyboard Shortcuts
 
@@ -117,7 +116,8 @@ Reset all settings and center the window                   | <kbd>Control</kbd>-
 Display the "About" window details                         | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
 Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
-(_MacOS only_) Double-click the drag icon or to center the crosshair on the current display.
+###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
+###### Linux: Some distributions do not center on double-click.
 
 <p align="center">
 	<br />
@@ -156,7 +156,7 @@ Works     | OS       | Notes
 ✅  | Windows 10 ia32  |
 ✅  | Windows 10 x64  | Custom cursors do not show in draggable taskbar area
 ❌  | Arch  | Tested in v2021.01.01
-❌  | Fedora | Tested in v33
+✅  | Fedora | Tested in v33 (Shortcut conflicts with desktop switching)
 ✅  | Mint  | Tested in v20.1
 ✅  | Ubuntu  | Tested in v20.04.1
 

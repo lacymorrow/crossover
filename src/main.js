@@ -1,5 +1,6 @@
 'use strict'
 
+// Conflicting accelerator on Fedora
 // Improve escapeAction to be window-aware
 // GetWindowBoundsCentered
 // centerWindow
@@ -190,9 +191,12 @@ const createChildWindow = async ( parent, windowName ) => {
 }
 
 // Save position to settings
-const saveBounds = debounce( () => {
+const saveBounds = debounce( (win) => {
+	if(!win){
+		win = mainWindow
+	}
 
-	const bounds = mainWindow.getBounds()
+	const bounds = win.getBounds()
 	config.set( 'positionX', bounds.x )
 	config.set( 'positionY', bounds.y )
 
@@ -320,7 +324,7 @@ const centerApp = () => {
 	mainWindow.show()
 
 	// Save game
-	saveBounds()
+	saveBounds(mainWindow)
 
 }
 
@@ -481,7 +485,7 @@ const registerEvents = () => {
 
 	mainWindow.on( 'move', () => {
 
-		saveBounds()
+		saveBounds(mainWindow)
 
 	} )
 
