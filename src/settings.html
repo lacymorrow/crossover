@@ -3,14 +3,57 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CrossOver</title>
-		<link rel="stylesheet" href="index.css">
+		<link rel="stylesheet" href="vendor/pickr/pickr.nano.min.css"/>
+		<link rel="stylesheet" href="index.css"> <!-- Order matters, we override Pickr styles -->
+		<script type="text/javascript" src="vendor/pickr/pickr.min.js"></script>
+		<script type="text/javascript" src="vendor/feather/feather-icons.min.js"></script>
 	</head>
 	<body>
 		<div id="settings-container">
 
+			<button class="close-button button"><i data-feather="x-circle"></i></button>
+
 			<div id="settings-wrapper">
 
-				<div id="crosshair-chooser"></div>
+				<div class="settings-background"></div>
+
+				<label for="color-picker">Color</label>
+				<div>
+					<div class="color-picker"></div>
+
+					<button id="select-crosshair-button">Choose Crosshair</button>
+
+				</div>
+
+				<label for="setting-sight">Sight</label>
+
+				<div class="setting-sight">
+					<label class="radio dot">
+					  <input name="radio" type="radio" value="dot" checked>
+					  <span><i data-feather="disc"></i></span>
+					</label>
+					<label class="radio cross">
+					  <input name="radio" value="cross" type="radio">
+					  <span><i data-feather="plus-circle"></i></span>
+					</label>
+					<label class="radio off">
+					  <input name="radio" value="off" type="radio">
+					  <span><i data-feather="eye-off"></i></span>
+					</label>
+				</div>
+
+				<label for="setting-size">Crosshair Size</label>
+				<div class="d-flex">
+					<input id="setting-size" type="range" min="5" max="100" step="1" value="100" />
+					<output id="output-size" for="setting-size">100</output><sup>%</sup>
+				</div>
+
+				<label for="setting-opacity">Opacity</label>
+				<div class="d-flex">
+					<input id="setting-opacity" type="range" min="0" max="100" step="1" />
+					<output id="output-opacity" for="setting-opacity">50</output><sup>%</sup>
+				</div>
+				<p class="help-text"><span>CTRL</span>+<span id="system-modifier">ALT</span>+<span>SHIFT</span>+<span>X</span></p>
 
 			</div>
 

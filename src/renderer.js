@@ -1,70 +1,35 @@
+/* global feather */
+
 ( () => {
 
-	// Imports
-	const { ipcRenderer } = require( 'electron' )
-	const { is } = require( 'electron-util' )
-	const Pickr = require( '@simonwep/pickr' )
-	const { debounce } = require( './util' )
-
 	// DOM elements
-	const dragger = document.querySelector( '.drag-me' )
-	const dragDrop = document.querySelector( '#drag-file' )
+	const wrapper = document.querySelector( '.crosshair-wrapper' )
+	const closeBtn = document.querySelector( '.close-button' )
+	const centerBtn = document.querySelector( '.center-button' )
+	const settingsBtn = document.querySelector( '.settings-button' )
+	const container = document.querySelector( '.container' )
 	const crosshairElement = document.querySelector( '#crosshair' )
 	const crosshairImg = document.querySelector( '#crosshairImg' )
-	const opacityInput = document.querySelector( '#setting-opacity' )
-	const opacityOutput = document.querySelector( '#output-opacity' )
-	const selectCrosshairBtn = document.querySelector( '#select-crosshair-button' )
-	const sizeInput = document.querySelector( '#setting-size' )
-	const sizeOutput = document.querySelector( '#output-size' )
-	const systemModifier = document.querySelector( '#system-modifier' )
 
-	// Set System Modifier on first load
-	systemModifier.textContent = is.macos ? 'OPTION' : 'ALT'
+	// OS Specific
+	if ( window.crossover.isMacOs ) {
 
-	// Create color picker
-	const pickr = Pickr.create( {
-		el: '.color-picker',
-		theme: 'nano', // Or 'monolith', or 'nano'
-		closeOnScroll: true,
-		position: 'right-start',
+		// Set class
+		document.body.classList.add( 'mac' )
 
-		swatches: [
-			'rgba(244, 67, 54, 1)',
-			'rgba(233, 30, 99, 0.95)',
-			'rgba(156, 39, 176, 0.9)',
-			'rgba(103, 58, 183, 0.85)',
-			'rgba(63, 81, 181, 0.8)',
-			'rgba(33, 150, 243, 0.75)',
-			'rgba(3, 169, 244, 0.7)',
-			'rgba(0, 188, 212, 0.7)',
-			'rgba(0, 150, 136, 0.75)',
-			'rgba(76, 175, 80, 0.8)',
-			'rgba(139, 195, 74, 0.85)',
-			'rgba(205, 220, 57, 0.9)',
-			'rgba(255, 235, 59, 0.95)',
-			'rgba(255, 193, 7, 1)'
-		],
+	} else if ( window.crossover.isLinux ) {
 
-		components: {
-			// Main components
-			preview: true,
-			opacity: true,
-			hue: true,
+		// Set class
+		document.body.classList.add( 'linux' )
 
-			// Input / output Options
-			interaction: {
-				hex: false,
-				rgba: false,
-				hsla: false,
-				hsva: false,
-				cmyk: false,
-				input: true,
-				clear: false,
-				save: true
-			}
-		}
-	} )
-	window.pickr = pickr
+	}
+
+	// Render icons
+	if ( feather ) {
+
+		feather.replace()
+
+	}
 
 	const setCrosshair = crosshair => {
 
@@ -81,7 +46,7 @@
 
 	}
 
-	ipcRenderer.on( 'set_crosshair', ( event, arg ) => {
+	window.crossover.receive( 'set_crosshair', arg => {
 
 		setCrosshair( arg )
 
@@ -94,33 +59,13 @@
 
 	}
 
-	ipcRenderer.on( 'set_custom_image', ( event, arg ) => {
+	window.crossover.receive( 'set_custom_image', arg => {
 
 		setCustomImage( arg )
 
 	} )
 
 	// Color
-	const stripHex = color => {
-
-		const hex = color.toHEXA().toString()
-		if ( hex.length > 7 ) {
-
-			return hex.slice( 0, 7 )
-
-		}
-
-		return hex
-
-	}
-
-	const loadColor = color => {
-
-		pickr.setColor( color )
-		setColor( color )
-
-	}
-
 	const setColor = color => {
 
 		document
@@ -129,88 +74,34 @@
 
 	}
 
-	pickr
-		.on( 'change', color => {
+	window.crossover.receive( 'set_color', arg => {
 
-			setColor( stripHex( color ) )
-
-		} )
-		.on( 'save', color => {
-
-			pickr.hide()
-
-			ipcRenderer.send( 'save_color', stripHex( color ) )
-
-		} )
-		.on( 'show', () => {
-
-			document.body.classList.add( 'pickr-open' )
-
-		} )
-		.on( 'hide', () => {
-
-			document.body.classList.remove( 'pickr-open' )
-
-		} )
-
-	ipcRenderer.on( 'load_color', ( event, arg ) => {
-
-		loadColor( arg )
+		setColor( arg )
 
 	} )
 
 	// Opacity
-	const dOpacityInput = debounce( value => {
-
-		ipcRenderer.send( 'save_opacity', value )
-
-	}, 1000 )
-
 	const setOpacity = opacity => {
 
-		opacityInput.value = opacity
-		opacityOutput.textContent = opacity
 		crosshairImg.style.opacity = `${opacity / 100}`
 		document.querySelector( '.sight' ).style.opacity = `${opacity / 100}`
-		dOpacityInput( opacity )
 
 	}
 
-	opacityInput.addEventListener( 'input', event => {
-
-		setOpacity( event.target.value )
-
-	} )
-
-	ipcRenderer.on( 'set_opacity', ( event, arg ) => {
+	window.crossover.receive( 'set_opacity', arg => {
 
 		setOpacity( arg )
 
 	} )
 
 	// Size
-	const dSizeInput = debounce( value => {
-
-		ipcRenderer.send( 'save_size', value )
-
-	}, 1000 )
-
 	const setSize = size => {
 
-		sizeInput.value = size
-		sizeOutput.textContent = size
 		crosshairElement.style = `width: ${size}px;height: ${size}px;`
-		dSizeInput( size )
 
 	}
 
-	sizeInput.addEventListener( 'input', event => {
-
-		setSize( event.target.value )
-
-	} )
-
-	ipcRenderer.on( 'set_size', ( event, arg ) => {
+	window.crossover.receive( 'set_size', arg => {
 
 		setSize( arg )
 
@@ -221,32 +112,18 @@
 
 		document.querySelector( '.sight' ).classList.remove( 'dot', 'cross', 'off' )
 		document.querySelector( '.sight' ).classList.add( sight )
-		document.querySelector( `.radio.${sight} input` ).checked = true
-		ipcRenderer.send( 'save_sight', sight )
 
 	}
 
-	const sightInputs = document.querySelectorAll( '.radio' )
-	for ( const element of sightInputs ) {
-
-		element.addEventListener( 'change', event => {
-
-			setSight( event.target.value )
-
-		} )
-
-	}
-
-	ipcRenderer.on( 'set_sight', ( event, arg ) => {
+	window.crossover.receive( 'set_sight', arg => {
 
 		setSight( arg )
 
 	} )
 
 	// Lock
-	ipcRenderer.on( 'lock_window', ( event, arg ) => {
+	window.crossover.receive( 'lock_window', arg => {
 
-		pickr.hide()
 		if ( arg ) {
 
 			document.body.classList.remove( 'draggable' )
@@ -259,63 +136,89 @@
 
 	} )
 
-	// Center window on double click
-	dragger.addEventListener( 'dblclick', () => {
+	// Close window
+	closeBtn.addEventListener( 'click', () => {
 
-		ipcRenderer.send( 'center_window' )
+		window.crossover.send( 'quit' )
+
+	} )
+
+	// Open settings window
+	settingsBtn.addEventListener( 'click', () => {
+
+		window.crossover.send( 'open_settings' )
+
+	} )
+
+	// Open Chooser
+	const dOpenChooser = window.crossover.debounce( () => {
+
+		window.crossover.send( 'open_chooser', crosshairImg.src )
+
+	}, 300 )
+
+	centerBtn.addEventListener( 'click', () => {
+
+		dOpenChooser()
+
+	} )
+
+	// Center window on double click
+	centerBtn.addEventListener( 'dblclick', () => {
+
+		dOpenChooser( { abort: true } )
+		window.crossover.send( 'center_window' )
 
 	} )
 
 	crosshairElement.addEventListener( 'dblclick', () => {
 
-		ipcRenderer.send( 'open_chooser', crosshairImg.src )
-
-	} )
-
-	// Button to open crosshair chooser
-	selectCrosshairBtn.addEventListener( 'click', () => {
-
-		// Send open request with current crosshair
-		ipcRenderer.send( 'open_chooser', crosshairImg.src )
+		window.crossover.send( 'center_window' )
 
 	} )
 
 	// Drag and drop Custom Image
 	// for drop events to fire, must cancel dragover and dragleave events
-	dragDrop.addEventListener( 'dragover', event => {
+	wrapper.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
-		dragDrop.classList.add( 'dropping' )
+		container.classList.add( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'dragleave', event => {
+	wrapper.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
 
-		// Prevent flickering on Windows
-		if ( event.target === dragDrop ) {
+		console.log( event.target )
 
-			dragDrop.classList.remove( 'dropping' )
+		// Prevent flickering on Windows
+		if ( window.crossover.isMacOs ) {
+
+			container.classList.remove( 'dropping' )
+
+		} else if ( event.target === wrapper ) {
+
+			container.classList.remove( 'dropping' )
 
 		}
 
 	} )
 
-	dragDrop.addEventListener( 'dragend', event => {
+	wrapper.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+		container.classList.remove( 'dropping' )
 
 	} )
 
-	dragDrop.addEventListener( 'drop', event => {
+	wrapper.addEventListener( 'drop', event => {
 
 		event.preventDefault()
-		dragDrop.classList.remove( 'dropping' )
+		container.classList.remove( 'dropping' )
 
 		// Send file path to main
-		ipcRenderer.send( 'save_custom_image', event.dataTransfer.files[0].path )
+		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
 	} )
 

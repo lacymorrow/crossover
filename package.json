@@ -1,11 +1,11 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "0.3.21",
-	"description": "🎯 A Crosshair Overlay for any screen",
+	"version": "1.0.3",
+	"description": "A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
-	"homepage": "https://github.com/lacymorrow/crossover",
+	"homepage": "https://lacymorrow.github.io/crossover",
 	"author": {
 		"name": "Lacy Morrow",
 		"email": "me@lacymorrow.com",
@@ -15,40 +15,47 @@
 		"url": "https://github.com/lacymorrow/crossover/issues"
 	},
 	"engines": {
-		"node": ">=10 <=14"
+		"node": "14.15.x"
 	},
 	"scripts": {
-		"postinstall": "electron-builder install-app-deps",
+		"ava": "ava -v",
 		"lint": "xo --fix",
-		"test": "npm run lint && ava -v",
+		"test": "npm run lint",
+		"css": "sass src/index.scss:src/index.css -s compressed",
+		"start": "npm run css && electron .",
+		"release": "np",
+		"pack": "rm -f *.tgz && electron-builder --dir",
+		"postinstall": "electron-builder install-app-deps",
 		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
-		"start": "sass src/index.scss:src/index.css -s compressed && electron .",
-		"pack": "rm -f *.tgz && electron-builder --dir",
 		"build": "rm -rf dist && electron-builder --macos --linux",
+		"build:all": "rm -rf dist && electron-builder -mwl --ia32 --x64",
+		"build:linux": "rm -rf dist && electron-builder --linux --ia32 --x64",
+		"build:mac": "rm -rf dist && electron-builder --macos --arm64 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
-		"release": "np"
+		"build:deb": "electron-builder --linux deb"
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.6.0",
 		"electron-context-menu": "^2.0.1",
 		"electron-debug": "^3.0.1",
-		"electron-store": "^5.1.1",
+		"electron-store": "^7.0.0",
 		"electron-unhandled": "^3.0.2",
 		"electron-updater": "^4.3.1",
 		"electron-util": "^0.14.1"
 	},
 	"devDependencies": {
 		"ava": "^3.8.2",
-		"electron": "^6.1.9",
-		"electron-builder": "^22.6.1",
-		"electron-builder-squirrel-windows": "^22.6.1",
-		"electron-reloader": "^1.0.1",
+		"electron": "^11.2.1",
+		"electron-builder": "^22.9.1",
+		"electron-builder-squirrel-windows": "^22.9.1",
+		"electron-reloader": "^1.2.0",
+		"eslint-config-xo": "^0.34.0",
 		"husky": "^4.2.5",
-		"np": "^6.2.3",
+		"np": "^7.2.0",
 		"sass": "^1.26.5",
-		"spectron": "^8.0.0",
-		"xo": "^0.30.0"
+		"spectron": "^13.0.0",
+		"xo": "^0.37.1"
 	},
 	"xo": {
 		"envs": [
@@ -129,7 +136,8 @@
 				"rpm",
 				"freebsd",
 				"pacman",
-				"snap"
+				"snap",
+				"rpm"
 			],
 			"category": "Game;Shooter"
 		},
@@ -159,7 +167,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-push": "npm test"
+			"pre-commit": "npm test"
 		}
 	}
 }

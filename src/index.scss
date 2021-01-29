@@ -29,6 +29,13 @@ body {
 	}
 }
 
+button {
+	cursor: pointer;
+	border: none;
+	outline: none;
+	background-color: transparent;
+}
+
 .help-text {
 	text-align: center;
 	letter-spacing: 1.1px;
@@ -56,23 +63,41 @@ body {
 	color: inherit;
 }
 
+// Blue "Hover" border
+.container,
+#settings-container,
+#chooser-container {
+	user-select: none;
+
+	&.dropping:before {
+		content: '';
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		bottom: 5px;
+		left: 5px;
+		border: 4px dashed $border_color_focus;
+		pointer-events: none;
+		z-index: 9;
+	}
+}
+
+/* Icon Styles */
+.feather {
+	// stroke:whitesmoke;
+	width: 20px;
+	height: 20px;
+}
+
 /* Application Style */
 .container {
-	padding: 15px 4px 4px 4px;
 	overflow: hidden;
 	position: relative;
 	background: none;
 	border-radius: 5px;
 	width: 100%;
 	height: 100%;
-	-webkit-user-select: none;
 	cursor: none;
-
-	&.dropping {
-		// box-shadow: inset 0 0 10px $border_color_focus;
-		padding: 11px 0 0 0;
-		border: 4px dashed $border_color_focus;
-	}
 }
 
 .background {
@@ -86,36 +111,64 @@ body {
 	z-index: -1;
 }
 
-.drag-me {
+.button {
+	user-select: none;
 	display: none;
-	// border: 1px solid #eee;
-	border-top: none;
-	border-left: none;
-	background: rgba(100, 100, 100, 1);
-	width: 35px;
-	height: 38px;
 	position: absolute;
-	bottom: 0;
-	right: -4px;
-	cursor: move;
-	cursor: -webkit-grab;
-	cursor: -moz-grab;
-	-webkit-user-select: none;
-	&:active {
-		cursor: move;
-		cursor: -webkit-grabbing;
-		cursor: -moz-grabbing;
+	z-index: 2;
+	.feather {
+		stroke:rgba(0,0,0,0.5);
 	}
-	&:before {
-		content: '.';
-		position: absolute;
-		top: 0;
-		left: 10px;
-		font-size: 20px;
-		line-height: 20px;
-		color: #eee;
-		text-shadow: 0 5px #eee, 0 10px #eee, 5px 0 #eee, 5px 5px #eee, 5px 10px #eee, 10px 0 #eee, 10px 5px #eee,
-			10px 10px #eee;
+	&:hover {
+		.feather {
+			stroke:rgba(0,0,0,0.4);
+		}
+	}
+}
+
+.close-button {
+	display: block;
+	top: 3px;
+	right: -1px;
+	user-select: inherit;
+}
+
+.main.close-button {
+	display: none;
+	right: auto;
+	left: 1px;
+}
+
+.linux .main.close-button {
+	display: block;
+}
+
+.settings-button {
+	bottom: 1px;
+	right: 1px;
+}
+
+.center-button {
+	bottom: 1px;
+	left: 1px;
+	// filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
+	.feather {
+		// stroke:rgba(255,255,255,0.6);
+	}
+}
+
+.drag-button {
+	top: 2px;
+	right: 2px;
+	left: 30px;
+	.feather {
+		width: 12px;
+		height: 12px;
+	}
+
+	.aligner {
+		display: flex;
+		justify-content: flex-end;
 	}
 }
 
@@ -128,63 +181,64 @@ body {
 }
 
 .crosshair-wrapper {
+	// This controls what is draggable
+	margin: 12px auto;
 	position: relative;
 	height: 100px;
-	width: 100%;
-	padding-bottom: 15px;
+	width: 150px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
 #crosshairImg {
-	-webkit-user-select: none;
+	user-select: none;
 	width: 100%;
 	height: auto;
 }
 
-.settings {
-	display: none;
-	padding: 10px 10px 5px 10px;
-	margin: 0 -4px -4px -4px; // Offset .dropping border
-	position: relative;
-	flex-direction: column;
-	&-background {
-		background: white;
-		transition: background 1s ease;
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		z-index: -1;
-	}
-}
-
 .draggable {
+	.drag-button,
+	.crosshair-wrapper,
+	.crosshair-wrapper * {
+		// This is the magic to make things draggable
+		-webkit-app-region: drag;
+	}
+
 	.container {
 		cursor: inherit;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
 	}
-	&:not(.pickr-open) {
-		.crosshair-wrapper,
-		.crosshair-wrapper * {
-			cursor: move;
-			cursor: -webkit-grab;
-			-webkit-app-region: drag;
-			&:active {
-				cursor: move;
-				cursor: -webkit-grabbing;
-			}
-		}
-	}
+
 	.background {
 		background: rgba(255, 255, 255, 0.5);
 	}
-	.drag-me {
+
+	.button:not(.main) {
 		display: block;
 	}
+
+	.drag-button {
+		cursor: grab;
+		&:active {
+			cursor: grabbing;
+		}
+	}
+
+	.center-button {
+		// Allow center on double-click (Windows; https://github.com/lacymorrow/crossover/issues/32)
+		-webkit-app-region: no-drag;
+		display: block;
+
+	}
+
 	.settings {
 		display: flex;
+	}
+
+	&.mac .crosshair-wrapper {
+		cursor: crosshair;
 	}
 }
 
@@ -194,8 +248,11 @@ body {
 
 label {
 	display: block;
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-bottom: 4px;
+	&:first-of-type {
+		margin-top: 0;
+	}
 }
 
 .sight {
@@ -384,34 +441,41 @@ input[type='range'] {
 }
 
 #select-crosshair-button {
-	cursor: pointer;
-	border: none;
-	outline: none;
+	padding-top: 5px;
+	padding-left: 20px;
 	font-size: 14px;
 	font-weight: 700;
 	text-decoration: underline;
 	color: #2466d8;
-	background-color: transparent;
 }
 
 /* Crosshair chooser */
 
+
+#chooser-container,
 #settings-container {
 	height: 100vh;
 	width: 100vw;
-	background: transparent;
-	padding: 4px 4px 4px 4px;
+	padding: 4px;
+	background: white;
+	border: 3px solid #111;
+}
 
-	&.dropping {
-		// box-shadow: inset 0 0 10px $border_color_focus;
-		padding: 0 0 0 0;
-		border: 4px dashed $border_color_focus;
-	}
+#settings-container {
+}
+
+#chooser-container {
+	padding-top: 25px;
+	border-radius: 5px;
+}
+
+#chooser-wrapper,
+#settings-wrapper {
+	height: 100%;
 }
 
 #settings-wrapper {
-	background: white;
-	height: 100%;
+	padding: 0 2px;
 }
 
 #crosshair-chooser {
@@ -421,7 +485,7 @@ input[type='range'] {
 	overflow-y: auto;
 
 	&::-webkit-scrollbar-track {
-		-webkit-box-shadow: none;
+		box-shadow: none;
 		border: none;
 		background-color: transparent;
 	}
@@ -435,7 +499,7 @@ input[type='range'] {
 	&::-webkit-scrollbar-thumb {
 		opacity: 0.9;
 		border-radius: 10px;
-		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+		box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 		background-color: #555;
 	}
 
@@ -454,10 +518,14 @@ input[type='range'] {
 		display: block;
 		padding: 0 0.5em;
 		font-size: 20px;
-		color: #2466d8;
+		// color: #2466d8; // Blue
 		margin-bottom: 0;
+		&:first-of-type {
+			margin-top: 0;
+		}
 	}
 
+	// Collection wrapper
 	&>div {
 		width: 100%;
 		padding: 0 0.5em 0;
@@ -466,7 +534,11 @@ input[type='range'] {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
-		align-items: center;
+		align-items: start;
+
+		p {
+			max-width: 88px;
+		}
 	}
 
 	img {

@@ -1,49 +1,32 @@
 'use strict'
+
+// Conflicting accelerator on Fedora
+// Improve escapeAction to be window-aware
+// GetWindowBoundsCentered
+// centerWindow
+
 const fs = require( 'fs' )
 
 const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { is, showAboutWindow } = require( 'electron-util' )
+const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
+const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
+
+// Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
 unhandled()
 debug( {
-	showDevTools: false,
+	showDevTools: is.development && !is.linux,
 	devToolsMode: 'undocked'
 } )
-
-try {
-
-	require( 'electron-reloader' )( module )
-
-} catch ( _ ) {}
-
-// Note: Must match `build.appId` in package.json
-app.setAppUserModelId( 'com.lacymorrow.crossover' )
-
-// Fix for Linux transparency issues
-if ( is.linux ) {
-
-	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-	app.commandLine.appendSwitch( 'disable-gpu' )
-	app.disableHardwareAcceleration()
-
-}
-
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
-
-	app.quit()
-
-}
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -62,29 +45,56 @@ try {
 
 	}
 
-} catch ( _ ) {}
+} catch {}
+
+// Electron reloader is janky sometimes
+// try {
+
+// 	require( 'electron-reloader' )( module )
+
+// } catch {}
+
+/* App setup */
+
+// Note: Must match `build.appId` in package.json
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
+
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
+
+	app.quit()
+
+}
+
+// Fix for Linux transparency issues
+if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
+
+	// Disable hardware acceleration
+	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+	app.commandLine.appendSwitch( 'disable-gpu' )
+	app.disableHardwareAcceleration()
+
+}
 
 // Prevent window from being garbage collected
 let mainWindow
 let chooserWindow
+let settingsWindow
 let windowHidden = false // Maintain hidden state
 
 // __static path
-const __static =
-	process.env.NODE_ENV === 'development' ?
-		'static' :
-		path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
+const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async () => {
 
-	const win = new BrowserWindow( {
+	const preferences = {
 		title: app.name,
-		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
+		acceptFirstMouse: true,
 		alwaysOnTop: true,
 		frame: false,
 		hasShadow: false,
@@ -97,26 +107,27 @@ const createMainWindow = async () => {
 		transparent: true,
 		show: false,
 		width: 200,
-		height: 350,
+		height: APP_HEIGHT,
 		webPreferences: {
-			nodeIntegration: true // We don't absolutely need this, but renderer require's some things
-
-			// preload: path.join( __dirname, 'preload.js' )
-
-			// Sandbox: true,
+			contextIsolation: !is.linux,
+			enableRemoteModule: true,
+			nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
+			preload: path.join( __dirname, 'preload.js' )
 
 		}
-	} )
+	}
+
+	if ( is.windows ) {
+
+		preferences.type = 'toolbar'
+
+	}
+
+	const win = new BrowserWindow( preferences )
 
 	setDockVisible( false )
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 	setDockVisible( true )
-
-	win.on( 'ready-to-show', () => {
-
-		win.show()
-
-	} )
 
 	win.on( 'closed', () => {
 
@@ -132,38 +143,64 @@ const createMainWindow = async () => {
 
 }
 
-const createChildWindow = async _ => {
+const createChildWindow = async ( parent, windowName ) => {
 
-	const win = new BrowserWindow( {
-		parent: mainWindow,
+	const VALID_WINDOWS = [ 'chooser', 'settings' ]
+
+	const preferences = {
+		parent,
 		modal: true,
 		show: false,
 		type: 'toolbar',
-		frame: false,
-		// HasShadow: false,
+		frame: config.get( 'app' ).WINDOW_FRAME,
+		hasShadow: true,
 		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
-		// Maximizable: false,
-		// minimizable: false,
+		maximizable: false,
+		minimizable: false,
 		transparent: true,
-		nodeIntegration: false, // Is default value after Electron v5
 		width: 600,
-		height: 500,
+		height: 400,
 		webPreferences: {
-			preload: path.join( __dirname, 'preload-settings.js' )
+			nodeIntegration: false, // Is default value after Electron v5
+			contextIsolation: true, // Protect against prototype pollution
+			enableRemoteModule: true, // Turn off remote
+			preload: path.join( __dirname, `preload-${windowName}.js` )
 		}
-	} )
+	}
 
-	await win.loadFile( path.join( __dirname, 'settings.html' ) )
+	if ( !VALID_WINDOWS.includes( windowName ) ) {
+
+		return
+
+	}
+
+	if ( windowName === 'settings' ) {
+
+		preferences.width = 200
+		preferences.height = 250
+
+	}
+
+	const win = new BrowserWindow( preferences )
+
+	await win.loadFile( path.join( __dirname, `${windowName}.html` ) )
 
 	return win
 
 }
 
 // Save position to settings
-const saveBounds = debounce( () => {
+const saveBounds = debounce( win => {
 
-	const bounds = mainWindow.getBounds()
+	if ( !win ) {
+
+		win = mainWindow
+
+	}
+
+	const bounds = win.getBounds()
+	console.log( `Save bounds: ${bounds.x}, ${bounds.y}` )
 	config.set( 'positionX', bounds.x )
 	config.set( 'positionY', bounds.y )
 
@@ -184,11 +221,11 @@ const getImages = ( directory, level ) => {
 	return new Promise( ( resolve, reject ) => {
 
 		const crosshairs = []
-		fs.readdir( directory, async ( err, dir ) => {
+		fs.promises.readdir( directory, async ( error, dir ) => {
 
-			if ( err ) {
+			if ( error ) {
 
-				reject( new Error( `Promise Errored: ${err}`, directory ) )
+				reject( new Error( `Promise Errored: ${error}`, directory ) )
 
 			}
 
@@ -220,13 +257,15 @@ const getImages = ( directory, level ) => {
 
 const setColor = color => {
 
-	mainWindow.webContents.send( 'load_color', color )
+	mainWindow.webContents.send( 'set_color', color )
+	settingsWindow.webContents.send( 'set_color', color )
 
 }
 
 const setOpacity = opacity => {
 
 	mainWindow.webContents.send( 'set_opacity', opacity )
+	settingsWindow.webContents.send( 'set_opacity', opacity )
 
 }
 
@@ -243,12 +282,14 @@ const setPosition = ( posX, posY ) => {
 const setSight = sight => {
 
 	mainWindow.webContents.send( 'set_sight', sight )
+	settingsWindow.webContents.send( 'set_sight', sight )
 
 }
 
 const setSize = size => {
 
 	mainWindow.webContents.send( 'set_size', size )
+	settingsWindow.webContents.send( 'set_size', size )
 
 }
 
@@ -273,31 +314,21 @@ const setDockVisible = visible => {
 
 const centerApp = () => {
 
-	mainWindow.hide()
-	mainWindow.center()
-	const bounds = mainWindow.getBounds()
+	// Electron way
+	// MainWindow.hide()
+	// mainWindow.center()
+	// const bounds = mainWindow.getBounds()
 
-	// This is my way
-	// Recenter bounds because electron isn't perfect
-	if ( is.macos ) {
-
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 200 } )
-
-	} else {
-
-		mainWindow.setBounds( { x: bounds.x, y: bounds.y + 132 } )
-
-	}
+	// This is the Sindre way
+	centerWindow( {
+		window: mainWindow,
+		animated: true
+	} )
 
 	mainWindow.show()
 
-	// This is the Electron way
-	// CenterWindow( {
-	// 	window: mainWindow,
-	// 	animated: true
-	// } )
-
-	saveBounds()
+	// Save game
+	saveBounds( mainWindow )
 
 }
 
@@ -329,6 +360,8 @@ const lockWindow = lock => {
 
 	console.log( `Locked: ${lock}` )
 
+	hideChooserWindow()
+	hideSettingsWindow()
 	mainWindow.closable = !lock
 	mainWindow.setIgnoreMouseEvents( lock )
 	mainWindow.webContents.send( 'lock_window', lock )
@@ -360,7 +393,16 @@ const hideChooserWindow = () => {
 
 	}
 
-	globalShortcut.unregister( 'Escape' )
+}
+
+// Switch window type when hiding chooser
+const hideSettingsWindow = () => {
+
+	if ( settingsWindow ) {
+
+		settingsWindow.hide()
+
+	}
 
 }
 
@@ -369,8 +411,9 @@ const moveWindow = direction => {
 	const locked = config.get( 'windowLocked' )
 	if ( !locked ) {
 
+		console.log( 'Move', direction )
 		let newBound
-		const mainWindow = BrowserWindow.getAllWindows()[0]
+		// Const mainWindow = BrowserWindow.getAllWindows()[0]
 		const bounds = mainWindow.getBounds()
 		switch ( direction ) {
 
@@ -406,12 +449,25 @@ const moveWindow = direction => {
 
 const aboutWindow = () => {
 
+	// Console.dir( app.getGPUFeatureStatus() )
+	// Console.dir(app.getAppMetrics());
+	// app.getGPUInfo('complete').then(completeObj => {
+	//        console.dir(completeObj);
+	//    });
 	showAboutWindow( {
 		icon: path.join( __static, 'Icon.png' ),
-		copyright: `CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text:
-			'A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.'
+			`A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
 	} )
+
+}
+
+const escapeAction = () => {
+
+	hideChooserWindow()
+	hideSettingsWindow()
+	globalShortcut.unregister( 'Escape' )
 
 }
 
@@ -429,40 +485,74 @@ const resetSettings = () => {
 
 }
 
-const setupApp = async () => {
+const registerEvents = () => {
 
-	// Set to previously selected crosshair
-	const currentCrosshair = config.get( 'crosshair' )
-	if ( currentCrosshair ) {
+	mainWindow.on( 'move', () => {
 
-		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
+		saveBounds( mainWindow )
 
-	}
-
-	// Setup crosshair chooser, must come before the check below
-	chooserWindow.webContents.send( 'load_crosshairs', {
-		crosshairs: await getCrosshairImages(),
-		current: currentCrosshair
 	} )
 
-	setColor( config.get( 'color' ) )
-	setOpacity( config.get( 'opacity' ) )
-	setSight( config.get( 'sight' ) )
-	setSize( config.get( 'size' ) )
+	// Reopen settings/chooser if killed
+	chooserWindow.on( 'close', async () => {
 
-	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) > -1 ) {
+		hideWindow()
+		await createChooser()
+		registerEvents()
+		mainWindow.show()
 
-		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
+	} )
+
+	settingsWindow.on( 'close', async () => {
+
+		hideWindow()
+		await createSettings()
+		registerEvents()
+		mainWindow.show()
+
+	} )
+
+	// Close windows if clicked away (mac only)
+	if ( !is.development ) {
+
+		chooserWindow.on( 'blur', () => {
+
+			hideChooserWindow()
+
+		} )
+
+		settingsWindow.on( 'blur', () => {
+
+			hideSettingsWindow()
+
+		} )
 
 	}
-
-	// Set lock state
-	lockWindow( config.get( 'windowLocked' ) )
 
 }
 
-const registerComms = () => {
+const dColorInput = debounce( arg => {
+
+	console.log( `Set color: ${arg}` )
+	config.set( 'color', arg )
+
+}, 400 )
+
+const dOpacityInput = debounce( arg => {
+
+	console.log( `Set opacity: ${arg}` )
+	config.set( 'opacity', arg )
+
+}, 400 )
+
+const dSizeInput = debounce( arg => {
+
+	console.log( `Set size: ${arg}` )
+	config.set( 'size', arg )
+
+}, 400 )
+
+const registerIpc = () => {
 
 	/* IP Communication */
 	ipcMain.on( 'log', ( event, arg ) => {
@@ -473,6 +563,8 @@ const registerComms = () => {
 
 	ipcMain.on( 'open_chooser', async ( ..._ ) => {
 
+		hideSettingsWindow()
+
 		// Don't do anything if locked
 		if ( config.get( 'windowLocked' ) ) {
 
@@ -482,20 +574,97 @@ const registerComms = () => {
 
 		if ( !chooserWindow ) {
 
-			chooserWindow = await createChildWindow( mainWindow )
+			chooserWindow = await createChooser()
 
 		}
 
 		// Create shortcut to close chooser
-		globalShortcut.register( 'Escape', hideChooserWindow )
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
+			globalShortcut.register( 'Escape', escapeAction )
+
+		}
+
 		chooserWindow.show()
+
+		// Modal placement is different per OS
+		if ( is.linux || is.macos ) {
+
+			const bounds = chooserWindow.getBounds()
+			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		} else {
+
+			// Windows
+
+			centerWindow( {
+				window: chooserWindow,
+				animated: true
+			} )
+
+		}
+
+	} )
+
+	ipcMain.on( 'open_settings', async ( ..._ ) => {
+
+		hideChooserWindow()
+
+		// Don't do anything if locked
+		if ( config.get( 'windowLocked' ) ) {
+
+			return
+
+		}
+
+		if ( !settingsWindow ) {
+
+			settingsWindow = await createSettings()
+
+		}
+
+		// Create shortcut to close window
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
+			globalShortcut.register( 'Escape', escapeAction )
+
+		}
+
+		settingsWindow.show()
+
+		// Modal placement is different per OS
+		if ( is.linux || is.macos ) {
+
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+
+		} else {
+
+			centerWindow( {
+				window: settingsWindow,
+				animated: true
+			} )
+
+		}
+
+	} )
+
+	ipcMain.on( 'close_chooser', _ => {
+
+		hideChooserWindow()
+
+	} )
+
+	ipcMain.on( 'close_settings', _ => {
+
+		hideSettingsWindow()
 
 	} )
 
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
-		console.log( `Set color: ${arg}` )
-		config.set( 'color', arg )
+		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
+		dColorInput( arg )
 
 	} )
 
@@ -513,14 +682,28 @@ const registerComms = () => {
 
 	} )
 
+	ipcMain.on( 'get_crosshairs', async _ => {
+
+		// Setup crosshair chooser, must come before the check below
+		if ( chooserWindow ) {
+
+			chooserWindow.webContents.send( 'load_crosshairs', {
+				crosshairs: await getCrosshairImages(),
+				current: config.get( 'crosshair' )
+			} )
+
+		}
+
+	} )
+
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
 		if ( arg ) {
 
 			console.log( `Set crosshair: ${arg}` )
+			hideChooserWindow()
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
-			hideChooserWindow()
 
 		} else {
 
@@ -532,22 +715,23 @@ const registerComms = () => {
 
 	ipcMain.on( 'save_opacity', ( event, arg ) => {
 
-		console.log( `Set opacity: ${arg}` )
-		config.set( 'opacity', arg )
-
-	} )
-
-	ipcMain.on( 'save_sight', ( event, arg ) => {
-
-		console.log( `Set sight: ${arg}` )
-		config.set( 'sight', arg )
+		mainWindow.webContents.send( 'set_opacity', arg ) // Pass to renderer
+		dOpacityInput( arg )
 
 	} )
 
 	ipcMain.on( 'save_size', ( event, arg ) => {
 
-		console.log( `Set size: ${arg}` )
-		config.set( 'size', arg )
+		mainWindow.webContents.send( 'set_size', arg ) // Pass to renderer
+		dSizeInput( arg )
+
+	} )
+
+	ipcMain.on( 'save_sight', ( event, arg ) => {
+
+		mainWindow.webContents.send( 'set_sight', arg ) // Pass to renderer
+		console.log( `Set sight: ${arg}` )
+		config.set( 'sight', arg )
 
 	} )
 
@@ -564,31 +748,36 @@ const registerComms = () => {
 
 	} )
 
+}
+
+const registerShortcuts = () => {
+
 	/* Global KeyListners */
+	const accelerator = 'Control+Shift+Alt'
 
 	// Toggle CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+X', () => {
+	globalShortcut.register( `${accelerator}+X`, () => {
 
 		toggleWindowLock()
 
 	} )
 
 	// Center CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+C', () => {
+	globalShortcut.register( `${accelerator}+C`, () => {
 
 		centerApp()
 
 	} )
 
 	// Hide CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+E', () => {
+	globalShortcut.register( `${accelerator}+E`, () => {
 
 		hideWindow()
 
 	} )
 
 	// // Move CrossOver to next monitor - this code actually fullscreens too...
-	// globalShortcut.register( 'Control+Shift+Alt+M', () => {
+	// globalShortcut.register( `${accelerator}+M`, () => {
 
 	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
 	// 	mainWindow.setBounds(currentScreen.workArea)
@@ -596,43 +785,114 @@ const registerComms = () => {
 	// } )
 
 	// Reset CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+R', () => {
+	globalShortcut.register( `${accelerator}+R`, () => {
 
 		resetSettings()
 
 	} )
 
 	// About CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+A', () => {
+	globalShortcut.register( `${accelerator}+A`, () => {
 
 		aboutWindow()
 
 	} )
 
 	// Single pixel movement
-	globalShortcut.register( 'Control+Shift+Alt+Up', () => {
+	globalShortcut.register( `${accelerator}+Up`, () => {
 
 		moveWindow( 'up' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Down', () => {
+	globalShortcut.register( `${accelerator}+Down`, () => {
 
 		moveWindow( 'down' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Left', () => {
+	globalShortcut.register( `${accelerator}+Left`, () => {
 
 		moveWindow( 'left' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Right', () => {
+	globalShortcut.register( `${accelerator}+Right`, () => {
 
 		moveWindow( 'right' )
 
 	} )
+
+}
+
+const createChooser = async currentCrosshair => {
+
+	if ( !currentCrosshair ) {
+
+		currentCrosshair = config.get( 'crosshair' )
+
+	}
+
+	chooserWindow = await createChildWindow( mainWindow, 'chooser' )
+
+	// Setup crosshair chooser, must come before the check below
+	chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await getCrosshairImages(),
+		current: currentCrosshair
+	} )
+
+	return chooserWindow
+
+}
+
+const createSettings = async () => {
+
+	settingsWindow = await createChildWindow( mainWindow, 'settings' )
+
+	return settingsWindow
+
+}
+
+const setupApp = async () => {
+
+	// IPC
+	registerIpc()
+
+	// Keyboard shortcuts
+	registerShortcuts()
+
+	// Set to previously selected crosshair
+	const currentCrosshair = config.get( 'crosshair' )
+
+	// Create child windows
+	await createSettings()
+
+	if ( currentCrosshair ) {
+
+		console.log( `Set crosshair: ${currentCrosshair}` )
+		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
+
+	}
+
+	setColor( config.get( 'color' ) )
+	setOpacity( config.get( 'opacity' ) )
+	setSight( config.get( 'sight' ) )
+	setSize( config.get( 'size' ) )
+
+	// Center app by default - set position if config exists
+	if ( config.get( 'positionX' ) > -1 ) {
+
+		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
+
+	}
+
+	// Set lock state, timeout makes it pretty
+	setTimeout( () => lockWindow( config.get( 'windowLocked' ) ), 500 )
+
+	await createChooser( currentCrosshair )
+
+	// Window Events after windows are created
+	registerEvents()
 
 }
 
@@ -669,32 +929,23 @@ app.on( 'activate', async () => {
 
 } )
 
-// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-app.on( 'ready', () => setTimeout( registerComms, 400 ) )
+const ready = async () => {
+
+	Menu.setApplicationMenu( menu )
+	mainWindow = await createMainWindow()
+
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+	setupApp()
+
+}
 
 module.exports = async () => {
 
 	await app.whenReady()
-	Menu.setApplicationMenu( menu )
-	mainWindow = await createMainWindow()
-	chooserWindow = await createChildWindow( mainWindow )
 
-	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	// ChooserWindow.setAlwaysOnTop( true, 'pop-up-menu' )
-
-	mainWindow.on( 'move', () => {
-
-		saveBounds()
-
-	} )
-
-	mainWindow.crossover = {
-		config,
-		moveWindow,
-		setColor
-	}
-
-	setupApp()
+	// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+	setTimeout( ready, 400 )
 
 }

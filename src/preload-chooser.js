@@ -1,19 +1,19 @@
 // Via https://github.com/reZach/secure-electron-template
 
+const path = require( 'path' )
 const {
 	contextBridge,
 	ipcRenderer
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { debounce } = require( './util' )
 
 contextBridge.exposeInMainWorld( 'crossover', {
-	debounce,
 	isMacOs: is.macos,
+	path,
 	send: ( channel, data ) => {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'save_color', 'save_opacity', 'save_size', 'save_sight', 'center_window', 'open_chooser', 'save_custom_image', 'close_settings' ] )
+		const validChannels = new Set( [ 'log', 'save_crosshair', 'save_custom_image', 'close_chooser', 'get_crosshairs' ] )
 
 		if ( validChannels.has( channel ) ) {
 
@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld( 'crossover', {
 
 	receive: ( channel, func ) => {
 
-		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight' ] )
+		const validChannels = new Set( [ 'load_crosshairs' ] )
 
 		if ( validChannels.has( channel ) ) {
 
