@@ -15,6 +15,7 @@ jobs:
       addons:
         homebrew:
             packages:
+            - rpm
             - rpmbuild
             update: true
 
