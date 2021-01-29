@@ -2,6 +2,9 @@
 
 ( () => {
 
+	// Loaded indicator
+	let loaded = false
+
 	// DOM elements
 	const containerElement = document.querySelector( '#chooser-container' )
 	const chooserElement = document.querySelector( '#crosshair-chooser' )
@@ -35,6 +38,8 @@
 			}
 
 		}
+
+		loaded = true
 
 	}
 
@@ -188,5 +193,16 @@
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
 	} )
+
+	setTimeout( () => {
+
+		if ( !loaded ) {
+
+			console.log( 'Fallback' )
+			window.crossover.send( 'get_crosshairs' )
+
+		}
+
+	}, 5000 )
 
 } )()

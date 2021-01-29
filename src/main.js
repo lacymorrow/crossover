@@ -559,7 +559,7 @@ const registerIpc = () => {
 
 		if ( !chooserWindow ) {
 
-			chooserWindow = await createChildWindow( mainWindow, 'chooser' )
+			chooserWindow = await createChooser()
 
 		}
 
@@ -573,12 +573,14 @@ const registerIpc = () => {
 		chooserWindow.show()
 
 		// Modal placement is different per OS
-		if ( is.macos ) {
+		if ( is.linux || is.macos ) {
 
 			const bounds = chooserWindow.getBounds()
 			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
 
 		} else {
+
+			// Windows
 
 			centerWindow( {
 				window: chooserWindow,
@@ -602,7 +604,7 @@ const registerIpc = () => {
 
 		if ( !settingsWindow ) {
 
-			settingsWindow = await createChildWindow( mainWindow, 'settings' )
+			settingsWindow = await createSettings()
 
 		}
 
@@ -616,7 +618,7 @@ const registerIpc = () => {
 		settingsWindow.show()
 
 		// Modal placement is different per OS
-		if ( is.macos ) {
+		if ( is.linux || is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
 			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
@@ -660,6 +662,20 @@ const registerIpc = () => {
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
 			config.set( 'crosshair', arg )
 			hideChooserWindow()
+
+		}
+
+	} )
+
+	ipcMain.on( 'get_crosshairs', async _ => {
+
+		// Setup crosshair chooser, must come before the check below
+		if ( chooserWindow ) {
+
+			chooserWindow.webContents.send( 'load_crosshairs', {
+				crosshairs: await getCrosshairImages(),
+				current: config.get( 'crosshair' )
+			} )
 
 		}
 
@@ -722,30 +738,31 @@ const registerIpc = () => {
 const registerShortcuts = () => {
 
 	/* Global KeyListners */
+	const accelerator = 'Control+Shift+Alt'
 
 	// Toggle CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+X', () => {
+	globalShortcut.register( `${accelerator}+X`, () => {
 
 		toggleWindowLock()
 
 	} )
 
 	// Center CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+C', () => {
+	globalShortcut.register( `${accelerator}+C`, () => {
 
 		centerApp()
 
 	} )
 
 	// Hide CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+E', () => {
+	globalShortcut.register( `${accelerator}+E`, () => {
 
 		hideWindow()
 
 	} )
 
 	// // Move CrossOver to next monitor - this code actually fullscreens too...
-	// globalShortcut.register( 'Control+Shift+Alt+M', () => {
+	// globalShortcut.register( `${accelerator}+M`, () => {
 
 	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
 	// 	mainWindow.setBounds(currentScreen.workArea)
@@ -753,39 +770,39 @@ const registerShortcuts = () => {
 	// } )
 
 	// Reset CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+R', () => {
+	globalShortcut.register( `${accelerator}+R`, () => {
 
 		resetSettings()
 
 	} )
 
 	// About CrossOver
-	globalShortcut.register( 'Control+Shift+Alt+A', () => {
+	globalShortcut.register( `${accelerator}+A`, () => {
 
 		aboutWindow()
 
 	} )
 
 	// Single pixel movement
-	globalShortcut.register( 'Control+Shift+Alt+Up', () => {
+	globalShortcut.register( `${accelerator}+Up`, () => {
 
 		moveWindow( 'up' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Down', () => {
+	globalShortcut.register( `${accelerator}+Down`, () => {
 
 		moveWindow( 'down' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Left', () => {
+	globalShortcut.register( `${accelerator}+Left`, () => {
 
 		moveWindow( 'left' )
 
 	} )
 
-	globalShortcut.register( 'Control+Shift+Alt+Right', () => {
+	globalShortcut.register( `${accelerator}+Right`, () => {
 
 		moveWindow( 'right' )
 
@@ -809,11 +826,15 @@ const createChooser = async currentCrosshair => {
 		current: currentCrosshair
 	} )
 
+	return chooserWindow
+
 }
 
 const createSettings = async () => {
 
 	settingsWindow = await createChildWindow( mainWindow, 'settings' )
+
+	return settingsWindow
 
 }
 

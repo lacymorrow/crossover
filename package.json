@@ -23,16 +23,17 @@
 		"test": "npm run lint",
 		"css": "sass src/index.scss:src/index.css -s compressed",
 		"start": "npm run css && electron .",
+		"release": "np",
+		"pack": "rm -f *.tgz && electron-builder --dir",
+		"postinstall": "electron-builder install-app-deps",
+		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
+		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"build": "rm -rf dist && electron-builder --macos --linux",
 		"build:all": "rm -rf dist && electron-builder -mwl --ia32 --x64",
 		"build:linux": "rm -rf dist && electron-builder --linux --ia32 --x64",
 		"build:mac": "rm -rf dist && electron-builder --macos --arm64 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
-		"release": "np",
-		"pack": "rm -f *.tgz && electron-builder --dir",
-		"postinstall": "electron-builder install-app-deps",
-		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
-		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;"
+		"build:deb": "electron-builder --linux deb"
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.6.0",
