@@ -24,7 +24,7 @@ const menu = require( './menu' )
 
 unhandled()
 debug( {
-	showDevTools: is.development,
+	showDevTools: is.development && !is.linux,
 	devToolsMode: 'undocked'
 } )
 
@@ -193,7 +193,6 @@ const createChildWindow = async ( parent, windowName ) => {
 // Save position to settings
 const saveBounds = debounce( win => {
 
-
 	if ( !win ) {
 
 		win = mainWindow
@@ -201,7 +200,7 @@ const saveBounds = debounce( win => {
 	}
 
 	const bounds = win.getBounds()
-	console.log(`Save bounds: ${bounds.x}, ${bounds.y}`)
+	console.log( `Save bounds: ${bounds.x}, ${bounds.y}` )
 	config.set( 'positionX', bounds.x )
 	config.set( 'positionY', bounds.y )
 
