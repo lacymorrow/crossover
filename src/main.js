@@ -191,9 +191,12 @@ const createChildWindow = async ( parent, windowName ) => {
 }
 
 // Save position to settings
-const saveBounds = debounce( (win) => {
-	if(!win){
+const saveBounds = debounce( win => {
+
+	if ( !win ) {
+
 		win = mainWindow
+
 	}
 
 	const bounds = win.getBounds()
@@ -324,7 +327,7 @@ const centerApp = () => {
 	mainWindow.show()
 
 	// Save game
-	saveBounds(mainWindow)
+	saveBounds( mainWindow )
 
 }
 
@@ -485,7 +488,7 @@ const registerEvents = () => {
 
 	mainWindow.on( 'move', () => {
 
-		saveBounds(mainWindow)
+		saveBounds( mainWindow )
 
 	} )
 
