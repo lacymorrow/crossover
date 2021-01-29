@@ -5,8 +5,9 @@
 // GetWindowBoundsCentered
 // centerWindow
 
-const fs = require( 'fs' )
 
+// const NativeExtension = require('bindings')('NativeExtension');
+const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
@@ -105,6 +106,7 @@ const createMainWindow = async () => {
 		resizable: false,
 		skipTaskbar: false,
 		transparent: true,
+		useContentSize: true,
 		show: false,
 		width: 200,
 		height: APP_HEIGHT,
@@ -126,8 +128,10 @@ const createMainWindow = async () => {
 	const win = new BrowserWindow( preferences )
 
 	setDockVisible( false )
+	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
-	setDockVisible( true )
+	// Enables staying on fullscreen apps - mac
+	// setDockVisible( true )
 
 	win.on( 'closed', () => {
 
@@ -585,10 +589,8 @@ const registerIpc = () => {
 
 		}
 
-		chooserWindow.show()
-
 		// Modal placement is different per OS
-		if ( is.linux || is.macos ) {
+		if ( is.macos ) {
 
 			const bounds = chooserWindow.getBounds()
 			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
@@ -603,6 +605,8 @@ const registerIpc = () => {
 			} )
 
 		}
+
+		chooserWindow.show()
 
 	} )
 
@@ -630,10 +634,8 @@ const registerIpc = () => {
 
 		}
 
-		settingsWindow.show()
-
 		// Modal placement is different per OS
-		if ( is.linux || is.macos ) {
+		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
 			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
@@ -646,6 +648,8 @@ const registerIpc = () => {
 			} )
 
 		}
+
+		settingsWindow.show()
 
 	} )
 
@@ -770,7 +774,7 @@ const registerShortcuts = () => {
 	} )
 
 	// Hide CrossOver
-	globalShortcut.register( `${accelerator}+E`, () => {
+	globalShortcut.register( `${accelerator}+H`, () => {
 
 		hideWindow()
 
@@ -936,6 +940,8 @@ const ready = async () => {
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+	console.log(mainWindow.getNativeWindowHandle())
 
 	setupApp()
 

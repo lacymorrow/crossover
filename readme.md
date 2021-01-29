@@ -133,13 +133,14 @@ Move the crosshair a single pixel                          | <kbd>Control</kbd>-
 
 Works     | Game     | Notes
 ----------|----------|-------
-✅  | Among Us       |
-✅  | Escape from Tarkov       |
-✅  | Fortnite       | Runs in windowed-fullscreen mode
-❌  | Rainbow 6: Seige  | Vulkan-based
-✅  | Star Wars Battlefront 2       | Runs in borderless mode
-✅  | Tony Hawks Pro Skater       |
-❌  | Vulkan-based games  |
+✅  | Among Us                |
+✅  | Escape from Tarkov      |
+✅  | Fortnite                | Runs in `Windowed Fullscreen` mode
+❌  | Rainbow 6: Seige        | Vulkan-based
+✅  | Rust                    | Runs in `Windowed Fullscreen` mode
+✅  | Star Wars Battlefront 2 | Runs in borderless mode
+✅  | Tony Hawks Pro Skater 1+2  |
+❌  | Vulkan-based games      |
 
 > Reported from our users, [add your resuts](https://github.com/lacymorrow/crossover/issues/47)
 
@@ -148,10 +149,11 @@ Works     | Game     | Notes
 Works     | OS       | Notes
 ----------|----------|-------
 ❓  | MacOS arm64 _(M1)_  |
-✅  | MacOS x64 _(Intel)_  |
+✅  | MacOS x64 _(Intel)_  | Tested on Catalina 10.15.1
 ✅  | Windows 10 ia32  |
 ✅  | Windows 10 x64  | Custom cursors do not show in draggable taskbar area
 ❓  | Arch  | Tested in v2021.01.01
+✅  | Elementary OS | Tested in v5.1
 ✅  | Fedora | Tested in v33 (Shortcut conflicts with desktop switching)
 ✅  | Mint  | Tested in v20.1
 ✅  | Ubuntu  | Tested in v20.04.1
@@ -172,12 +174,16 @@ $ npm install && npm start
 
 ### Build
 
+> Build steps optimized for Mac, see [electron.builder](http://electron.builder) for help customizing builds.
+
 _wine_ and _mono_ must be installed for Windows builds _(macOS)_
 [_multipass_](https://multipass.run/) must be installed for Snap builds _(macOS)_
 
 ```
 $ npm run build
 ```
+
+> Or `build:all`
 
 
 ### Publish

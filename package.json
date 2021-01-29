@@ -15,7 +15,7 @@
 		"url": "https://github.com/lacymorrow/crossover/issues"
 	},
 	"engines": {
-		"node": "14.15.x"
+		"node": ">=12.20.1 <=14.15.x"
 	},
 	"scripts": {
 		"ava": "ava -v",
@@ -26,7 +26,7 @@
 		"release": "np",
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"postinstall": "electron-builder install-app-deps",
-		"sh:copyexe": "cp dist/CrossOver-Setup-*.exe dist/CrossOver.exe",
+		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"build": "rm -rf dist && electron-builder --macos --linux",
 		"build:all": "rm -rf dist && electron-builder -mwl --ia32 --x64",
@@ -37,6 +37,7 @@
 	},
 	"dependencies": {
 		"@simonwep/pickr": "^1.6.0",
+		"bindings": "^1.5.0",
 		"electron-context-menu": "^2.0.1",
 		"electron-debug": "^3.0.1",
 		"electron-store": "^7.0.0",
