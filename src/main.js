@@ -89,9 +89,8 @@ const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async () => {
 
-	const win = new BrowserWindow( {
+	let preferences = {
 		title: app.name,
-		type: 'toolbar',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
 		acceptFirstMouse: true,
@@ -115,7 +114,15 @@ const createMainWindow = async () => {
 			preload: path.join( __dirname, 'preload.js' )
 
 		}
-	} )
+	}
+
+	if ( is.windows ) {
+
+		preferences.type = 'toolbar'
+
+	}
+
+	const win = new BrowserWindow( preferences )
 
 	setDockVisible( false )
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
@@ -151,7 +158,6 @@ const createChildWindow = async ( parent, windowName ) => {
 		maximizable: false,
 		minimizable: false,
 		transparent: true,
-		nodeIntegration: false, // Is default value after Electron v5
 		width: 600,
 		height: 400,
 		webPreferences: {
