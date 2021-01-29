@@ -89,7 +89,7 @@ const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async () => {
 
-	let preferences = {
+	const preferences = {
 		title: app.name,
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
