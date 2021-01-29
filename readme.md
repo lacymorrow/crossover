@@ -223,4 +223,6 @@ An extra big thanks to the crosshair providers, as this wouldn't be possible wit
 
 See CrossOver in the [Electron Apps library](https://www.electronjs.org/apps/crossover)
 
-Created by [Lacy Morrow](http://lacymorrow.com)   <a href="https://www.buymeacoffee.com/lm" target="_blank"><img width="217" height="60" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+Created by [Lacy Morrow](http://lacymorrow.com)
+
+<a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="40" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
