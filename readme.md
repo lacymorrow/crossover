@@ -24,8 +24,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 [See usage...](#usage)
 
-
-## Features
+# Features
 
 - Fast and lightweight
 - Choose from tons of true-to-life sights
@@ -50,46 +49,43 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ---
 
-## Install
+# Install
 
 *macOS 10.10+, Linux, and Windows 7+ are supported.*
 
 #### Download the latest version of CrossOver from the [releases page](https://github.com/lacymorrow/crossover/releases/latest)
 
-**Windows**
+##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
+
+##### Windows
 
 [**Download**](https://github.com/user/repo/releases/latest/download/CrossOver.exe
 ) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
-
-**macOS**
-
-[**Download**](https://github.com/user/repo/releases/latest
-) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
-
-**Linux**
-
-[**Download**](https://github.com/user/repo/releases/latest) the file appropriate to your system.
-
-*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
-
-
-##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
-
-###### Windows
 
 > Windows protected your PC.
 
 - Click `More Info`
 - Click `Run Anyway`
 
-###### Mac
+[**Download**](https://github.com/user/repo/releases/latest
+) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
+
 
 > "CrossOver" cannot be opened because the developer cannot be verified.
 
 - Locate the `CrossOver` app
 - Hold Control while you click the app icon, then choose Open from the shortcut menu
 
+
+##### Linux
+
+[**Download**](https://github.com/user/repo/releases/latest) the file appropriate to your system. (`.AppImage`, `.apk`, `.deb`, `.freebsd`, `.pacman`, `.rpm`, `.snap`)
+
+*The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
+
+
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
+
 
 ---
 

@@ -133,6 +133,7 @@
 				"AppImage",
 				"apk",
 				"deb",
+				"rpm",
 				"freebsd",
 				"pacman",
 				"snap",
