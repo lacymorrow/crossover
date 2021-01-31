@@ -474,7 +474,7 @@ const escapeAction = () => {
 
 }
 
-const resetSettings = ( skipSetup ) => {
+const resetSettings = skipSetup => {
 
 	const keys = Object.keys( defaults )
 	for ( const element of keys ) {
@@ -485,8 +485,10 @@ const resetSettings = ( skipSetup ) => {
 
 	centerApp()
 
-	if (!skipSetup) {
+	if ( !skipSetup ) {
+
 		setupApp()
+
 	}
 
 }
@@ -901,9 +903,11 @@ const setupApp = async () => {
 	registerEvents()
 
 	// Allow command-line reset
-	if (process.env.CROSSOVER_RESET) {
-		console.log('Reset Triggered')
-		resetSettings(true)
+	if ( process.env.CROSSOVER_RESET ) {
+
+		console.log( 'Reset Triggered' )
+		resetSettings( true )
+
 	}
 
 }
