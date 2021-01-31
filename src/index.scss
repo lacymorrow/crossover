@@ -139,10 +139,6 @@ button {
 	left: 1px;
 }
 
-.linux .main.close-button {
-	display: block;
-}
-
 .settings-button {
 	bottom: 1px;
 	right: 1px;
@@ -197,6 +193,7 @@ button {
 	height: auto;
 }
 
+// If draggable then app is unlocked
 .draggable {
 	.drag-button,
 	.crosshair-wrapper,
@@ -215,7 +212,13 @@ button {
 		background: rgba(255, 255, 255, 0.5);
 	}
 
+	// Show buttons (except close) when unlocked
 	.button:not(.main) {
+		display: block;
+	}
+
+	// Show close button on linux
+	&.linux .main.close-button {
 		display: block;
 	}
 
