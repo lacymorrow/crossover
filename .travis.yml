@@ -24,7 +24,7 @@ jobs:
         - yarn --version
         - yarn install
         - yarn test
-        - yarn run build:all
+        - yarn run build:mw
 
     - os: linux
       services: xvfb
@@ -35,6 +35,7 @@ jobs:
         - yarn --version
         - yarn install
         - yarn test
+        - yarn build:linux
 
     - os: windows
       language: node_js

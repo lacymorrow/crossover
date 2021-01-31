@@ -33,6 +33,7 @@
 		"build:linux": "rm -rf dist && electron-builder --linux --ia32 --x64",
 		"build:mac": "rm -rf dist && electron-builder --macos --arm64 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
+		"build:mw": "rm -rf dist && electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
 		"build:release": "npm run build:all && npm run sh:copyexe"
 	},
