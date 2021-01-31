@@ -44,7 +44,7 @@ jobs:
         - yarn --version
         - yarn install
         - yarn test  # Travis CI Windows doesn't support a GUI
-        - npm run build:windows
+        # - npm run build:windows
 
 cache:
   yarn: true
