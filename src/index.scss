@@ -213,12 +213,12 @@ button {
 	}
 
 	// Show buttons (except close) when unlocked
-	.button:not(.main) {
+	.button {
 		display: block;
 	}
 
 	// Show close button on linux
-	&.linux .main.close-button {
+	&:not(.mac) .main.close-button {
 		display: block;
 	}
 
