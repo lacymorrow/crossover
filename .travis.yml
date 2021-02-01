@@ -30,7 +30,9 @@ jobs:
       services: xvfb
       language: node_js
       node_js: '14.15.4'
+      before_install:
       script:
+        - sudo apt-get install rpm
         - node --version
         - yarn --version
         - yarn install
