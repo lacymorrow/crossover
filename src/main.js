@@ -127,6 +127,7 @@ const createMainWindow = async () => {
 	const win = new BrowserWindow( preferences )
 
 	setDockVisible( false )
+	win.setFullScreenable(false)
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 	// Enables staying on fullscreen apps - mac
@@ -366,6 +367,7 @@ const lockWindow = lock => {
 	hideChooserWindow()
 	hideSettingsWindow()
 	mainWindow.closable = !lock
+	mainWindow.setFocusable( !lock )
 	mainWindow.setIgnoreMouseEvents( lock )
 	mainWindow.webContents.send( 'lock_window', lock )
 
