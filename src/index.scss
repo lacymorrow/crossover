@@ -218,8 +218,8 @@ button {
 	}
 
 	// Show close button on linux
-	&:not(.mac) .main.close-button {
-		display: block;
+	&.mac .main.close-button {
+		display: none;
 	}
 
 	.drag-button {
