@@ -136,6 +136,7 @@ Works     | Game     | Notes
 ✅  | Among Us                |
 ✅  | Escape from Tarkov      |
 ✅  | Fortnite                | Runs in `Windowed Fullscreen` mode
+✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Rainbow 6: Seige        | Vulkan-based
 ✅  | Rust                    | Runs in `Windowed Fullscreen` mode
 ✅  | Star Wars Battlefront 2 | Runs in borderless mode
