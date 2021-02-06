@@ -897,7 +897,17 @@ const setupApp = async () => {
 	}
 
 	// Set lock state, timeout makes it pretty
-	setTimeout( () => lockWindow( config.get( 'windowLocked' ) ), 500 )
+	setTimeout( () => {
+		const locked = true
+
+		lockWindow( locked )
+
+		// Show on first load if unlocked (unlocking shows already)
+		if ( locked ) {
+			mainWindow.show()
+		}
+
+	}, 500 )
 
 	await createChooser( currentCrosshair )
 
@@ -955,7 +965,7 @@ const ready = async () => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	console.log( mainWindow.getNativeWindowHandle() )
+	// console.log( mainWindow.getNativeWindowHandle() )
 
 	setupApp()
 
