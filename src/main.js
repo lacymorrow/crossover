@@ -898,13 +898,16 @@ const setupApp = async () => {
 
 	// Set lock state, timeout makes it pretty
 	setTimeout( () => {
+
 		const locked = true
 
 		lockWindow( locked )
 
 		// Show on first load if unlocked (unlocking shows already)
 		if ( locked ) {
+
 			mainWindow.show()
+
 		}
 
 	}, 500 )
@@ -965,7 +968,7 @@ const ready = async () => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-	// console.log( mainWindow.getNativeWindowHandle() )
+	// Console.log( mainWindow.getNativeWindowHandle() )
 
 	setupApp()
 
