@@ -899,7 +899,7 @@ const setupApp = async () => {
 	// Set lock state, timeout makes it pretty
 	setTimeout( () => {
 
-		const locked = true
+		const locked = config.get( 'windowLocked' )
 
 		lockWindow( locked )
 
