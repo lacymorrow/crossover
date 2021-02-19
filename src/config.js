@@ -29,6 +29,8 @@ const config = new Store( {
 const APP_HEIGHT = 124
 const CHILD_WINDOW_OFFSET = 25
 
+const MAX_SHADOW_WINDOWS = 20
+
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
 
 module.exports = {
@@ -38,6 +40,8 @@ module.exports = {
 
 	APP_HEIGHT,
 	CHILD_WINDOW_OFFSET,
+
+	MAX_SHADOW_WINDOWS,
 
 	SUPPORTED_IMAGE_FILE_TYPES
 }

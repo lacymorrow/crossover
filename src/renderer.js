@@ -1,9 +1,10 @@
-/* global feather */
+/* global feather, randomColor */
 
 ( () => {
 
 	// DOM elements
 	const wrapper = document.querySelector( '.crosshair-wrapper' )
+	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )
 	const centerBtn = document.querySelector( '.center-button' )
 	const settingsBtn = document.querySelector( '.settings-button' )
@@ -45,6 +46,24 @@
 		}
 
 	}
+
+	window.crossover.receive( 'add_class', arg => {
+
+		// Trigger things
+		if ( arg === 'shadow' ) {
+
+			// This is a child window
+			background.style.background = randomColor( {
+				luminosiy: 'light',
+				format: 'rgba',
+				alpha: 0.5 // E.g. 'rgba(9, 1, 107, 0.5)',
+			} )
+
+		}
+
+		document.body.classList.add( arg )
+
+	} )
 
 	window.crossover.receive( 'set_crosshair', arg => {
 
