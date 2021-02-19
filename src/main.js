@@ -10,12 +10,12 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
-// Const { autoUpdater } = require( 'electron-updater' )
+const { autoUpdater } = require( 'electron-updater' )
 const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
+const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
 
 // Maybe add settings here?
@@ -30,22 +30,22 @@ debug( {
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-// try {
+try {
 
-// 	if ( !is.development && !is.linux ) {
+	if ( !is.development && !is.linux ) {
 
-// 		const FOUR_HOURS = 1000 * 60 * 60 * 4
-// 		setInterval( () => {
+		const FOUR_HOURS = 1000 * 60 * 60 * 4
+		setInterval( () => {
 
-// 			autoUpdater.checkForUpdates()
+			autoUpdater.checkForUpdates()
 
-// 		}, FOUR_HOURS )
+		}, FOUR_HOURS )
 
-// 		autoUpdater.checkForUpdates()
+		autoUpdater.checkForUpdates()
 
-// 	}
+	}
 
-// } catch {}
+} catch {}
 
 // Electron reloader is janky sometimes
 // try {
@@ -80,6 +80,7 @@ if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
 let mainWindow
 let chooserWindow
 let settingsWindow
+const shadowWindows = new Set()
 let windowHidden = false // Maintain hidden state
 
 // __static path
@@ -88,7 +89,7 @@ const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
 
-const createMainWindow = async () => {
+const createMainWindow = async isShadowWindow => {
 
 	const preferences = {
 		title: app.name,
@@ -133,13 +134,36 @@ const createMainWindow = async () => {
 	// Enables staying on fullscreen apps - mac
 	// setDockVisible( true )
 
-	win.on( 'closed', () => {
+	if ( isShadowWindow ) {
 
-		// Dereference the window
-		// For multiple windows store them in an array
-		mainWindow = undefined
+		// Duplicate shadow windows
+		win.once( 'ready-to-show', () => {
 
-	} )
+			win.show()
+
+		} )
+
+		win.on( 'closed', () => {
+
+			// Dereference the window
+			shadowWindows.delete( win )
+
+		} )
+
+	} else {
+
+		win.on( 'closed', () => {
+
+			// Dereference the window
+			// For multiple windows store them in an array
+			mainWindow = undefined
+
+			// Quit if main window closed
+			app.quit()
+
+		} )
+
+	}
 
 	await win.loadFile( path.join( __dirname, 'index.html' ) )
 
@@ -191,6 +215,29 @@ const createChildWindow = async ( parent, windowName ) => {
 	await win.loadFile( path.join( __dirname, `${windowName}.html` ) )
 
 	return win
+
+}
+
+const createShadowWindow = async () => {
+
+	// Don't allow a bunch of crosshairs, max 20
+	if ( shadowWindows.size < MAX_SHADOW_WINDOWS ) {
+
+		const shadow = await createMainWindow( true )
+		shadowWindows.add( shadow )
+		setupShadowWindow( shadow )
+
+	}
+
+}
+
+const closeShadowWindows = () => {
+
+	shadowWindows.forEach( currentWindow => {
+
+		currentWindow.close()
+
+	} )
 
 }
 
@@ -260,40 +307,40 @@ const getImages = ( directory, level ) => {
 
 }
 
-const setColor = color => {
+const setColor = ( color, targetWindow = mainWindow ) => {
 
-	mainWindow.webContents.send( 'set_color', color )
+	targetWindow.webContents.send( 'set_color', color )
 	settingsWindow.webContents.send( 'set_color', color )
 
 }
 
-const setOpacity = opacity => {
+const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
-	mainWindow.webContents.send( 'set_opacity', opacity )
+	targetWindow.webContents.send( 'set_opacity', opacity )
 	settingsWindow.webContents.send( 'set_opacity', opacity )
 
 }
 
-const setPosition = ( posX, posY ) => {
+const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
 	console.log( 'Set XY:', posX, posY )
 
 	config.set( 'positionX', posX )
 	config.set( 'positionY', posY )
-	mainWindow.setBounds( { x: posX, y: posY } )
+	targetWindow.setBounds( { x: posX, y: posY } )
 
 }
 
-const setSight = sight => {
+const setSight = ( sight, targetWindow = mainWindow ) => {
 
-	mainWindow.webContents.send( 'set_sight', sight )
+	targetWindow.webContents.send( 'set_sight', sight )
 	settingsWindow.webContents.send( 'set_sight', sight )
 
 }
 
-const setSize = size => {
+const setSize = ( size, targetWindow = mainWindow ) => {
 
-	mainWindow.webContents.send( 'set_size', size )
+	targetWindow.webContents.send( 'set_size', size )
 	settingsWindow.webContents.send( 'set_size', size )
 
 }
@@ -342,10 +389,20 @@ const hideWindow = () => {
 	if ( windowHidden ) {
 
 		mainWindow.show()
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.show()
+
+		} )
 
 	} else {
 
 		mainWindow.hide()
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.hide()
+
+		} )
 
 	}
 
@@ -357,32 +414,37 @@ const toggleWindowLock = () => {
 
 	const locked = config.get( 'windowLocked' )
 	lockWindow( !locked )
+	shadowWindows.forEach( currentWindow => {
+
+		lockWindow( !locked, currentWindow )
+
+	} )
 
 }
 
 // Allows dragging and setting options
-const lockWindow = lock => {
+const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	console.log( `Locked: ${lock}` )
 
 	hideChooserWindow()
 	hideSettingsWindow()
-	mainWindow.closable = !lock
-	mainWindow.setFocusable( !lock )
-	mainWindow.setIgnoreMouseEvents( lock )
-	mainWindow.webContents.send( 'lock_window', lock )
+	targetWindow.closable = !lock
+	targetWindow.setFocusable( !lock )
+	targetWindow.setIgnoreMouseEvents( lock )
+	targetWindow.webContents.send( 'lock_window', lock )
 
 	if ( lock ) {
 
-		mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
 
 		// Allow dragging to Window on Mac
-		mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+		targetWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 		// Bring window to front
-		mainWindow.show()
+		targetWindow.show()
 
 	}
 
@@ -477,6 +539,9 @@ const escapeAction = () => {
 }
 
 const resetSettings = skipSetup => {
+
+	// Close extra crosshairs
+	closeShadowWindows()
 
 	const keys = Object.keys( defaults )
 	for ( const element of keys ) {
@@ -674,6 +739,12 @@ const registerIpc = () => {
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
+		// pass to shadows
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.webContents.send( 'set_color', arg )
+
+		} )
 		dColorInput( arg )
 
 	} )
@@ -685,6 +756,12 @@ const registerIpc = () => {
 
 			console.log( `Set custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
+			shadowWindows.forEach( currentWindow => {
+
+				currentWindow.webContents.send( 'set_custom_image', arg )
+
+			} )
+
 			config.set( 'crosshair', arg )
 			hideChooserWindow()
 
@@ -713,6 +790,12 @@ const registerIpc = () => {
 			console.log( `Set crosshair: ${arg}` )
 			hideChooserWindow()
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
+			shadowWindows.forEach( currentWindow => {
+
+				currentWindow.webContents.send( 'set_crosshair', arg )
+
+			} )
+
 			config.set( 'crosshair', arg )
 
 		} else {
@@ -726,6 +809,11 @@ const registerIpc = () => {
 	ipcMain.on( 'save_opacity', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_opacity', arg ) // Pass to renderer
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.webContents.send( 'set_opacity', arg )
+
+		} )
 		dOpacityInput( arg )
 
 	} )
@@ -733,6 +821,11 @@ const registerIpc = () => {
 	ipcMain.on( 'save_size', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_size', arg ) // Pass to renderer
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.webContents.send( 'set_size', arg )
+
+		} )
 		dSizeInput( arg )
 
 	} )
@@ -740,6 +833,11 @@ const registerIpc = () => {
 	ipcMain.on( 'save_sight', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_sight', arg ) // Pass to renderer
+		shadowWindows.forEach( currentWindow => {
+
+			currentWindow.webContents.send( 'set_sight', arg )
+
+		} )
 		console.log( `Set sight: ${arg}` )
 		config.set( 'sight', arg )
 
@@ -764,6 +862,13 @@ const registerShortcuts = () => {
 
 	/* Global KeyListners */
 	const accelerator = 'Control+Shift+Alt'
+
+	// Duplicate main window
+	globalShortcut.register( `${accelerator}+D`, () => {
+
+		createShadowWindow()
+
+	} )
 
 	// Toggle CrossOver
 	globalShortcut.register( `${accelerator}+X`, () => {
@@ -924,6 +1029,25 @@ const setupApp = async () => {
 		resetSettings( true )
 
 	}
+
+}
+
+const setupShadowWindow = async shadow => {
+
+	shadow.webContents.send( 'add_class', 'shadow' )
+	shadow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
+	setColor( config.get( 'color' ), shadow )
+	setOpacity( config.get( 'opacity' ), shadow )
+	setSight( config.get( 'sight' ), shadow )
+	setSize( config.get( 'size' ), shadow )
+	if ( config.get( 'positionX' ) > -1 ) {
+
+		// Offset position slightly
+		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) + 20, shadow )
+
+	}
+
+	lockWindow( config.get( 'windowLocked' ), shadow )
 
 }
 

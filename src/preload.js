@@ -28,7 +28,7 @@ const api = {
 
 	receive: ( channel, func ) => {
 
-		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight', 'lock_window' ] )
+		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight', 'lock_window', 'add_class' ] )
 
 		if ( validChannels.has( channel ) ) {
 
@@ -44,11 +44,11 @@ const api = {
 if ( contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled ) {
 
 	/**
-	   * The "Main World" is the JavaScript context that your main renderer code runs in.
-	   * By default, the page you load in your renderer executes code in this world.
-	   *
-	   * @see https://www.electronjs.org/docs/api/context-bridge
-	   */
+     * The "Main World" is the JavaScript context that your main renderer code runs in.
+     * By default, the page you load in your renderer executes code in this world.
+     *
+     * @see https://www.electronjs.org/docs/api/context-bridge
+     */
 	contextBridge.exposeInMainWorld( 'crossover', api )
 
 } else {
