@@ -15,7 +15,7 @@ const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
+const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
 
 // Maybe add settings here?
@@ -227,15 +227,20 @@ const createShadowWindow = async () => {
 		shadowWindows.add( shadow )
 		setupShadowWindow( shadow )
 
+		console.log(`Created shadow window: ${shadow.webContents.id}`)
 	}
 
 }
 
-const closeShadowWindows = () => {
+const closeShadowWindows = id => {
 
 	shadowWindows.forEach( currentWindow => {
 
-		currentWindow.close()
+		if (!id || id === currentWindow.webContents.id ){
+
+			currentWindow.close()
+
+		}
 
 	} )
 
@@ -323,11 +328,13 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
-	console.log( 'Set XY:', posX, posY )
-
-	config.set( 'positionX', posX )
-	config.set( 'positionY', posY )
 	targetWindow.setBounds( { x: posX, y: posY } )
+
+	if (targetWindow === mainWindow){
+		console.log( 'Save XY:', posX, posY )
+		config.set( 'positionX', posX )
+		config.set( 'positionY', posY )
+	}
 
 }
 
@@ -608,21 +615,21 @@ const registerEvents = () => {
 
 const dColorInput = debounce( arg => {
 
-	console.log( `Set color: ${arg}` )
+	console.log( `Save color: ${arg}` )
 	config.set( 'color', arg )
 
 }, 400 )
 
 const dOpacityInput = debounce( arg => {
 
-	console.log( `Set opacity: ${arg}` )
+	console.log( `Save opacity: ${arg}` )
 	config.set( 'opacity', arg )
 
 }, 400 )
 
 const dSizeInput = debounce( arg => {
 
-	console.log( `Set size: ${arg}` )
+	console.log( `Save size: ${arg}` )
 	config.set( 'size', arg )
 
 }, 400 )
@@ -736,6 +743,13 @@ const registerIpc = () => {
 
 	} )
 
+	ipcMain.on( 'close_window', event => {
+
+		// Close a shadow window
+		closeShadowWindows(event.sender.id)
+
+	} )
+
 	ipcMain.on( 'save_color', ( event, arg ) => {
 
 		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
@@ -754,7 +768,7 @@ const registerIpc = () => {
 		// Is it a file and does it have a supported extension?
 		if ( fs.lstatSync( arg ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( arg ) ) ) {
 
-			console.log( `Set custom image: ${arg}` )
+			console.log( `Save custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
 			shadowWindows.forEach( currentWindow => {
 
@@ -787,7 +801,7 @@ const registerIpc = () => {
 
 		if ( arg ) {
 
-			console.log( `Set crosshair: ${arg}` )
+			console.log( `Save crosshair: ${arg}` )
 			hideChooserWindow()
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
 			shadowWindows.forEach( currentWindow => {
@@ -838,7 +852,7 @@ const registerIpc = () => {
 			currentWindow.webContents.send( 'set_sight', arg )
 
 		} )
-		console.log( `Set sight: ${arg}` )
+		console.log( `Save sight: ${arg}` )
 		config.set( 'sight', arg )
 
 	} )
@@ -1033,7 +1047,6 @@ const setupApp = async () => {
 }
 
 const setupShadowWindow = async shadow => {
-
 	shadow.webContents.send( 'add_class', 'shadow' )
 	shadow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
 	setColor( config.get( 'color' ), shadow )
@@ -1043,7 +1056,7 @@ const setupShadowWindow = async shadow => {
 	if ( config.get( 'positionX' ) > -1 ) {
 
 		// Offset position slightly
-		setPosition( config.get( 'positionX' ) + 40, config.get( 'positionY' ) + 40, shadow )
+		setPosition( config.get( 'positionX' ) + (shadowWindows.size * SHADOW_WINDOW_OFFSET), config.get( 'positionY' ) + (shadowWindows.size * SHADOW_WINDOW_OFFSET), shadow )
 
 	}
 

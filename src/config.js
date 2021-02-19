@@ -30,6 +30,7 @@ const APP_HEIGHT = 124
 const CHILD_WINDOW_OFFSET = 25
 
 const MAX_SHADOW_WINDOWS = 20
+const SHADOW_WINDOW_OFFSET = 40
 
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
 
@@ -42,6 +43,7 @@ module.exports = {
 	CHILD_WINDOW_OFFSET,
 
 	MAX_SHADOW_WINDOWS,
+	SHADOW_WINDOW_OFFSET,
 
 	SUPPORTED_IMAGE_FILE_TYPES
 }

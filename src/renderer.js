@@ -158,7 +158,12 @@
 	// Close window
 	closeBtn.addEventListener( 'click', () => {
 
-		window.crossover.send( 'quit' )
+		if (document.body.classList.contains('shadow')) {
+			window.crossover.send( 'close_window' )
+		} else {
+			// This is the main window
+			window.crossover.send( 'quit' )
+		}
 
 	} )
 
@@ -208,8 +213,6 @@
 	wrapper.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-
-		console.log( event.target )
 
 		// Prevent flickering on Windows
 		if ( window.crossover.isMacOs ) {
