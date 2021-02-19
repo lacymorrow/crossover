@@ -59,12 +59,12 @@ try {
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
-// // Prevent multiple instances of the app
-// if ( !app.requestSingleInstanceLock() ) {
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
 
-// 	app.quit()
+	app.quit()
 
-// }
+}
 
 // Fix for Linux transparency issues
 if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
@@ -1043,7 +1043,7 @@ const setupShadowWindow = async shadow => {
 	if ( config.get( 'positionX' ) > -1 ) {
 
 		// Offset position slightly
-		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) + 20, shadow )
+		setPosition( config.get( 'positionX' ) + 40, config.get( 'positionY' ) + 40, shadow )
 
 	}
 
@@ -1055,6 +1055,8 @@ const setupShadowWindow = async shadow => {
 app.on( 'second-instance', () => {
 
 	if ( mainWindow ) {
+
+		createShadowWindow()
 
 		if ( mainWindow.isMinimized() ) {
 
