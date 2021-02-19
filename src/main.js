@@ -6,44 +6,44 @@
 // centerWindow
 
 // const NativeExtension = require('bindings')('NativeExtension');
-const fs = require('fs')
-const path = require('path')
-const electron = require('electron')
+const fs = require( 'fs' )
+const path = require( 'path' )
+const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
-const { autoUpdater } = require('electron-updater')
-const { centerWindow, debugInfo, is, showAboutWindow } = require('electron-util')
-const unhandled = require('electron-unhandled')
-const debug = require('electron-debug')
-const { debounce } = require('./util')
-const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require('./config')
-const menu = require('./menu')
+const { autoUpdater } = require( 'electron-updater' )
+const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const unhandled = require( 'electron-unhandled' )
+const debug = require( 'electron-debug' )
+const { debounce } = require( './util' )
+const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
+const menu = require( './menu' )
 
 // Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
 unhandled()
-debug({
-    showDevTools: is.development && !is.linux,
-    devToolsMode: 'undocked'
-})
+debug( {
+	showDevTools: is.development && !is.linux,
+	devToolsMode: 'undocked'
+} )
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
 try {
 
-    if (!is.development && !is.linux) {
+	if ( !is.development && !is.linux ) {
 
-        const FOUR_HOURS = 1000 * 60 * 60 * 4
-        setInterval(() => {
+		const FOUR_HOURS = 1000 * 60 * 60 * 4
+		setInterval( () => {
 
-            autoUpdater.checkForUpdates()
+			autoUpdater.checkForUpdates()
 
-        }, FOUR_HOURS)
+		}, FOUR_HOURS )
 
-        autoUpdater.checkForUpdates()
+		autoUpdater.checkForUpdates()
 
-    }
+	}
 
 } catch {}
 
@@ -57,7 +57,7 @@ try {
 /* App setup */
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId('com.lacymorrow.crossover')
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
 // // Prevent multiple instances of the app
 // if ( !app.requestSingleInstanceLock() ) {
@@ -67,12 +67,12 @@ app.setAppUserModelId('com.lacymorrow.crossover')
 // }
 
 // Fix for Linux transparency issues
-if (is.linux || config.get('app').DISABLE_GPU) {
+if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
 
-    // Disable hardware acceleration
-    app.commandLine.appendSwitch('enable-transparent-visuals')
-    app.commandLine.appendSwitch('disable-gpu')
-    app.disableHardwareAcceleration()
+	// Disable hardware acceleration
+	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+	app.commandLine.appendSwitch( 'disable-gpu' )
+	app.disableHardwareAcceleration()
 
 }
 
@@ -83,902 +83,902 @@ let settingsWindow
 let windowHidden = false // Maintain hidden state
 
 // __static path
-const __static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
+const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
 
 // Crosshair images
-const crosshairsPath = path.join(__static, 'crosshairs')
+const crosshairsPath = path.join( __static, 'crosshairs' )
 
-const createMainWindow = async() => {
+const createMainWindow = async () => {
 
-    const preferences = {
-        title: app.name,
-        titleBarStyle: 'customButtonsOnHover',
-        backgroundColor: '#00FFFFFF',
-        acceptFirstMouse: true,
-        alwaysOnTop: true,
-        frame: false,
-        hasShadow: false,
-        closable: true,
-        fullscreenable: false,
-        maximizable: false,
-        minimizable: false,
-        resizable: false,
-        skipTaskbar: false,
-        transparent: true,
-        useContentSize: true,
-        show: false,
-        width: 200,
-        height: APP_HEIGHT,
-        webPreferences: {
-            contextIsolation: !is.linux,
-            enableRemoteModule: true,
-            nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
-            preload: path.join(__dirname, 'preload.js')
+	const preferences = {
+		title: app.name,
+		titleBarStyle: 'customButtonsOnHover',
+		backgroundColor: '#00FFFFFF',
+		acceptFirstMouse: true,
+		alwaysOnTop: true,
+		frame: false,
+		hasShadow: false,
+		closable: true,
+		fullscreenable: false,
+		maximizable: false,
+		minimizable: false,
+		resizable: false,
+		skipTaskbar: false,
+		transparent: true,
+		useContentSize: true,
+		show: false,
+		width: 200,
+		height: APP_HEIGHT,
+		webPreferences: {
+			contextIsolation: !is.linux,
+			enableRemoteModule: true,
+			nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
+			preload: path.join( __dirname, 'preload.js' )
 
-        }
-    }
+		}
+	}
 
-    if (is.windows) {
+	if ( is.windows ) {
 
-        preferences.type = 'toolbar'
+		preferences.type = 'toolbar'
 
-    }
+	}
 
-    const win = new BrowserWindow(preferences)
+	const win = new BrowserWindow( preferences )
 
-    setDockVisible(false)
-    win.setFullScreenable(false)
-        // VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
-    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-        // Enables staying on fullscreen apps - mac
-        // setDockVisible( true )
+	setDockVisible( false )
+	win.setFullScreenable( false )
+	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
+	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
+	// Enables staying on fullscreen apps - mac
+	// setDockVisible( true )
 
-    win.on('closed', () => {
+	win.on( 'closed', () => {
 
-        // Dereference the window
-        // For multiple windows store them in an array
-        mainWindow = undefined
+		// Dereference the window
+		// For multiple windows store them in an array
+		mainWindow = undefined
 
-    })
+	} )
 
-    await win.loadFile(path.join(__dirname, 'index.html'))
+	await win.loadFile( path.join( __dirname, 'index.html' ) )
 
-    return win
+	return win
 
 }
 
-const createChildWindow = async(parent, windowName) => {
+const createChildWindow = async ( parent, windowName ) => {
 
-    const VALID_WINDOWS = ['chooser', 'settings']
+	const VALID_WINDOWS = [ 'chooser', 'settings' ]
 
-    const preferences = {
-        parent,
-        modal: true,
-        show: false,
-        type: 'toolbar',
-        frame: config.get('app').WINDOW_FRAME,
-        hasShadow: true,
-        titleBarStyle: 'customButtonsOnHover',
-        fullscreenable: false,
-        maximizable: false,
-        minimizable: false,
-        transparent: true,
-        width: 600,
-        height: 400,
-        webPreferences: {
-            nodeIntegration: false, // Is default value after Electron v5
-            contextIsolation: true, // Protect against prototype pollution
-            enableRemoteModule: true, // Turn off remote
-            preload: path.join(__dirname, `preload-${windowName}.js`)
-        }
-    }
+	const preferences = {
+		parent,
+		modal: true,
+		show: false,
+		type: 'toolbar',
+		frame: config.get( 'app' ).WINDOW_FRAME,
+		hasShadow: true,
+		titleBarStyle: 'customButtonsOnHover',
+		fullscreenable: false,
+		maximizable: false,
+		minimizable: false,
+		transparent: true,
+		width: 600,
+		height: 400,
+		webPreferences: {
+			nodeIntegration: false, // Is default value after Electron v5
+			contextIsolation: true, // Protect against prototype pollution
+			enableRemoteModule: true, // Turn off remote
+			preload: path.join( __dirname, `preload-${windowName}.js` )
+		}
+	}
 
-    if (!VALID_WINDOWS.includes(windowName)) {
+	if ( !VALID_WINDOWS.includes( windowName ) ) {
 
-        return
+		return
 
-    }
+	}
 
-    if (windowName === 'settings') {
+	if ( windowName === 'settings' ) {
 
-        preferences.width = 200
-        preferences.height = 250
+		preferences.width = 200
+		preferences.height = 250
 
-    }
+	}
 
-    const win = new BrowserWindow(preferences)
+	const win = new BrowserWindow( preferences )
 
-    await win.loadFile(path.join(__dirname, `${windowName}.html`))
+	await win.loadFile( path.join( __dirname, `${windowName}.html` ) )
 
-    return win
+	return win
 
 }
 
 // Save position to settings
-const saveBounds = debounce(win => {
+const saveBounds = debounce( win => {
 
-    if (!win) {
+	if ( !win ) {
 
-        win = mainWindow
+		win = mainWindow
 
-    }
+	}
 
-    const bounds = win.getBounds()
-    console.log(`Save bounds: ${bounds.x}, ${bounds.y}`)
-    config.set('positionX', bounds.x)
-    config.set('positionY', bounds.y)
+	const bounds = win.getBounds()
+	console.log( `Save bounds: ${bounds.x}, ${bounds.y}` )
+	config.set( 'positionX', bounds.x )
+	config.set( 'positionY', bounds.y )
 
-}, 1000)
+}, 1000 )
 
-const getCrosshairImages = async() => {
+const getCrosshairImages = async () => {
 
-    // How many levels deep to recurse
-    const crosshairsObject = await getImages(crosshairsPath, 2)
-    config.set('crosshairsObject', crosshairsObject)
+	// How many levels deep to recurse
+	const crosshairsObject = await getImages( crosshairsPath, 2 )
+	config.set( 'crosshairsObject', crosshairsObject )
 
-    return crosshairsObject
+	return crosshairsObject
 
 }
 
-const getImages = (directory, level) => {
+const getImages = ( directory, level ) => {
 
-    return new Promise((resolve, reject) => {
+	return new Promise( ( resolve, reject ) => {
 
-        const crosshairs = []
-        fs.promises.readdir(directory, async(error, dir) => {
+		const crosshairs = []
+		fs.promises.readdir( directory, async ( error, dir ) => {
 
-            if (error) {
+			if ( error ) {
 
-                reject(new Error(`Promise Errored: ${error}`, directory))
+				reject( new Error( `Promise Errored: ${error}`, directory ) )
 
-            }
+			}
 
-            for (let i = 0, filepath;
-                (filepath = dir[i]); i++) {
+			for ( let i = 0, filepath;
+				( filepath = dir[i] ); i++ ) {
 
-                const stat = fs.lstatSync(path.join(directory, filepath))
+				const stat = fs.lstatSync( path.join( directory, filepath ) )
 
-                if (stat.isDirectory() && level > 0) {
+				if ( stat.isDirectory() && level > 0 ) {
 
-                    const next = await getImages(path.join(directory, filepath), level - 1) // eslint-disable-line no-await-in-loop
-                    crosshairs.push(next)
+					const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+					crosshairs.push( next )
 
-                } else if (stat.isFile() && !/^\..*|.*\.docx$/.test(filepath)) {
+				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-                    // Filename
-                    crosshairs.push(path.join(directory, filepath))
+					// Filename
+					crosshairs.push( path.join( directory, filepath ) )
 
-                }
+				}
 
-            }
+			}
 
-            resolve(crosshairs)
+			resolve( crosshairs )
 
-        })
+		} )
 
-    })
+	} )
 
 }
 
 const setColor = color => {
 
-    mainWindow.webContents.send('set_color', color)
-    settingsWindow.webContents.send('set_color', color)
+	mainWindow.webContents.send( 'set_color', color )
+	settingsWindow.webContents.send( 'set_color', color )
 
 }
 
 const setOpacity = opacity => {
 
-    mainWindow.webContents.send('set_opacity', opacity)
-    settingsWindow.webContents.send('set_opacity', opacity)
+	mainWindow.webContents.send( 'set_opacity', opacity )
+	settingsWindow.webContents.send( 'set_opacity', opacity )
 
 }
 
-const setPosition = (posX, posY) => {
+const setPosition = ( posX, posY ) => {
 
-    console.log('Set XY:', posX, posY)
+	console.log( 'Set XY:', posX, posY )
 
-    config.set('positionX', posX)
-    config.set('positionY', posY)
-    mainWindow.setBounds({ x: posX, y: posY })
+	config.set( 'positionX', posX )
+	config.set( 'positionY', posY )
+	mainWindow.setBounds( { x: posX, y: posY } )
 
 }
 
 const setSight = sight => {
 
-    mainWindow.webContents.send('set_sight', sight)
-    settingsWindow.webContents.send('set_sight', sight)
+	mainWindow.webContents.send( 'set_sight', sight )
+	settingsWindow.webContents.send( 'set_sight', sight )
 
 }
 
 const setSize = size => {
 
-    mainWindow.webContents.send('set_size', size)
-    settingsWindow.webContents.send('set_size', size)
+	mainWindow.webContents.send( 'set_size', size )
+	settingsWindow.webContents.send( 'set_size', size )
 
 }
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
 const setDockVisible = visible => {
 
-    if (is.macos) {
+	if ( is.macos ) {
 
-        if (visible) {
+		if ( visible ) {
 
-            app.dock.show()
+			app.dock.show()
 
-        } else {
+		} else {
 
-            app.dock.hide()
+			app.dock.hide()
 
-        }
+		}
 
-    }
+	}
 
 }
 
 const centerApp = () => {
 
-    // Electron way
-    // MainWindow.hide()
-    // mainWindow.center()
-    // const bounds = mainWindow.getBounds()
+	// Electron way
+	// MainWindow.hide()
+	// mainWindow.center()
+	// const bounds = mainWindow.getBounds()
 
-    // This is the Sindre way
-    centerWindow({
-        window: mainWindow,
-        animated: true
-    })
+	// This is the Sindre way
+	centerWindow( {
+		window: mainWindow,
+		animated: true
+	} )
 
-    mainWindow.show()
+	mainWindow.show()
 
-    // Save game
-    saveBounds(mainWindow)
+	// Save game
+	saveBounds( mainWindow )
 
 }
 
 const hideWindow = () => {
 
-    if (windowHidden) {
+	if ( windowHidden ) {
 
-        mainWindow.show()
+		mainWindow.show()
 
-    } else {
+	} else {
 
-        mainWindow.hide()
+		mainWindow.hide()
 
-    }
+	}
 
-    windowHidden = !windowHidden
+	windowHidden = !windowHidden
 
 }
 
 const toggleWindowLock = () => {
 
-    const locked = config.get('windowLocked')
-    lockWindow(!locked)
+	const locked = config.get( 'windowLocked' )
+	lockWindow( !locked )
 
 }
 
 // Allows dragging and setting options
 const lockWindow = lock => {
 
-    console.log(`Locked: ${lock}`)
+	console.log( `Locked: ${lock}` )
 
-    hideChooserWindow()
-    hideSettingsWindow()
-    mainWindow.closable = !lock
-    mainWindow.setFocusable(!lock)
-    mainWindow.setIgnoreMouseEvents(lock)
-    mainWindow.webContents.send('lock_window', lock)
+	hideChooserWindow()
+	hideSettingsWindow()
+	mainWindow.closable = !lock
+	mainWindow.setFocusable( !lock )
+	mainWindow.setIgnoreMouseEvents( lock )
+	mainWindow.webContents.send( 'lock_window', lock )
 
-    if (lock) {
+	if ( lock ) {
 
-        mainWindow.setAlwaysOnTop(true, 'screen-saver')
+		mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-    } else {
+	} else {
 
-        // Allow dragging to Window on Mac
-        mainWindow.setAlwaysOnTop(true, 'pop-up-menu')
+		// Allow dragging to Window on Mac
+		mainWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
-        // Bring window to front
-        mainWindow.show()
+		// Bring window to front
+		mainWindow.show()
 
-    }
+	}
 
-    config.set('windowLocked', lock)
+	config.set( 'windowLocked', lock )
 
 }
 
 // Switch window type when hiding chooser
 const hideChooserWindow = () => {
 
-    if (chooserWindow) {
+	if ( chooserWindow ) {
 
-        chooserWindow.hide()
+		chooserWindow.hide()
 
-    }
+	}
 
 }
 
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-    if (settingsWindow) {
+	if ( settingsWindow ) {
 
-        settingsWindow.hide()
+		settingsWindow.hide()
 
-    }
+	}
 
 }
 
 const moveWindow = direction => {
 
-    const locked = config.get('windowLocked')
-    if (!locked) {
+	const locked = config.get( 'windowLocked' )
+	if ( !locked ) {
 
-        console.log('Move', direction)
-        let newBound
-            // Const mainWindow = BrowserWindow.getAllWindows()[0]
-        const bounds = mainWindow.getBounds()
-        switch (direction) {
+		console.log( 'Move', direction )
+		let newBound
+		// Const mainWindow = BrowserWindow.getAllWindows()[0]
+		const bounds = mainWindow.getBounds()
+		switch ( direction ) {
 
-            case 'up':
-                newBound = bounds.y - 1
-                mainWindow.setBounds({ y: newBound })
-                config.set('positionY', newBound)
-                break
-            case 'down':
-                newBound = bounds.y + 1
-                mainWindow.setBounds({ y: newBound })
-                config.set('positionY', newBound)
+			case 'up':
+				newBound = bounds.y - 1
+				mainWindow.setBounds( { y: newBound } )
+				config.set( 'positionY', newBound )
+				break
+			case 'down':
+				newBound = bounds.y + 1
+				mainWindow.setBounds( { y: newBound } )
+				config.set( 'positionY', newBound )
 
-                break
-            case 'left':
-                newBound = bounds.x - 1
-                mainWindow.setBounds({ x: newBound })
-                config.set('positionX', newBound)
-                break
-            case 'right':
-                newBound = bounds.x + 1
-                mainWindow.setBounds({ x: newBound })
-                config.set('positionX', newBound)
-                break
-            default:
-                break
+				break
+			case 'left':
+				newBound = bounds.x - 1
+				mainWindow.setBounds( { x: newBound } )
+				config.set( 'positionX', newBound )
+				break
+			case 'right':
+				newBound = bounds.x + 1
+				mainWindow.setBounds( { x: newBound } )
+				config.set( 'positionX', newBound )
+				break
+			default:
+				break
 
-        }
+		}
 
-    }
+	}
 
 }
 
 const aboutWindow = () => {
 
-    // Console.dir( app.getGPUFeatureStatus() )
-    // Console.dir(app.getAppMetrics());
-    // app.getGPUInfo('complete').then(completeObj => {
-    //        console.dir(completeObj);
-    //    });
-    showAboutWindow({
-        icon: path.join(__static, 'Icon.png'),
-        copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
-        text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
-    })
+	// Console.dir( app.getGPUFeatureStatus() )
+	// Console.dir(app.getAppMetrics());
+	// app.getGPUInfo('complete').then(completeObj => {
+	//        console.dir(completeObj);
+	//    });
+	showAboutWindow( {
+		icon: path.join( __static, 'Icon.png' ),
+		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
+	} )
 
 }
 
 const escapeAction = () => {
 
-    hideChooserWindow()
-    hideSettingsWindow()
-    globalShortcut.unregister('Escape')
+	hideChooserWindow()
+	hideSettingsWindow()
+	globalShortcut.unregister( 'Escape' )
 
 }
 
 const resetSettings = skipSetup => {
 
-    const keys = Object.keys(defaults)
-    for (const element of keys) {
+	const keys = Object.keys( defaults )
+	for ( const element of keys ) {
 
-        config.set(element, defaults[element])
+		config.set( element, defaults[element] )
 
-    }
+	}
 
-    centerApp()
+	centerApp()
 
-    if (!skipSetup) {
+	if ( !skipSetup ) {
 
-        setupApp()
+		setupApp()
 
-    }
+	}
 
 }
 
 const registerEvents = () => {
 
-    mainWindow.on('move', () => {
+	mainWindow.on( 'move', () => {
 
-        saveBounds(mainWindow)
+		saveBounds( mainWindow )
 
-    })
+	} )
 
-    // Reopen settings/chooser if killed
-    chooserWindow.on('close', async() => {
+	// Reopen settings/chooser if killed
+	chooserWindow.on( 'close', async () => {
 
-        hideWindow()
-        await createChooser()
-        registerEvents()
-        mainWindow.show()
+		hideWindow()
+		await createChooser()
+		registerEvents()
+		mainWindow.show()
 
-    })
+	} )
 
-    settingsWindow.on('close', async() => {
+	settingsWindow.on( 'close', async () => {
 
-        hideWindow()
-        await createSettings()
-        registerEvents()
-        mainWindow.show()
+		hideWindow()
+		await createSettings()
+		registerEvents()
+		mainWindow.show()
 
-    })
+	} )
 
-    // Close windows if clicked away (mac only)
-    if (!is.development) {
+	// Close windows if clicked away (mac only)
+	if ( !is.development ) {
 
-        chooserWindow.on('blur', () => {
+		chooserWindow.on( 'blur', () => {
 
-            hideChooserWindow()
+			hideChooserWindow()
 
-        })
+		} )
 
-        settingsWindow.on('blur', () => {
+		settingsWindow.on( 'blur', () => {
 
-            hideSettingsWindow()
+			hideSettingsWindow()
 
-        })
+		} )
 
-    }
+	}
 
 }
 
-const dColorInput = debounce(arg => {
+const dColorInput = debounce( arg => {
 
-    console.log(`Set color: ${arg}`)
-    config.set('color', arg)
+	console.log( `Set color: ${arg}` )
+	config.set( 'color', arg )
 
-}, 400)
+}, 400 )
 
-const dOpacityInput = debounce(arg => {
+const dOpacityInput = debounce( arg => {
 
-    console.log(`Set opacity: ${arg}`)
-    config.set('opacity', arg)
+	console.log( `Set opacity: ${arg}` )
+	config.set( 'opacity', arg )
 
-}, 400)
+}, 400 )
 
-const dSizeInput = debounce(arg => {
+const dSizeInput = debounce( arg => {
 
-    console.log(`Set size: ${arg}`)
-    config.set('size', arg)
+	console.log( `Set size: ${arg}` )
+	config.set( 'size', arg )
 
-}, 400)
+}, 400 )
 
 const registerIpc = () => {
 
-    /* IP Communication */
-    ipcMain.on('log', (event, arg) => {
+	/* IP Communication */
+	ipcMain.on( 'log', ( event, arg ) => {
 
-        console.log(arg)
+		console.log( arg )
 
-    })
+	} )
 
-    ipcMain.on('open_chooser', async(..._) => {
+	ipcMain.on( 'open_chooser', async ( ..._ ) => {
 
-        hideSettingsWindow()
+		hideSettingsWindow()
 
-        // Don't do anything if locked
-        if (config.get('windowLocked')) {
+		// Don't do anything if locked
+		if ( config.get( 'windowLocked' ) ) {
 
-            return
+			return
 
-        }
+		}
 
-        if (!chooserWindow) {
+		if ( !chooserWindow ) {
 
-            chooserWindow = await createChooser()
+			chooserWindow = await createChooser()
 
-        }
+		}
 
-        // Create shortcut to close chooser
-        if (!globalShortcut.isRegistered('Escape')) {
+		// Create shortcut to close chooser
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
-            globalShortcut.register('Escape', escapeAction)
+			globalShortcut.register( 'Escape', escapeAction )
 
-        }
+		}
 
-        // Modal placement is different per OS
-        if (is.macos) {
+		// Modal placement is different per OS
+		if ( is.macos ) {
 
-            const bounds = chooserWindow.getBounds()
-            chooserWindow.setBounds({ y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET })
+			const bounds = chooserWindow.getBounds()
+			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
 
-        } else {
+		} else {
 
-            // Windows
+			// Windows
 
-            centerWindow({
-                window: chooserWindow,
-                animated: true
-            })
+			centerWindow( {
+				window: chooserWindow,
+				animated: true
+			} )
 
-        }
+		}
 
-        chooserWindow.show()
+		chooserWindow.show()
 
-    })
+	} )
 
-    ipcMain.on('open_settings', async(..._) => {
+	ipcMain.on( 'open_settings', async ( ..._ ) => {
 
-        hideChooserWindow()
+		hideChooserWindow()
 
-        // Don't do anything if locked
-        if (config.get('windowLocked')) {
+		// Don't do anything if locked
+		if ( config.get( 'windowLocked' ) ) {
 
-            return
+			return
 
-        }
+		}
 
-        if (!settingsWindow) {
+		if ( !settingsWindow ) {
 
-            settingsWindow = await createSettings()
+			settingsWindow = await createSettings()
 
-        }
+		}
 
-        // Create shortcut to close window
-        if (!globalShortcut.isRegistered('Escape')) {
+		// Create shortcut to close window
+		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
-            globalShortcut.register('Escape', escapeAction)
+			globalShortcut.register( 'Escape', escapeAction )
 
-        }
+		}
 
-        // Modal placement is different per OS
-        if (is.macos) {
+		// Modal placement is different per OS
+		if ( is.macos ) {
 
-            const bounds = settingsWindow.getBounds()
-            settingsWindow.setBounds({ y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET })
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
 
-        } else {
+		} else {
 
-            centerWindow({
-                window: settingsWindow,
-                animated: true
-            })
+			centerWindow( {
+				window: settingsWindow,
+				animated: true
+			} )
 
-        }
+		}
 
-        settingsWindow.show()
+		settingsWindow.show()
 
-    })
+	} )
 
-    ipcMain.on('close_chooser', _ => {
+	ipcMain.on( 'close_chooser', _ => {
 
-        hideChooserWindow()
+		hideChooserWindow()
 
-    })
+	} )
 
-    ipcMain.on('close_settings', _ => {
+	ipcMain.on( 'close_settings', _ => {
 
-        hideSettingsWindow()
+		hideSettingsWindow()
 
-    })
+	} )
 
-    ipcMain.on('save_color', (event, arg) => {
+	ipcMain.on( 'save_color', ( event, arg ) => {
 
-        mainWindow.webContents.send('set_color', arg) // Pass to renderer
-        dColorInput(arg)
+		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
+		dColorInput( arg )
 
-    })
+	} )
 
-    ipcMain.on('save_custom_image', (event, arg) => {
+	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-        // Is it a file and does it have a supported extension?
-        if (fs.lstatSync(arg).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes(path.extname(arg))) {
+		// Is it a file and does it have a supported extension?
+		if ( fs.lstatSync( arg ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( arg ) ) ) {
 
-            console.log(`Set custom image: ${arg}`)
-            mainWindow.webContents.send('set_custom_image', arg) // Pass to renderer
-            config.set('crosshair', arg)
-            hideChooserWindow()
+			console.log( `Set custom image: ${arg}` )
+			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
+			config.set( 'crosshair', arg )
+			hideChooserWindow()
 
-        }
+		}
 
-    })
+	} )
 
-    ipcMain.on('get_crosshairs', async _ => {
+	ipcMain.on( 'get_crosshairs', async _ => {
 
-        // Setup crosshair chooser, must come before the check below
-        if (chooserWindow) {
+		// Setup crosshair chooser, must come before the check below
+		if ( chooserWindow ) {
 
-            chooserWindow.webContents.send('load_crosshairs', {
-                crosshairs: await getCrosshairImages(),
-                current: config.get('crosshair')
-            })
+			chooserWindow.webContents.send( 'load_crosshairs', {
+				crosshairs: await getCrosshairImages(),
+				current: config.get( 'crosshair' )
+			} )
 
-        }
+		}
 
-    })
+	} )
 
-    ipcMain.on('save_crosshair', (event, arg) => {
+	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-        if (arg) {
+		if ( arg ) {
 
-            console.log(`Set crosshair: ${arg}`)
-            hideChooserWindow()
-            mainWindow.webContents.send('set_crosshair', arg) // Pass to renderer
-            config.set('crosshair', arg)
+			console.log( `Set crosshair: ${arg}` )
+			hideChooserWindow()
+			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
+			config.set( 'crosshair', arg )
 
-        } else {
+		} else {
 
-            console.log('Not setting null crosshair.')
+			console.log( 'Not setting null crosshair.' )
 
-        }
+		}
 
-    })
+	} )
 
-    ipcMain.on('save_opacity', (event, arg) => {
+	ipcMain.on( 'save_opacity', ( event, arg ) => {
 
-        mainWindow.webContents.send('set_opacity', arg) // Pass to renderer
-        dOpacityInput(arg)
+		mainWindow.webContents.send( 'set_opacity', arg ) // Pass to renderer
+		dOpacityInput( arg )
 
-    })
+	} )
 
-    ipcMain.on('save_size', (event, arg) => {
+	ipcMain.on( 'save_size', ( event, arg ) => {
 
-        mainWindow.webContents.send('set_size', arg) // Pass to renderer
-        dSizeInput(arg)
+		mainWindow.webContents.send( 'set_size', arg ) // Pass to renderer
+		dSizeInput( arg )
 
-    })
+	} )
 
-    ipcMain.on('save_sight', (event, arg) => {
+	ipcMain.on( 'save_sight', ( event, arg ) => {
 
-        mainWindow.webContents.send('set_sight', arg) // Pass to renderer
-        console.log(`Set sight: ${arg}`)
-        config.set('sight', arg)
+		mainWindow.webContents.send( 'set_sight', arg ) // Pass to renderer
+		console.log( `Set sight: ${arg}` )
+		config.set( 'sight', arg )
 
-    })
+	} )
 
-    ipcMain.on('center_window', () => {
+	ipcMain.on( 'center_window', () => {
 
-        console.log('Center window')
-        centerApp()
+		console.log( 'Center window' )
+		centerApp()
 
-    })
+	} )
 
-    ipcMain.on('quit', () => {
+	ipcMain.on( 'quit', () => {
 
-        app.quit()
+		app.quit()
 
-    })
+	} )
 
 }
 
 const registerShortcuts = () => {
 
-    /* Global KeyListners */
-    const accelerator = 'Control+Shift+Alt'
+	/* Global KeyListners */
+	const accelerator = 'Control+Shift+Alt'
 
-    // Toggle CrossOver
-    globalShortcut.register(`${accelerator}+X`, () => {
+	// Toggle CrossOver
+	globalShortcut.register( `${accelerator}+X`, () => {
 
-        toggleWindowLock()
+		toggleWindowLock()
 
-    })
+	} )
 
-    // Center CrossOver
-    globalShortcut.register(`${accelerator}+C`, () => {
+	// Center CrossOver
+	globalShortcut.register( `${accelerator}+C`, () => {
 
-        centerApp()
+		centerApp()
 
-    })
+	} )
 
-    // Hide CrossOver
-    globalShortcut.register(`${accelerator}+H`, () => {
+	// Hide CrossOver
+	globalShortcut.register( `${accelerator}+H`, () => {
 
-        hideWindow()
+		hideWindow()
 
-    })
+	} )
 
-    // // Move CrossOver to next monitor - this code actually fullscreens too...
-    // globalShortcut.register( `${accelerator}+M`, () => {
+	// // Move CrossOver to next monitor - this code actually fullscreens too...
+	// globalShortcut.register( `${accelerator}+M`, () => {
 
-    // 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
-    // 	mainWindow.setBounds(currentScreen.workArea)
+	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
+	// 	mainWindow.setBounds(currentScreen.workArea)
 
-    // } )
+	// } )
 
-    // Reset CrossOver
-    globalShortcut.register(`${accelerator}+R`, () => {
+	// Reset CrossOver
+	globalShortcut.register( `${accelerator}+R`, () => {
 
-        resetSettings()
+		resetSettings()
 
-    })
+	} )
 
-    // About CrossOver
-    globalShortcut.register(`${accelerator}+A`, () => {
+	// About CrossOver
+	globalShortcut.register( `${accelerator}+A`, () => {
 
-        aboutWindow()
+		aboutWindow()
 
-    })
+	} )
 
-    // Single pixel movement
-    globalShortcut.register(`${accelerator}+Up`, () => {
+	// Single pixel movement
+	globalShortcut.register( `${accelerator}+Up`, () => {
 
-        moveWindow('up')
+		moveWindow( 'up' )
 
-    })
+	} )
 
-    globalShortcut.register(`${accelerator}+Down`, () => {
+	globalShortcut.register( `${accelerator}+Down`, () => {
 
-        moveWindow('down')
+		moveWindow( 'down' )
 
-    })
+	} )
 
-    globalShortcut.register(`${accelerator}+Left`, () => {
+	globalShortcut.register( `${accelerator}+Left`, () => {
 
-        moveWindow('left')
+		moveWindow( 'left' )
 
-    })
+	} )
 
-    globalShortcut.register(`${accelerator}+Right`, () => {
+	globalShortcut.register( `${accelerator}+Right`, () => {
 
-        moveWindow('right')
+		moveWindow( 'right' )
 
-    })
+	} )
 
 }
 
 const createChooser = async currentCrosshair => {
 
-    if (!currentCrosshair) {
+	if ( !currentCrosshair ) {
 
-        currentCrosshair = config.get('crosshair')
+		currentCrosshair = config.get( 'crosshair' )
 
-    }
+	}
 
-    chooserWindow = await createChildWindow(mainWindow, 'chooser')
+	chooserWindow = await createChildWindow( mainWindow, 'chooser' )
 
-    // Setup crosshair chooser, must come before the check below
-    chooserWindow.webContents.send('load_crosshairs', {
-        crosshairs: await getCrosshairImages(),
-        current: currentCrosshair
-    })
+	// Setup crosshair chooser, must come before the check below
+	chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await getCrosshairImages(),
+		current: currentCrosshair
+	} )
 
-    return chooserWindow
-
-}
-
-const createSettings = async() => {
-
-    settingsWindow = await createChildWindow(mainWindow, 'settings')
-
-    return settingsWindow
+	return chooserWindow
 
 }
 
-const setupApp = async() => {
+const createSettings = async () => {
 
-    // IPC
-    registerIpc()
+	settingsWindow = await createChildWindow( mainWindow, 'settings' )
 
-    // Keyboard shortcuts
-    registerShortcuts()
+	return settingsWindow
 
-    // Set to previously selected crosshair
-    const currentCrosshair = config.get('crosshair')
+}
 
-    // Create child windows
-    await createSettings()
+const setupApp = async () => {
 
-    if (currentCrosshair) {
+	// IPC
+	registerIpc()
 
-        console.log(`Set crosshair: ${currentCrosshair}`)
-        mainWindow.webContents.send('set_crosshair', currentCrosshair)
+	// Keyboard shortcuts
+	registerShortcuts()
 
-    }
+	// Set to previously selected crosshair
+	const currentCrosshair = config.get( 'crosshair' )
 
-    setColor(config.get('color'))
-    setOpacity(config.get('opacity'))
-    setSight(config.get('sight'))
-    setSize(config.get('size'))
+	// Create child windows
+	await createSettings()
 
-    // Center app by default - set position if config exists
-    if (config.get('positionX') > -1) {
+	if ( currentCrosshair ) {
 
-        setPosition(config.get('positionX'), config.get('positionY'))
+		console.log( `Set crosshair: ${currentCrosshair}` )
+		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
-    }
+	}
 
-    // Set lock state, timeout makes it pretty
-    setTimeout(() => {
+	setColor( config.get( 'color' ) )
+	setOpacity( config.get( 'opacity' ) )
+	setSight( config.get( 'sight' ) )
+	setSize( config.get( 'size' ) )
 
-        const locked = config.get('windowLocked')
+	// Center app by default - set position if config exists
+	if ( config.get( 'positionX' ) > -1 ) {
 
-        lockWindow(locked)
+		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
 
-        // Show on first load if unlocked (unlocking shows already)
-        if (locked) {
+	}
 
-            mainWindow.show()
+	// Set lock state, timeout makes it pretty
+	setTimeout( () => {
 
-        }
+		const locked = config.get( 'windowLocked' )
 
-    }, 500)
+		lockWindow( locked )
 
-    await createChooser(currentCrosshair)
+		// Show on first load if unlocked (unlocking shows already)
+		if ( locked ) {
 
-    // Window Events after windows are created
-    registerEvents()
+			mainWindow.show()
 
-    // Allow command-line reset
-    if (process.env.CROSSOVER_RESET) {
+		}
 
-        console.log('Reset Triggered')
-        resetSettings(true)
+	}, 500 )
 
-    }
+	await createChooser( currentCrosshair )
+
+	// Window Events after windows are created
+	registerEvents()
+
+	// Allow command-line reset
+	if ( process.env.CROSSOVER_RESET ) {
+
+		console.log( 'Reset Triggered' )
+		resetSettings( true )
+
+	}
 
 }
 
 // Opening 2nd instance focuses app
-app.on('second-instance', () => {
+app.on( 'second-instance', () => {
 
-    if (mainWindow) {
+	if ( mainWindow ) {
 
-        if (mainWindow.isMinimized()) {
+		if ( mainWindow.isMinimized() ) {
 
-            mainWindow.restore()
+			mainWindow.restore()
 
-        }
+		}
 
-        mainWindow.show()
+		mainWindow.show()
 
-    }
+	}
 
-})
+} )
 
-app.on('window-all-closed', () => {
+app.on( 'window-all-closed', () => {
 
-    app.quit()
+	app.quit()
 
-})
+} )
 
-app.on('activate', async() => {
+app.on( 'activate', async () => {
 
-    if (!mainWindow) {
+	if ( !mainWindow ) {
 
-        mainWindow = await createMainWindow()
+		mainWindow = await createMainWindow()
 
-    }
+	}
 
-})
+} )
 
-const ready = async() => {
+const ready = async () => {
 
-    Menu.setApplicationMenu(menu)
-    mainWindow = await createMainWindow()
+	Menu.setApplicationMenu( menu )
+	mainWindow = await createMainWindow()
 
-    // Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-    mainWindow.setAlwaysOnTop(true, 'screen-saver')
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-    // Console.log( mainWindow.getNativeWindowHandle() )
+	// Console.log( mainWindow.getNativeWindowHandle() )
 
-    setupApp()
+	setupApp()
 
 }
 
-module.exports = async() => {
+module.exports = async () => {
 
-    await app.whenReady()
+	await app.whenReady()
 
-    // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-    setTimeout(ready, 400)
+	// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+	setTimeout( ready, 400 )
 
 }
