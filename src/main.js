@@ -227,7 +227,8 @@ const createShadowWindow = async () => {
 		shadowWindows.add( shadow )
 		setupShadowWindow( shadow )
 
-		console.log(`Created shadow window: ${shadow.webContents.id}`)
+		console.log( `Created shadow window: ${shadow.webContents.id}` )
+
 	}
 
 }
@@ -236,7 +237,7 @@ const closeShadowWindows = id => {
 
 	shadowWindows.forEach( currentWindow => {
 
-		if (!id || id === currentWindow.webContents.id ){
+		if ( !id || id === currentWindow.webContents.id ) {
 
 			currentWindow.close()
 
@@ -330,10 +331,12 @@ const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
 	targetWindow.setBounds( { x: posX, y: posY } )
 
-	if (targetWindow === mainWindow){
+	if ( targetWindow === mainWindow ) {
+
 		console.log( 'Save XY:', posX, posY )
 		config.set( 'positionX', posX )
 		config.set( 'positionY', posY )
+
 	}
 
 }
@@ -746,7 +749,7 @@ const registerIpc = () => {
 	ipcMain.on( 'close_window', event => {
 
 		// Close a shadow window
-		closeShadowWindows(event.sender.id)
+		closeShadowWindows( event.sender.id )
 
 	} )
 
@@ -1047,6 +1050,7 @@ const setupApp = async () => {
 }
 
 const setupShadowWindow = async shadow => {
+
 	shadow.webContents.send( 'add_class', 'shadow' )
 	shadow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
 	setColor( config.get( 'color' ), shadow )
@@ -1056,7 +1060,7 @@ const setupShadowWindow = async shadow => {
 	if ( config.get( 'positionX' ) > -1 ) {
 
 		// Offset position slightly
-		setPosition( config.get( 'positionX' ) + (shadowWindows.size * SHADOW_WINDOW_OFFSET), config.get( 'positionY' ) + (shadowWindows.size * SHADOW_WINDOW_OFFSET), shadow )
+		setPosition( config.get( 'positionX' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), config.get( 'positionY' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 	}
 

@@ -158,11 +158,15 @@
 	// Close window
 	closeBtn.addEventListener( 'click', () => {
 
-		if (document.body.classList.contains('shadow')) {
+		if ( document.body.classList.contains( 'shadow' ) ) {
+
 			window.crossover.send( 'close_window' )
+
 		} else {
+
 			// This is the main window
 			window.crossover.send( 'quit' )
+
 		}
 
 	} )
