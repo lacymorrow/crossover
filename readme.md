@@ -105,12 +105,13 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 Description            | Keys
 -----------------------| -----------------------
+Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 Quickly hide/show the application                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>H</kbd>
 Center the crosshair window                                | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>C</kbd>
+Duplicate your crosshair in a shadow window                | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>D</kbd>
 Reset all settings and center the window                   | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
 Display the "About" window details                         | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
-Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 
 ###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
 ###### Linux: Some distributions do not center on double-click.
@@ -123,6 +124,10 @@ Move the crosshair a single pixel                          | <kbd>Control</kbd>-
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leica-magnus.png">
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/bull-ring-post.png">
 </p>
+
+##### Duplicate crosshairs (Beta)
+
+Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
 
 ---
 
