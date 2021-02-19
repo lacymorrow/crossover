@@ -125,7 +125,7 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/bull-ring-post.png">
 </p>
 
-##### Duplicate crosshairs (Beta)
+##### Duplicate crosshairs
 
 Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
 

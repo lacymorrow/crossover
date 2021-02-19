@@ -111,6 +111,13 @@ button {
     bottom: 0;
     left: 0;
     z-index: -1;
+    display: none;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+// Child window background
+.shadow .background {
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .button {
@@ -202,17 +209,17 @@ button {
         // This is the magic to make things draggable
         -webkit-app-region: drag;
     }
+
     .container {
         cursor: inherit;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
     }
+
     .background {
-        background: rgba(255, 255, 255, 0.5);
+        display: block;
     }
-    &.shadow .background {
-        background: rgba(0, 0, 0, 0.5);
-    }
+
     // Show buttons (except close) when unlocked
     .button {
         display: block;
