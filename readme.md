@@ -138,17 +138,18 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 
 Works     | Game     | Notes
 ----------|----------|-------
-✅  | Among Us                |
-✅  | Escape from Tarkov      |
-✅  | Fortnite                | Runs in `Windowed Fullscreen` mode
+✅  | Among Us                           |
+✅  | Escape from Tarkov                 |
+✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
-❌  | Metro Exodus Gold Edition | Doesn't work under any circumstances
-❌  | Rainbow 6: Seige        | Vulkan-based
-✅  | Rust                    | Runs in `Windowed Fullscreen` mode
-✅  | Star Wars Battlefront 2 | Runs in `Borderless` mode
-✅  | Tom Clancy's The Division 2  | Runs in `Windowed Fullscreen` mode
-✅  | Tony Hawks Pro Skater 1+2  |
-❌  | Vulkan-based games      |
+❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
+❌  | Rainbow 6: Seige                   | Vulkan-based
+✅  | Roblox                             | Runs in `Windowed Fullscreen` mode
+✅  | Rust                               | Runs in `Windowed Fullscreen` mode
+✅  | Star Wars Battlefront 2            | Runs in `Borderless` mode
+✅  | Tom Clancy's The Division 2        | Runs in `Windowed Fullscreen` mode
+✅  | Tony Hawks Pro Skater 1+2          |
+❌  | Vulkan-based games                 |
 
 > Reported from our users, [add your resuts](https://github.com/lacymorrow/crossover/issues/47)
 
