@@ -146,6 +146,7 @@ Works     | Game     | Notes
 ❌  | Rainbow 6: Seige        | Vulkan-based
 ✅  | Rust                    | Runs in `Windowed Fullscreen` mode
 ✅  | Star Wars Battlefront 2 | Runs in `Borderless` mode
+✅  | Tom Clancy's The Division 2  | Runs in `Windowed Fullscreen` mode
 ✅  | Tony Hawks Pro Skater 1+2  |
 ❌  | Vulkan-based games      |
 
