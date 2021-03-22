@@ -79,7 +79,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ##### Linux
 
-[**Download**](https://github.com/lacymorrow/crossover/eleases/latest) the file appropriate to your system. (`.AppImage`, `.apk`, `.deb`, `.freebsd`, `.pacman`, `.rpm`, `.snap`)
+[**Download**](https://github.com/lacymorrow/crossover/releases/latest) the file appropriate to your system. (`.AppImage`, `.apk`, `.deb`, `.freebsd`, `.pacman`, `.rpm`, `.snap`)
 
 *The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
 
