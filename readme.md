@@ -59,7 +59,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ##### Windows
 
-[**Download**](https://github.com/user/repo/releases/latest/download/CrossOver.exe
+[**Download**](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe
 ) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
 
 > Windows protected your PC.
@@ -67,7 +67,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 - Click `More Info`
 - Click `Run Anyway`
 
-[**Download**](https://github.com/user/repo/releases/latest
+[**Download**](https://github.com/lacymorrow/crossover/releases/latest
 ) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
 
 
@@ -79,7 +79,7 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 ##### Linux
 
-[**Download**](https://github.com/user/repo/releases/latest) the file appropriate to your system. (`.AppImage`, `.apk`, `.deb`, `.freebsd`, `.pacman`, `.rpm`, `.snap`)
+[**Download**](https://github.com/lacymorrow/crossover/eleases/latest) the file appropriate to your system. (`.AppImage`, `.apk`, `.deb`, `.freebsd`, `.pacman`, `.rpm`, `.snap`)
 
 *The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download.*
 
@@ -144,7 +144,7 @@ Works     | Game     | Notes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ❌  | Rainbow 6: Seige                   | Vulkan-based
-✅  | Roblox                             | Runs in `Windowed Fullscreen` mode
+✅  | Roblox                             | Runs in `Fullscreen` mode *(Windows)* and `Windowed Fullscreen` mode *(MacOS)*
 ✅  | Rust                               | Runs in `Windowed Fullscreen` mode
 ✅  | Star Wars Battlefront 2            | Runs in `Borderless` mode
 ✅  | Tom Clancy's The Division 2        | Runs in `Windowed Fullscreen` mode
