@@ -208,11 +208,11 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 ## Bugs
 
-#### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
+### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
 
-##### Workaround
+#### Workaround
 
 If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
 
@@ -225,16 +225,6 @@ space::Winset, Alwaysontop, , CrossOver
 Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
 
 > via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
-
-#### Sight is deformed or off by 1 pixel; App center is not "center"
-
-Monitors use an even number of pixels, so finding a center point can be hard sometimes. Still, report any issues.
-
-
-#### [Unable to drag or move app window](https://github.com/lacymorrow/crossover/issues/46)
-
-Some Linux distros have experienced this issue, [report your version](https://github.com/lacymorrow/crossover/issues/46)
-
 
 ## Credits
 
