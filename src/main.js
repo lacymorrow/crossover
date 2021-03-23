@@ -2,8 +2,7 @@
 
 // Conflicting accelerator on Fedora
 // Improve escapeAction to be window-aware
-// GetWindowBoundsCentered
-// centerWindow
+// dont setPosition if monitor has been unplugged
 
 // const NativeExtension = require('bindings')('NativeExtension');
 const fs = require( 'fs' )
@@ -245,6 +244,20 @@ const closeShadowWindows = id => {
 
 }
 
+const getActiveWindow = () => {
+
+	let currentWindow = activeWindow()
+	if ( !shadowWindows.has( currentWindow ) && currentWindow !== mainWindow ) {
+
+		// Not shadow and not main window, probably a console or dialog
+		currentWindow = mainWindow
+
+	}
+
+	return currentWindow
+
+}
+
 // Save position to settings
 const saveBounds = debounce( win => {
 
@@ -372,32 +385,38 @@ const setDockVisible = visible => {
 
 }
 
-const centerAppWindow = ( targetWindow = activeWindow() ) => {
+const centerAppWindow = options => {
+
+	options = {
+		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
+		targetWindow: getActiveWindow(),
+		...options
+	}
 
 	// Electron way
 	// MainWindow.hide()
-	// targetWindow.center()
-	// const bounds = targetWindow.getBounds()
+	// options.targetWindow.center()
+	// const bounds = options.targetWindow.getBounds()
 
 	// // This is the Sindre way
 	// centerWindow( {
-	// 	window: targetWindow,
+	// 	window: options.targetWindow,
 	// 	animated: true
 	// } )
 
 	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
-	const screenSize = screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ).bounds
-	const [ width, height ] = targetWindow.getSize()
+	const screenSize = options.display.bounds
+	const [ width, height ] = options.targetWindow.getSize()
 	const windowSize = { width, height }
 	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
 	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
 
-	targetWindow.setBounds( { x, y } )
+	options.targetWindow.setBounds( { x, y } )
 
-	targetWindow.show()
+	options.targetWindow.show()
 
 	// Save game
-	if ( targetWindow === mainWindow ) {
+	if ( options.targetWindow === mainWindow ) {
 
 		saveBounds( mainWindow )
 
@@ -496,22 +515,27 @@ const hideSettingsWindow = () => {
 
 }
 
-const moveWindow = ( direction, targetWindow = activeWindow() ) => {
+const moveWindow = options => {
 
-	const saveSettings = targetWindow === mainWindow
+	options = {
+		direction: 'none',
+		targetWindow: getActiveWindow(),
+		...options
+	}
 
+	const saveSettings = options.targetWindow === mainWindow
 	const locked = config.get( 'windowLocked' )
+
 	if ( !locked ) {
 
-		console.log( 'Move', direction )
+		console.log( 'Move', options.direction )
 		let newBound
-		// Const mainWindow = BrowserWindow.getAllWindows()[0]
-		const bounds = targetWindow.getBounds()
-		switch ( direction ) {
+		const bounds = options.targetWindow.getBounds()
+		switch ( options.direction ) {
 
 			case 'up':
 				newBound = bounds.y - 1
-				targetWindow.setBounds( { y: newBound } )
+				options.targetWindow.setBounds( { y: newBound } )
 				if ( saveSettings ) {
 
 					config.set( 'positionY', newBound )
@@ -521,7 +545,7 @@ const moveWindow = ( direction, targetWindow = activeWindow() ) => {
 				break
 			case 'down':
 				newBound = bounds.y + 1
-				targetWindow.setBounds( { y: newBound } )
+				options.targetWindow.setBounds( { y: newBound } )
 				if ( saveSettings ) {
 
 					config.set( 'positionY', newBound )
@@ -531,7 +555,7 @@ const moveWindow = ( direction, targetWindow = activeWindow() ) => {
 				break
 			case 'left':
 				newBound = bounds.x - 1
-				targetWindow.setBounds( { x: newBound } )
+				options.targetWindow.setBounds( { x: newBound } )
 				if ( saveSettings ) {
 
 					config.set( 'positionX', newBound )
@@ -541,7 +565,7 @@ const moveWindow = ( direction, targetWindow = activeWindow() ) => {
 				break
 			case 'right':
 				newBound = bounds.x + 1
-				targetWindow.setBounds( { x: newBound } )
+				options.targetWindow.setBounds( { x: newBound } )
 				if ( saveSettings ) {
 
 					config.set( 'positionX', newBound )
@@ -558,7 +582,32 @@ const moveWindow = ( direction, targetWindow = activeWindow() ) => {
 
 }
 
-const moveWindowToNextDisplay = () => {}
+const moveWindowToNextDisplay = options => {
+
+	options = {
+		targetWindow: getActiveWindow(),
+		...options
+	}
+
+	// Get list of displays
+	const displays = screen.getAllDisplays()
+
+	// Get current display
+	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
+
+	// Get index of current
+	let index = displays.map( element => {
+
+		return element.id
+
+	} ).indexOf( currentDisplay.id )
+
+	// Increment and save
+	index = ( index + 1 ) % displays.length
+
+	centerAppWindow( { display: displays[index], targetWindow: options.targetWindow } )
+
+}
 
 const aboutWindow = () => {
 
@@ -967,25 +1016,25 @@ const registerShortcuts = () => {
 	// Single pixel movement
 	globalShortcut.register( `${accelerator}+Up`, () => {
 
-		moveWindow( 'up' )
+		moveWindow( { direction: 'up' } )
 
 	} )
 
 	globalShortcut.register( `${accelerator}+Down`, () => {
 
-		moveWindow( 'down' )
+		moveWindow( { direction: 'down' } )
 
 	} )
 
 	globalShortcut.register( `${accelerator}+Left`, () => {
 
-		moveWindow( 'left' )
+		moveWindow( { direction: 'left' } )
 
 	} )
 
 	globalShortcut.register( `${accelerator}+Right`, () => {
 
-		moveWindow( 'right' )
+		moveWindow( { direction: 'right' } )
 
 	} )
 
