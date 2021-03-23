@@ -38,14 +38,14 @@
 		"build:release": "npm run build:all && npm run sh:copyexe"
 	},
 	"dependencies": {
-		"@simonwep/pickr": "^1.6.0",
 		"bindings": "^1.5.0",
 		"electron-context-menu": "^2.0.1",
 		"electron-debug": "^3.0.1",
+		"electron-preferences": "^2.2.0",
 		"electron-store": "^7.0.0",
 		"electron-unhandled": "^3.0.2",
 		"electron-updater": "^4.3.1",
-		"electron-util": "^0.14.1"
+		"electron-util": "^0.14.1",
 	},
 	"devDependencies": {
 		"ava": "^3.8.2",

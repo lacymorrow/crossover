@@ -218,6 +218,18 @@
 
 	} )
 
+	// // Custom keybinds
+	// const recordShortcut = () => {
+
+	// 	Mousetrap.record( sequence => {
+
+	// 		// Sequence is an array like ['ctrl+k', 'c']
+	// 		alert( 'You pressed: ' + sequence.join( ' ' ) )
+
+	// 	} )
+
+	// }
+
 	// Close
 	closeBtn.addEventListener( 'click', () => {
 

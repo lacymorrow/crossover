@@ -4,9 +4,11 @@
 		<meta charset="utf-8">
 		<title>CrossOver</title>
 		<link rel="stylesheet" href="vendor/pickr/pickr.nano.min.css"/>
-		<link rel="stylesheet" href="index.css"> <!-- Order matters, we override Pickr styles -->
-		<script type="text/javascript" src="vendor/pickr/pickr.min.js"></script>
+		<link rel="stylesheet" href="index.css"> <!-- Stylesheet order matters, we override Pickr styles -->
 		<script type="text/javascript" src="vendor/feather/feather-icons.min.js"></script>
+		<script type="text/javascript" src="vendor/mousetrap/mousetrap.min.js"></script>
+		<script type="text/javascript" src="vendor/mousetrap/mousetrap-record.min.js"></script>
+		<script type="text/javascript" src="vendor/pickr/pickr.min.js"></script>
 	</head>
 	<body>
 		<div id="settings-container">
@@ -44,7 +46,7 @@
 
 				<label for="setting-size">Crosshair Size</label>
 				<div class="d-flex">
-					<input id="setting-size" type="range" min="5" max="100" step="1" value="100" />
+					<input id="setting-size" type="range" min="5" max="200" step="1" value="100" />
 					<output id="output-size" for="setting-size">100</output><sup>%</sup>
 				</div>
 

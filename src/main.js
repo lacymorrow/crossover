@@ -959,82 +959,150 @@ const registerIpc = () => {
 
 }
 
-const registerShortcuts = () => {
+const defaultShortcuts = () => {
 
-	/* Global KeyListners */
+	/* Default accelerator */
 	const accelerator = 'Control+Shift+Alt'
 
-	// Duplicate main window
-	globalShortcut.register( `${accelerator}+D`, () => {
+	return [
 
-		createShadowWindow()
+		// Duplicate main window
+		{
 
-	} )
+			action: 'duplicate',
+			keybind: `${accelerator}+D`,
+			fn: () => {
 
-	// Toggle CrossOver
-	globalShortcut.register( `${accelerator}+X`, () => {
+				createShadowWindow()
 
-		toggleWindowLock()
+			}
+		},
 
-	} )
+		// Toggle CrossOver
+		{
+			action: 'lock',
+			keybind: `${accelerator}+X`,
+			fn: () => {
 
-	// Center CrossOver
-	globalShortcut.register( `${accelerator}+C`, () => {
+				toggleWindowLock()
 
-		centerAppWindow()
+			}
+		},
 
-	} )
+		// Center CrossOver
+		{
+			action: 'center',
+			keybind: `${accelerator}+C`,
+			fn: () => {
 
-	// Hide CrossOver
-	globalShortcut.register( `${accelerator}+H`, () => {
+				centerAppWindow()
 
-		hideWindow()
+			}
+		},
 
-	} )
+		// Hide CrossOver
+		{
+			action: 'hide',
+			keybind: `${accelerator}+H`,
+			fn: () => {
 
-	// // Move CrossOver to next monitor - this code actually fullscreens too...
-	globalShortcut.register( `${accelerator}+M`, () => {
+				hideWindow()
 
-		moveWindowToNextDisplay()
+			}
+		},
 
-	} )
+		// Move CrossOver to next monitor
+		{
+			action: 'changeDisplay',
+			keybind: `${accelerator}+M`,
+			fn: () => {
 
-	// Reset CrossOver
-	globalShortcut.register( `${accelerator}+R`, () => {
+				moveWindowToNextDisplay()
 
-		resetSettings()
+			}
+		},
 
-	} )
+		// Reset CrossOver
+		{
+			action: 'reset',
+			keybind: `${accelerator}+R`,
+			fn: () => {
 
-	// About CrossOver
-	globalShortcut.register( `${accelerator}+A`, () => {
+				resetSettings()
 
-		aboutWindow()
+			}
+		},
 
-	} )
+		// About CrossOver
+		{
+			action: 'about',
+			keybind: `${accelerator}+A`,
+			fn: () => {
 
-	// Single pixel movement
-	globalShortcut.register( `${accelerator}+Up`, () => {
+				aboutWindow()
 
-		moveWindow( { direction: 'up' } )
+			}
+		},
 
-	} )
+		// Single pixel movement
+		{
+			action: 'moveUp',
+			keybind: `${accelerator}+Up`,
+			fn: () => {
 
-	globalShortcut.register( `${accelerator}+Down`, () => {
+				moveWindow( { direction: 'up' } )
 
-		moveWindow( { direction: 'down' } )
+			}
+		},
+		{
+			action: 'moveDown',
+			keybind: `${accelerator}+Down`,
+			fn: () => {
 
-	} )
+				moveWindow( { direction: 'down' } )
 
-	globalShortcut.register( `${accelerator}+Left`, () => {
+			}
+		},
+		{
+			action: 'moveLeft',
+			keybind: `${accelerator}+Left`,
+			fn: () => {
 
-		moveWindow( { direction: 'left' } )
+				moveWindow( { direction: 'left' } )
 
-	} )
+			}
+		},
+		{
+			action: 'moveRight',
+			keybind: `${accelerator}+Right`,
+			fn: () => {
 
-	globalShortcut.register( `${accelerator}+Right`, () => {
+				moveWindow( { direction: 'right' } )
 
-		moveWindow( { direction: 'right' } )
+			}
+		}
+	]
+
+}
+
+const registerShortcuts = () => {
+
+	// Register all shortcuts
+	const customShortcuts = defaultShortcuts()
+	defaultShortcuts().forEach( shortcut => {
+
+		const index = customShortcuts.map( element => element.action ).indexOf( shortcut.action )
+		if ( index > -1 ) {
+
+			// If a custom shortcut exists for this action
+			console.log( `Custom keybind for ${shortcut.action}` )
+			globalShortcut.register( customShortcuts[index].keybind, shortcut.fn )
+
+		} else {
+
+			globalShortcut.register( shortcut.keybind, shortcut.fn )
+
+		}
 
 	} )
 
