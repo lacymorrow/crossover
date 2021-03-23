@@ -11,7 +11,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -49,9 +49,7 @@ try {
 
 // Electron reloader is janky sometimes
 // try {
-
 // 	require( 'electron-reloader' )( module )
-
 // } catch {}
 
 /* App setup */
@@ -374,37 +372,40 @@ const setDockVisible = visible => {
 
 }
 
-const centerApp = () => {
+const centerAppWindow = ( targetWindow = activeWindow() ) => {
 
 	// Electron way
 	// MainWindow.hide()
-	// mainWindow.center()
-	// const bounds = mainWindow.getBounds()
+	// targetWindow.center()
+	// const bounds = targetWindow.getBounds()
 
 	// // This is the Sindre way
 	// centerWindow( {
-	// 	window: mainWindow,
+	// 	window: targetWindow,
 	// 	animated: true
 	// } )
 
 	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
 	const screenSize = screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ).bounds
-	const [ width, height ] = mainWindow.getSize()
+	const [ width, height ] = targetWindow.getSize()
 	const windowSize = { width, height }
 	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
 	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
 
-	mainWindow.setBounds( { x, y } )
+	targetWindow.setBounds( { x, y } )
 
-	mainWindow.show()
+	targetWindow.show()
 
 	// Save game
-	saveBounds( mainWindow )
+	if (targetWindow === mainWindow ) {
+		saveBounds( mainWindow )
+	}
 
 }
 
 const hideWindow = () => {
 
+	// Hide all crosshair windows in place
 	if ( windowHidden ) {
 
 		mainWindow.show()
@@ -493,7 +494,9 @@ const hideSettingsWindow = () => {
 
 }
 
-const moveWindow = direction => {
+const moveWindow = ( direction, targetWindow = activeWindow() ) => {
+
+	const saveSettings = targetWindow === mainWindow
 
 	const locked = config.get( 'windowLocked' )
 	if ( !locked ) {
@@ -501,29 +504,40 @@ const moveWindow = direction => {
 		console.log( 'Move', direction )
 		let newBound
 		// Const mainWindow = BrowserWindow.getAllWindows()[0]
-		const bounds = mainWindow.getBounds()
+		const bounds = targetWindow.getBounds()
 		switch ( direction ) {
 
 			case 'up':
 				newBound = bounds.y - 1
-				mainWindow.setBounds( { y: newBound } )
-				config.set( 'positionY', newBound )
+				targetWindow.setBounds( { y: newBound } )
+				if ( saveSettings) {
+					config.set( 'positionY', newBound )
+				}
+
 				break
 			case 'down':
 				newBound = bounds.y + 1
-				mainWindow.setBounds( { y: newBound } )
-				config.set( 'positionY', newBound )
+				targetWindow.setBounds( { y: newBound } )
+				if ( saveSettings) {
+					config.set( 'positionY', newBound )
+				}
 
 				break
 			case 'left':
 				newBound = bounds.x - 1
-				mainWindow.setBounds( { x: newBound } )
-				config.set( 'positionX', newBound )
+				targetWindow.setBounds( { x: newBound } )
+				if ( saveSettings) {
+					config.set( 'positionX', newBound )
+				}
+
 				break
 			case 'right':
 				newBound = bounds.x + 1
-				mainWindow.setBounds( { x: newBound } )
-				config.set( 'positionX', newBound )
+				targetWindow.setBounds( { x: newBound } )
+				if ( saveSettings) {
+					config.set( 'positionX', newBound )
+				}
+
 				break
 			default:
 				break
@@ -533,6 +547,8 @@ const moveWindow = direction => {
 	}
 
 }
+
+const moveWindowToNextDisplay = () => {}
 
 const aboutWindow = () => {
 
@@ -569,7 +585,7 @@ const resetSettings = skipSetup => {
 
 	}
 
-	centerApp()
+	centerAppWindow()
 
 	if ( !skipSetup ) {
 
@@ -872,7 +888,7 @@ const registerIpc = () => {
 	ipcMain.on( 'center_window', () => {
 
 		console.log( 'Center window' )
-		centerApp()
+		centerAppWindow()
 
 	} )
 
@@ -906,7 +922,7 @@ const registerShortcuts = () => {
 	// Center CrossOver
 	globalShortcut.register( `${accelerator}+C`, () => {
 
-		centerApp()
+		centerAppWindow()
 
 	} )
 
@@ -918,12 +934,11 @@ const registerShortcuts = () => {
 	} )
 
 	// // Move CrossOver to next monitor - this code actually fullscreens too...
-	// globalShortcut.register( `${accelerator}+M`, () => {
+	globalShortcut.register( `${accelerator}+M`, () => {
 
-	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
-	// 	mainWindow.setBounds(currentScreen.workArea)
+		moveWindowToNextDisplay()
 
-	// } )
+	} )
 
 	// Reset CrossOver
 	globalShortcut.register( `${accelerator}+R`, () => {
