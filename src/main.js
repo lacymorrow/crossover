@@ -16,6 +16,7 @@ const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
 const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
+const prefs = require( './preferences' )
 
 // Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
@@ -129,7 +130,7 @@ const createMainWindow = async isShadowWindow => {
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 	// Enables staying on fullscreen apps - mac
-	// setDockVisible( true )
+	setDockVisible( true )
 
 	if ( isShadowWindow ) {
 
@@ -172,7 +173,7 @@ const createChildWindow = async ( parent, windowName ) => {
 
 	const VALID_WINDOWS = [ 'chooser', 'settings' ]
 
-	const preferences = {
+	const options = {
 		parent,
 		modal: true,
 		show: false,
@@ -202,12 +203,12 @@ const createChildWindow = async ( parent, windowName ) => {
 
 	if ( windowName === 'settings' ) {
 
-		preferences.width = 200
-		preferences.height = 250
+		options.width = 200
+		options.height = 250
 
 	}
 
-	const win = new BrowserWindow( preferences )
+	const win = new BrowserWindow( options )
 
 	await win.loadFile( path.join( __dirname, `${windowName}.html` ) )
 
@@ -387,6 +388,17 @@ const setDockVisible = visible => {
 
 const centerAppWindow = options => {
 
+	prefs.show()
+	debug( {
+		showDevTools: is.development && !is.linux,
+		devToolsMode: 'undocked'
+	} )
+	// Subscribing to preference changes.
+	prefs.on( 'save', preferences => {
+
+		console.log( 'Preferences were saved.', JSON.stringify( preferences, null, 4 ) )
+
+	} )
 	options = {
 		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
 		targetWindow: getActiveWindow(),
