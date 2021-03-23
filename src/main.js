@@ -388,13 +388,13 @@ const centerApp = () => {
 	// } )
 
 	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
-	const screenSize = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).bounds
-	const [width, height] = mainWindow.getSize();
-	const windowSize = {width, height}
-	const x = Math.floor(screenSize.x + ((screenSize.width / 2) - (windowSize.width / 2)));
-	const y = Math.floor(((screenSize.height + screenSize.y) / 2) - (windowSize.height / 2));
+	const screenSize = screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ).bounds
+	const [ width, height ] = mainWindow.getSize()
+	const windowSize = { width, height }
+	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
+	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
 
-	mainWindow.setBounds({x, y})
+	mainWindow.setBounds( { x, y } )
 
 	mainWindow.show()
 
