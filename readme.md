@@ -140,7 +140,9 @@ Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Escape from Tarkov                 |
+✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
+✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ❌  | Rainbow 6: Seige                   | Vulkan-based
@@ -210,6 +212,19 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
 
+##### Workaround
+
+If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
+
+Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
+
+```autohotkey
+space::Winset, Alwaysontop, , CrossOver
+```
+
+Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
+
+> via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
 
 #### Sight is deformed or off by 1 pixel; App center is not "center"
 
