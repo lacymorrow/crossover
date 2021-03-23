@@ -397,8 +397,10 @@ const centerAppWindow = ( targetWindow = activeWindow() ) => {
 	targetWindow.show()
 
 	// Save game
-	if (targetWindow === mainWindow ) {
+	if ( targetWindow === mainWindow ) {
+
 		saveBounds( mainWindow )
+
 	}
 
 }
@@ -510,32 +512,40 @@ const moveWindow = ( direction, targetWindow = activeWindow() ) => {
 			case 'up':
 				newBound = bounds.y - 1
 				targetWindow.setBounds( { y: newBound } )
-				if ( saveSettings) {
+				if ( saveSettings ) {
+
 					config.set( 'positionY', newBound )
+
 				}
 
 				break
 			case 'down':
 				newBound = bounds.y + 1
 				targetWindow.setBounds( { y: newBound } )
-				if ( saveSettings) {
+				if ( saveSettings ) {
+
 					config.set( 'positionY', newBound )
+
 				}
 
 				break
 			case 'left':
 				newBound = bounds.x - 1
 				targetWindow.setBounds( { x: newBound } )
-				if ( saveSettings) {
+				if ( saveSettings ) {
+
 					config.set( 'positionX', newBound )
+
 				}
 
 				break
 			case 'right':
 				newBound = bounds.x + 1
 				targetWindow.setBounds( { x: newBound } )
-				if ( saveSettings) {
+				if ( saveSettings ) {
+
 					config.set( 'positionX', newBound )
+
 				}
 
 				break
