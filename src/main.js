@@ -10,7 +10,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -769,10 +769,8 @@ const registerIpc = () => {
 		} else {
 
 			// Windows
-
-			centerWindow( {
-				window: chooserWindow,
-				animated: true
+			centerAppWindow( {
+				targetWindow: chooserWindow
 			} )
 
 		}
@@ -809,16 +807,13 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + 100 + CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + CHILD_WINDOW_OFFSET } )
 
 		} else {
 
 			centerAppWindow( {
 				targetWindow: settingsWindow
 			} )
-
-			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + 1000 } )
 
 		}
 
