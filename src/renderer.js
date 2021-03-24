@@ -3,7 +3,7 @@
 ( () => {
 
 	// DOM elements
-	const wrapper = document.querySelector( '.crosshair-wrapper' )
+	// const wrapper = document.querySelector( '.crosshair-wrapper' )
 	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )
 	const centerBtn = document.querySelector( '.center-button' )
@@ -207,38 +207,45 @@
 
 	// Drag and drop Custom Image
 	// for drop events to fire, must cancel dragover and dragleave events
-	wrapper.addEventListener( 'dragover', event => {
+
+	let eventCounter = 0 // I kind of hate this but it works
+	document.addEventListener( 'dragenter', event => {
+
+		event.preventDefault()
+
+		// Highlight potential drop target when the draggable element enters it
+		eventCounter++
+		container.classList.add( 'dropping' )
+
+	}, false )
+
+	document.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
 		container.classList.add( 'dropping' )
 
-	} )
+	}, false )
 
-	wrapper.addEventListener( 'dragleave', event => {
+	document.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-
-		// Prevent flickering on Windows
-		if ( window.crossover.isMacOs ) {
-
-			container.classList.remove( 'dropping' )
-
-		} else if ( event.target === wrapper ) {
+		eventCounter--
+		if ( eventCounter === 0 || window.crossover.isMacOs ) {
 
 			container.classList.remove( 'dropping' )
 
 		}
 
-	} )
+	}, false )
 
-	wrapper.addEventListener( 'dragend', event => {
+	document.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
 		container.classList.remove( 'dropping' )
 
-	} )
+	}, false )
 
-	wrapper.addEventListener( 'drop', event => {
+	document.addEventListener( 'drop', event => {
 
 		event.preventDefault()
 		container.classList.remove( 'dropping' )
@@ -246,6 +253,6 @@
 		// Send file path to main
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
-	} )
+	}, true )
 
 } )()
