@@ -241,6 +241,7 @@
 	document.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
+		eventCounter = 0
 		container.classList.remove( 'dropping' )
 
 	}, false )
@@ -248,6 +249,7 @@
 	document.addEventListener( 'drop', event => {
 
 		event.preventDefault()
+		eventCounter = 0
 		container.classList.remove( 'dropping' )
 
 		// Send file path to main

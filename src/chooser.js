@@ -168,7 +168,7 @@
 		event.preventDefault()
 		containerElement.classList.add( 'dropping' )
 
-	} )
+	}, false )
 
 	document.addEventListener( 'dragleave', event => {
 
@@ -180,24 +180,26 @@
 
 		}
 
-	} )
+	}, false )
 
 	document.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
+        eventCounter = 0
 		containerElement.classList.remove( 'dropping' )
 
-	} )
+	}, false )
 
 	document.addEventListener( 'drop', event => {
 
 		event.preventDefault()
+        eventCounter = 0
 		containerElement.classList.remove( 'dropping' )
 
 		// Send file path to main
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
-	} )
+	}, false )
 
 	setTimeout( () => {
 
