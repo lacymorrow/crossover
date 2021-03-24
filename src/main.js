@@ -803,14 +803,16 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + 100+ CHILD_WINDOW_OFFSET } )
 
 		} else {
 
-			centerWindow( {
-				window: settingsWindow,
-				animated: true
+			centerAppWindow( {
+				targetWindow: settingsWindow
 			} )
+
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + 1000 } )
 
 		}
 
@@ -1163,7 +1165,7 @@ const setupApp = async () => {
 	setSize( config.get( 'size' ) )
 
 	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) > -1 ) {
+	if ( config.get( 'positionX' ) !== undefined ) {
 
 		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
 
