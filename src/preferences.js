@@ -128,12 +128,12 @@ const preferences = new ElectronPreferences( {
 			form: {
 				groups: [
 					{
-						label: 'Other Settings',
+						label: 'Custom Keybinds',
 						fields: [
 							{
-								label: 'Phone Number',
-								key: 'phone_number',
-								type: 'text',
+								label: 'Lock crosshair window',
+								key: '',
+								type: 'accelerator',
 								help: 'What is your phone number?'
 							},
 							{
