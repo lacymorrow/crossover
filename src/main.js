@@ -339,6 +339,9 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 }
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
+	if (posX === null || posY === null){
+		return
+	}
 
 	targetWindow.setBounds( { x: posX, y: posY } )
 
@@ -1165,7 +1168,7 @@ const setupApp = async () => {
 	setSize( config.get( 'size' ) )
 
 	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) !== undefined ) {
+	if ( config.get( 'positionX' ) !== null ) {
 
 		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
 
