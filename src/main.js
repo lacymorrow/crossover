@@ -339,8 +339,11 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 }
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
-	if (posX === null || posY === null){
+
+	if ( posX === null || posY === null ) {
+
 		return
+
 	}
 
 	targetWindow.setBounds( { x: posX, y: posY } )
