@@ -2,16 +2,15 @@
 
 // Conflicting accelerator on Fedora
 // Improve escapeAction to be window-aware
-// GetWindowBoundsCentered
-// centerWindow
+// dont setPosition if monitor has been unplugged
 
 // const NativeExtension = require('bindings')('NativeExtension');
 const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu } = electron
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -49,9 +48,7 @@ try {
 
 // Electron reloader is janky sometimes
 // try {
-
 // 	require( 'electron-reloader' )( module )
-
 // } catch {}
 
 /* App setup */
@@ -247,6 +244,20 @@ const closeShadowWindows = id => {
 
 }
 
+const getActiveWindow = () => {
+
+	let currentWindow = activeWindow()
+	if ( !shadowWindows.has( currentWindow ) && currentWindow !== mainWindow ) {
+
+		// Not shadow and not main window, probably a console or dialog
+		currentWindow = mainWindow
+
+	}
+
+	return currentWindow
+
+}
+
 // Save position to settings
 const saveBounds = debounce( win => {
 
@@ -329,6 +340,12 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
+	if ( posX === null || posY === null ) {
+
+		return
+
+	}
+
 	targetWindow.setBounds( { x: posX, y: posY } )
 
 	if ( targetWindow === mainWindow ) {
@@ -374,28 +391,48 @@ const setDockVisible = visible => {
 
 }
 
-const centerApp = () => {
+const centerAppWindow = options => {
+
+	options = {
+		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
+		targetWindow: getActiveWindow(),
+		...options
+	}
 
 	// Electron way
 	// MainWindow.hide()
-	// mainWindow.center()
-	// const bounds = mainWindow.getBounds()
+	// options.targetWindow.center()
+	// const bounds = options.targetWindow.getBounds()
 
-	// This is the Sindre way
-	centerWindow( {
-		window: mainWindow,
-		animated: true
-	} )
+	// // This is the Sindre way
+	// centerWindow( {
+	// 	window: options.targetWindow,
+	// 	animated: true
+	// } )
 
-	mainWindow.show()
+	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
+	const screenSize = options.display.bounds
+	const [ width, height ] = options.targetWindow.getSize()
+	const windowSize = { width, height }
+	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
+	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
+
+	options.targetWindow.setBounds( { x, y } )
+
+	options.targetWindow.show()
 
 	// Save game
-	saveBounds( mainWindow )
+	if ( options.targetWindow === mainWindow ) {
+
+		saveBounds( mainWindow )
+
+	}
 
 }
 
 const hideWindow = () => {
 
+	// Hide all crosshair windows in place
 	if ( windowHidden ) {
 
 		mainWindow.show()
@@ -484,37 +521,63 @@ const hideSettingsWindow = () => {
 
 }
 
-const moveWindow = direction => {
+const moveWindow = options => {
 
+	options = {
+		direction: 'none',
+		targetWindow: getActiveWindow(),
+		...options
+	}
+
+	const saveSettings = options.targetWindow === mainWindow
 	const locked = config.get( 'windowLocked' )
+
 	if ( !locked ) {
 
-		console.log( 'Move', direction )
+		console.log( 'Move', options.direction )
 		let newBound
-		// Const mainWindow = BrowserWindow.getAllWindows()[0]
-		const bounds = mainWindow.getBounds()
-		switch ( direction ) {
+		const bounds = options.targetWindow.getBounds()
+		switch ( options.direction ) {
 
 			case 'up':
 				newBound = bounds.y - 1
-				mainWindow.setBounds( { y: newBound } )
-				config.set( 'positionY', newBound )
+				options.targetWindow.setBounds( { y: newBound } )
+				if ( saveSettings ) {
+
+					config.set( 'positionY', newBound )
+
+				}
+
 				break
 			case 'down':
 				newBound = bounds.y + 1
-				mainWindow.setBounds( { y: newBound } )
-				config.set( 'positionY', newBound )
+				options.targetWindow.setBounds( { y: newBound } )
+				if ( saveSettings ) {
+
+					config.set( 'positionY', newBound )
+
+				}
 
 				break
 			case 'left':
 				newBound = bounds.x - 1
-				mainWindow.setBounds( { x: newBound } )
-				config.set( 'positionX', newBound )
+				options.targetWindow.setBounds( { x: newBound } )
+				if ( saveSettings ) {
+
+					config.set( 'positionX', newBound )
+
+				}
+
 				break
 			case 'right':
 				newBound = bounds.x + 1
-				mainWindow.setBounds( { x: newBound } )
-				config.set( 'positionX', newBound )
+				options.targetWindow.setBounds( { x: newBound } )
+				if ( saveSettings ) {
+
+					config.set( 'positionX', newBound )
+
+				}
+
 				break
 			default:
 				break
@@ -522,6 +585,33 @@ const moveWindow = direction => {
 		}
 
 	}
+
+}
+
+const moveWindowToNextDisplay = options => {
+
+	options = {
+		targetWindow: getActiveWindow(),
+		...options
+	}
+
+	// Get list of displays
+	const displays = screen.getAllDisplays()
+
+	// Get current display
+	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
+
+	// Get index of current
+	let index = displays.map( element => {
+
+		return element.id
+
+	} ).indexOf( currentDisplay.id )
+
+	// Increment and save
+	index = ( index + 1 ) % displays.length
+
+	centerAppWindow( { display: displays[index], targetWindow: options.targetWindow } )
 
 }
 
@@ -560,7 +650,7 @@ const resetSettings = skipSetup => {
 
 	}
 
-	centerApp()
+	centerAppWindow()
 
 	if ( !skipSetup ) {
 
@@ -679,10 +769,8 @@ const registerIpc = () => {
 		} else {
 
 			// Windows
-
-			centerWindow( {
-				window: chooserWindow,
-				animated: true
+			centerAppWindow( {
+				targetWindow: chooserWindow
 			} )
 
 		}
@@ -719,13 +807,12 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + CHILD_WINDOW_OFFSET } )
 
 		} else {
 
-			centerWindow( {
-				window: settingsWindow,
-				animated: true
+			centerAppWindow( {
+				targetWindow: settingsWindow
 			} )
 
 		}
@@ -863,7 +950,7 @@ const registerIpc = () => {
 	ipcMain.on( 'center_window', () => {
 
 		console.log( 'Center window' )
-		centerApp()
+		centerAppWindow()
 
 	} )
 
@@ -875,83 +962,150 @@ const registerIpc = () => {
 
 }
 
-const registerShortcuts = () => {
+const defaultShortcuts = () => {
 
-	/* Global KeyListners */
+	/* Default accelerator */
 	const accelerator = 'Control+Shift+Alt'
 
-	// Duplicate main window
-	globalShortcut.register( `${accelerator}+D`, () => {
+	return [
 
-		createShadowWindow()
+		// Duplicate main window
+		{
 
-	} )
+			action: 'duplicate',
+			keybind: `${accelerator}+D`,
+			fn: () => {
 
-	// Toggle CrossOver
-	globalShortcut.register( `${accelerator}+X`, () => {
+				createShadowWindow()
 
-		toggleWindowLock()
+			}
+		},
 
-	} )
+		// Toggle CrossOver
+		{
+			action: 'lock',
+			keybind: `${accelerator}+X`,
+			fn: () => {
 
-	// Center CrossOver
-	globalShortcut.register( `${accelerator}+C`, () => {
+				toggleWindowLock()
 
-		centerApp()
+			}
+		},
 
-	} )
+		// Center CrossOver
+		{
+			action: 'center',
+			keybind: `${accelerator}+C`,
+			fn: () => {
 
-	// Hide CrossOver
-	globalShortcut.register( `${accelerator}+H`, () => {
+				centerAppWindow()
 
-		hideWindow()
+			}
+		},
 
-	} )
+		// Hide CrossOver
+		{
+			action: 'hide',
+			keybind: `${accelerator}+H`,
+			fn: () => {
 
-	// // Move CrossOver to next monitor - this code actually fullscreens too...
-	// globalShortcut.register( `${accelerator}+M`, () => {
+				hideWindow()
 
-	// 	const currentScreen = electron.screen.getDisplayNearestPoint(electron.screen.getCursorScreenPoint())
-	// 	mainWindow.setBounds(currentScreen.workArea)
+			}
+		},
 
-	// } )
+		// Move CrossOver to next monitor
+		{
+			action: 'changeDisplay',
+			keybind: `${accelerator}+M`,
+			fn: () => {
 
-	// Reset CrossOver
-	globalShortcut.register( `${accelerator}+R`, () => {
+				moveWindowToNextDisplay()
 
-		resetSettings()
+			}
+		},
 
-	} )
+		// Reset CrossOver
+		{
+			action: 'reset',
+			keybind: `${accelerator}+R`,
+			fn: () => {
 
-	// About CrossOver
-	globalShortcut.register( `${accelerator}+A`, () => {
+				resetSettings()
 
-		aboutWindow()
+			}
+		},
 
-	} )
+		// About CrossOver
+		{
+			action: 'about',
+			keybind: `${accelerator}+A`,
+			fn: () => {
 
-	// Single pixel movement
-	globalShortcut.register( `${accelerator}+Up`, () => {
+				aboutWindow()
 
-		moveWindow( 'up' )
+			}
+		},
 
-	} )
+		// Single pixel movement
+		{
+			action: 'moveUp',
+			keybind: `${accelerator}+Up`,
+			fn: () => {
 
-	globalShortcut.register( `${accelerator}+Down`, () => {
+				moveWindow( { direction: 'up' } )
 
-		moveWindow( 'down' )
+			}
+		},
+		{
+			action: 'moveDown',
+			keybind: `${accelerator}+Down`,
+			fn: () => {
 
-	} )
+				moveWindow( { direction: 'down' } )
 
-	globalShortcut.register( `${accelerator}+Left`, () => {
+			}
+		},
+		{
+			action: 'moveLeft',
+			keybind: `${accelerator}+Left`,
+			fn: () => {
 
-		moveWindow( 'left' )
+				moveWindow( { direction: 'left' } )
 
-	} )
+			}
+		},
+		{
+			action: 'moveRight',
+			keybind: `${accelerator}+Right`,
+			fn: () => {
 
-	globalShortcut.register( `${accelerator}+Right`, () => {
+				moveWindow( { direction: 'right' } )
 
-		moveWindow( 'right' )
+			}
+		}
+	]
+
+}
+
+const registerShortcuts = () => {
+
+	// Register all shortcuts
+	const customShortcuts = defaultShortcuts()
+	defaultShortcuts().forEach( shortcut => {
+
+		const index = customShortcuts.map( element => element.action ).indexOf( shortcut.action )
+		if ( index > -1 ) {
+
+			// If a custom shortcut exists for this action
+			console.log( `Custom keybind for ${shortcut.action}` )
+			globalShortcut.register( customShortcuts[index].keybind, shortcut.fn )
+
+		} else {
+
+			globalShortcut.register( shortcut.keybind, shortcut.fn )
+
+		}
 
 	} )
 
@@ -1012,7 +1166,7 @@ const setupApp = async () => {
 	setSize( config.get( 'size' ) )
 
 	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) > -1 ) {
+	if ( config.get( 'positionX' ) !== null ) {
 
 		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
 

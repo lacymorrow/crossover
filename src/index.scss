@@ -67,16 +67,21 @@ button {
 #settings-container,
 #chooser-container {
     user-select: none;
-    &.dropping:before {
-        content: '';
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        bottom: 5px;
-        left: 5px;
-        border: 4px dashed $border_color_focus;
-        pointer-events: none;
-        z-index: 9;
+    &.dropping {
+        &.main * {
+            pointer-events: none;
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            left: 5px;
+            border: 4px dashed $border_color_focus;
+            pointer-events: none;
+            z-index: 9;
+        }
     }
 }
 
@@ -203,17 +208,19 @@ button {
 
 // If draggable then app is unlocked
 .draggable {
-    .drag-button,
-    .crosshair-wrapper,
-    .crosshair-wrapper * {
-        // This is the magic to make things draggable
-        -webkit-app-region: drag;
-    }
 
     .container {
         cursor: inherit;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
+        &:not(.dropping) {
+            .drag-button,
+            .crosshair-wrapper,
+            .crosshair-wrapper * {
+                // This is the magic to make things draggable
+                -webkit-app-region: drag;
+            }
+        }
     }
 
     .background {
