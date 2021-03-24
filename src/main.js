@@ -803,7 +803,7 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + 100+ CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + 100 + CHILD_WINDOW_OFFSET } )
 
 		} else {
 

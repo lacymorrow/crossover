@@ -265,6 +265,7 @@
 	}, false )
 
 	document.addEventListener( 'dragleave', event => {
+
 		event.preventDefault()
 		eventCounter--
 		if ( eventCounter === 0 || window.crossover.isMacOs ) {
