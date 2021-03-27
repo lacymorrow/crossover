@@ -28,14 +28,15 @@
 		"postinstall": "electron-builder install-app-deps",
 		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
-		"build": "rm -rf dist && electron-builder --macos --linux",
-		"build:all": "rm -rf dist && electron-builder -mwl --ia32 --x64",
-		"build:linux": "rm -rf dist && electron-builder --linux --ia32 --x64",
-		"build:mac": "rm -rf dist && electron-builder --macos --arm64 --x64",
+		"build": "electron-builder --macos --linux",
+		"build:all": "electron-builder -mwl --ia32 --x64",
+		"build:linux": "electron-builder --linux --ia32 --x64",
+		"build:mac": "electron-builder --macos --arm64 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
-		"build:mw": "rm -rf dist && electron-builder -wm --arm64 --ia32 --x64",
+		"build:wl": "electron-builder -wl --ia32 --x64",
+		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
-		"build:release": "npm run build:all && npm run sh:copyexe"
+		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run sh:copyexe"
 	},
 	"dependencies": {
 		"bindings": "^1.5.0",
@@ -139,7 +140,6 @@
 				"rpm",
 				"freebsd",
 				"pacman",
-				"snap",
 				"rpm"
 			],
 			"category": "Game;Shooter"
