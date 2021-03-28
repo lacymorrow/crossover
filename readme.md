@@ -39,8 +39,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 
-<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/demo.png">
+<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);"
+  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png">
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
@@ -119,10 +119,11 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 <p align="center">
 	<br />
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/blackout.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leica-magnus.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/bull-ring-post.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
 </p>
 
 ##### Duplicate crosshairs
@@ -140,9 +141,7 @@ Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Escape from Tarkov                 |
-✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
-✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ❌  | Rainbow 6: Seige                   | Vulkan-based
@@ -208,23 +207,20 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 ## Bugs
 
-### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
+#### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
 
-#### Workaround
 
-If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
+#### Sight is deformed or off by 1 pixel; App center is not "center"
 
-Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
+Monitors use an even number of pixels, so finding a center point can be hard sometimes. Still, report any issues.
 
-```autohotkey
-space::Winset, Alwaysontop, , CrossOver
-```
 
-Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
+#### [Unable to drag or move app window](https://github.com/lacymorrow/crossover/issues/46)
 
-> via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
+Some Linux distros have experienced this issue, [report your version](https://github.com/lacymorrow/crossover/issues/46)
+
 
 ## Credits
 
