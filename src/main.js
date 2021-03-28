@@ -111,7 +111,7 @@ const createMainWindow = async isShadowWindow => {
 		webPreferences: {
 			contextIsolation: !is.linux,
 			enableRemoteModule: true,
-			nodeIntegration: false, // We don't absolutely need this, but renderer require's some things
+			nodeIntegration: false,
 			preload: path.join( __dirname, 'preload.js' )
 
 		}

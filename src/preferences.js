@@ -12,6 +12,14 @@ const preferences = new ElectronPreferences( {
 	 * Default values.
 	 */
 	defaults: {},
+
+	browserWindowOverrides: {
+		title: 'CrossOver Preferences',
+		webPreferences: {
+			devTools: true
+		}
+
+	},
 	/**
 	 * The preferences window is divided into sections. Each section has a label, an icon, and one or
 	 * more fields associated with it. Each section should also be given a unique ID.
