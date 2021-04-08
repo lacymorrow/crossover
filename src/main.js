@@ -10,7 +10,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
@@ -404,20 +404,12 @@ const centerAppWindow = options => {
 	// options.targetWindow.center()
 	// const bounds = options.targetWindow.getBounds()
 
-	// // This is the Sindre way
-	// centerWindow( {
-	// 	window: options.targetWindow,
-	// 	animated: true
-	// } )
-
-	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
-	const screenSize = options.display.bounds
-	const [ width, height ] = options.targetWindow.getSize()
-	const windowSize = { width, height }
-	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
-	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
-
-	options.targetWindow.setBounds( { x, y } )
+	// This is the Sindre way
+	centerWindow( {
+		window: options.targetWindow,
+		animated: true,
+		useFullBounds: true
+	} )
 
 	options.targetWindow.show()
 
