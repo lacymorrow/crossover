@@ -10,6 +10,9 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
+<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
+  <img width="390" height="290" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+</p>
 
 # Quick Start
 
@@ -40,7 +43,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+  <img width="390" height="290" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo2.png"/>
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
