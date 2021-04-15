@@ -11,7 +11,7 @@ CrossOver allows you to place a customizable crosshair overlay above any applica
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="390" height="290" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
 </p>
 
 # Quick Start
