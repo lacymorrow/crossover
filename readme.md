@@ -145,6 +145,7 @@ Works     | Game     | Notes
 ✅  | Among Us                           |
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
+✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
