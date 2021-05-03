@@ -11,7 +11,7 @@ CrossOver allows you to place a customizable crosshair overlay above any applica
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
 <p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="390" height="290" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
 </p>
 
 # Quick Start
@@ -145,6 +145,8 @@ Works     | Game     | Notes
 ✅  | Among Us                           |
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
+✅  | Destiny 2                          | Runs in `Fullscreen` mode
+✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
