@@ -143,6 +143,7 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
+✅  | Apex Legends                       | Runs in `Windowed` mode
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Destiny 2                          | Runs in `Fullscreen` mode
