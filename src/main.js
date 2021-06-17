@@ -13,10 +13,10 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-const { debounce } = require( './util' )
-const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
-const menu = require( './menu' )
-const prefs = require( './preferences' )
+const { debounce } = require( './util.js' )
+const { config, defaults, APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const menu = require( './menu.js' )
+const prefs = require( './preferences.js' )
 
 // Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
@@ -341,6 +341,12 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
+	if ( posX === null || posY === null ) {
+
+		return
+
+	}
+
 	targetWindow.setBounds( { x: posX, y: posY } )
 
 	if ( targetWindow === mainWindow ) {
@@ -410,20 +416,12 @@ const centerAppWindow = options => {
 	// options.targetWindow.center()
 	// const bounds = options.targetWindow.getBounds()
 
-	// // This is the Sindre way
-	// centerWindow( {
-	// 	window: options.targetWindow,
-	// 	animated: true
-	// } )
-
-	// Shim until https://github.com/sindresorhus/electron-util/pull/44/ is merged
-	const screenSize = options.display.bounds
-	const [ width, height ] = options.targetWindow.getSize()
-	const windowSize = { width, height }
-	const x = Math.floor( screenSize.x + ( ( screenSize.width / 2 ) - ( windowSize.width / 2 ) ) )
-	const y = Math.floor( ( ( screenSize.height + screenSize.y ) / 2 ) - ( windowSize.height / 2 ) )
-
-	options.targetWindow.setBounds( { x, y } )
+	// This is the Sindre way
+	centerWindow( {
+		window: options.targetWindow,
+		animated: true,
+		useFullBounds: true
+	} )
 
 	options.targetWindow.show()
 
@@ -759,6 +757,8 @@ const registerIpc = () => {
 
 		}
 
+		chooserWindow.show()
+
 		// Create shortcut to close chooser
 		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
@@ -770,20 +770,16 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = chooserWindow.getBounds()
-			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		} else {
 
 			// Windows
-
-			centerWindow( {
-				window: chooserWindow,
-				animated: true
+			centerAppWindow( {
+				targetWindow: chooserWindow
 			} )
 
 		}
-
-		chooserWindow.show()
 
 	} )
 
@@ -811,22 +807,20 @@ const registerIpc = () => {
 
 		}
 
+		settingsWindow.show()
+
 		// Modal placement is different per OS
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		} else {
 
-			centerWindow( {
-				window: settingsWindow,
-				animated: true
-			} )
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		}
-
-		settingsWindow.show()
 
 	} )
 
@@ -1100,9 +1094,10 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	const customShortcuts = defaultShortcuts()
+	const customShortcuts = []
 	defaultShortcuts().forEach( shortcut => {
 
+		// If action exists in customShortcuts
 		const index = customShortcuts.map( element => element.action ).indexOf( shortcut.action )
 		if ( index > -1 ) {
 
@@ -1175,7 +1170,7 @@ const setupApp = async () => {
 	setSize( config.get( 'size' ) )
 
 	// Center app by default - set position if config exists
-	if ( config.get( 'positionX' ) > -1 ) {
+	if ( config.get( 'positionX' ) !== null ) {
 
 		setPosition( config.get( 'positionX' ), config.get( 'positionY' ) )
 

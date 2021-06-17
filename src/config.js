@@ -7,8 +7,8 @@ const defaults = {
 	color: '#FFF83B',
 	appOpacity: 80,
 	opacity: 80,
-	positionX: -1,
-	positionY: -1,
+	positionX: null,
+	positionY: null,
 	sight: 'dot',
 	size: 60,
 	windowLocked: false,
@@ -27,8 +27,6 @@ const config = new Store( {
 
 // Constants
 const APP_HEIGHT = 124
-const CHILD_WINDOW_OFFSET = 25
-
 const MAX_SHADOW_WINDOWS = 20
 const SHADOW_WINDOW_OFFSET = 40
 
@@ -40,8 +38,6 @@ module.exports = {
 	defaults,
 
 	APP_HEIGHT,
-	CHILD_WINDOW_OFFSET,
-
 	MAX_SHADOW_WINDOWS,
 	SHADOW_WINDOW_OFFSET,
 

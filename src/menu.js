@@ -9,7 +9,7 @@ const {
 	openNewGitHubIssue,
 	debugInfo
 } = require( 'electron-util' )
-const { config } = require( './config' )
+const { config } = require( './config.js' )
 
 const showBootLaunch = () => {
 

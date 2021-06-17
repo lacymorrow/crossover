@@ -246,24 +246,29 @@
 	} )
 
 	// Drag and drop Custom Image
-	// for drop events to fire, must cancel dragover and dragleave events
-	wrapperElement.addEventListener( 'dragover', event => {
+	let eventCounter = 0 // I kind of hate this but it works
+	document.addEventListener( 'dragenter', event => {
+
+		event.preventDefault()
+
+		// Highlight potential drop target when the draggable element enters it
+		eventCounter++
+		wrapperElement.classList.add( 'dropping' )
+
+	}, false )
+
+	document.addEventListener( 'dragover', event => {
 
 		event.preventDefault()
 		wrapperElement.classList.add( 'dropping' )
 
-	} )
+	}, false )
 
-	wrapperElement.addEventListener( 'dragleave', event => {
+	document.addEventListener( 'dragleave', event => {
 
 		event.preventDefault()
-
-		// Prevent flickering on Windows
-		if ( window.crossover.isMacOs ) {
-
-			wrapperElement.classList.remove( 'dropping' )
-
-		} else if ( event.target === wrapperElement ) {
+		eventCounter--
+		if ( eventCounter === 0 || window.crossover.isMacOs ) {
 
 			wrapperElement.classList.remove( 'dropping' )
 
@@ -271,21 +276,23 @@
 
 	} )
 
-	wrapperElement.addEventListener( 'dragend', event => {
+	document.addEventListener( 'dragend', event => {
 
 		event.preventDefault()
+		eventCounter = 0
 		wrapperElement.classList.remove( 'dropping' )
 
-	} )
+	}, false )
 
-	wrapperElement.addEventListener( 'drop', event => {
+	document.addEventListener( 'drop', event => {
 
 		event.preventDefault()
+		eventCounter = 0
 		wrapperElement.classList.remove( 'dropping' )
 
 		// Send file path to main
 		window.crossover.send( 'save_custom_image', event.dataTransfer.files[0].path )
 
-	} )
+	}, false )
 
 } )()

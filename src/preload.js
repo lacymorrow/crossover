@@ -4,7 +4,7 @@ const {
 	ipcRenderer
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { debounce, deepFreeze } = require( './util' )
+const { debounce, deepFreeze } = require( './util.js' )
 
 console.log( 'Dev:', is.development )
 console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled )

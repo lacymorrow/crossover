@@ -10,6 +10,9 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
+<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+</p>
 
 # Quick Start
 
@@ -39,8 +42,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 
-<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);"
-  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png">
+<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
+  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
@@ -140,8 +143,14 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
+✅  | Apex Legends                       | Runs in `Windowed` mode
 ✅  | Escape from Tarkov                 |
+✅  | Deceit                             | Runs in `Windowed` mode
+✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode. _Some reports of running in `Fullscreen` mode_.
+✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
+✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
+✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ❌  | Rainbow 6: Seige                   | Vulkan-based
@@ -207,20 +216,23 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 ## Bugs
 
-#### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
+### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
 
+#### Workaround
 
-#### Sight is deformed or off by 1 pixel; App center is not "center"
+If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
 
-Monitors use an even number of pixels, so finding a center point can be hard sometimes. Still, report any issues.
+Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
 
+```autohotkey
+space::Winset, Alwaysontop, , CrossOver
+```
 
-#### [Unable to drag or move app window](https://github.com/lacymorrow/crossover/issues/46)
+Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
 
-Some Linux distros have experienced this issue, [report your version](https://github.com/lacymorrow/crossover/issues/46)
-
+> via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
 
 ## Credits
 
