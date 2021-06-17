@@ -27,8 +27,6 @@ const config = new Store( {
 
 // Constants
 const APP_HEIGHT = 124
-const CHILD_WINDOW_OFFSET = 100
-
 const MAX_SHADOW_WINDOWS = 20
 const SHADOW_WINDOW_OFFSET = 40
 
@@ -40,8 +38,6 @@ module.exports = {
 	defaults,
 
 	APP_HEIGHT,
-	CHILD_WINDOW_OFFSET,
-
 	MAX_SHADOW_WINDOWS,
 	SHADOW_WINDOW_OFFSET,
 

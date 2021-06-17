@@ -14,7 +14,7 @@ const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util' )
-const { config, defaults, APP_HEIGHT, CHILD_WINDOW_OFFSET, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
+const { config, defaults, APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
 const menu = require( './menu' )
 
 // Maybe add settings here?
@@ -745,6 +745,8 @@ const registerIpc = () => {
 
 		}
 
+		chooserWindow.show()
+
 		// Create shortcut to close chooser
 		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
@@ -756,7 +758,7 @@ const registerIpc = () => {
 		if ( is.macos ) {
 
 			const bounds = chooserWindow.getBounds()
-			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT - CHILD_WINDOW_OFFSET } )
+			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		} else {
 
@@ -766,8 +768,6 @@ const registerIpc = () => {
 			} )
 
 		}
-
-		chooserWindow.show()
 
 	} )
 
@@ -795,21 +795,20 @@ const registerIpc = () => {
 
 		}
 
+		settingsWindow.show()
+
 		// Modal placement is different per OS
 		if ( is.macos ) {
 
 			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT + CHILD_WINDOW_OFFSET } )
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		} else {
 
-			centerAppWindow( {
-				targetWindow: settingsWindow
-			} )
+			const bounds = settingsWindow.getBounds()
+			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		}
-
-		settingsWindow.show()
 
 	} )
 
@@ -1083,9 +1082,10 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	const customShortcuts = defaultShortcuts()
+	const customShortcuts = []
 	defaultShortcuts().forEach( shortcut => {
 
+		// If action exists in customShortcuts
 		const index = customShortcuts.map( element => element.action ).indexOf( shortcut.action )
 		if ( index > -1 ) {
 

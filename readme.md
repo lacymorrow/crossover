@@ -146,8 +146,9 @@ Works     | Game     | Notes
 ✅  | Apex Legends                       | Runs in `Windowed` mode
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
-✅  | Destiny 2                          | Runs in `Fullscreen` mode
+✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode. _Some reports of running in `Fullscreen` mode_.
 ✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
+✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
