@@ -5,7 +5,7 @@ const {
 	ipcRenderer
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { debounce } = require( './util' )
+const { debounce } = require( './util.js' )
 
 contextBridge.exposeInMainWorld( 'crossover', {
 	debounce,

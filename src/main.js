@@ -13,9 +13,9 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-const { debounce } = require( './util' )
-const { config, defaults, APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config' )
-const menu = require( './menu' )
+const { debounce } = require( './util.js' )
+const { config, defaults, APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const menu = require( './menu.js' )
 
 // Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
