@@ -41,7 +41,7 @@
 		"bindings": "^1.5.0",
 		"electron-context-menu": "^2.0.1",
 		"electron-debug": "^3.0.1",
-		"electron-preferences": "lacymorrow/electron-preferences#fix-accelerator",
+		"electron-preferences": "^2.3.2",
 		"electron-store": "^7.0.0",
 		"electron-unhandled": "^3.0.2",
 		"electron-updater": "^4.3.1",
