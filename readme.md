@@ -28,6 +28,16 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 [See usage...](#usage)
 
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
+</p>
+
 # Features
 
 - Fast and lightweight
@@ -122,12 +132,12 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 
 <p align="center">
 	<br />
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
 </p>
 
 ##### Duplicate crosshairs
