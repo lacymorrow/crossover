@@ -14,7 +14,7 @@ const preferences = new ElectronPreferences( {
 	defaults: {},
 
 	browserWindowOverrides: {
-		title: 'CrossOver Preferences',
+		title: 'CrossOver Preferences'
 
 	},
 	/**
