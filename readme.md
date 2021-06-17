@@ -130,6 +130,10 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 ###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
 ###### Linux: Some distributions do not center on double-click.
 
+##### Duplicate crosshairs
+
+Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
+
 <p align="center">
 	<br />
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
@@ -139,10 +143,6 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
 </p>
-
-##### Duplicate crosshairs
-
-Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
 
 ---
 
