@@ -16,7 +16,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Quick Start
 
-### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 - Choose a crosshair from over 50 included or drop a custom image
 - Click and drag the crosshair to move Crossover around
