@@ -16,7 +16,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Quick Start
 
-### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 - Choose a crosshair from over 50 included or drop a custom image
 - Click and drag the crosshair to move Crossover around
@@ -26,6 +27,16 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset app settings
 
 [See usage...](#usage)
+
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
+</p>
 
 # Features
 
@@ -119,19 +130,19 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 ###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
 ###### Linux: Some distributions do not center on double-click.
 
-<p align="center">
-	<br />
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
-</p>
-
 ##### Duplicate crosshairs
 
 Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
+
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
+</p>
 
 ---
 
