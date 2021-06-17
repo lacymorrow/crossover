@@ -449,13 +449,12 @@ const hideWindow = () => {
 
 }
 
-const toggleWindowLock = () => {
+const toggleWindowLock = (lock = !config.get( 'windowLocked' )) => {
 
-	const locked = config.get( 'windowLocked' )
-	lockWindow( !locked )
+	lockWindow( lock )
 	shadowWindows.forEach( currentWindow => {
 
-		lockWindow( !locked, currentWindow )
+		lockWindow( lock, currentWindow )
 
 	} )
 
@@ -1228,6 +1227,8 @@ app.on( 'second-instance', () => {
 		}
 
 		mainWindow.show()
+
+		toggleWindowLock(false)
 
 	}
 
