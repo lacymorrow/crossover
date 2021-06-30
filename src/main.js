@@ -10,7 +10,7 @@ const path = require( 'path' )
 const electron = require( 'electron' )
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, centerWindow, debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { debounce } = require( './util.js' )
@@ -512,6 +512,91 @@ const hideSettingsWindow = () => {
 
 }
 
+const openChooserWindow = async () => {
+
+	hideSettingsWindow()
+
+	// Don't do anything if locked
+	if ( config.get( 'windowLocked' ) ) {
+
+		return
+
+	}
+
+	if ( !chooserWindow ) {
+
+		chooserWindow = await createChooser()
+
+	}
+
+	chooserWindow.show()
+
+	// Create shortcut to close chooser
+	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
+		globalShortcut.register( 'Escape', escapeAction )
+
+	}
+
+	// Modal placement is different per OS
+	if ( is.macos ) {
+
+		const bounds = chooserWindow.getBounds()
+		chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
+
+	} else {
+
+		// Windows
+		centerAppWindow( {
+			targetWindow: chooserWindow
+		} )
+
+	}
+
+}
+
+const openSettingsWindow = async () => {
+
+	hideChooserWindow()
+
+	// Don't do anything if locked
+	if ( config.get( 'windowLocked' ) ) {
+
+		return
+
+	}
+
+	if ( !settingsWindow ) {
+
+		settingsWindow = await createSettings()
+
+	}
+
+	// Create shortcut to close window
+	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
+		globalShortcut.register( 'Escape', escapeAction )
+
+	}
+
+	settingsWindow.show()
+
+	// Modal placement is different per OS
+	if ( is.macos ) {
+
+		const bounds = settingsWindow.getBounds()
+		settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
+
+	} else {
+
+		// Windows
+		const bounds = getWindowBoundsCentered({window:settingsWindow, useFullBounds: true})
+		const mainBounds = mainWindow.getBounds()
+		settingsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+
+	}
+}
+
 const moveWindow = options => {
 
 	options = {
@@ -727,87 +812,15 @@ const registerIpc = () => {
 
 	} )
 
-	ipcMain.on( 'open_chooser', async ( ..._ ) => {
+	ipcMain.on( 'open_chooser', ( _ ) => {
 
-		hideSettingsWindow()
-
-		// Don't do anything if locked
-		if ( config.get( 'windowLocked' ) ) {
-
-			return
-
-		}
-
-		if ( !chooserWindow ) {
-
-			chooserWindow = await createChooser()
-
-		}
-
-		chooserWindow.show()
-
-		// Create shortcut to close chooser
-		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
-
-			globalShortcut.register( 'Escape', escapeAction )
-
-		}
-
-		// Modal placement is different per OS
-		if ( is.macos ) {
-
-			const bounds = chooserWindow.getBounds()
-			chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
-
-		} else {
-
-			// Windows
-			centerAppWindow( {
-				targetWindow: chooserWindow
-			} )
-
-		}
+		openChooserWindow()
 
 	} )
 
-	ipcMain.on( 'open_settings', async ( ..._ ) => {
+	ipcMain.on( 'open_settings', ( _ ) => {
 
-		hideChooserWindow()
-
-		// Don't do anything if locked
-		if ( config.get( 'windowLocked' ) ) {
-
-			return
-
-		}
-
-		if ( !settingsWindow ) {
-
-			settingsWindow = await createSettings()
-
-		}
-
-		// Create shortcut to close window
-		if ( !globalShortcut.isRegistered( 'Escape' ) ) {
-
-			globalShortcut.register( 'Escape', escapeAction )
-
-		}
-
-		settingsWindow.show()
-
-		// Modal placement is different per OS
-		if ( is.macos ) {
-
-			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
-
-		} else {
-
-			const bounds = settingsWindow.getBounds()
-			settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
-
-		}
+		openSettingsWindow()
 
 	} )
 

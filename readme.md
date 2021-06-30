@@ -198,8 +198,10 @@ Start developing in `src/main.js` and `src/renderer.js`. `index.html` contains t
 
 ### Run
 
+_You will need [node.js](https://nodejs.org/) v14.4.X installed. If you have `nvm` installed, run `nvm use` to switch to the correct node version._
+
 ```
-$ npm install && npm start
+$ yarn && yarn start
 ```
 
 ### Build
@@ -210,16 +212,16 @@ _wine_ and _mono_ must be installed for Windows builds _(macOS)_
 [_multipass_](https://multipass.run/) must be installed for Snap builds _(macOS)_
 
 ```
-$ npm run build
+$ yarn build
 ```
 
-> Or `build:all`
+> Or `yarn build:release`
 
 
 ### Publish
 
 ```
-$ npm run release
+$ yarn run release
 ```
 
 Then edit the automatically created GitHub Releases draft and publish.
