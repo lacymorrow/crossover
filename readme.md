@@ -40,6 +40,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Features
 
+- Not bannable <sup>[[1]](https://github.com/lacymorrow/crossover/issues/79)</sup>
 - Fast and lightweight
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -147,9 +148,7 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 ---
 
 
-## What works/doesn't work (compatability)
-
-#### [Games](https://github.com/lacymorrow/crossover/issues/47)
+## [What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)
 
 Works     | Game     | Notes
 ----------|----------|-------
