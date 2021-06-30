@@ -155,9 +155,10 @@ Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
+✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
-✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode. _Some reports of running in `Fullscreen` mode_.
+✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_
 ✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
 ✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
@@ -169,7 +170,7 @@ Works     | Game     | Notes
 ✅  | Rust                               | Runs in `Windowed Fullscreen` mode
 ✅  | Star Wars Battlefront 2            | Runs in `Borderless` mode
 ✅  | Tom Clancy's The Division 2        | Runs in `Windowed Fullscreen` mode
-✅  | Tony Hawks Pro Skater 1+2          |
+✅  | Tony Hawks Pro Skater 1+2          | Such a fun game!
 ❌  | Vulkan-based games                 |
 
 > Reported from our users, [add your resuts](https://github.com/lacymorrow/crossover/issues/47)
