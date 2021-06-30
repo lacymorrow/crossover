@@ -590,11 +590,12 @@ const openSettingsWindow = async () => {
 	} else {
 
 		// Windows
-		const bounds = getWindowBoundsCentered({window:settingsWindow, useFullBounds: true})
+		const bounds = getWindowBoundsCentered( { window: settingsWindow, useFullBounds: true } )
 		const mainBounds = mainWindow.getBounds()
 		settingsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
 	}
+
 }
 
 const moveWindow = options => {
@@ -812,13 +813,13 @@ const registerIpc = () => {
 
 	} )
 
-	ipcMain.on( 'open_chooser', ( _ ) => {
+	ipcMain.on( 'open_chooser', _ => {
 
 		openChooserWindow()
 
 	} )
 
-	ipcMain.on( 'open_settings', ( _ ) => {
+	ipcMain.on( 'open_settings', _ => {
 
 		openSettingsWindow()
 
