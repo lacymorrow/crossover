@@ -40,7 +40,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Features
 
-- Not bannable <sup>[[1]](https://github.com/lacymorrow/crossover/issues/79)</sup>
+- Not bannable <sup>[[79]](https://github.com/lacymorrow/crossover/issues/79)</sup>
 - Fast and lightweight
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -215,13 +215,13 @@ _wine_ and _mono_ must be installed for Windows builds _(macOS)_
 $ yarn build
 ```
 
-> Or `yarn build:release`
+> Or `yarn build:all`
 
 
 ### Publish
 
 ```
-$ yarn run release
+$ yarn release
 ```
 
 Then edit the automatically created GitHub Releases draft and publish.
