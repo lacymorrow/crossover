@@ -155,6 +155,7 @@ Works     | Game     | Notes
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
 ✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
+✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_
