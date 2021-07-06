@@ -248,6 +248,11 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 
 > via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
 
+
+### Graphical issues on Linux
+
+Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
+
 ## Credits
 
 An extra big thanks to the crosshair providers, as this wouldn't be possible without them:
