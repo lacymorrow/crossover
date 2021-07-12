@@ -16,7 +16,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Quick Start
 
-### [Download CrossOver](https://github.com/lacymorrow/crossover/releases/latest)
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 - Choose a crosshair from over 50 included or drop a custom image
 - Click and drag the crosshair to move Crossover around
@@ -27,8 +28,19 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 [See usage...](#usage)
 
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
+</p>
+
 # Features
 
+- Not bannable <sup>[[79]](https://github.com/lacymorrow/crossover/issues/79)</sup>
 - Fast and lightweight
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -119,34 +131,34 @@ Display the "About" window details                         | <kbd>Control</kbd>-
 ###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
 ###### Linux: Some distributions do not center on double-click.
 
-<p align="center">
-	<br />
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
-</p>
-
 ##### Duplicate crosshairs
 
 Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
 
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
+</p>
+
 ---
 
 
-## What works/doesn't work (compatability)
-
-#### [Games](https://github.com/lacymorrow/crossover/issues/47)
+## [What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)
 
 Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
+✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
+✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
-✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode. _Some reports of running in `Fullscreen` mode_.
+✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_
 ✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
 ✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
@@ -158,7 +170,7 @@ Works     | Game     | Notes
 ✅  | Rust                               | Runs in `Windowed Fullscreen` mode
 ✅  | Star Wars Battlefront 2            | Runs in `Borderless` mode
 ✅  | Tom Clancy's The Division 2        | Runs in `Windowed Fullscreen` mode
-✅  | Tony Hawks Pro Skater 1+2          |
+✅  | Tony Hawks Pro Skater 1+2          | Such a fun game!
 ❌  | Vulkan-based games                 |
 
 > Reported from our users, [add your resuts](https://github.com/lacymorrow/crossover/issues/47)
@@ -187,8 +199,10 @@ Start developing in `src/main.js` and `src/renderer.js`. `index.html` contains t
 
 ### Run
 
+_You will need [node.js](https://nodejs.org/) v14.4.X installed. If you have `nvm` installed, run `nvm use` to switch to the correct node version._
+
 ```
-$ npm install && npm start
+$ yarn && yarn start
 ```
 
 ### Build
@@ -199,16 +213,16 @@ _wine_ and _mono_ must be installed for Windows builds _(macOS)_
 [_multipass_](https://multipass.run/) must be installed for Snap builds _(macOS)_
 
 ```
-$ npm run build
+$ yarn build
 ```
 
-> Or `build:all`
+> Or `yarn build:all`
 
 
 ### Publish
 
 ```
-$ npm run release
+$ yarn release
 ```
 
 Then edit the automatically created GitHub Releases draft and publish.
@@ -233,6 +247,11 @@ space::Winset, Alwaysontop, , CrossOver
 Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
 
 > via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
+
+
+### Graphical issues on Linux
+
+Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
 
 ## Credits
 
