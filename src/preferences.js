@@ -26,12 +26,16 @@ const preferences = new ElectronPreferences( {
 			boot: false,
 			gpu: true
 		},
+		keybinds: {
+			lock: 'Control+Shift+Alt+X'
+		},
 		advanced: {},
 		hidden: {
 			frame: false,
 			locked: false,
 			positionX: null,
-			positionY: null
+			positionY: null,
+			test:true
 
 		}
 	},
@@ -177,24 +181,73 @@ const preferences = new ElectronPreferences( {
 			form: {
 				groups: [
 					{
-						label: 'Custom Keybinds',
+						label: 'Custom Keybinds (Beta)',
 						fields: [
 							{
-								label: 'Lock crosshair window',
-								key: '',
+								label: 'Lock Crosshair in Place',
+								key: 'lock',
 								type: 'accelerator',
-								help: 'What is your phone number?'
+								help: 'Unlock CrossOver to change settings, then lock the app in place to game.'
 							},
 							{
-								label: 'Foo or Bar?',
-								key: 'foobar',
-								type: 'radio',
-								options: [
-									{ label: 'Foo', value: 'foo' },
-									{ label: 'Bar', value: 'bar' },
-									{ label: 'FooBar', value: 'foobar' }
-								],
-								help: 'Foo? Bar?'
+								label: 'Center Crosshair',
+								key: 'center',
+								type: 'accelerator',
+								help: 'Center the crosshair window on the current screen.'
+							},
+							{
+								label: 'Hide Crosshair',
+								key: 'hide',
+								type: 'accelerator',
+								help: 'Hide CrossOver from the screen.'
+							},
+							{
+								label: 'Duplicate Crosshair',
+								key: 'duplicate',
+								type: 'accelerator',
+								help: 'Create a duplicate "shadow" crosshair. Settings are not saved for shadow crosshairs.'
+							},
+							{
+								label: 'Change Display',
+								key: 'changeDisplay',
+								type: 'accelerator',
+								help: 'Center CrossOver on the next connected display.'
+							},
+							{
+								label: 'Reset All Settings',
+								key: 'reset',
+								type: 'accelerator',
+								help: 'Reset all settings to default and center the crosshair.'
+							},
+							{
+								label: 'Move Up',
+								key: 'moveUp',
+								type: 'accelerator',
+								help: 'Move the crosshair up 1 pixel.'
+							},
+							{
+								label: 'Move Down',
+								key: 'moveDown',
+								type: 'accelerator',
+								help: 'Move the crosshair down 1 pixel.'
+							},
+							{
+								label: 'Move Left',
+								key: 'moveLeft',
+								type: 'accelerator',
+								help: 'Move the crosshair left 1 pixel.'
+							},
+							{
+								label: 'Move Right',
+								key: 'moveRight',
+								type: 'accelerator',
+								help: 'Move the crosshair right 1 pixel.'
+							},
+							{
+								label: 'About CrossOver',
+								key: 'about',
+								type: 'accelerator',
+								help: 'Open the "About CrossOver" window for more information.'
 							}
 						]
 					}

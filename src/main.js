@@ -1,5 +1,13 @@
 'use strict'
 
+// custom crosshair should be in settings
+// shadow window bug on move to next display
+// escape action close prefs
+// polish menu
+// test window placement on windows/mac
+// reset preferences to defaules in resetApp
+// allow hideOnMouse to work with other clicks
+
 // Conflicting accelerator on Fedora
 // Improve escapeAction to be window-aware
 // dont setPosition if monitor has been unplugged
@@ -147,8 +155,10 @@ const createMainWindow = async isShadowWindow => {
 
 	setDockVisible( false )
 	win.setFullScreenable( false )
+
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
+
 	// Enables staying on fullscreen apps - mac
 	setDockVisible( true )
 
@@ -512,8 +522,10 @@ const hideChooserWindow = () => {
 
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
-	// TODO
-	// Prefs.close()
+
+	if(prefsWindow){
+		prefsWindow.close()
+	}
 
 }
 
@@ -546,7 +558,7 @@ const openChooserWindow = async () => {
 	// Modal placement is different per OS
 	if ( is.macos ) {
 
-		const bounds = chooserWindow.getBounds()
+		const bounds = mainWindow.getBounds()
 		chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 	} else {
@@ -563,6 +575,8 @@ const openChooserWindow = async () => {
 const openSettingsWindow = async () => {
 
 	hideChooserWindow()
+
+	console.log('open settings')
 
 	// Don't do anything if locked
 	if ( prefs.value( 'hidden.locked' ) ) {
@@ -726,21 +740,9 @@ const syncSettings = preferences => {
 	setSight( preferences?.crosshair?.reticle )
 	setSize( preferences?.crosshair?.size )
 
-}
-
-const resetSettings = skipSetup => {
-
-	// Close extra crosshairs
-	closeShadowWindows()
-
-	// TODO: Reset prefs to defaults
-	centerAppWindow()
-
-	if ( !skipSetup ) {
-
-		setupApp()
-
-	}
+	// Reset all custom shortcuts
+	globalShortcut.unregisterAll()
+	registerShortcuts()
 
 }
 
@@ -1019,7 +1021,7 @@ const defaultShortcuts = () => {
 			keybind: `${accelerator}+R`,
 			fn: () => {
 
-				resetSettings()
+				resetApp()
 
 			}
 		},
@@ -1079,22 +1081,19 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	const customShortcuts = [
-		{
-			action: 'lock',
-			keybind: 'Control+Shift+['
-		}
-	]
+	console.log('Custom Binds: ', prefs.value(`keybinds`)) //TODO
+
 	defaultShortcuts().forEach( shortcut => {
 
-		// If action exists in customShortcuts
-		const index = customShortcuts.map( element => element.action ).indexOf( shortcut.action )
-		if ( index > -1 ) {
+
+		// Custom shortcuts
+		const custom = prefs.value(`keybinds.${shortcut.action}`)
+
+		if (custom) {
 
 			// If a custom shortcut exists for this action
 			console.log( `Custom keybind for ${shortcut.action}` )
-			globalShortcut.register( customShortcuts[index].keybind, shortcut.fn )
-
+			globalShortcut.register( custom, shortcut.fn )
 		} else {
 
 			globalShortcut.register( shortcut.keybind, shortcut.fn )
@@ -1125,6 +1124,24 @@ const createChooser = async currentCrosshair => {
 
 }
 
+const resetApp = skipSetup => {
+
+	// Close extra crosshairs
+	closeShadowWindows()
+
+	// TODO: Reset prefs to defaults
+	prefs.value(`keybinds`, {})
+
+	centerAppWindow({targetWindow: mainWindow})
+
+	if ( !skipSetup ) {
+		globalShortcut.unregisterAll()
+		setupApp()
+
+	}
+
+}
+
 const setupApp = async () => {
 
 	// IPC
@@ -1151,7 +1168,6 @@ const setupApp = async () => {
 	// Center app by default - set position if exists
 	if ( prefs.value( 'hidden.positionX' ) !== null && typeof prefs.value( 'hidden.positionX' ) !== 'undefined' ) {
 
-		console.log( prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ) )
 		setPosition( prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ) )
 
 	}
@@ -1172,7 +1188,10 @@ const setupApp = async () => {
 
 	}, 500 )
 
-	await createChooser( currentCrosshair )
+	if (!chooserWindow) {
+
+		await createChooser( currentCrosshair )
+	}
 
 	// Window Events after windows are created
 	registerEvents()
@@ -1181,7 +1200,7 @@ const setupApp = async () => {
 	if ( process.env.CROSSOVER_RESET ) {
 
 		console.log( 'Reset Triggered' )
-		resetSettings( true )
+		resetApp( true )
 
 	}
 
