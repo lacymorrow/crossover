@@ -22,6 +22,12 @@ const debounce = ( func, delay ) => {
 
 }
 
+const checkboxTrue = ( value, key ) => {
+
+	return ( typeof value === 'object' && value.includes( key ) )
+
+}
+
 /* eslint-disable no-prototype-builtins */
 /**
 * Recursively Object.freeze() on objects and functions
@@ -51,5 +57,6 @@ function deepFreeze( o ) {
 
 /* eslint-enable */
 
+exports.checkboxTrue = checkboxTrue
 exports.debounce = debounce
 exports.deepFreeze = deepFreeze

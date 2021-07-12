@@ -13,10 +13,11 @@ const preferences = new ElectronPreferences( {
 	 */
 	defaults: {
 		crosshair: {
-			crosshairColor: '#FFF83B',
-			crosshairSize: 80,
+			color: '#FFF83B',
+			size: 80,
 			opacity: 80,
-			reticle: 'dot'
+			reticle: 'dot',
+			hideOnMouse: false
 		},
 		app: {
 			updates: true,
@@ -51,14 +52,14 @@ const preferences = new ElectronPreferences( {
 						fields: [
 							{
 								label: 'Color',
-								key: 'crosshairColor',
+								key: 'color',
 								type: 'color',
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Center sight color'
 							},
 							{
 								label: 'Custom Crosshair',
-								key: 'crosshairImage',
+								key: 'image',
 								type: 'text',
 								help: 'What is your last name?'
 							},
@@ -74,14 +75,14 @@ const preferences = new ElectronPreferences( {
 							},
 							{
 								label: 'Reticle size',
-								key: 'reticle_size',
+								key: 'reticleSize',
 								type: 'slider',
 								min: 1,
 								max: 50
 							},
 							{
 								label: 'Crosshair Size',
-								key: 'crosshairSize',
+								key: 'size',
 								type: 'slider',
 								min: 1,
 								max: 100
@@ -92,6 +93,15 @@ const preferences = new ElectronPreferences( {
 								type: 'slider',
 								min: 1,
 								max: 100
+							},
+							{
+								label: 'Mouse Event Hooks',
+								key: 'hideOnMouse',
+								type: 'checkbox',
+								options: [
+									{ label: 'Hide crosshair on right-click', value: 'hideOnMouse' }
+								],
+								help: 'CrossOver be hidden when aiming down sights. This is a beta feature, use at your own risk.'
 							}
 						]
 					}

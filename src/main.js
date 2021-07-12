@@ -13,7 +13,8 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-const { debounce } = require( './util.js' )
+// Const ioHook = require('iohook');
+const { checkboxTrue, debounce } = require( './util.js' )
 const { config, defaults, APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const menu = require( './menu.js' )
 const prefs = require( './preferences.js' )
@@ -50,8 +51,7 @@ if ( !app.requestSingleInstanceLock() ) {
 // It's commented out as it throws an error if there are no published versions.
 try {
 
-	const updates = prefs.value( 'app.updates' )
-	if ( !is.linux && ( typeof updates === 'object' && updates.includes( 'updates' ) ) ) {
+	if ( !is.development && !is.linux && checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
 
 		console.log( 'Setting: Automatic Updates' )
 
@@ -69,8 +69,7 @@ try {
 } catch {}
 
 // Start app on boot
-const boot = prefs.value( 'app.boot' )
-if ( typeof boot === 'object' && boot.includes( 'boot' ) ) {
+if ( !is.development && checkboxTrue( prefs.value( 'app.boot' ), 'boot' ) ) {
 
 	app.setLoginItemSettings( {
 		openAtLogin: true
@@ -85,8 +84,7 @@ if ( typeof boot === 'object' && boot.includes( 'boot' ) ) {
 }
 
 // Fix for Linux transparency issues
-const gpu = prefs.value( 'app.gpu' )
-if ( is.linux || !( typeof gpu === 'object' && gpu.includes( 'gpu' ) ) ) {
+if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
 
 	// Disable hardware acceleration
 	console.log( 'Setting: Disable GPU' )
@@ -99,7 +97,7 @@ if ( is.linux || !( typeof gpu === 'object' && gpu.includes( 'gpu' ) ) ) {
 // Prevent window from being garbage collected
 let mainWindow
 let chooserWindow
-let settingsWindow
+let prefsWindow
 const shadowWindows = new Set()
 let windowHidden = false // Maintain hidden state
 
@@ -193,7 +191,7 @@ const createMainWindow = async isShadowWindow => {
 
 const createChildWindow = async ( parent, windowName ) => {
 
-	const VALID_WINDOWS = [ 'chooser', 'settings' ]
+	const VALID_WINDOWS = [ 'chooser' ]
 
 	const options = {
 		parent,
@@ -220,13 +218,6 @@ const createChildWindow = async ( parent, windowName ) => {
 	if ( !VALID_WINDOWS.includes( windowName ) ) {
 
 		return
-
-	}
-
-	if ( windowName === 'settings' ) {
-
-		options.width = 200
-		options.height = 250
 
 	}
 
@@ -281,7 +272,7 @@ const getActiveWindow = () => {
 
 }
 
-// Save position to settings
+// Save position
 const saveBounds = debounce( win => {
 
 	if ( !win ) {
@@ -350,14 +341,12 @@ const getImages = ( directory, level ) => {
 const setColor = ( color, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_color', color )
-	settingsWindow.webContents.send( 'set_color', color )
 
 }
 
 const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_opacity', opacity )
-	settingsWindow.webContents.send( 'set_opacity', opacity )
 
 }
 
@@ -384,14 +373,12 @@ const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 const setSight = ( sight, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_sight', sight )
-	settingsWindow.webContents.send( 'set_sight', sight )
 
 }
 
 const setSize = ( size, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_size', size )
-	settingsWindow.webContents.send( 'set_size', size )
 
 }
 
@@ -527,11 +514,7 @@ const hideChooserWindow = () => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-	if ( settingsWindow ) {
-
-		settingsWindow.hide()
-
-	}
+	// Prefs.close()
 
 }
 
@@ -589,12 +572,6 @@ const openSettingsWindow = async () => {
 
 	}
 
-	if ( !settingsWindow ) {
-
-		settingsWindow = await createSettings()
-
-	}
-
 	// Create shortcut to close window
 	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
@@ -602,20 +579,25 @@ const openSettingsWindow = async () => {
 
 	}
 
-	settingsWindow.show()
+	prefsWindow = prefs.show()
+	if ( prefsWindow ) {
 
-	// Modal placement is different per OS
-	if ( is.macos ) {
+		prefsWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-		const bounds = settingsWindow.getBounds()
-		settingsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
+		// Modal placement is different per OS
+		if ( is.macos ) {
 
-	} else {
+			const bounds = prefsWindow.getBounds()
+			prefsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
-		// Windows
-		const bounds = getWindowBoundsCentered( { window: settingsWindow, useFullBounds: true } )
-		const mainBounds = mainWindow.getBounds()
-		settingsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+		} else {
+
+			// Windows
+			const bounds = getWindowBoundsCentered( { window: prefsWindow, useFullBounds: true } )
+			const mainBounds = mainWindow.getBounds()
+			prefsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+
+		}
 
 	}
 
@@ -760,14 +742,67 @@ const resetSettings = skipSetup => {
 
 }
 
+const registerMouseEvents = async () => {
+
+	// Dynamically require ioHook
+	const ioHook = await require( 'iohook' )
+
+	ioHook.on( 'mousedown', event => {
+
+		// Don't do anything if not locked
+		if ( !config.get( 'windowLocked' ) ) {
+
+			return
+
+		}
+
+		// If right click
+		if ( event.button === 2 ) {
+
+			hideWindow()
+
+		}
+
+	} )
+
+	ioHook.on( 'mouseup', event => {
+
+		// Don't do anything if not locked
+		if ( !config.get( 'windowLocked' ) ) {
+
+			return
+
+		}
+
+		// If right click
+		if ( event.button === 2 ) {
+
+			hideWindow()
+
+		}
+
+	} )
+
+	// Register and start hook
+	ioHook.start()
+
+}
+
 const registerEvents = () => {
+
+	if ( checkboxTrue( prefs.value( 'crosshair.hideOnMouse' ), 'hideOnMouse' ) ) {
+
+		console.log( 'Setting: Mouse Events' )
+		registerMouseEvents()
+
+	}
 
 	prefs.on( 'save', preferences => {
 
-		setColor( preferences?.crosshair?.crosshairColor )
+		setColor( preferences?.crosshair?.color )
 		setOpacity( preferences?.crosshair?.opacity )
 		setSight( preferences?.crosshair?.reticle )
-		setSize( preferences?.crosshair?.crosshairSize )
+		setSize( preferences?.crosshair?.size )
 
 	} )
 
@@ -787,15 +822,6 @@ const registerEvents = () => {
 
 	} )
 
-	settingsWindow.on( 'close', async () => {
-
-		hideWindow()
-		await createSettings()
-		registerEvents()
-		mainWindow.show()
-
-	} )
-
 	// Close windows if clicked away (mac only)
 	if ( !is.development ) {
 
@@ -805,36 +831,19 @@ const registerEvents = () => {
 
 		} )
 
-		settingsWindow.on( 'blur', () => {
+		if ( prefsWindow ) {
 
-			hideSettingsWindow()
+			prefsWindow.on( 'blur', () => {
 
-		} )
+				hideSettingsWindow()
+
+			} )
+
+		}
 
 	}
 
 }
-
-const dColorInput = debounce( arg => {
-
-	console.log( `Save color: ${arg}` )
-	config.set( 'color', arg )
-
-}, 400 )
-
-const dOpacityInput = debounce( arg => {
-
-	console.log( `Save opacity: ${arg}` )
-	config.set( 'opacity', arg )
-
-}, 400 )
-
-const dSizeInput = debounce( arg => {
-
-	console.log( `Save size: ${arg}` )
-	config.set( 'size', arg )
-
-}, 400 )
 
 const registerIpc = () => {
 
@@ -863,29 +872,10 @@ const registerIpc = () => {
 
 	} )
 
-	ipcMain.on( 'close_settings', _ => {
-
-		hideSettingsWindow()
-
-	} )
-
 	ipcMain.on( 'close_window', event => {
 
 		// Close a shadow window
 		closeShadowWindows( event.sender.id )
-
-	} )
-
-	ipcMain.on( 'save_color', ( event, arg ) => {
-
-		mainWindow.webContents.send( 'set_color', arg ) // Pass to renderer
-		// pass to shadows
-		shadowWindows.forEach( currentWindow => {
-
-			currentWindow.webContents.send( 'set_color', arg )
-
-		} )
-		dColorInput( arg )
 
 	} )
 
@@ -943,43 +933,6 @@ const registerIpc = () => {
 			console.log( 'Not setting null crosshair.' )
 
 		}
-
-	} )
-
-	ipcMain.on( 'save_opacity', ( event, arg ) => {
-
-		mainWindow.webContents.send( 'set_opacity', arg ) // Pass to renderer
-		shadowWindows.forEach( currentWindow => {
-
-			currentWindow.webContents.send( 'set_opacity', arg )
-
-		} )
-		dOpacityInput( arg )
-
-	} )
-
-	ipcMain.on( 'save_size', ( event, arg ) => {
-
-		mainWindow.webContents.send( 'set_size', arg ) // Pass to renderer
-		shadowWindows.forEach( currentWindow => {
-
-			currentWindow.webContents.send( 'set_size', arg )
-
-		} )
-		dSizeInput( arg )
-
-	} )
-
-	ipcMain.on( 'save_sight', ( event, arg ) => {
-
-		mainWindow.webContents.send( 'set_sight', arg ) // Pass to renderer
-		shadowWindows.forEach( currentWindow => {
-
-			currentWindow.webContents.send( 'set_sight', arg )
-
-		} )
-		console.log( `Save sight: ${arg}` )
-		config.set( 'sight', arg )
 
 	} )
 
@@ -1173,14 +1126,6 @@ const createChooser = async currentCrosshair => {
 
 }
 
-const createSettings = async () => {
-
-	settingsWindow = await createChildWindow( mainWindow, 'settings' )
-
-	return settingsWindow
-
-}
-
 const setupApp = async () => {
 
 	// IPC
@@ -1192,9 +1137,6 @@ const setupApp = async () => {
 	// Set to previously selected crosshair
 	const currentCrosshair = config.get( 'crosshair' )
 
-	// Create child windows
-	await createSettings()
-
 	if ( currentCrosshair ) {
 
 		console.log( `Set crosshair: ${currentCrosshair}` )
@@ -1202,7 +1144,7 @@ const setupApp = async () => {
 
 	}
 
-	setColor( prefs.value( 'crosshair.crosshairColor' ) )
+	setColor( prefs.value( 'crosshair.color' ) )
 	setOpacity( config.get( 'opacity' ) )
 	setSight( config.get( 'sight' ) )
 	setSize( config.get( 'size' ) )
@@ -1249,10 +1191,10 @@ const setupShadowWindow = async shadow => {
 
 	shadow.webContents.send( 'add_class', 'shadow' )
 	shadow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
-	setColor( prefs.value( 'crosshair.crosshairColor' ), shadow )
-	setOpacity( config.get( 'opacity' ), shadow )
-	setSight( config.get( 'sight' ), shadow )
-	setSize( prefs.value( 'crosshair.crosshairSize' ), shadow )
+	setColor( prefs.value( 'crosshair.color' ), shadow )
+	setOpacity( prefs.value( 'crosshair.opacity' ), shadow )
+	setSight( prefs.value( 'crosshair.reticle' ), shadow )
+	setSize( prefs.value( 'crosshair.size' ), shadow )
 	if ( config.get( 'positionX' ) > -1 ) {
 
 		// Offset position slightly
