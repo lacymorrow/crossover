@@ -198,7 +198,7 @@ const createChildWindow = async ( parent, windowName ) => {
 		modal: true,
 		show: false,
 		type: 'toolbar',
-		frame: prefs.value('hidden.frame'),
+		frame: prefs.value( 'hidden.frame' ),
 		hasShadow: true,
 		titleBarStyle: 'customButtonsOnHover',
 		fullscreenable: false,
@@ -283,8 +283,8 @@ const saveBounds = debounce( win => {
 
 	const bounds = win.getBounds()
 	console.log( `Save bounds: ${bounds.x}, ${bounds.y}` )
-	prefs.value('hidden.positionX', bounds.x)
-	prefs.value('hidden.positionY', bounds.y)
+	prefs.value( 'hidden.positionX', bounds.x )
+	prefs.value( 'hidden.positionY', bounds.y )
 
 }, 1000 )
 
@@ -292,6 +292,7 @@ const getCrosshairImages = async () => {
 
 	// How many levels deep to recurse
 	const crosshairsObject = await getImages( crosshairsPath, 2 )
+
 	return crosshairsObject
 
 }
@@ -350,7 +351,7 @@ const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
 const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
-	if ( posX === null || posY === null || typeof posX === 'undefined' || typeof posY === 'undefined') {
+	if ( posX === null || posY === null || typeof posX === 'undefined' || typeof posY === 'undefined' ) {
 
 		return
 
@@ -361,8 +362,8 @@ const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 	if ( targetWindow === mainWindow ) {
 
 		console.log( 'Save XY:', posX, posY )
-		prefs.value('hidden.positionX', posX)
-		prefs.value('hidden.positionY', posY)
+		prefs.value( 'hidden.positionX', posX )
+		prefs.value( 'hidden.positionY', posY )
 
 	}
 
@@ -457,7 +458,7 @@ const hideWindow = () => {
 
 }
 
-const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked') ) => {
+const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 
 	lockWindow( lock )
 	shadowWindows.forEach( currentWindow => {
@@ -521,7 +522,7 @@ const openChooserWindow = async () => {
 	hideSettingsWindow()
 
 	// Don't do anything if locked
-	if ( prefs.value( 'hidden.locked') ) {
+	if ( prefs.value( 'hidden.locked' ) ) {
 
 		return
 
@@ -564,7 +565,7 @@ const openSettingsWindow = async () => {
 	hideChooserWindow()
 
 	// Don't do anything if locked
-	if ( prefs.value( 'hidden.locked') ) {
+	if ( prefs.value( 'hidden.locked' ) ) {
 
 		return
 
@@ -610,7 +611,7 @@ const moveWindow = options => {
 	}
 
 	const saveSettings = options.targetWindow === mainWindow
-	const locked = prefs.value( 'hidden.locked')
+	const locked = prefs.value( 'hidden.locked' )
 
 	if ( !locked ) {
 
@@ -719,10 +720,12 @@ const escapeAction = () => {
 }
 
 const syncSettings = preferences => {
+
 	setColor( preferences?.crosshair?.color )
 	setOpacity( preferences?.crosshair?.opacity )
 	setSight( preferences?.crosshair?.reticle )
 	setSize( preferences?.crosshair?.size )
+
 }
 
 const resetSettings = skipSetup => {
@@ -749,7 +752,7 @@ const registerMouseEvents = async () => {
 	ioHook.on( 'mousedown', event => {
 
 		// Don't do anything if not locked
-		if ( !prefs.value( 'hidden.locked') ) {
+		if ( !prefs.value( 'hidden.locked' ) ) {
 
 			return
 
@@ -767,7 +770,7 @@ const registerMouseEvents = async () => {
 	ioHook.on( 'mouseup', event => {
 
 		// Don't do anything if not locked
-		if ( !prefs.value( 'hidden.locked') ) {
+		if ( !prefs.value( 'hidden.locked' ) ) {
 
 			return
 
@@ -798,7 +801,7 @@ const registerEvents = () => {
 
 	prefs.on( 'save', preferences => {
 
-		syncSettings(preferences)
+		syncSettings( preferences )
 
 	} )
 
@@ -888,7 +891,7 @@ const registerIpc = () => {
 
 			} )
 
-			prefs.value('crosshair.crosshair', arg )
+			prefs.value( 'crosshair.crosshair', arg )
 			hideChooserWindow()
 
 		}
@@ -902,7 +905,7 @@ const registerIpc = () => {
 
 			chooserWindow.webContents.send( 'load_crosshairs', {
 				crosshairs: await getCrosshairImages(),
-				current: prefs.value('crosshair.crosshair')
+				current: prefs.value( 'crosshair.crosshair' )
 			} )
 
 		}
@@ -922,7 +925,7 @@ const registerIpc = () => {
 
 			} )
 
-			prefs.value('crosshair.crosshair', arg )
+			prefs.value( 'crosshair.crosshair', arg )
 
 		} else {
 
@@ -1106,7 +1109,7 @@ const createChooser = async currentCrosshair => {
 
 	if ( !currentCrosshair ) {
 
-		currentCrosshair = prefs.value('crosshair.crosshair')
+		currentCrosshair = prefs.value( 'crosshair.crosshair' )
 
 	}
 
@@ -1131,7 +1134,7 @@ const setupApp = async () => {
 	registerShortcuts()
 
 	// Set to previously selected crosshair
-	const currentCrosshair = prefs.value('crosshair.crosshair')
+	const currentCrosshair = prefs.value( 'crosshair.crosshair' )
 
 	if ( currentCrosshair ) {
 
@@ -1147,7 +1150,8 @@ const setupApp = async () => {
 
 	// Center app by default - set position if exists
 	if ( prefs.value( 'hidden.positionX' ) !== null && typeof prefs.value( 'hidden.positionX' ) !== 'undefined' ) {
-		console.log(prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ))
+
+		console.log( prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ) )
 		setPosition( prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ) )
 
 	}
@@ -1155,7 +1159,7 @@ const setupApp = async () => {
 	// Set lock state, timeout makes it pretty
 	setTimeout( () => {
 
-		const locked = prefs.value( 'hidden.locked')
+		const locked = prefs.value( 'hidden.locked' )
 
 		lockWindow( locked )
 
@@ -1186,7 +1190,7 @@ const setupApp = async () => {
 const setupShadowWindow = async shadow => {
 
 	shadow.webContents.send( 'add_class', 'shadow' )
-	shadow.webContents.send( 'set_crosshair', prefs.value('crosshair.crosshair') )
+	shadow.webContents.send( 'set_crosshair', prefs.value( 'crosshair.crosshair' ) )
 	setColor( prefs.value( 'crosshair.color' ), shadow )
 	setOpacity( prefs.value( 'crosshair.opacity' ), shadow )
 	setSight( prefs.value( 'crosshair.reticle' ), shadow )
@@ -1198,7 +1202,7 @@ const setupShadowWindow = async shadow => {
 
 	}
 
-	lockWindow( prefs.value( 'hidden.locked'), shadow )
+	lockWindow( prefs.value( 'hidden.locked' ), shadow )
 
 }
 

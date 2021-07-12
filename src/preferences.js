@@ -26,15 +26,12 @@ const preferences = new ElectronPreferences( {
 			boot: false,
 			gpu: true
 		},
-		advanced: {
-
-
-		},
+		advanced: {},
 		hidden: {
 			frame: false,
 			locked: false,
 			positionX: null,
-			positionY: null,
+			positionY: null
 
 		}
 	},
