@@ -1,6 +1,6 @@
 'use strict'
 
-// custom crosshair should be in settings
+// Custom crosshair should be in settings
 // shadow window bug on move to next display
 // escape action close prefs
 // polish menu
@@ -523,8 +523,10 @@ const hideChooserWindow = () => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-	if(prefsWindow){
+	if ( prefsWindow ) {
+
 		prefsWindow.close()
+
 	}
 
 }
@@ -576,7 +578,7 @@ const openSettingsWindow = async () => {
 
 	hideChooserWindow()
 
-	console.log('open settings')
+	console.log( 'open settings' )
 
 	// Don't do anything if locked
 	if ( prefs.value( 'hidden.locked' ) ) {
@@ -1081,19 +1083,17 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	console.log('Custom Binds: ', prefs.value(`keybinds`)) //TODO
-
 	defaultShortcuts().forEach( shortcut => {
 
-
 		// Custom shortcuts
-		const custom = prefs.value(`keybinds.${shortcut.action}`)
+		const custom = prefs.value( `keybinds.${shortcut.action}` )
 
-		if (custom) {
+		if ( custom ) {
 
 			// If a custom shortcut exists for this action
 			console.log( `Custom keybind for ${shortcut.action}` )
 			globalShortcut.register( custom, shortcut.fn )
+
 		} else {
 
 			globalShortcut.register( shortcut.keybind, shortcut.fn )
@@ -1129,12 +1129,12 @@ const resetApp = skipSetup => {
 	// Close extra crosshairs
 	closeShadowWindows()
 
-	// TODO: Reset prefs to defaults
-	prefs.value(`keybinds`, {})
+	prefs.value( 'keybinds', {} )
 
-	centerAppWindow({targetWindow: mainWindow})
+	centerAppWindow( { targetWindow: mainWindow } )
 
 	if ( !skipSetup ) {
+
 		globalShortcut.unregisterAll()
 		setupApp()
 
@@ -1188,9 +1188,10 @@ const setupApp = async () => {
 
 	}, 500 )
 
-	if (!chooserWindow) {
+	if ( !chooserWindow ) {
 
 		await createChooser( currentCrosshair )
+
 	}
 
 	// Window Events after windows are created

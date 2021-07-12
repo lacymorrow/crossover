@@ -35,7 +35,7 @@ const preferences = new ElectronPreferences( {
 			locked: false,
 			positionX: null,
 			positionY: null,
-			test:true
+			test: true
 
 		}
 	},
