@@ -3,7 +3,6 @@
 ( () => {
 
 	// DOM elements
-	// const wrapper = document.querySelector( '.crosshair-wrapper' )
 	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )
 	const centerBtn = document.querySelector( '.center-button' )

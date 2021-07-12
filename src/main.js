@@ -1,16 +1,30 @@
 'use strict'
 
-// Custom crosshair should be in settings
-// shadow window bug on move to next display
-// escape action close prefs
-// polish menu
-// test window placement on windows/mac
-// reset preferences to defaules in resetApp
-// allow hideOnMouse to work with other clicks
+/*
+	Changed:
+		#20 Custom keybinds
+		#85 turn off updates
+		#84 Mouse hooks
+		#70 Performance settings - gpu
 
-// Conflicting accelerator on Fedora
-// Improve escapeAction to be window-aware
-// dont setPosition if monitor has been unplugged
+	High:
+		reset preferences to defaules in resetApp
+		focus preferences on show()
+		escape action close prefs
+		test window placement on windows/mac
+		fix unhandled #81
+
+	Medium:
+		allow hideOnMouse to work with other clicks
+		polish menu
+		Custom crosshair should be a setting
+		shadow window bug on move to next display
+
+	Low:
+		Conflicting accelerator on Fedora
+		Improve escapeAction to be window-aware
+		dont setPosition if monitor has been unplugged
+*/
 
 // const NativeExtension = require('bindings')('NativeExtension');
 const fs = require( 'fs' )
@@ -27,7 +41,6 @@ const { APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FI
 const menu = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
-// Maybe add settings here?
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
@@ -1129,6 +1142,7 @@ const resetApp = skipSetup => {
 	// Close extra crosshairs
 	closeShadowWindows()
 
+	// TODO: Reset prefs to defaults
 	prefs.value( 'keybinds', {} )
 
 	centerAppWindow( { targetWindow: mainWindow } )
