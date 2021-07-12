@@ -28,25 +28,6 @@ debug( {
 	devToolsMode: 'undocked'
 } )
 
-// Uncomment this before publishing your first version.
-// It's commented out as it throws an error if there are no published versions.
-try {
-
-	if ( !is.development && !is.linux ) {
-
-		const FOUR_HOURS = 1000 * 60 * 60 * 4
-		setInterval( () => {
-
-			autoUpdater.checkForUpdates()
-
-		}, FOUR_HOURS )
-
-		autoUpdater.checkForUpdates()
-
-	}
-
-} catch {}
-
 // Electron reloader is janky sometimes
 // try {
 // 	require( 'electron-reloader' )( module )
@@ -64,10 +45,51 @@ if ( !app.requestSingleInstanceLock() ) {
 
 }
 
+// Auto-Updater
+// Uncomment this before publishing your first version.
+// It's commented out as it throws an error if there are no published versions.
+try {
+
+	const updates = prefs.value( 'app.updates' )
+	if ( !is.linux && ( typeof updates === 'object' && updates.includes( 'updates' ) ) ) {
+
+		console.log( 'Setting: Automatic Updates' )
+
+		const FOUR_HOURS = 1000 * 60 * 60 * 4
+		setInterval( () => {
+
+			autoUpdater.checkForUpdates()
+
+		}, FOUR_HOURS )
+
+		autoUpdater.checkForUpdates()
+
+	}
+
+} catch {}
+
+// Start app on boot
+const boot = prefs.value( 'app.boot' )
+if ( typeof boot === 'object' && boot.includes( 'boot' ) ) {
+
+	app.setLoginItemSettings( {
+		openAtLogin: true
+	} )
+
+} else {
+
+	app.setLoginItemSettings( {
+		openAtLogin: false
+	} )
+
+}
+
 // Fix for Linux transparency issues
-if ( is.linux || config.get( 'app' ).DISABLE_GPU ) {
+const gpu = prefs.value( 'app.gpu' )
+if ( is.linux || !( typeof gpu === 'object' && gpu.includes( 'gpu' ) ) ) {
 
 	// Disable hardware acceleration
+	console.log( 'Setting: Disable GPU' )
 	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 	app.commandLine.appendSwitch( 'disable-gpu' )
 	app.disableHardwareAcceleration()
@@ -394,17 +416,6 @@ const setDockVisible = visible => {
 
 const centerAppWindow = options => {
 
-	prefs.show()
-	debug( {
-		showDevTools: is.development && !is.linux,
-		devToolsMode: 'undocked'
-	} )
-	// Subscribing to preference changes.
-	prefs.on( 'save', preferences => {
-
-		console.log( 'Preferences were saved.', JSON.stringify( preferences, null, 4 ) )
-
-	} )
 	options = {
 		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
 		targetWindow: getActiveWindow(),
@@ -666,6 +677,15 @@ const resetSettings = skipSetup => {
 
 const registerEvents = () => {
 
+	prefs.on( 'save', preferences => {
+
+		setColor( preferences?.crosshair?.crosshairColor )
+		setOpacity( preferences?.crosshair?.opacity )
+		setSight( preferences?.crosshair?.reticle )
+		setSize( preferences?.crosshair?.crosshairSize )
+
+	} )
+
 	mainWindow.on( 'move', () => {
 
 		saveBounds( mainWindow )
@@ -784,6 +804,9 @@ const registerIpc = () => {
 	} )
 
 	ipcMain.on( 'open_settings', async ( ..._ ) => {
+
+		// Subscribing to preference changes.
+		prefs.show()
 
 		hideChooserWindow()
 
@@ -1094,7 +1117,12 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	const customShortcuts = []
+	const customShortcuts = [
+		{
+			action: 'lock',
+			keybind: 'Control+Shift+['
+		}
+	]
 	defaultShortcuts().forEach( shortcut => {
 
 		// If action exists in customShortcuts
@@ -1164,7 +1192,7 @@ const setupApp = async () => {
 
 	}
 
-	setColor( config.get( 'color' ) )
+	setColor( prefs.value( 'crosshair.crosshairColor' ) )
 	setOpacity( config.get( 'opacity' ) )
 	setSight( config.get( 'sight' ) )
 	setSize( config.get( 'size' ) )
@@ -1211,10 +1239,10 @@ const setupShadowWindow = async shadow => {
 
 	shadow.webContents.send( 'add_class', 'shadow' )
 	shadow.webContents.send( 'set_crosshair', config.get( 'crosshair' ) )
-	setColor( config.get( 'color' ), shadow )
+	setColor( prefs.value( 'crosshair.crosshairColor' ), shadow )
 	setOpacity( config.get( 'opacity' ), shadow )
 	setSight( config.get( 'sight' ), shadow )
-	setSize( config.get( 'size' ), shadow )
+	setSize( prefs.value( 'crosshair.crosshairSize' ), shadow )
 	if ( config.get( 'positionX' ) > -1 ) {
 
 		// Offset position slightly

@@ -11,10 +11,25 @@ const preferences = new ElectronPreferences( {
 	/**
 	 * Default values.
 	 */
-	defaults: {},
+	defaults: {
+		crosshair: {
+			crosshairColor: '#FFF83B',
+			crosshairSize: 80,
+			opacity: 80,
+			reticle: 'dot'
+		},
+		app: {
+			updates: true,
+			boot: false,
+			gpu: true
+		}
+	},
 
 	browserWindowOverrides: {
-		title: 'CrossOver Preferences'
+		title: 'CrossOver Preferences',
+		webPreferences: {
+			devTools: true
+		}
 
 	},
 	/**
@@ -43,7 +58,7 @@ const preferences = new ElectronPreferences( {
 							},
 							{
 								label: 'Custom Crosshair',
-								key: 'crosshair_image',
+								key: 'crosshairImage',
 								type: 'text',
 								help: 'What is your last name?'
 							},
@@ -66,7 +81,7 @@ const preferences = new ElectronPreferences( {
 							},
 							{
 								label: 'Crosshair Size',
-								key: 'crosshair_size',
+								key: 'crosshairSize',
 								type: 'slider',
 								min: 1,
 								max: 100
@@ -85,19 +100,28 @@ const preferences = new ElectronPreferences( {
 		},
 		{
 			id: 'app',
-			label: 'App Settings',
+			label: 'System Settings',
 			icon: 'preferences',
 			form: {
 				groups: [
 					{
-						label: 'Stuff',
+						label: 'System Settings',
 						fields: [
 							{
-								label: 'System start',
+								label: 'Automatic Updates',
+								key: 'updates',
+								type: 'checkbox',
+								options: [
+									{ label: 'Allow CrossOver to automatically update', value: 'updates' }
+								],
+								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.'
+							},
+							{
+								label: 'Run at startup',
 								key: 'system',
 								type: 'checkbox',
 								options: [
-									{ label: 'Start on system boot', value: 'system' }
+									{ label: 'Start on system boot', value: 'boot' }
 								],
 								help: 'CrossOver will start when your computer starts.'
 							},
@@ -108,7 +132,7 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Enable hardware acceleration', value: 'gpu' }
 								],
-								help: 'CrossOver will start when your computer starts.'
+								help: 'If you are having issues with FPS, try disabling hardware acceleration.'
 							},
 							{
 								label: 'Read notes from folder',
