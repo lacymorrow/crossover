@@ -13,16 +13,29 @@ const preferences = new ElectronPreferences( {
 	 */
 	defaults: {
 		crosshair: {
+			crosshair: 'static/crosshairs/Actual/leupold-dot.png',
 			color: '#FFF83B',
 			size: 80,
 			opacity: 80,
 			reticle: 'dot',
+			reticleSize: 80,
 			hideOnMouse: false
 		},
 		app: {
 			updates: true,
 			boot: false,
 			gpu: true
+		},
+		advanced: {
+
+
+		},
+		hidden: {
+			frame: false,
+			locked: false,
+			positionX: null,
+			positionY: null,
+
 		}
 	},
 
@@ -59,7 +72,7 @@ const preferences = new ElectronPreferences( {
 							},
 							{
 								label: 'Custom Crosshair',
-								key: 'image',
+								key: 'crosshair',
 								type: 'text',
 								help: 'What is your last name?'
 							},
