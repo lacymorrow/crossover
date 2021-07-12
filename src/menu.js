@@ -11,7 +11,7 @@ const {
 } = require( 'electron-util' )
 const { config } = require( './config.js' )
 
-// const showBootLaunch = () => {
+// Const showBootLaunch = () => {
 
 // 	if ( app.getLoginItemSettings().openAtLogin ) {
 
