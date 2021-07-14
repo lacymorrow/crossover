@@ -6,6 +6,7 @@
 		#85 turn off updates
 		#84 Mouse hooks
 		#70 Performance settings - gpu
+		#86 start on boot
 
 	High:
 		reset preferences to defaules in resetApp

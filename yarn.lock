@@ -2443,6 +2443,21 @@ electron-preferences@../electron-preferences:
     write-json-file "^4.3.0"
     xo "^0.41.0"
 
+electron-preferences@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/electron-preferences/-/electron-preferences-2.4.1.tgz#19365432ad7310bb4dc50e1021f499dc39b03732"
+  integrity sha512-qPPws7NoroprSJkpVBC9YG2JG2jVBm7lzqhuo4ba/1PrblOZEq21FOgtOEXcHw+oC0N8YDNgG6RltPml/NZPaQ==
+  dependencies:
+    eslint "^7.30.0"
+    eslint-plugin-react "^7.24.0"
+    eventemitter2 "^6.4.4"
+    load-json-file "^6.2.0"
+    lodash "^4.17.21"
+    react-color "^2.19.3"
+    react-modal "^3.14.3"
+    write-json-file "^4.3.0"
+    xo "^0.41.0"
+
 electron-publish@22.11.7:
   version "22.11.7"
   resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-22.11.7.tgz#4126cbb08ccf082a2aa7fef89ee629b3a4b8ae9a"
