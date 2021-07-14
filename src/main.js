@@ -16,12 +16,12 @@
 		fix unhandled #81
 
 	Medium:
-		allow hideOnMouse to work with other clicks
 		polish menu
 		Custom crosshair should be a setting
 		shadow window bug on move to next display
 
 	Low:
+		Define preferences browserwindowoverrdes in main.j, make main a parent window
 		Conflicting accelerator on Fedora
 		Improve escapeAction to be window-aware
 		dont setPosition if monitor has been unplugged
@@ -769,14 +769,16 @@ const aboutWindow = () => {
 
 const escapeAction = () => {
 
+	console.log( 'Escape event' )
+
 	hideChooserWindow()
 	hideSettingsWindow()
 	globalShortcut.unregister( 'Escape' )
 
 }
 
-const mouseAction = event => {
-	const hideOnMouse = parseInt(prefs.value('crosshair.hideOnMouse'), 10)
+const mouseAction = ( event, hideOnMouse ) => {
+
 	// Don't do anything if not locked
 	if ( hideOnMouse === -1 || !prefs.value( 'hidden.locked' ) ) {
 
@@ -817,9 +819,12 @@ const syncSettings = preferences => {
 
 const registerMouseEvents = async () => {
 
-	// Mouse events off
-	if (parseInt(prefs.value('crosshair.hideOnMouse'), 10) === -1) {
+	const hideOnMouse = Number.parseInt( prefs.value( 'crosshair.hideOnMouse' ), 10 )
+	if ( hideOnMouse === -1 ) {
+
+		// Mouse events off
 		return
+
 	}
 
 	console.log( 'Setting: Mouse Events' )
@@ -831,10 +836,13 @@ const registerMouseEvents = async () => {
 
 	}
 
-	ioHook.off('mousedown', mouseAction)
-	ioHook.off('mouseup', mouseAction)
-	ioHook.on( 'mousedown', mouseAction)
-	ioHook.on( 'mouseup', mouseAction)
+	// Unregister
+	ioHook.removeAllListeners( 'mousedown' )
+	ioHook.removeAllListeners( 'mouseup' )
+
+	// Register
+	ioHook.on( 'mousedown', event => mouseAction( event, hideOnMouse ) )
+	ioHook.on( 'mouseup', event => mouseAction( event, hideOnMouse ) )
 
 	// Register and start hook
 	ioHook.start()
@@ -842,6 +850,7 @@ const registerMouseEvents = async () => {
 }
 
 const registerEvents = () => {
+
 	registerMouseEvents()
 
 	prefs.on( 'save', preferences => {
@@ -1114,28 +1123,31 @@ const keyboardShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	const {keybinds} = prefs.defaults
-	const custom = prefs.value( `keybinds` ) // defaults
+	const { keybinds } = prefs.defaults
+	const custom = prefs.value( 'keybinds' ) // Defaults
 	keyboardShortcuts().forEach( shortcut => {
 
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
-			console.log(`Clearing keybind for ${shortcut.action}`)
-			return
-		} else if (keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action ]) {
+
+			console.log( `Clearing keybind for ${shortcut.action}` )
+
+		} else if ( custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action] ) {
 
 			// If a custom shortcut exists for this action
 			console.log( `Custom keybind for ${shortcut.action}` )
 			globalShortcut.register( custom[shortcut.action], shortcut.fn )
 
-		} else if (keybinds[shortcut.action]) {
+		} else if ( keybinds[shortcut.action] ) {
+
 			// Set default keybind
 			globalShortcut.register( keybinds[shortcut.action], shortcut.fn )
+
 		} else {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
-			console.log('ERROR', shortcut)
+			console.log( 'ERROR', shortcut )
 			globalShortcut.register( shortcut.keybind, shortcut.fn )
 
 		}
@@ -1167,22 +1179,21 @@ const createChooser = async currentCrosshair => {
 // Temp until implemented in prefs
 const resetPreferences = () => {
 
-	const defaults = prefs.defaults
-	for (const [key, value] of Object.entries(defaults)) {
-		prefs.value(key, value)
-	}
-}
+	const { defaults } = prefs
+	for ( const [ key, value ] of Object.entries( defaults ) ) {
 
+		prefs.value( key, value )
+
+	}
+
+}
 
 const resetApp = async skipSetup => {
 
 	// Close extra crosshairs
 	closeShadowWindows()
 	escapeAction()
-	resetPreferences();
-
-	console.log(prefs.value('keybinds'))
-
+	resetPreferences()
 	centerAppWindow( { targetWindow: mainWindow } )
 
 	if ( !skipSetup ) {
@@ -1234,8 +1245,8 @@ const setupApp = async () => {
 
 		lockWindow( locked )
 
-		// Todo - is this correct?
 		// Show on first load if unlocked (unlocking shows already)
+		// if locked we have to call show() if another window has focus
 		if ( locked ) {
 
 			mainWindow.show()
@@ -1323,23 +1334,6 @@ const ready = async () => {
 
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
-
-	// Todo
-	// prefs.browserWindowOverrides = {
-	// 	title: 'CrossOver poop',
-	// 	parent: mainWindow,
-	// 	type: 'toolbar',
-	// 	frame: prefs.value( 'hidden.frame' ),
-	// 	hasShadow: true,
-	// 	titleBarStyle: 'customButtonsOnHover',
-	// 	fullscreenable: false,
-	// 	maximizable: false,
-	// 	minimizable: false,
-	// 	transparent: true,
-	// 	webPreferences: {
-	// 		devTools: true
-	// 	}
-	// }
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )

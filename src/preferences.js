@@ -1,3 +1,5 @@
+// Via https://github.com/tkambler/electron-preferences
+'use strict'
 const electron = require( 'electron' )
 const { app } = electron
 const path = require( 'path' )
@@ -20,26 +22,26 @@ const preferences = new ElectronPreferences( {
 			opacity: 80,
 			reticle: 'dot',
 			reticleSize: 80,
-			hideOnMouse: '-1',
+			hideOnMouse: '-1'
 		},
 		app: {
-			updates: ['updates'],
+			updates: [ 'updates' ],
 			boot: [],
-			gpu: ['gpu']
+			gpu: [ 'gpu' ]
 		},
 		keybinds: {
+			reset: 'Control+Shift+Alt+R',
 			lock: 'Control+Shift+Alt+X',
 			center: 'Control+Shift+Alt+C',
 			hide: 'Control+Shift+Alt+H',
-			// hideHold: 'Control+Shift+Alt+Y',
+			// HideHold: 'Control+Shift+Alt+Y',
 			duplicate: 'Control+Shift+Alt+D',
 			changeDisplay: 'Control+Shift+Alt+M',
 			moveUp: 'Control+Shift+Alt+Up',
 			moveDown: 'Control+Shift+Alt+Down',
 			moveLeft: 'Control+Shift+Alt+Left',
 			moveRight: 'Control+Shift+Alt+Right',
-			about: 'Control+Shift+Alt+A',
-			// reset: 'Control+Shift+Alt+R'
+			about: 'Control+Shift+Alt+A'
 		},
 		hidden: {
 			frame: false,
@@ -126,9 +128,9 @@ const preferences = new ElectronPreferences( {
 								type: 'radio',
 								options: [
 									{ label: 'Never', value: '-1' },
-									{ label: 'Left mouse-button', value: '1' },
-									{ label: 'Middle mouse-button', value: '3' },
 									{ label: 'Right mouse-button', value: '2' },
+									{ label: 'Middle mouse-button', value: '3' },
+									{ label: 'Left mouse-button', value: '1' },
 									{ label: 'Backward mouse-button', value: '4' },
 									{ label: 'Forward mouse-button', value: '5' }
 								],
@@ -193,7 +195,7 @@ const preferences = new ElectronPreferences( {
 							{
 								heading: 'Important Message',
 								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete. Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
-								type: 'message',
+								type: 'message'
 							},
 
 							{
