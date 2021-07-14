@@ -2,6 +2,7 @@ const electron = require( 'electron' )
 const { app } = electron
 const path = require( 'path' )
 const ElectronPreferences = require( 'electron-preferences' )
+const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
 
 const preferences = new ElectronPreferences( {
 	/**
@@ -19,20 +20,31 @@ const preferences = new ElectronPreferences( {
 			opacity: 80,
 			reticle: 'dot',
 			reticleSize: 80,
-			hideOnMouse: false
+			hideOnMouse: '-1',
 		},
 		app: {
-			updates: true,
-			boot: false,
-			gpu: true
+			updates: ['updates'],
+			boot: [],
+			gpu: ['gpu']
 		},
 		keybinds: {
-			lock: 'Control+Shift+Alt+X'
+			lock: 'Control+Shift+Alt+X',
+			center: 'Control+Shift+Alt+C',
+			hide: 'Control+Shift+Alt+H',
+			// hideHold: 'Control+Shift+Alt+Y',
+			duplicate: 'Control+Shift+Alt+D',
+			changeDisplay: 'Control+Shift+Alt+M',
+			moveUp: 'Control+Shift+Alt+Up',
+			moveDown: 'Control+Shift+Alt+Down',
+			moveLeft: 'Control+Shift+Alt+Left',
+			moveRight: 'Control+Shift+Alt+Right',
+			about: 'Control+Shift+Alt+A',
+			// reset: 'Control+Shift+Alt+R'
 		},
-		advanced: {},
 		hidden: {
 			frame: false,
 			locked: false,
+			showSettings: false,
 			positionX: null,
 			positionY: null,
 			test: true
@@ -43,7 +55,7 @@ const preferences = new ElectronPreferences( {
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
 		webPreferences: {
-			devTools: true
+			devTools: SETTINGS_WINDOW_DEVTOOLS
 		}
 
 	},
@@ -71,12 +83,12 @@ const preferences = new ElectronPreferences( {
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Center sight color'
 							},
-							{
-								label: 'Custom Crosshair',
-								key: 'crosshair',
-								type: 'text',
-								help: 'What is your last name?'
-							},
+							// {
+							// 	label: 'Custom Crosshair',
+							// 	key: 'crosshair',
+							// 	type: 'text',
+							// 	help: 'What is your last name?'
+							// },
 							{
 								label: 'Reticle',
 								key: 'reticle',
@@ -87,13 +99,13 @@ const preferences = new ElectronPreferences( {
 									{ label: 'No sight', value: 'off' }
 								]
 							},
-							{
-								label: 'Reticle size',
-								key: 'reticleSize',
-								type: 'slider',
-								min: 1,
-								max: 50
-							},
+							// {
+							// 	label: 'Reticle size',
+							// 	key: 'reticleSize',
+							// 	type: 'slider',
+							// 	min: 1,
+							// 	max: 50
+							// },
 							{
 								label: 'Crosshair Size',
 								key: 'size',
@@ -109,13 +121,18 @@ const preferences = new ElectronPreferences( {
 								max: 100
 							},
 							{
-								label: 'Mouse Event Hooks',
+								label: 'Hide crosshair when Aiming Down Sights (ADS):',
 								key: 'hideOnMouse',
-								type: 'checkbox',
+								type: 'radio',
 								options: [
-									{ label: 'Hide crosshair on right-click', value: 'hideOnMouse' }
+									{ label: 'Never', value: '-1' },
+									{ label: 'Left mouse-button', value: '1' },
+									{ label: 'Middle mouse-button', value: '3' },
+									{ label: 'Right mouse-button', value: '2' },
+									{ label: 'Backward mouse-button', value: '4' },
+									{ label: 'Forward mouse-button', value: '5' }
 								],
-								help: 'CrossOver be hidden when aiming down sights. This is a beta feature, use at your own risk.'
+								help: 'CrossOver can be hidden while aiming down sights. This is a beta feature, use at your own risk.'
 							}
 						]
 					}
@@ -157,17 +174,6 @@ const preferences = new ElectronPreferences( {
 									{ label: 'Enable hardware acceleration', value: 'gpu' }
 								],
 								help: 'If you are having issues with FPS, try disabling hardware acceleration.'
-							},
-							{
-								label: 'Read notes from folder',
-								key: 'folder',
-								type: 'directory',
-								help: 'The location where your notes will be stored.'
-							},
-							{
-								heading: 'Important Message',
-								content: '<p>The quick brown fox jumps over the long white fence. The quick brown fox jumps over the long white fence. The quick brown fox jumps over the long white fence. The quick brown fox jumps over the long white fence.</p>',
-								type: 'message'
 							}
 						]
 					}
@@ -183,6 +189,13 @@ const preferences = new ElectronPreferences( {
 					{
 						label: 'Custom Keybinds (Beta)',
 						fields: [
+
+							{
+								heading: 'Important Message',
+								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete. Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
+								type: 'message',
+							},
+
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',
@@ -196,11 +209,17 @@ const preferences = new ElectronPreferences( {
 								help: 'Center the crosshair window on the current screen.'
 							},
 							{
-								label: 'Hide Crosshair',
+								label: 'Toggle Hide Crosshair',
 								key: 'hide',
 								type: 'accelerator',
 								help: 'Hide CrossOver from the screen.'
 							},
+							// {
+							// 	label: 'Hold Hide Crosshair',
+							// 	key: 'hideHold',
+							// 	type: 'accelerator',
+							// 	help: 'Hide CrossOver from the screen while holding down the shortcut.'
+							// },
 							{
 								label: 'Duplicate Crosshair',
 								key: 'duplicate',
@@ -213,12 +232,12 @@ const preferences = new ElectronPreferences( {
 								type: 'accelerator',
 								help: 'Center CrossOver on the next connected display.'
 							},
-							{
-								label: 'Reset All Settings',
-								key: 'reset',
-								type: 'accelerator',
-								help: 'Reset all settings to default and center the crosshair.'
-							},
+							// {
+							// 	label: 'Reset All Settings',
+							// 	key: 'reset',
+							// 	type: 'accelerator',
+							// 	help: 'Reset all settings to default and center the crosshair.'
+							// },
 							{
 								label: 'Move Up',
 								key: 'moveUp',

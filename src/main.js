@@ -7,11 +7,11 @@
 		#84 Mouse hooks
 		#70 Performance settings - gpu
 		#86 start on boot
+		#88 allow disable keybinds
+		hide settings on blur
 
 	High:
-		reset preferences to defaules in resetApp
-		focus preferences on show()
-		escape action close prefs
+		prevent double keybind
 		test window placement on windows/mac
 		fix unhandled #81
 
@@ -36,9 +36,10 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
+let ioHook // Dynamic Import
 // Const ioHook = require('iohook');
 const { checkboxTrue, debounce } = require( './util.js' )
-const { APP_HEIGHT, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const { APP_HEIGHT, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const menu = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
@@ -537,9 +538,11 @@ const hideChooserWindow = () => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-	if ( prefsWindow ) {
+	if ( prefsWindow && prefsWindow.isVisible() ) {
 
+		prefs.value( 'hidden.showSettings', false )
 		prefsWindow.close()
+		prefsWindow = null
 
 	}
 
@@ -590,16 +593,20 @@ const openChooserWindow = async () => {
 
 const openSettingsWindow = async () => {
 
-	hideChooserWindow()
-
-	console.log( 'open settings' )
-
 	// Don't do anything if locked
-	if ( prefs.value( 'hidden.locked' ) ) {
+	if ( prefs.value( 'hidden.locked' ) ) { //  || prefs.value( 'hidden.showSettings' )
 
 		return
 
 	}
+
+	if ( prefs.value( 'hidden.showSettings' ) ) {
+
+		return escapeAction()
+
+	}
+
+	hideChooserWindow()
 
 	// Create shortcut to close window
 	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
@@ -611,12 +618,29 @@ const openSettingsWindow = async () => {
 	prefsWindow = prefs.show()
 	if ( prefsWindow ) {
 
-		prefsWindow.setAlwaysOnTop( true, 'screen-saver' )
+		prefsWindow.on( 'blur', () => {
+
+			if ( !SETTINGS_WINDOW_DEVTOOLS ) {
+
+				hideSettingsWindow()
+
+			}
+
+		} )
+
+		prefsWindow.on( 'closed', () => {
+
+			prefs.value( 'hidden.showSettings', false )
+			prefsWindow = null
+
+		} )
+
+		prefsWindow.setAlwaysOnTop( true, 'pop-up-menu' )
 
 		// Modal placement is different per OS
 		if ( is.macos ) {
 
-			const bounds = prefsWindow.getBounds()
+			const bounds = mainWindow.getBounds()
 			prefsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
 		} else {
@@ -627,6 +651,8 @@ const openSettingsWindow = async () => {
 			prefsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
 		}
+
+		prefs.value( 'hidden.showSettings', true )
 
 	}
 
@@ -749,6 +775,24 @@ const escapeAction = () => {
 
 }
 
+const mouseAction = event => {
+	const hideOnMouse = parseInt(prefs.value('crosshair.hideOnMouse'), 10)
+	// Don't do anything if not locked
+	if ( hideOnMouse === -1 || !prefs.value( 'hidden.locked' ) ) {
+
+		return
+
+	}
+
+	// If right click
+	if ( event.button === hideOnMouse ) {
+
+		hideWindow()
+
+	}
+
+}
+
 const syncSettings = preferences => {
 
 	setColor( preferences?.crosshair?.color )
@@ -757,51 +801,40 @@ const syncSettings = preferences => {
 	setSize( preferences?.crosshair?.size )
 
 	// Reset all custom shortcuts
+	const escapeActive = globalShortcut.isRegistered( 'Escape' )
 	globalShortcut.unregisterAll()
+	if ( escapeActive ) {
+
+		globalShortcut.register( 'Escape', escapeAction )
+
+	}
+
 	registerShortcuts()
+
+	registerMouseEvents()
 
 }
 
 const registerMouseEvents = async () => {
 
+	// Mouse events off
+	if (parseInt(prefs.value('crosshair.hideOnMouse'), 10) === -1) {
+		return
+	}
+
+	console.log( 'Setting: Mouse Events' )
+
 	// Dynamically require ioHook
-	const ioHook = await require( 'iohook' )
+	if ( !ioHook ) {
 
-	ioHook.on( 'mousedown', event => {
+		ioHook = await require( 'iohook' )
 
-		// Don't do anything if not locked
-		if ( !prefs.value( 'hidden.locked' ) ) {
+	}
 
-			return
-
-		}
-
-		// If right click
-		if ( event.button === 2 ) {
-
-			hideWindow()
-
-		}
-
-	} )
-
-	ioHook.on( 'mouseup', event => {
-
-		// Don't do anything if not locked
-		if ( !prefs.value( 'hidden.locked' ) ) {
-
-			return
-
-		}
-
-		// If right click
-		if ( event.button === 2 ) {
-
-			hideWindow()
-
-		}
-
-	} )
+	ioHook.off('mousedown', mouseAction)
+	ioHook.off('mouseup', mouseAction)
+	ioHook.on( 'mousedown', mouseAction)
+	ioHook.on( 'mouseup', mouseAction)
 
 	// Register and start hook
 	ioHook.start()
@@ -809,13 +842,7 @@ const registerMouseEvents = async () => {
 }
 
 const registerEvents = () => {
-
-	if ( checkboxTrue( prefs.value( 'crosshair.hideOnMouse' ), 'hideOnMouse' ) ) {
-
-		console.log( 'Setting: Mouse Events' )
-		registerMouseEvents()
-
-	}
+	registerMouseEvents()
 
 	prefs.on( 'save', preferences => {
 
@@ -847,16 +874,6 @@ const registerEvents = () => {
 			hideChooserWindow()
 
 		} )
-
-		if ( prefsWindow ) {
-
-			prefsWindow.on( 'blur', () => {
-
-				hideSettingsWindow()
-
-			} )
-
-		}
 
 	}
 
@@ -968,7 +985,7 @@ const registerIpc = () => {
 
 }
 
-const defaultShortcuts = () => {
+const keyboardShortcuts = () => {
 
 	/* Default accelerator */
 	const accelerator = 'Control+Shift+Alt'
@@ -1097,19 +1114,28 @@ const defaultShortcuts = () => {
 const registerShortcuts = () => {
 
 	// Register all shortcuts
-	defaultShortcuts().forEach( shortcut => {
+	const {keybinds} = prefs.defaults
+	const custom = prefs.value( `keybinds` ) // defaults
+	keyboardShortcuts().forEach( shortcut => {
 
 		// Custom shortcuts
-		const custom = prefs.value( `keybinds.${shortcut.action}` )
-
-		if ( custom ) {
+		if ( custom[shortcut.action] === '' ) {
+			console.log(`Clearing keybind for ${shortcut.action}`)
+			return
+		} else if (keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action ]) {
 
 			// If a custom shortcut exists for this action
 			console.log( `Custom keybind for ${shortcut.action}` )
-			globalShortcut.register( custom, shortcut.fn )
+			globalShortcut.register( custom[shortcut.action], shortcut.fn )
 
+		} else if (keybinds[shortcut.action]) {
+			// Set default keybind
+			globalShortcut.register( keybinds[shortcut.action], shortcut.fn )
 		} else {
 
+			// Fallback to internal bind - THIS SHOULDNT HAPPEN
+			// if it does you forgot to add a default keybind for this shortcut
+			console.log('ERROR', shortcut)
 			globalShortcut.register( shortcut.keybind, shortcut.fn )
 
 		}
@@ -1138,13 +1164,24 @@ const createChooser = async currentCrosshair => {
 
 }
 
-const resetApp = skipSetup => {
+// Temp until implemented in prefs
+const resetPreferences = () => {
+
+	const defaults = prefs.defaults
+	for (const [key, value] of Object.entries(defaults)) {
+		prefs.value(key, value)
+	}
+}
+
+
+const resetApp = async skipSetup => {
 
 	// Close extra crosshairs
 	closeShadowWindows()
+	escapeAction()
+	resetPreferences();
 
-	// TODO: Reset prefs to defaults
-	prefs.value( 'keybinds', {} )
+	console.log(prefs.value('keybinds'))
 
 	centerAppWindow( { targetWindow: mainWindow } )
 
@@ -1158,6 +1195,9 @@ const resetApp = skipSetup => {
 }
 
 const setupApp = async () => {
+
+	// Preferences
+	prefs.value( 'hidden.showSettings', false )
 
 	// IPC
 	registerIpc()
@@ -1194,6 +1234,7 @@ const setupApp = async () => {
 
 		lockWindow( locked )
 
+		// Todo - is this correct?
 		// Show on first load if unlocked (unlocking shows already)
 		if ( locked ) {
 
@@ -1282,6 +1323,23 @@ const ready = async () => {
 
 	Menu.setApplicationMenu( menu )
 	mainWindow = await createMainWindow()
+
+	// Todo
+	// prefs.browserWindowOverrides = {
+	// 	title: 'CrossOver poop',
+	// 	parent: mainWindow,
+	// 	type: 'toolbar',
+	// 	frame: prefs.value( 'hidden.frame' ),
+	// 	hasShadow: true,
+	// 	titleBarStyle: 'customButtonsOnHover',
+	// 	fullscreenable: false,
+	// 	maximizable: false,
+	// 	minimizable: false,
+	// 	transparent: true,
+	// 	webPreferences: {
+	// 		devTools: true
+	// 	}
+	// }
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
