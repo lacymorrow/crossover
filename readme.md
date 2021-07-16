@@ -10,8 +10,8 @@
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
 
-<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+<p align="center">
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>
 </p>
 
 # Quick Start
@@ -54,8 +54,8 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 
-<p align="center" style="background:#282a36;box-shadow: 3px 3px 15px 2px rgba(40,42,54,1);">
-  <img width="504" height="288" src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo.png"/>
+<p align="center">
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-duplicate.png"/>
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
@@ -102,6 +102,11 @@ Other crosshair programs offer a single style or color option, and often don't a
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
 
+
+
+<p align="center">
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-chooser.png"/>
+</p>
 ---
 
 ## Usage
@@ -133,17 +138,9 @@ Reset all settings and center the window                   | <kbd>Control</kbd>-
 ###### Linux: Some distributions do not center on double-click.
 
 <p align="center">
-	<br />
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
-	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
+  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-settings.png"/>
 </p>
-
-
---
+---
 
 
 ## Settings
@@ -179,6 +176,17 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 
 ##### Reset
 To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
+
+
+<p align="center">
+	<br />
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
+	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
+</p>
 
 ---
 
