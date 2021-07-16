@@ -112,28 +112,25 @@ Other crosshair programs offer a single style or color option, and often don't a
 
 **Choose Crosshair:** Click the bullseye ◎ to select from tons of preloaded crosshairs. Drag an image to the window to use your own custom crosshair.
 
-**Customize** settings using the "gear" icon.
+**Customize** settings using the "gear" icon. _See [Settings](#settings) below._
 
-**Unlock the app to quit**. In Windows: right-click > `Close`.
+**Unlock the app to quit** using <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>, then click the close icon in the top-left corner. In Windows you can right-click on the crosshair window > `Close`.
 
-#### Keyboard Shortcuts
+#### Default Keyboard Shortcuts
 
 Description            | Keys
 -----------------------| -----------------------
-Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 Toggle the settings window and lock the crosshair in place | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
+Move the crosshair a single pixel                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>Arrows</kbd>
 Quickly hide/show the application                          | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>H</kbd>
 Center the crosshair window                                | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>C</kbd>
+Move the crosshair to the next connected display           | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>M</kbd>
 Duplicate your crosshair in a shadow window                | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>D</kbd>
-Reset all settings and center the window                   | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
 Display the "About" window details                         | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>A</kbd>
+Reset all settings and center the window                   | <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
 
 ###### Mac: the <kbd>Option</kbd> key is used instead of <kbd>Alt</kbd>.
 ###### Linux: Some distributions do not center on double-click.
-
-##### Duplicate crosshairs
-
-Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed.
 
 <p align="center">
 	<br />
@@ -144,6 +141,44 @@ Duplicate crosshair windows use the same settings as the main window and do not 
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
 	<img width="120" height="120" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
 </p>
+
+
+--
+
+
+## Settings
+
+##### Crosshair
+Choose from over 100 real and fictional crosshairs, or use your own by dragging an image to the window. You can change the size and opacity.
+
+##### Reticle
+The reticle is the small dot or cross at the center of the sight. You can select the shape and the color, or this can be turned off.
+
+##### Hide on ADS
+Choose a mouse button to use as your ADS button. The crosshair will be hidden while this button is held down.
+
+##### Harware acceleration
+A handful of users have reported FPS issues with certain games ([#70](https://github.com/lacymorrow/crossover/issues/70)), CrossOver should not add any FPS or latency so if you experience it, toggle this setting on or off and disable [`Hide on ADS`](#hide-on-ads)
+
+##### Start on boot
+You can automatically set CrossOver to start when your system starts on your gaming PC, so you're always ready to pop heads.
+
+##### Automatic Updates
+By default CrossOver will automatically keep itself updated with bug fixes and improvements. You can disable this in the settings to prevent all network requests.
+CrossOver will _only_ connect to GitHub to download published releases and does not send or store _any_ personal data. I'm a solo developer and you aren't important to me 🙂  I just want to game.
+
+#### Keybinds
+> See [default keyboard shortcuts](#default-keyboard-shortcuts).
+All of the keybinds can be changed or disabled except for the bind to reset all settings. Click into the input and press your bind, or press <kbd>Backspace</kbd> or <kbd>Delete</kbd> to disable a bind.
+
+Keep in mind that keybinds may conflict with other programs so be careful about what you choose. There's no real mechanism for preventing you from setting two conflicting keyinds within the app, so don't do that.
+
+##### Duplicate crosshairs
+
+Duplicate crosshair windows use the same settings as the main window and do not support all of the features of the main window. Settings for duplicate crosshairs will not be saved and all duplicate windows will be closed if the main window is closed. Duplicate crosshairs cannot follow the mouse.
+
+##### Reset
+To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd>
 
 ---
 

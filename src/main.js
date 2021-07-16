@@ -11,6 +11,7 @@
 		hide settings on blur
 
 	High:
+		Follow Mouse
 		prevent double keybind
 		test window placement on windows/mac
 		fix unhandled #81
