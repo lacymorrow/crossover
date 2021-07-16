@@ -21,7 +21,10 @@ const preferences = new ElectronPreferences( {
 			size: 80,
 			opacity: 80,
 			reticle: 'dot',
-			reticleSize: 80,
+			reticleSize: 80
+		},
+		mouse: {
+			followMouse: [],
 			hideOnMouse: '-1'
 		},
 		app: {
@@ -121,6 +124,30 @@ const preferences = new ElectronPreferences( {
 								type: 'slider',
 								min: 1,
 								max: 100
+							}
+
+						]
+					}
+				]
+			}
+		},
+		{
+			id: 'mouse',
+			label: 'Mouse Events',
+			icon: 'turtle',
+			form: {
+				groups: [
+					{
+						label: 'Mouse Event Hooks (Beta)',
+						fields: [
+							{
+								label: 'Follow mouse:',
+								key: 'followMouse',
+								type: 'checkbox',
+								options: [
+									{ label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' }
+								],
+								help: 'Keeps CrossOver centered on the mouse cursor. This a beta feature, use at your own risk.'
 							},
 							{
 								label: 'Hide crosshair when Aiming Down Sights (ADS):',
@@ -141,6 +168,7 @@ const preferences = new ElectronPreferences( {
 				]
 			}
 		},
+
 		{
 			id: 'app',
 			label: 'System Settings',
@@ -193,7 +221,6 @@ const preferences = new ElectronPreferences( {
 						fields: [
 
 							{
-								heading: 'Important Message',
 								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete. Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
 								type: 'message'
 							},

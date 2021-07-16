@@ -1,31 +1,31 @@
 'use strict'
 
 /*
-	Changed:
-		#20 Custom keybinds
-		#85 turn off updates
-		#84 Mouse hooks
-		#70 Performance settings - gpu
-		#86 start on boot
-		#88 allow disable keybinds
-		hide settings on blur
+    Changed:
+        #20 Custom keybinds
+        #85 turn off updates
+        #84 Mouse hooks
+        #70 Performance settings - gpu
+        #86 start on boot
+        #88 allow disable keybinds
+        hide settings on blur
 
-	High:
-		Follow Mouse
-		prevent double keybind
-		test window placement on windows/mac
-		fix unhandled #81
+    High:
+        Follow Mouse
+        prevent double keybind
+        test window placement on windows/mac
+        fix unhandled #81
 
-	Medium:
-		polish menu
-		Custom crosshair should be a setting
-		shadow window bug on move to next display
+    Medium:
+        polish menu
+        Custom crosshair should be a setting
+        shadow window bug on move to next display
 
-	Low:
-		Define preferences browserwindowoverrdes in main.j, make main a parent window
-		Conflicting accelerator on Fedora
-		Improve escapeAction to be window-aware
-		dont setPosition if monitor has been unplugged
+    Low:
+        Define preferences browserwindowoverrdes in main.j, make main a parent window
+        Conflicting accelerator on Fedora
+        Improve escapeAction to be window-aware
+        dont setPosition if monitor has been unplugged
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
@@ -37,12 +37,24 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-let ioHook // Dynamic Import
-// Const ioHook = require('iohook');
 const { checkboxTrue, debounce } = require( './util.js' )
-const { APP_HEIGHT, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const menu = require( './menu.js' )
 const prefs = require( './preferences.js' )
+
+let ioHook // Dynamic Import
+const importIoHook = async () => {
+
+	// Dynamically require ioHook
+	if ( !ioHook ) {
+
+		ioHook = await require( 'iohook' )
+
+	}
+
+	return ioHook
+
+}
 
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -55,7 +67,7 @@ debug( {
 
 // Electron reloader is janky sometimes
 // try {
-// 	require( 'electron-reloader' )( module )
+//  require( 'electron-reloader' )( module )
 // } catch {}
 
 /* App setup */
@@ -91,21 +103,6 @@ try {
 	}
 
 } catch {}
-
-// Start app on boot
-if ( !is.development && checkboxTrue( prefs.value( 'app.boot' ), 'boot' ) ) {
-
-	app.setLoginItemSettings( {
-		openAtLogin: true
-	} )
-
-} else {
-
-	app.setLoginItemSettings( {
-		openAtLogin: false
-	} )
-
-}
 
 // Fix for Linux transparency issues
 if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
@@ -150,7 +147,7 @@ const createMainWindow = async isShadowWindow => {
 		transparent: true,
 		useContentSize: true,
 		show: false,
-		width: 200,
+		width: APP_WIDTH,
 		height: APP_HEIGHT,
 		webPreferences: {
 			contextIsolation: !is.linux,
@@ -509,9 +506,57 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	if ( lock ) {
 
+		// Don't save bounds when locked
+		if ( targetWindow === mainWindow ) {
+
+			mainWindow.removeAllListeners( 'move' )
+
+		}
+
+		// Enable follow mouse
+		if ( checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' ) ) {
+
+			registerFollowMouse()
+
+		} else if ( ioHook ) {
+
+			ioHook.removeAllListeners( 'mousedown' )
+			ioHook.removeAllListeners( 'mousemove' )
+
+		}
+
+		// Enable hide on mouse
+		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
+		if ( hideOnMouse !== -1 ) {
+
+			registerHideOnMouse()
+
+		} else if ( ioHook ) {
+
+			ioHook.removeAllListeners( 'mousedown' )
+			ioHook.removeAllListeners( 'mouseup' )
+
+		}
+
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+
+		// Unregister
+		if ( ioHook ) {
+
+			ioHook.removeAllListeners( 'mousedown' )
+			ioHook.removeAllListeners( 'mouseup' )
+			ioHook.removeAllListeners( 'mousemove' )
+
+		}
+
+		// Enable saving bounds
+		if ( targetWindow === mainWindow ) {
+
+			registerSaveWindowBounds()
+
+		}
 
 		// Allow dragging to Window on Mac
 		targetWindow.setAlwaysOnTop( true, 'pop-up-menu' )
@@ -796,50 +841,35 @@ const mouseAction = ( event, hideOnMouse ) => {
 
 }
 
-const syncSettings = preferences => {
+const registerFollowMouse = async () => {
 
-	setColor( preferences?.crosshair?.color )
-	setOpacity( preferences?.crosshair?.opacity )
-	setSight( preferences?.crosshair?.reticle )
-	setSize( preferences?.crosshair?.size )
+	// Prevent saving bounds
+	mainWindow.removeAllListeners( 'move' )
 
-	// Reset all custom shortcuts
-	const escapeActive = globalShortcut.isRegistered( 'Escape' )
-	globalShortcut.unregisterAll()
-	if ( escapeActive ) {
+	console.log( 'Setting: Mouse Follow' )
+	ioHook = await importIoHook()
+	ioHook.removeAllListeners( 'mousemove' )
 
-		globalShortcut.register( 'Escape', escapeAction )
+	// Unregister
 
-	}
+	// Register
+	ioHook.on( 'mousemove', event => {
 
-	registerShortcuts()
+		mainWindow.setBounds( {
+			x: event.x - ( APP_WIDTH / 2 ),
+			y: event.y - ( APP_HEIGHT / 2 )
+		} )
 
-	registerMouseEvents()
+	} )
 
 }
 
-const registerMouseEvents = async () => {
+const registerHideOnMouse = async () => {
 
-	const hideOnMouse = Number.parseInt( prefs.value( 'crosshair.hideOnMouse' ), 10 )
-	if ( hideOnMouse === -1 ) {
+	console.log( 'Setting: Mouse Hide' )
+	ioHook = await importIoHook()
 
-		// Mouse events off
-		return
-
-	}
-
-	console.log( 'Setting: Mouse Events' )
-
-	// Dynamically require ioHook
-	if ( !ioHook ) {
-
-		ioHook = await require( 'iohook' )
-
-	}
-
-	// Unregister
-	ioHook.removeAllListeners( 'mousedown' )
-	ioHook.removeAllListeners( 'mouseup' )
+	const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
 
 	// Register
 	ioHook.on( 'mousedown', event => mouseAction( event, hideOnMouse ) )
@@ -850,19 +880,58 @@ const registerMouseEvents = async () => {
 
 }
 
-const registerEvents = () => {
-
-	registerMouseEvents()
-
-	prefs.on( 'save', preferences => {
-
-		syncSettings( preferences )
-
-	} )
+const registerSaveWindowBounds = () => {
 
 	mainWindow.on( 'move', () => {
 
 		saveBounds( mainWindow )
+
+	} )
+
+}
+
+const registerStartOnBoot = () => {
+
+	// Start app on boot
+	if ( !is.development && checkboxTrue( prefs.value( 'app.boot' ), 'boot' ) ) {
+
+		app.setLoginItemSettings( {
+			openAtLogin: true
+		} )
+
+	} else {
+
+		app.setLoginItemSettings( {
+			openAtLogin: false
+		} )
+
+	}
+
+}
+
+const registerEvents = () => {
+
+	if ( prefs.value( 'hidden.locked' ) ) {
+
+		if ( checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' ) ) {
+
+			registerFollowMouse() // Also sets window save bounds
+
+		}
+
+		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
+		if ( hideOnMouse === -1 ) {
+
+			// Mouse events off
+			registerHideOnMouse()
+
+		}
+
+	}
+
+	prefs.on( 'save', preferences => {
+
+		syncSettings( preferences )
 
 	} )
 
@@ -992,6 +1061,28 @@ const registerIpc = () => {
 		app.quit()
 
 	} )
+
+}
+
+const syncSettings = preferences => {
+
+	setColor( preferences?.crosshair?.color )
+	setOpacity( preferences?.crosshair?.opacity )
+	setSight( preferences?.crosshair?.reticle )
+	setSize( preferences?.crosshair?.size )
+
+	// Reset all custom shortcuts
+	const escapeActive = globalShortcut.isRegistered( 'Escape' )
+	globalShortcut.unregisterAll()
+	if ( escapeActive ) {
+
+		globalShortcut.register( 'Escape', escapeAction )
+
+	}
+
+	registerShortcuts()
+
+	registerStartOnBoot()
 
 }
 
@@ -1216,6 +1307,9 @@ const setupApp = async () => {
 
 	// Keyboard shortcuts
 	registerShortcuts()
+
+	// Start on boot
+	registerStartOnBoot()
 
 	// Set to previously selected crosshair
 	const currentCrosshair = prefs.value( 'crosshair.crosshair' )
