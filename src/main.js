@@ -1,31 +1,31 @@
 'use strict'
 
 /*
-	Changed:
-		#20 Custom keybinds
-		#85 turn off updates
-		#84 Mouse hooks
-		#70 Performance settings - gpu
-		#86 start on boot
-		#88 allow disable keybinds
-		hide settings on blur
+    Changed:
+        #20 Custom keybinds
+        #85 turn off updates
+        #84 Mouse hooks
+        #70 Performance settings - gpu
+        #86 start on boot
+        #88 allow disable keybinds
+        hide settings on blur
 
-	High:
-		Follow Mouse
-		prevent double keybind
-		test window placement on windows/mac
-		fix unhandled #81
+    High:
+        Follow Mouse
+        prevent double keybind
+        test window placement on windows/mac
+        fix unhandled #81
 
-	Medium:
-		polish menu
-		Custom crosshair should be a setting
-		shadow window bug on move to next display
+    Medium:
+        polish menu
+        Custom crosshair should be a setting
+        shadow window bug on move to next display
 
-	Low:
-		Define preferences browserwindowoverrdes in main.j, make main a parent window
-		Conflicting accelerator on Fedora
-		Improve escapeAction to be window-aware
-		dont setPosition if monitor has been unplugged
+    Low:
+        Define preferences browserwindowoverrdes in main.j, make main a parent window
+        Conflicting accelerator on Fedora
+        Improve escapeAction to be window-aware
+        dont setPosition if monitor has been unplugged
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
@@ -37,12 +37,25 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-let ioHook // Dynamic Import
 // Const ioHook = require('iohook');
 const { checkboxTrue, debounce } = require( './util.js' )
 const { APP_HEIGHT, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const menu = require( './menu.js' )
 const prefs = require( './preferences.js' )
+
+let ioHook // Dynamic Import
+const importIoHook = async () => {
+
+	// Dynamically require ioHook
+	if ( !ioHook ) {
+
+		ioHook = await require( 'iohook' )
+
+	}
+
+	return ioHook
+
+}
 
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
@@ -55,7 +68,7 @@ debug( {
 
 // Electron reloader is janky sometimes
 // try {
-// 	require( 'electron-reloader' )( module )
+//  require( 'electron-reloader' )( module )
 // } catch {}
 
 /* App setup */
@@ -796,6 +809,12 @@ const mouseAction = ( event, hideOnMouse ) => {
 
 }
 
+const startFollowMouse = start => {
+
+	ioHook = importIoHook()
+
+}
+
 const syncSettings = preferences => {
 
 	setColor( preferences?.crosshair?.color )
@@ -828,14 +847,9 @@ const registerMouseEvents = async () => {
 
 	}
 
+	ioHook = importIoHook()
+
 	console.log( 'Setting: Mouse Events' )
-
-	// Dynamically require ioHook
-	if ( !ioHook ) {
-
-		ioHook = await require( 'iohook' )
-
-	}
 
 	// Unregister
 	ioHook.removeAllListeners( 'mousedown' )
