@@ -42,7 +42,7 @@
 		"bindings": "^1.5.0",
 		"electron-context-menu": "^2.0.1",
 		"electron-debug": "^3.0.1",
-		"electron-preferences": "^2.4.1",
+		"electron-preferences": "../electron-preferences",
 		"electron-store": "^7.0.0",
 		"electron-unhandled": "^3.0.2",
 		"electron-updater": "^4.3.1",

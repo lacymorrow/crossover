@@ -4,7 +4,7 @@
 const APP_HEIGHT = 124
 const APP_WIDTH = 200
 const MAX_SHADOW_WINDOWS = 20
-const SETTINGS_WINDOW_DEVTOOLS = false
+const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
 
 const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', '.png', '.gif', '.webp' ]
