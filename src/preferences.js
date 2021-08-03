@@ -2,6 +2,7 @@
 'use strict'
 const { app } = require( 'electron' )
 const path = require( 'path' )
+const { is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
 
@@ -59,7 +60,7 @@ const preferences = new ElectronPreferences( {
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
 		webPreferences: {
-			devTools: SETTINGS_WINDOW_DEVTOOLS
+			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS
 		}
 
 	},
