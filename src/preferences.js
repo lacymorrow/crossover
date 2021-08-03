@@ -5,7 +5,6 @@ const path = require( 'path' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
 
-
 const preferences = new ElectronPreferences( {
 	/**
 	 * Where should preferences be saved?
