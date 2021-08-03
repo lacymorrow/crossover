@@ -1,7 +1,6 @@
 // Via https://github.com/tkambler/electron-preferences
 'use strict'
-const electron = require( 'electron' )
-const { app } = electron
+const { app } = require( 'electron' )
 const path = require( 'path' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
@@ -203,7 +202,7 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Enable hardware acceleration', value: 'gpu' }
 								],
-								help: 'If you are having issues with FPS, try disabling hardware acceleration.'
+								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.'
 							}
 						]
 					}
@@ -296,6 +295,26 @@ const preferences = new ElectronPreferences( {
 								key: 'about',
 								type: 'accelerator',
 								help: 'Open the "About CrossOver" window for more information.'
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			id: 'about',
+			label: 'About',
+			icon: 'world',
+			form: {
+				groups: [
+					{
+						label: '🎯 About CrossOver',
+						fields: [
+
+							{
+								heading: `CrossOver v${app.getVersion()}`,
+								content: `<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p>`,
+								type: 'message'
 							}
 						]
 					}

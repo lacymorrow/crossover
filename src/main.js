@@ -46,6 +46,8 @@ let ioHook // Dynamic Import
 const importIoHook = async () => {
 
 	// Dynamically require ioHook
+	// We do this in case it gets flagged by anti-cheat
+
 	if ( !ioHook ) {
 
 		ioHook = await require( 'iohook' )
@@ -1284,6 +1286,8 @@ const resetApp = async skipSetup => {
 
 	// Close extra crosshairs
 	closeShadowWindows()
+
+	// Hides chooser and preferences
 	escapeAction()
 	resetPreferences()
 	centerAppWindow( { targetWindow: mainWindow } )
