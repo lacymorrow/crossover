@@ -1,45 +1,45 @@
 'use strict'
 
 /*
-    Changed:
-        #20 Custom keybinds
-        #85 turn off updates
-        #84 Mouse hooks
-        #70 Performance settings - gpu
-        #86 start on boot
-        #88 allow disable keybinds
-        hide settings on blur
+	Changed:
+		#20 Custom keybinds
+		#85 turn off updates
+		#84 Mouse hooks
+		#70 Performance settings - gpu
+		#86 start on boot
+		#88 allow disable keybinds
+		hide settings on blur
 
-    High:
-        Follow Mouse
-        prevent double keybind
-        test window placement on windows/mac
-        fix unhandled #81
+	High:
+		Follow Mouse
+		prevent double keybind
+		test window placement on windows/mac
+		fix unhandled #81
 
-    Medium:
-        polish menu
-        Custom crosshair should be a setting
-        shadow window bug on move to next display
+	Medium:
+		polish menu
+		Custom crosshair should be a setting
+		shadow window bug on move to next display
 
-    Low:
-        Define preferences browserwindowoverrdes in main.j, make main a parent window
-        Conflicting accelerator on Fedora
-        Improve escapeAction to be window-aware
-        dont setPosition if monitor has been unplugged
+	Low:
+		Define preferences browserwindowoverrdes in main.j, make main a parent window
+		Conflicting accelerator on Fedora
+		Improve escapeAction to be window-aware
+		dont setPosition if monitor has been unplugged
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
 const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen, shell } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { checkboxTrue, debounce } = require( './util.js' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
-const menu = require( './menu.js' )
+const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
 let ioHook // Dynamic Import
@@ -132,7 +132,7 @@ const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async isShadowWindow => {
 
-	const preferences = {
+	const options = {
 		title: app.name,
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
@@ -162,11 +162,11 @@ const createMainWindow = async isShadowWindow => {
 
 	if ( is.windows ) {
 
-		preferences.type = 'toolbar'
+		options.type = 'toolbar'
 
 	}
 
-	const win = new BrowserWindow( preferences )
+	const win = new BrowserWindow( options )
 
 	setDockVisible( false )
 	win.setFullScreenable( false )
@@ -664,8 +664,11 @@ const openSettingsWindow = async () => {
 	}
 
 	prefsWindow = prefs.show()
+
+	// Set events on prefs window
 	if ( prefsWindow ) {
 
+		// Hide window when clicked away
 		prefsWindow.on( 'blur', () => {
 
 			if ( !SETTINGS_WINDOW_DEVTOOLS ) {
@@ -676,6 +679,15 @@ const openSettingsWindow = async () => {
 
 		} )
 
+		// Force opening URLs in the default browser (remember to use `target="_blank"`)
+		prefsWindow.webContents.on( 'new-window', ( event, url ) => {
+
+			event.preventDefault()
+			shell.openExternal( url )
+
+		} )
+
+		// Track window state
 		prefsWindow.on( 'closed', () => {
 
 			prefs.value( 'hidden.showSettings', false )
@@ -797,21 +809,6 @@ const moveWindowToNextDisplay = options => {
 	index = ( index + 1 ) % displays.length
 
 	centerAppWindow( { display: displays[index], targetWindow: options.targetWindow } )
-
-}
-
-const aboutWindow = () => {
-
-	// Console.dir( app.getGPUFeatureStatus() )
-	// Console.dir(app.getAppMetrics());
-	// app.getGPUInfo('complete').then(completeObj => {
-	//        console.dir(completeObj);
-	//    });
-	showAboutWindow( {
-		icon: path.join( __static, 'Icon.png' ),
-		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
-		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
-	} )
 
 }
 
@@ -1163,15 +1160,19 @@ const keyboardShortcuts = () => {
 		},
 
 		// About CrossOver
-		{
-			action: 'about',
-			keybind: `${accelerator}+A`,
-			fn: () => {
+		// {
+		// 	action: 'about',
+		// 	keybind: `${accelerator}+A`,
+		// 	fn: () => {
 
-				aboutWindow()
+		// 		showAboutWindow( {
+		// 			icon: path.join( __static, 'Icon.png' ),
+		// 			copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		// 			text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
+		// 		} )
 
-			}
-		},
+		// 	}
+		// },
 
 		// Single pixel movement
 		{
@@ -1431,7 +1432,72 @@ app.on( 'activate', async () => {
 
 const ready = async () => {
 
-	Menu.setApplicationMenu( menu )
+	/* MENU */
+	const macosTemplate = [
+		appMenu( [
+			{
+				label: 'Preferences…',
+				accelerator: 'Command+,',
+				click() {
+
+					openSettingsWindow()
+
+				}
+			}
+		] ),
+		{
+			role: 'fileMenu'
+		},
+		{
+			role: 'windowMenu'
+		},
+		{
+			role: 'help',
+			submenu: helpSubmenu
+		}
+	]
+
+	// Linux and Windows
+	const otherTemplate = [
+		{
+			role: 'fileMenu',
+			submenu: [
+				{
+					label: 'Settings',
+					accelerator: 'Control+,',
+					click() {
+
+						openSettingsWindow()
+
+					}
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'quit'
+				}
+			]
+		},
+		{
+			role: 'help',
+			submenu: helpSubmenu
+		}
+	]
+
+	const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
+
+	if ( is.development ) {
+
+		template.push( {
+			label: 'Debug',
+			submenu: debugSubmenu
+		} )
+
+	}
+
+	Menu.setApplicationMenu( Menu.buildFromTemplate( template ) )
+
 	mainWindow = await createMainWindow()
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver

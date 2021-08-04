@@ -21,7 +21,7 @@
 		"ava": "ava -v",
 		"lint": "xo --fix",
 		"test": "npm run lint",
-		"css": "sass src/index.scss:src/index.css -s compressed",
+		"css": "sass src/index.scss:src/index.css -s compressed && sass src/preferences.scss:src/preferences.css -s compressed",
 		"start": "npm run css && electron .",
 		"release": "np",
 		"pack": "rm -f *.tgz && electron-builder --dir",

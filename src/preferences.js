@@ -2,11 +2,13 @@
 'use strict'
 const { app } = require( 'electron' )
 const path = require( 'path' )
-const { is } = require( 'electron-util' )
+const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
 
 const preferences = new ElectronPreferences( {
+	// Custom styles
+	css: 'src/preferences.css',
 	/**
 	 * Where should preferences be saved?
 	 */
@@ -267,6 +269,12 @@ const preferences = new ElectronPreferences( {
 							// 	type: 'accelerator',
 							// 	help: 'Reset all settings to default and center the crosshair.'
 							// },
+							// {
+							// 	label: 'About CrossOver',
+							// 	key: 'about',
+							// 	type: 'accelerator',
+							// 	help: 'Open the "About CrossOver" window for more information.'
+							// }
 							{
 								label: 'Move Up',
 								key: 'moveUp',
@@ -290,12 +298,6 @@ const preferences = new ElectronPreferences( {
 								key: 'moveRight',
 								type: 'accelerator',
 								help: 'Move the crosshair right 1 pixel.'
-							},
-							{
-								label: 'About CrossOver',
-								key: 'about',
-								type: 'accelerator',
-								help: 'Open the "About CrossOver" window for more information.'
 							}
 						]
 					}
@@ -314,7 +316,13 @@ const preferences = new ElectronPreferences( {
 
 							{
 								heading: `CrossOver v${app.getVersion()}`,
-								content: `<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p>`,
+								content: `
+									<p>A crosshair overlay for any screen.<br /> \
+									Feedback and bug reports welcome at <a target="_blank" href="https://github.com/lacymorrow/crossover/issues">lacymorrow/crossover</a><br /> \
+									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
+									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
+									<p>${debugInfo()}</p> \
+								`,
 								type: 'message'
 							}
 						]
