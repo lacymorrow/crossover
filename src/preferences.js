@@ -318,7 +318,7 @@ const preferences = new ElectronPreferences( {
 								heading: `CrossOver v${app.getVersion()}`,
 								content: `
 									<p>A crosshair overlay for any screen.<br /> \
-									Feedback and bug reports welcome at <a target="_blank" href="https://github.com/lacymorrow/crossover/issues">lacymorrow/crossover</a><br /> \
+									Feedback and bug reports welcome at <a target="_blank" href="https://github.com/lacymorrow/crossover/issues">lacymorrow/crossover</a>.<br /> \
 									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
 									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
 									<p>${debugInfo()}</p> \
