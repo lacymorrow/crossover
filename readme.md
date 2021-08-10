@@ -198,6 +198,7 @@ Works     | Game     | Notes
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
 ✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
+✅  | Counter-Strike (1.6)               | Runs in `Windowed` mode
 ✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
@@ -281,6 +282,8 @@ Currently CrossOver only works with windowed applications, use `Windowed Fullscr
 #### Workaround
 
 If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
+
+_Doesn't work with some games [#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-895995990), and causes FPS issues in other cases_
 
 Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
 
