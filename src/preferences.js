@@ -12,6 +12,7 @@ const preferences = new ElectronPreferences( {
 	 * Where should preferences be saved?
 	 */
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+	debug: true,
 	/**
 	 * Default values.
 	 */
@@ -117,7 +118,7 @@ const preferences = new ElectronPreferences( {
 								key: 'size',
 								type: 'slider',
 								min: 1,
-								max: 100,
+								max: 125,
 							},
 							{
 								label: 'Opacity',
