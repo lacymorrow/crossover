@@ -1,5 +1,3 @@
-'use strict'
-
 /*
 	Changed:
 		#20 Custom keybinds
@@ -32,6 +30,7 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
+
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen, shell } = electron
 const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
@@ -64,7 +63,7 @@ const importIoHook = async () => {
 unhandled()
 debug( {
 	showDevTools: is.development && !is.linux,
-	devToolsMode: 'undocked'
+	devToolsMode: 'undocked',
 } )
 
 // Electron reloader is janky sometimes
@@ -155,9 +154,9 @@ const createMainWindow = async isShadowWindow => {
 			contextIsolation: !is.linux,
 			enableRemoteModule: true,
 			nodeIntegration: false,
-			preload: path.join( __dirname, 'preload.js' )
+			preload: path.join( __dirname, 'preload.js' ),
 
-		}
+		},
 	}
 
 	if ( is.windows ) {
@@ -236,8 +235,8 @@ const createChildWindow = async ( parent, windowName ) => {
 			nodeIntegration: false, // Is default value after Electron v5
 			contextIsolation: true, // Protect against prototype pollution
 			enableRemoteModule: true, // Turn off remote
-			preload: path.join( __dirname, `preload-${windowName}.js` )
-		}
+			preload: path.join( __dirname, `preload-${windowName}.js` ),
+		},
 	}
 
 	if ( !VALID_WINDOWS.includes( windowName ) ) {
@@ -271,7 +270,7 @@ const createShadowWindow = async () => {
 
 const closeShadowWindows = id => {
 
-	shadowWindows.forEach( currentWindow => {
+	for ( const currentWindow of shadowWindows ) {
 
 		if ( !id || id === currentWindow.webContents.id ) {
 
@@ -279,7 +278,7 @@ const closeShadowWindows = id => {
 
 		}
 
-	} )
+	}
 
 }
 
@@ -322,45 +321,41 @@ const getCrosshairImages = async () => {
 
 }
 
-const getImages = ( directory, level ) => {
+const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
-	return new Promise( ( resolve, reject ) => {
+	const crosshairs = []
+	fs.promises.readdir( directory, async ( error, dir ) => {
 
-		const crosshairs = []
-		fs.promises.readdir( directory, async ( error, dir ) => {
+		if ( error ) {
 
-			if ( error ) {
+			reject( new Error( `Promise Errored: ${error}`, directory ) )
 
-				reject( new Error( `Promise Errored: ${error}`, directory ) )
+		}
 
-			}
+		for ( let i = 0, filepath;
+			( filepath = dir[i] ); i++ ) {
 
-			for ( let i = 0, filepath;
-				( filepath = dir[i] ); i++ ) {
+			const stat = fs.lstatSync( path.join( directory, filepath ) )
 
-				const stat = fs.lstatSync( path.join( directory, filepath ) )
+			if ( stat.isDirectory() && level > 0 ) {
 
-				if ( stat.isDirectory() && level > 0 ) {
+				const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+				crosshairs.push( next )
 
-					const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
-					crosshairs.push( next )
+			} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
-
-					// Filename
-					crosshairs.push( path.join( directory, filepath ) )
-
-				}
+				// Filename
+				crosshairs.push( path.join( directory, filepath ) )
 
 			}
 
-			resolve( crosshairs )
+		}
 
-		} )
+		resolve( crosshairs )
 
 	} )
 
-}
+} )
 
 const setColor = ( color, targetWindow = mainWindow ) => {
 
@@ -430,7 +425,7 @@ const centerAppWindow = options => {
 	options = {
 		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
 		targetWindow: getActiveWindow(),
-		...options
+		...options,
 	}
 
 	// Electron way
@@ -442,7 +437,7 @@ const centerAppWindow = options => {
 	centerWindow( {
 		window: options.targetWindow,
 		animated: true,
-		useFullBounds: true
+		useFullBounds: true,
 	} )
 
 	options.targetWindow.show()
@@ -462,20 +457,20 @@ const hideWindow = () => {
 	if ( windowHidden ) {
 
 		mainWindow.show()
-		shadowWindows.forEach( currentWindow => {
+		for ( const currentWindow of shadowWindows ) {
 
 			currentWindow.show()
 
-		} )
+		}
 
 	} else {
 
 		mainWindow.hide()
-		shadowWindows.forEach( currentWindow => {
+		for ( const currentWindow of shadowWindows ) {
 
 			currentWindow.hide()
 
-		} )
+		}
 
 	}
 
@@ -486,11 +481,11 @@ const hideWindow = () => {
 const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 
 	lockWindow( lock )
-	shadowWindows.forEach( currentWindow => {
+	for ( const currentWindow of shadowWindows ) {
 
 		lockWindow( lock, currentWindow )
 
-	} )
+	}
 
 }
 
@@ -632,7 +627,7 @@ const openChooserWindow = async () => {
 
 		// Windows
 		centerAppWindow( {
-			targetWindow: chooserWindow
+			targetWindow: chooserWindow,
 		} )
 
 	}
@@ -723,7 +718,7 @@ const moveWindow = options => {
 	options = {
 		direction: 'none',
 		targetWindow: getActiveWindow(),
-		...options
+		...options,
 	}
 
 	const saveSettings = options.targetWindow === mainWindow
@@ -789,7 +784,7 @@ const moveWindowToNextDisplay = options => {
 
 	options = {
 		targetWindow: getActiveWindow(),
-		...options
+		...options,
 	}
 
 	// Get list of displays
@@ -799,11 +794,7 @@ const moveWindowToNextDisplay = options => {
 	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
 
 	// Get index of current
-	let index = displays.map( element => {
-
-		return element.id
-
-	} ).indexOf( currentDisplay.id )
+	let index = displays.map( element => element.id ).indexOf( currentDisplay.id )
 
 	// Increment and save
 	index = ( index + 1 ) % displays.length
@@ -856,7 +847,7 @@ const registerFollowMouse = async () => {
 
 		mainWindow.setBounds( {
 			x: event.x - ( APP_WIDTH / 2 ),
-			y: event.y - ( APP_HEIGHT / 2 )
+			y: event.y - ( APP_HEIGHT / 2 ),
 		} )
 
 	} )
@@ -895,13 +886,13 @@ const registerStartOnBoot = () => {
 	if ( !is.development && checkboxTrue( prefs.value( 'app.boot' ), 'boot' ) ) {
 
 		app.setLoginItemSettings( {
-			openAtLogin: true
+			openAtLogin: true,
 		} )
 
 	} else {
 
 		app.setLoginItemSettings( {
-			openAtLogin: false
+			openAtLogin: false,
 		} )
 
 	}
@@ -998,11 +989,11 @@ const registerIpc = () => {
 
 			console.log( `Save custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
-			shadowWindows.forEach( currentWindow => {
+			for ( const currentWindow of shadowWindows ) {
 
 				currentWindow.webContents.send( 'set_custom_image', arg )
 
-			} )
+			}
 
 			prefs.value( 'crosshair.crosshair', arg )
 			hideChooserWindow()
@@ -1018,7 +1009,7 @@ const registerIpc = () => {
 
 			chooserWindow.webContents.send( 'load_crosshairs', {
 				crosshairs: await getCrosshairImages(),
-				current: prefs.value( 'crosshair.crosshair' )
+				current: prefs.value( 'crosshair.crosshair' ),
 			} )
 
 		}
@@ -1032,11 +1023,11 @@ const registerIpc = () => {
 			console.log( `Save crosshair: ${arg}` )
 			hideChooserWindow()
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
-			shadowWindows.forEach( currentWindow => {
+			for ( const currentWindow of shadowWindows ) {
 
 				currentWindow.webContents.send( 'set_crosshair', arg )
 
-			} )
+			}
 
 			prefs.value( 'crosshair.crosshair', arg )
 
@@ -1101,7 +1092,7 @@ const keyboardShortcuts = () => {
 
 				createShadowWindow()
 
-			}
+			},
 		},
 
 		// Toggle CrossOver
@@ -1112,7 +1103,7 @@ const keyboardShortcuts = () => {
 
 				toggleWindowLock()
 
-			}
+			},
 		},
 
 		// Center CrossOver
@@ -1123,7 +1114,7 @@ const keyboardShortcuts = () => {
 
 				centerAppWindow()
 
-			}
+			},
 		},
 
 		// Hide CrossOver
@@ -1134,7 +1125,7 @@ const keyboardShortcuts = () => {
 
 				hideWindow()
 
-			}
+			},
 		},
 
 		// Move CrossOver to next monitor
@@ -1145,7 +1136,7 @@ const keyboardShortcuts = () => {
 
 				moveWindowToNextDisplay()
 
-			}
+			},
 		},
 
 		// Reset CrossOver
@@ -1156,7 +1147,7 @@ const keyboardShortcuts = () => {
 
 				resetApp()
 
-			}
+			},
 		},
 
 		// About CrossOver
@@ -1182,7 +1173,7 @@ const keyboardShortcuts = () => {
 
 				moveWindow( { direction: 'up' } )
 
-			}
+			},
 		},
 		{
 			action: 'moveDown',
@@ -1191,7 +1182,7 @@ const keyboardShortcuts = () => {
 
 				moveWindow( { direction: 'down' } )
 
-			}
+			},
 		},
 		{
 			action: 'moveLeft',
@@ -1200,7 +1191,7 @@ const keyboardShortcuts = () => {
 
 				moveWindow( { direction: 'left' } )
 
-			}
+			},
 		},
 		{
 			action: 'moveRight',
@@ -1209,8 +1200,8 @@ const keyboardShortcuts = () => {
 
 				moveWindow( { direction: 'right' } )
 
-			}
-		}
+			},
+		},
 	]
 
 }
@@ -1220,7 +1211,7 @@ const registerShortcuts = () => {
 	// Register all shortcuts
 	const { keybinds } = prefs.defaults
 	const custom = prefs.value( 'keybinds' ) // Defaults
-	keyboardShortcuts().forEach( shortcut => {
+	for ( const shortcut of keyboardShortcuts() ) {
 
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
@@ -1247,7 +1238,7 @@ const registerShortcuts = () => {
 
 		}
 
-	} )
+	}
 
 }
 
@@ -1264,7 +1255,7 @@ const createChooser = async currentCrosshair => {
 	// Setup crosshair chooser, must come before the check below
 	chooserWindow.webContents.send( 'load_crosshairs', {
 		crosshairs: await getCrosshairImages(),
-		current: currentCrosshair
+		current: currentCrosshair,
 	} )
 
 	return chooserWindow
@@ -1442,19 +1433,19 @@ const ready = async () => {
 
 					openSettingsWindow()
 
-				}
-			}
+				},
+			},
 		] ),
 		{
-			role: 'fileMenu'
+			role: 'fileMenu',
 		},
 		{
-			role: 'windowMenu'
+			role: 'windowMenu',
 		},
 		{
 			role: 'help',
-			submenu: helpSubmenu
-		}
+			submenu: helpSubmenu,
+		},
 	]
 
 	// Linux and Windows
@@ -1469,20 +1460,20 @@ const ready = async () => {
 
 						openSettingsWindow()
 
-					}
+					},
 				},
 				{
-					type: 'separator'
+					type: 'separator',
 				},
 				{
-					role: 'quit'
-				}
-			]
+					role: 'quit',
+				},
+			],
 		},
 		{
 			role: 'help',
-			submenu: helpSubmenu
-		}
+			submenu: helpSubmenu,
+		},
 	]
 
 	const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
@@ -1491,7 +1482,7 @@ const ready = async () => {
 
 		template.push( {
 			label: 'Debug',
-			submenu: debugSubmenu
+			submenu: debugSubmenu,
 		} )
 
 	}

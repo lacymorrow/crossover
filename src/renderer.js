@@ -55,7 +55,7 @@
 			background.style.background = randomColor( {
 				luminosiy: 'light',
 				format: 'rgba',
-				alpha: 0.5 // E.g. 'rgba(9, 1, 107, 0.5)',
+				alpha: 0.5, // E.g. 'rgba(9, 1, 107, 0.5)',
 			} )
 
 		}

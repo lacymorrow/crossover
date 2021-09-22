@@ -1,5 +1,3 @@
-'use strict'
-
 // Constants
 const APP_HEIGHT = 124
 const APP_WIDTH = 200
@@ -16,5 +14,5 @@ module.exports = {
 	SETTINGS_WINDOW_DEVTOOLS,
 	SHADOW_WINDOW_OFFSET,
 
-	SUPPORTED_IMAGE_FILE_TYPES
+	SUPPORTED_IMAGE_FILE_TYPES,
 }

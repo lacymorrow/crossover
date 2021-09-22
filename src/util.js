@@ -22,11 +22,7 @@ const debounce = ( func, delay ) => {
 
 }
 
-const checkboxTrue = ( value, key ) => {
-
-	return ( typeof value === 'object' && value.includes( key ) )
-
-}
+const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value.includes( key ) )
 
 /* eslint-disable no-prototype-builtins */
 /**
@@ -38,18 +34,18 @@ function deepFreeze( o ) {
 
 	Object.freeze( o )
 
-	Object.getOwnPropertyNames( o ).forEach( prop => {
+	for ( const prop of Object.getOwnPropertyNames( o ) ) {
 
-		if ( o.hasOwnProperty( prop ) &&
-    o[prop] !== null &&
-    ( typeof o[prop] === 'object' || typeof o[prop] === 'function' ) &&
-    !Object.isFrozen( o[prop] ) ) {
+		if ( o.hasOwnProperty( prop )
+    && o[prop] !== null
+    && ( typeof o[prop] === 'object' || typeof o[prop] === 'function' )
+    && !Object.isFrozen( o[prop] ) ) {
 
 			deepFreeze( o[prop] )
 
 		}
 
-	} )
+	}
 
 	return o
 

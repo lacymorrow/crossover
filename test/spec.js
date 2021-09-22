@@ -13,7 +13,7 @@ test.before( t => {
 
 	t.context.app = new Application( {
 		path: electronPath,
-		args: [ path.join( __dirname, '..' ) ]
+		args: [ path.join( __dirname, '..' ) ],
 	} )
 
 	return t.context.app.start()

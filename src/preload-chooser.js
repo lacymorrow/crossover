@@ -3,7 +3,7 @@
 const path = require( 'path' )
 const {
 	contextBridge,
-	ipcRenderer
+	ipcRenderer,
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
 
@@ -34,5 +34,5 @@ contextBridge.exposeInMainWorld( 'crossover', {
 
 		}
 
-	}
+	},
 } )
