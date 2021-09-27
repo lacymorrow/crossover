@@ -193,10 +193,13 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 ## [What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)
 
+###### ❌ Most games don't work in Fullscreen mode
+
 Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
+✅  | Call of Duty Black Ops Cold War    | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` mode
 ✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
 ✅  | Counter-Strike (1.6)               | Runs in `Windowed` mode
 ✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
