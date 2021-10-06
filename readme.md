@@ -193,7 +193,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 ## [What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)
 
-###### ❌ Most games don't work in Fullscreen mode
+###### ❌ Most games don't work in Fullscreen mode on Windows or Linux
 
 Works     | Game     | Notes
 ----------|----------|-------
@@ -281,6 +281,8 @@ Then edit the automatically created GitHub Releases draft and publish.
 ### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
+
+Fullscreen for MacOS may have better results.
 
 #### Workaround
 

@@ -167,13 +167,13 @@ const createMainWindow = async isShadowWindow => {
 
 	const win = new BrowserWindow( options )
 
+	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
 	setDockVisible( false )
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
-	// Enables staying on fullscreen apps - mac
 	// setDockVisible( true )
 
 	if ( isShadowWindow ) {
