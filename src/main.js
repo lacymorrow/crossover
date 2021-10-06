@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 /*
 	Changed:
 		#20 Custom keybinds

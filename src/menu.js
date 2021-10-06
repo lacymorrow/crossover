@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 const path = require( 'path' )
 const { app, shell } = require( 'electron' )
 const {

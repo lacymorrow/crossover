@@ -113,9 +113,7 @@
 				"always"
 			]
 		},
-		"semicolon": false,
-		"unicorn/prefer-module": "off"
-
+		"semicolon": false
 	},
 	"np": {
 		"publish": false,

@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 // Constants
 const APP_HEIGHT = 124
 const APP_WIDTH = 200

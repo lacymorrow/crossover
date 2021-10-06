@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 // Via https://github.com/tkambler/electron-preferences
 const { app } = require( 'electron' )
 const path = require( 'path' )

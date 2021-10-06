@@ -1,8 +1,5 @@
 {
 	"extends": "xo",
-	"plugins": [
-	    "unicorn"
-	],
 	"rules": {
 		"array-bracket-spacing": [
 			"error",
@@ -40,7 +37,6 @@
 		"space-in-parens": [
 			"error",
 			"always"
-		],
-		"unicorn/prefer-module": "off"
+		]
 	}
 }

@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 /* Utilities */
 
 const debounce = ( func, delay ) => {
