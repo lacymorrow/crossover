@@ -619,10 +619,10 @@ const openChooserWindow = async () => {
 	} else {
 
 		// Windows
-			// Windows
-			const bounds = getWindowBoundsCentered( { window: chooserWindow, useFullBounds: true } )
-			const mainBounds = mainWindow.getBounds()
-			chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+		// Windows
+		const bounds = getWindowBoundsCentered( { window: chooserWindow, useFullBounds: true } )
+		const mainBounds = mainWindow.getBounds()
+		chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
 	}
 
@@ -638,7 +638,8 @@ const openSettingsWindow = async () => {
 	}
 
 	if ( prefs.value( 'hidden.showSettings' ) ) {
-		// hide if already visible
+
+		// Hide if already visible
 		return escapeAction()
 
 	}
@@ -1050,7 +1051,7 @@ const registerIpc = () => {
 
 const syncSettings = preferences => {
 
-	console.log('Sync preferences')
+	console.log( 'Sync preferences' )
 
 	setColor( preferences?.crosshair?.color )
 	setOpacity( preferences?.crosshair?.opacity )
@@ -1259,6 +1260,7 @@ const createChooser = async currentCrosshair => {
 }
 
 const unregisterIOHook = () => {
+
 	if ( ioHook ) {
 
 		ioHook.removeAllListeners( 'mousedown' )
@@ -1266,6 +1268,7 @@ const unregisterIOHook = () => {
 		ioHook.removeAllListeners( 'mousemove' )
 
 	}
+
 }
 
 // Temp until implemented in prefs
@@ -1291,19 +1294,20 @@ const resetApp = async skipSetup => {
 	centerAppWindow( { targetWindow: mainWindow } )
 
 	if ( !skipSetup ) {
+
 		unregisterIOHook()
 
 		globalShortcut.unregisterAll()
-		// ipcMain.removeAllListeners()
-		mainWindow.removeAllListeners('move')
-		
-		setupApp(true)
+		// IpcMain.removeAllListeners()
+		mainWindow.removeAllListeners( 'move' )
+
+		setupApp( true )
 
 	}
 
 }
 
-const setupApp = async (triggeredFromReset) => {
+const setupApp = async triggeredFromReset => {
 
 	// Preferences
 	prefs.value( 'hidden.showSettings', false )
@@ -1366,7 +1370,7 @@ const setupApp = async (triggeredFromReset) => {
 	registerEvents()
 
 	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET && !triggeredFromReset) {
+	if ( process.env.CROSSOVER_RESET && !triggeredFromReset ) {
 
 		console.log( 'Command-line reset triggered' )
 		resetApp( true )
@@ -1415,12 +1419,12 @@ app.on( 'second-instance', () => {
 
 } )
 
-app.on('will-quit', () => {
-  // Unregister all shortcuts.
-  globalShortcut.unregisterAll()
-})
+app.on( 'will-quit', () => {
 
+	// Unregister all shortcuts.
+	globalShortcut.unregisterAll()
 
+} )
 
 app.on( 'window-all-closed', () => {
 
@@ -1439,7 +1443,8 @@ app.on( 'activate', async () => {
 } )
 
 const ready = async () => {
-	console.log('App ready')
+
+	console.log( 'App ready' )
 
 	/* MENU */
 	const macosTemplate = [
