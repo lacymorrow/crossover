@@ -78,9 +78,6 @@
 			"node",
 			"browser"
 		],
-		"plugins": [
-		    "unicorn"
-		],
 		"rules": {
 			"array-bracket-spacing": [
 				"error",
@@ -117,8 +114,8 @@
 			]
 		},
 		"semicolon": false,
-		"unicorn": 0,
-		"unicorn/prefer-module": 0
+		"unicorn/prefer-module": "never",
+
 	},
 	"np": {
 		"publish": false,
