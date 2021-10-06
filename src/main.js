@@ -27,9 +27,11 @@
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
+
 const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
+const process = require("process")
 
 const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen, shell } = electron
 const { autoUpdater } = require( 'electron-updater' )
@@ -174,7 +176,7 @@ const createMainWindow = async isShadowWindow => {
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
-	// setDockVisible( true )
+	// SetDockVisible( true )
 
 	if ( isShadowWindow ) {
 
@@ -517,11 +519,17 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
 
 		if ( followMouse || hideOnMouse !== -1 ) {
-			if (followMouse) {
+
+			if ( followMouse ) {
+
 				registerFollowMouse()
+
 			}
-			if (hideOnMouse  !== -1 ) {
+
+			if ( hideOnMouse !== -1 ) {
+
 				registerHideOnMouse()
+
 			}
 
 		} else if ( ioHook ) {
@@ -536,7 +544,7 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	} else {
 
-		// setDockVisible( true )
+		// SetDockVisible( true )
 
 		// Unregister
 		if ( ioHook ) {

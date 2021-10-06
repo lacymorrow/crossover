@@ -15,8 +15,7 @@ const debounce = ( func, delay ) => {
 
 		}
 
-		const context = this
-		debounceTimer = setTimeout( () => func.apply( context, args ), delay )
+		debounceTimer = setTimeout( () => func.apply( this, args ), delay )
 
 	}
 

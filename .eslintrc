@@ -37,6 +37,7 @@
 		"space-in-parens": [
 			"error",
 			"always"
-		]
+		],
+		"unicorn/prefer-module": 0
 	}
 }
