@@ -4,17 +4,17 @@ const { app, shell } = require( 'electron' )
 const {
 	openUrlMenuItem,
 	openNewGitHubIssue,
-	debugInfo
+	debugInfo,
 } = require( 'electron-util' )
 
 const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Website',
-		url: 'https://www.electronjs.org/apps/crossover'
+		url: 'https://www.electronjs.org/apps/crossover',
 	} ),
 	openUrlMenuItem( {
 		label: 'Source Code',
-		url: 'https://github.com/lacymorrow/crossover'
+		url: 'https://github.com/lacymorrow/crossover',
 	} ),
 	{
 		label: 'Report an Issue…',
@@ -31,11 +31,11 @@ ${debugInfo()}`
 			openNewGitHubIssue( {
 				user: 'lacymorrow',
 				repo: 'crossover',
-				body
+				body,
 			} )
 
-		}
-	}
+		},
+	},
 ]
 
 const debugSubmenu = [
@@ -45,7 +45,7 @@ const debugSubmenu = [
 
 			shell.openItem( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
 
-		}
+		},
 	},
 	{
 		label: 'Show App Data',
@@ -53,10 +53,10 @@ const debugSubmenu = [
 
 			shell.openItem( app.getPath( 'userData' ) )
 
-		}
+		},
 	},
 	{
-		type: 'separator'
+		type: 'separator',
 	},
 	{
 		label: 'Delete App Data',
@@ -66,8 +66,8 @@ const debugSubmenu = [
 			app.relaunch()
 			app.quit()
 
-		}
-	}
+		},
+	},
 ]
 
 exports.debugSubmenu = debugSubmenu

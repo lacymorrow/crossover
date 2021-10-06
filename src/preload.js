@@ -2,7 +2,7 @@
 // Via https://github.com/reZach/secure-electron-template
 const {
 	contextBridge,
-	ipcRenderer
+	ipcRenderer,
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const { debounce, deepFreeze } = require( './util.js' )
@@ -38,7 +38,7 @@ const api = {
 
 		}
 
-	}
+	},
 }
 
 // Spectron issue: https://github.com/electron-userland/spectron/issues/693

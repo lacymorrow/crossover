@@ -13,7 +13,7 @@ const preferences = new ElectronPreferences( {
 	 * Where should preferences be saved?
 	 */
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
-	debug: true,
+	debug: is.development && !is.linux,
 	/**
 	 * Default values.
 	 */
@@ -24,16 +24,16 @@ const preferences = new ElectronPreferences( {
 			size: 80,
 			opacity: 80,
 			reticle: 'dot',
-			reticleSize: 80
+			reticleSize: 80,
 		},
 		mouse: {
 			followMouse: [],
-			hideOnMouse: '-1'
+			hideOnMouse: '-1',
 		},
 		app: {
 			updates: [ 'updates' ],
 			boot: [],
-			gpu: [ 'gpu' ]
+			gpu: [ 'gpu' ],
 		},
 		keybinds: {
 			reset: 'Control+Shift+Alt+R',
@@ -47,7 +47,7 @@ const preferences = new ElectronPreferences( {
 			moveDown: 'Control+Shift+Alt+Down',
 			moveLeft: 'Control+Shift+Alt+Left',
 			moveRight: 'Control+Shift+Alt+Right',
-			about: 'Control+Shift+Alt+A'
+			about: 'Control+Shift+Alt+A',
 		},
 		hidden: {
 			frame: false,
@@ -55,16 +55,16 @@ const preferences = new ElectronPreferences( {
 			showSettings: false,
 			positionX: null,
 			positionY: null,
-			test: true
+			test: true,
 
-		}
+		},
 	},
 
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
 		webPreferences: {
-			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS
-		}
+			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
+		},
 
 	},
 	/**
@@ -89,7 +89,7 @@ const preferences = new ElectronPreferences( {
 								key: 'color',
 								type: 'color',
 								format: 'hex', // Can be hex, hsl or rgb
-								help: 'Center sight color'
+								help: 'Center sight color',
 							},
 							// {
 							// 	label: 'Custom Crosshair',
@@ -104,8 +104,8 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Dot', value: 'dot' },
 									{ label: 'Cross', value: 'cross' },
-									{ label: 'No sight', value: 'off' }
-								]
+									{ label: 'No sight', value: 'off' },
+								],
 							},
 							// {
 							// 	label: 'Reticle size',
@@ -119,20 +119,20 @@ const preferences = new ElectronPreferences( {
 								key: 'size',
 								type: 'slider',
 								min: 1,
-								max: 125
+								max: 125,
 							},
 							{
 								label: 'Opacity',
 								key: 'opacity',
 								type: 'slider',
 								min: 1,
-								max: 100
-							}
+								max: 100,
+							},
 
-						]
-					}
-				]
-			}
+						],
+					},
+				],
+			},
 		},
 		{
 			id: 'mouse',
@@ -148,9 +148,9 @@ const preferences = new ElectronPreferences( {
 								key: 'followMouse',
 								type: 'checkbox',
 								options: [
-									{ label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' }
+									{ label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' },
 								],
-								help: 'Keeps CrossOver centered on the mouse cursor. This a beta feature, use at your own risk.'
+								help: 'Keeps CrossOver centered on the mouse cursor. This a beta feature, use at your own risk.',
 							},
 							{
 								label: 'Hide crosshair when Aiming Down Sights (ADS):',
@@ -162,14 +162,14 @@ const preferences = new ElectronPreferences( {
 									{ label: 'Middle mouse-button', value: '3' },
 									{ label: 'Left mouse-button', value: '1' },
 									{ label: 'Backward mouse-button', value: '4' },
-									{ label: 'Forward mouse-button', value: '5' }
+									{ label: 'Forward mouse-button', value: '5' },
 								],
-								help: 'CrossOver can be hidden while aiming down sights. This is a beta feature, use at your own risk.'
-							}
-						]
-					}
-				]
-			}
+								help: 'CrossOver can be hidden while aiming down sights. This is a beta feature, use at your own risk.',
+							},
+						],
+					},
+				],
+			},
 		},
 
 		{
@@ -186,32 +186,32 @@ const preferences = new ElectronPreferences( {
 								key: 'updates',
 								type: 'checkbox',
 								options: [
-									{ label: 'Allow CrossOver to automatically update', value: 'updates' }
+									{ label: 'Allow CrossOver to automatically update', value: 'updates' },
 								],
-								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.'
+								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
 							},
 							{
 								label: 'Run at startup',
 								key: 'system',
 								type: 'checkbox',
 								options: [
-									{ label: 'Start on system boot', value: 'boot' }
+									{ label: 'Start on system boot', value: 'boot' },
 								],
-								help: 'CrossOver will start when your computer starts.'
+								help: 'CrossOver will start when your computer starts.',
 							},
 							{
 								label: 'Hardware acceleration',
 								key: 'gpu',
 								type: 'checkbox',
 								options: [
-									{ label: 'Enable hardware acceleration', value: 'gpu' }
+									{ label: 'Enable hardware acceleration', value: 'gpu' },
 								],
-								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.'
-							}
-						]
-					}
-				]
-			}
+								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+							},
+						],
+					},
+				],
+			},
 		},
 		{
 			id: 'keybinds',
@@ -225,26 +225,26 @@ const preferences = new ElectronPreferences( {
 
 							{
 								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete. Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
-								type: 'message'
+								type: 'message',
 							},
 
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',
 								type: 'accelerator',
-								help: 'Unlock CrossOver to change settings, then lock the app in place to game.'
+								help: 'Unlock CrossOver to change settings, then lock the app in place to game.',
 							},
 							{
 								label: 'Center Crosshair',
 								key: 'center',
 								type: 'accelerator',
-								help: 'Center the crosshair window on the current screen.'
+								help: 'Center the crosshair window on the current screen.',
 							},
 							{
 								label: 'Toggle Hide Crosshair',
 								key: 'hide',
 								type: 'accelerator',
-								help: 'Hide CrossOver from the screen.'
+								help: 'Hide CrossOver from the screen.',
 							},
 							// {
 							// 	label: 'Hold Hide Crosshair',
@@ -256,13 +256,13 @@ const preferences = new ElectronPreferences( {
 								label: 'Duplicate Crosshair',
 								key: 'duplicate',
 								type: 'accelerator',
-								help: 'Create a duplicate "shadow" crosshair. Settings are not saved for shadow crosshairs.'
+								help: 'Create a duplicate "shadow" crosshair. Settings are not saved for shadow crosshairs.',
 							},
 							{
 								label: 'Change Display',
 								key: 'changeDisplay',
 								type: 'accelerator',
-								help: 'Center CrossOver on the next connected display.'
+								help: 'Center CrossOver on the next connected display.',
 							},
 							// {
 							// 	label: 'Reset All Settings',
@@ -280,30 +280,30 @@ const preferences = new ElectronPreferences( {
 								label: 'Move Up',
 								key: 'moveUp',
 								type: 'accelerator',
-								help: 'Move the crosshair up 1 pixel.'
+								help: 'Move the crosshair up 1 pixel.',
 							},
 							{
 								label: 'Move Down',
 								key: 'moveDown',
 								type: 'accelerator',
-								help: 'Move the crosshair down 1 pixel.'
+								help: 'Move the crosshair down 1 pixel.',
 							},
 							{
 								label: 'Move Left',
 								key: 'moveLeft',
 								type: 'accelerator',
-								help: 'Move the crosshair left 1 pixel.'
+								help: 'Move the crosshair left 1 pixel.',
 							},
 							{
 								label: 'Move Right',
 								key: 'moveRight',
 								type: 'accelerator',
-								help: 'Move the crosshair right 1 pixel.'
-							}
-						]
-					}
-				]
-			}
+								help: 'Move the crosshair right 1 pixel.',
+							},
+						],
+					},
+				],
+			},
 		},
 		{
 			id: 'about',
@@ -324,14 +324,14 @@ const preferences = new ElectronPreferences( {
 									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
 									<p>${debugInfo()}</p> \
 								`,
-								type: 'message'
-							}
-						]
-					}
-				]
-			}
-		}
-	]
+								type: 'message',
+							},
+						],
+					},
+				],
+			},
+		},
+	],
 } )
 
 module.exports = preferences

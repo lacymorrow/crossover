@@ -36,10 +36,10 @@ function deepFreeze( o ) {
 
 	for ( const prop of Object.getOwnPropertyNames( o ) ) {
 
-		if ( o.hasOwnProperty( prop ) &&
-    o[prop] !== null &&
-    ( typeof o[prop] === 'object' || typeof o[prop] === 'function' ) &&
-    !Object.isFrozen( o[prop] ) ) {
+		if ( o.hasOwnProperty( prop )
+    && o[prop] !== null
+    && ( typeof o[prop] === 'object' || typeof o[prop] === 'function' )
+    && !Object.isFrozen( o[prop] ) ) {
 
 			deepFreeze( o[prop] )
 
