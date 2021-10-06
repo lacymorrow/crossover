@@ -174,7 +174,7 @@ const createMainWindow = async isShadowWindow => {
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
 	// Enables staying on fullscreen apps - mac
-	setDockVisible( true )
+	// setDockVisible( true )
 
 	if ( isShadowWindow ) {
 
@@ -503,6 +503,8 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	if ( lock ) {
 
+		setDockVisible( false )
+
 		// Don't save bounds when locked
 		if ( targetWindow === mainWindow ) {
 
@@ -510,34 +512,31 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
-		// Enable follow mouse
-		if ( checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' ) ) {
-
-			registerFollowMouse()
-
-		} else if ( ioHook ) {
-
-			ioHook.removeAllListeners( 'mousedown' )
-			ioHook.removeAllListeners( 'mousemove' )
-
-		}
-
-		// Enable hide on mouse
+		// Enable follow mouse and hide on mouse
+		const followMouse = checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' )
 		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
-		if ( hideOnMouse !== -1 ) {
 
-			registerHideOnMouse()
+		if ( followMouse || hideOnMouse !== -1 ) {
+			if (followMouse) {
+				registerFollowMouse()
+			}
+			if (hideOnMouse  !== -1 ) {
+				registerHideOnMouse()
+			}
 
 		} else if ( ioHook ) {
 
 			ioHook.removeAllListeners( 'mousedown' )
 			ioHook.removeAllListeners( 'mouseup' )
+			ioHook.removeAllListeners( 'mousemove' )
 
 		}
 
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+
+		// setDockVisible( true )
 
 		// Unregister
 		if ( ioHook ) {
