@@ -1,51 +1,55 @@
-'use strict'
-
+/* eslint unicorn/prefer-module: 0 */
 /*
-    Changed:
-        #20 Custom keybinds
-        #85 turn off updates
-        #84 Mouse hooks
-        #70 Performance settings - gpu
-        #86 start on boot
-        #88 allow disable keybinds
-        hide settings on blur
+	Changed:
+		#20 Custom keybinds
+		#85 turn off updates
+		#84 Mouse hooks
+		#70 Performance settings - gpu
+		#86 start on boot
+		#88 allow disable keybinds
+		hide settings on blur
 
-    High:
-        Follow Mouse
-        prevent double keybind
-        test window placement on windows/mac
-        fix unhandled #81
+	High:
+		Follow Mouse
+		prevent double keybind
+		test window placement on windows/mac
+		fix unhandled #81
 
-    Medium:
-        polish menu
-        Custom crosshair should be a setting
-        shadow window bug on move to next display
+	Medium:
+		polish menu
+		Custom crosshair should be a setting
+		shadow window bug on move to next display
 
-    Low:
-        Define preferences browserwindowoverrdes in main.j, make main a parent window
-        Conflicting accelerator on Fedora
-        Improve escapeAction to be window-aware
-        dont setPosition if monitor has been unplugged
+	Low:
+		Define preferences browserwindowoverrdes in main.j, make main a parent window
+		Conflicting accelerator on Fedora
+		Improve escapeAction to be window-aware
+		dont setPosition if monitor has been unplugged
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
+
 const fs = require( 'fs' )
 const path = require( 'path' )
 const electron = require( 'electron' )
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen } = electron
+const process = require( 'process' )
+
+const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen, shell } = electron
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, centerWindow, debugInfo, getWindowBoundsCentered, is, showAboutWindow } = require( 'electron-util' )
+const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const { checkboxTrue, debounce } = require( './util.js' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
-const menu = require( './menu.js' )
+const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
 
 	// Dynamically require ioHook
+	// We do this in case it gets flagged by anti-cheat
+
 	if ( !ioHook ) {
 
 		ioHook = await require( 'iohook' )
@@ -130,7 +134,7 @@ const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async isShadowWindow => {
 
-	const preferences = {
+	const options = {
 		title: app.name,
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
@@ -160,20 +164,20 @@ const createMainWindow = async isShadowWindow => {
 
 	if ( is.windows ) {
 
-		preferences.type = 'toolbar'
+		options.type = 'toolbar'
 
 	}
 
-	const win = new BrowserWindow( preferences )
+	const win = new BrowserWindow( options )
 
+	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
 	setDockVisible( false )
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
-	// Enables staying on fullscreen apps - mac
-	setDockVisible( true )
+	// SetDockVisible( true )
 
 	if ( isShadowWindow ) {
 
@@ -269,7 +273,7 @@ const createShadowWindow = async () => {
 
 const closeShadowWindows = id => {
 
-	shadowWindows.forEach( currentWindow => {
+	for ( const currentWindow of shadowWindows ) {
 
 		if ( !id || id === currentWindow.webContents.id ) {
 
@@ -277,7 +281,7 @@ const closeShadowWindows = id => {
 
 		}
 
-	} )
+	}
 
 }
 
@@ -320,45 +324,41 @@ const getCrosshairImages = async () => {
 
 }
 
-const getImages = ( directory, level ) => {
+const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
-	return new Promise( ( resolve, reject ) => {
+	const crosshairs = []
+	fs.promises.readdir( directory, async ( error, dir ) => {
 
-		const crosshairs = []
-		fs.promises.readdir( directory, async ( error, dir ) => {
+		if ( error ) {
 
-			if ( error ) {
+			reject( new Error( `Promise Errored: ${error}`, directory ) )
 
-				reject( new Error( `Promise Errored: ${error}`, directory ) )
+		}
 
-			}
+		for ( let i = 0, filepath;
+			( filepath = dir[i] ); i++ ) {
 
-			for ( let i = 0, filepath;
-				( filepath = dir[i] ); i++ ) {
+			const stat = fs.lstatSync( path.join( directory, filepath ) )
 
-				const stat = fs.lstatSync( path.join( directory, filepath ) )
+			if ( stat.isDirectory() && level > 0 ) {
 
-				if ( stat.isDirectory() && level > 0 ) {
+				const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+				crosshairs.push( next )
 
-					const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
-					crosshairs.push( next )
+			} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
-				} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
-
-					// Filename
-					crosshairs.push( path.join( directory, filepath ) )
-
-				}
+				// Filename
+				crosshairs.push( path.join( directory, filepath ) )
 
 			}
 
-			resolve( crosshairs )
+		}
 
-		} )
+		resolve( crosshairs )
 
 	} )
 
-}
+} )
 
 const setColor = ( color, targetWindow = mainWindow ) => {
 
@@ -460,20 +460,20 @@ const hideWindow = () => {
 	if ( windowHidden ) {
 
 		mainWindow.show()
-		shadowWindows.forEach( currentWindow => {
+		for ( const currentWindow of shadowWindows ) {
 
 			currentWindow.show()
 
-		} )
+		}
 
 	} else {
 
 		mainWindow.hide()
-		shadowWindows.forEach( currentWindow => {
+		for ( const currentWindow of shadowWindows ) {
 
 			currentWindow.hide()
 
-		} )
+		}
 
 	}
 
@@ -484,11 +484,11 @@ const hideWindow = () => {
 const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 
 	lockWindow( lock )
-	shadowWindows.forEach( currentWindow => {
+	for ( const currentWindow of shadowWindows ) {
 
 		lockWindow( lock, currentWindow )
 
-	} )
+	}
 
 }
 
@@ -506,6 +506,8 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	if ( lock ) {
 
+		setDockVisible( false )
+
 		// Don't save bounds when locked
 		if ( targetWindow === mainWindow ) {
 
@@ -513,34 +515,37 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
-		// Enable follow mouse
-		if ( checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' ) ) {
-
-			registerFollowMouse()
-
-		} else if ( ioHook ) {
-
-			ioHook.removeAllListeners( 'mousedown' )
-			ioHook.removeAllListeners( 'mousemove' )
-
-		}
-
-		// Enable hide on mouse
+		// Enable follow mouse and hide on mouse
+		const followMouse = checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' )
 		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
-		if ( hideOnMouse !== -1 ) {
 
-			registerHideOnMouse()
+		if ( followMouse || hideOnMouse !== -1 ) {
+
+			if ( followMouse ) {
+
+				registerFollowMouse()
+
+			}
+
+			if ( hideOnMouse !== -1 ) {
+
+				registerHideOnMouse()
+
+			}
 
 		} else if ( ioHook ) {
 
 			ioHook.removeAllListeners( 'mousedown' )
 			ioHook.removeAllListeners( 'mouseup' )
+			ioHook.removeAllListeners( 'mousemove' )
 
 		}
 
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+
+		// SetDockVisible( true )
 
 		// Unregister
 		if ( ioHook ) {
@@ -662,8 +667,11 @@ const openSettingsWindow = async () => {
 	}
 
 	prefsWindow = prefs.show()
+
+	// Set events on prefs window
 	if ( prefsWindow ) {
 
+		// Hide window when clicked away
 		prefsWindow.on( 'blur', () => {
 
 			if ( !SETTINGS_WINDOW_DEVTOOLS ) {
@@ -674,6 +682,15 @@ const openSettingsWindow = async () => {
 
 		} )
 
+		// Force opening URLs in the default browser (remember to use `target="_blank"`)
+		prefsWindow.webContents.on( 'new-window', ( event, url ) => {
+
+			event.preventDefault()
+			shell.openExternal( url )
+
+		} )
+
+		// Track window state
 		prefsWindow.on( 'closed', () => {
 
 			prefs.value( 'hidden.showSettings', false )
@@ -785,31 +802,12 @@ const moveWindowToNextDisplay = options => {
 	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
 
 	// Get index of current
-	let index = displays.map( element => {
-
-		return element.id
-
-	} ).indexOf( currentDisplay.id )
+	let index = displays.map( element => element.id ).indexOf( currentDisplay.id )
 
 	// Increment and save
 	index = ( index + 1 ) % displays.length
 
 	centerAppWindow( { display: displays[index], targetWindow: options.targetWindow } )
-
-}
-
-const aboutWindow = () => {
-
-	// Console.dir( app.getGPUFeatureStatus() )
-	// Console.dir(app.getAppMetrics());
-	// app.getGPUInfo('complete').then(completeObj => {
-	//        console.dir(completeObj);
-	//    });
-	showAboutWindow( {
-		icon: path.join( __static, 'Icon.png' ),
-		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
-		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
-	} )
 
 }
 
@@ -999,11 +997,11 @@ const registerIpc = () => {
 
 			console.log( `Save custom image: ${arg}` )
 			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
-			shadowWindows.forEach( currentWindow => {
+			for ( const currentWindow of shadowWindows ) {
 
 				currentWindow.webContents.send( 'set_custom_image', arg )
 
-			} )
+			}
 
 			prefs.value( 'crosshair.crosshair', arg )
 			hideChooserWindow()
@@ -1033,11 +1031,11 @@ const registerIpc = () => {
 			console.log( `Save crosshair: ${arg}` )
 			hideChooserWindow()
 			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
-			shadowWindows.forEach( currentWindow => {
+			for ( const currentWindow of shadowWindows ) {
 
 				currentWindow.webContents.send( 'set_crosshair', arg )
 
-			} )
+			}
 
 			prefs.value( 'crosshair.crosshair', arg )
 
@@ -1161,15 +1159,19 @@ const keyboardShortcuts = () => {
 		},
 
 		// About CrossOver
-		{
-			action: 'about',
-			keybind: `${accelerator}+A`,
-			fn: () => {
+		// {
+		// 	action: 'about',
+		// 	keybind: `${accelerator}+A`,
+		// 	fn: () => {
 
-				aboutWindow()
+		// 		showAboutWindow( {
+		// 			icon: path.join( __static, 'Icon.png' ),
+		// 			copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		// 			text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
+		// 		} )
 
-			}
-		},
+		// 	}
+		// },
 
 		// Single pixel movement
 		{
@@ -1217,7 +1219,7 @@ const registerShortcuts = () => {
 	// Register all shortcuts
 	const { keybinds } = prefs.defaults
 	const custom = prefs.value( 'keybinds' ) // Defaults
-	keyboardShortcuts().forEach( shortcut => {
+	for ( const shortcut of keyboardShortcuts() ) {
 
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
@@ -1244,7 +1246,7 @@ const registerShortcuts = () => {
 
 		}
 
-	} )
+	}
 
 }
 
@@ -1284,6 +1286,8 @@ const resetApp = async skipSetup => {
 
 	// Close extra crosshairs
 	closeShadowWindows()
+
+	// Hides chooser and preferences
 	escapeAction()
 	resetPreferences()
 	centerAppWindow( { targetWindow: mainWindow } )
@@ -1427,7 +1431,72 @@ app.on( 'activate', async () => {
 
 const ready = async () => {
 
-	Menu.setApplicationMenu( menu )
+	/* MENU */
+	const macosTemplate = [
+		appMenu( [
+			{
+				label: 'Preferences…',
+				accelerator: 'Command+,',
+				click() {
+
+					openSettingsWindow()
+
+				}
+			}
+		] ),
+		{
+			role: 'fileMenu'
+		},
+		{
+			role: 'windowMenu'
+		},
+		{
+			role: 'help',
+			submenu: helpSubmenu
+		}
+	]
+
+	// Linux and Windows
+	const otherTemplate = [
+		{
+			role: 'fileMenu',
+			submenu: [
+				{
+					label: 'Settings',
+					accelerator: 'Control+,',
+					click() {
+
+						openSettingsWindow()
+
+					}
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'quit'
+				}
+			]
+		},
+		{
+			role: 'help',
+			submenu: helpSubmenu
+		}
+	]
+
+	const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
+
+	if ( is.development ) {
+
+		template.push( {
+			label: 'Debug',
+			submenu: debugSubmenu
+		} )
+
+	}
+
+	Menu.setApplicationMenu( Menu.buildFromTemplate( template ) )
+
 	mainWindow = await createMainWindow()
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver

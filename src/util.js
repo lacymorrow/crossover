@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 /* Utilities */
 
 const debounce = ( func, delay ) => {
@@ -15,18 +16,13 @@ const debounce = ( func, delay ) => {
 
 		}
 
-		const context = this
-		debounceTimer = setTimeout( () => func.apply( context, args ), delay )
+		debounceTimer = setTimeout( () => func.apply( this, args ), delay )
 
 	}
 
 }
 
-const checkboxTrue = ( value, key ) => {
-
-	return ( typeof value === 'object' && value.includes( key ) )
-
-}
+const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value.includes( key ) )
 
 /* eslint-disable no-prototype-builtins */
 /**
@@ -38,7 +34,7 @@ function deepFreeze( o ) {
 
 	Object.freeze( o )
 
-	Object.getOwnPropertyNames( o ).forEach( prop => {
+	for ( const prop of Object.getOwnPropertyNames( o ) ) {
 
 		if ( o.hasOwnProperty( prop ) &&
     o[prop] !== null &&
@@ -49,7 +45,7 @@ function deepFreeze( o ) {
 
 		}
 
-	} )
+	}
 
 	return o
 

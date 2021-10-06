@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 // Via https://github.com/reZach/secure-electron-template
 const {
 	contextBridge,

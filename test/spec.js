@@ -1,3 +1,4 @@
+/* eslint unicorn/prefer-module: 0 */
 const electronPath = require( 'electron' ) // Require Electron from the binaries included in node_modules.
 const path = require( 'path' )
 const { Application } = require( 'spectron' )

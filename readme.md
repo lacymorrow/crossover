@@ -193,11 +193,15 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 ## [What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)
 
+###### ❌ Most games don't work in Fullscreen mode on Windows or Linux
+
 Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
+✅  | Call of Duty Black Ops Cold War    | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` mode
 ✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
+✅  | Counter-Strike (1.6)               | Runs in `Windowed` mode
 ✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
@@ -278,9 +282,13 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
 
+Fullscreen for MacOS may have better results.
+
 #### Workaround
 
 If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
+
+_Doesn't work with some games [#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-895995990), and causes FPS issues in other cases_
 
 Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
 

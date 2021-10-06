@@ -1,16 +1,19 @@
+/* eslint unicorn/prefer-module: 0 */
 // Via https://github.com/tkambler/electron-preferences
-'use strict'
-const electron = require( 'electron' )
-const { app } = electron
+const { app } = require( 'electron' )
 const path = require( 'path' )
+const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
 
 const preferences = new ElectronPreferences( {
+	// Custom styles
+	css: 'src/preferences.css',
 	/**
 	 * Where should preferences be saved?
 	 */
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+	debug: true,
 	/**
 	 * Default values.
 	 */
@@ -60,7 +63,7 @@ const preferences = new ElectronPreferences( {
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
 		webPreferences: {
-			devTools: SETTINGS_WINDOW_DEVTOOLS
+			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS
 		}
 
 	},
@@ -116,7 +119,7 @@ const preferences = new ElectronPreferences( {
 								key: 'size',
 								type: 'slider',
 								min: 1,
-								max: 100
+								max: 125
 							},
 							{
 								label: 'Opacity',
@@ -203,7 +206,7 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Enable hardware acceleration', value: 'gpu' }
 								],
-								help: 'If you are having issues with FPS, try disabling hardware acceleration.'
+								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.'
 							}
 						]
 					}
@@ -267,6 +270,12 @@ const preferences = new ElectronPreferences( {
 							// 	type: 'accelerator',
 							// 	help: 'Reset all settings to default and center the crosshair.'
 							// },
+							// {
+							// 	label: 'About CrossOver',
+							// 	key: 'about',
+							// 	type: 'accelerator',
+							// 	help: 'Open the "About CrossOver" window for more information.'
+							// }
 							{
 								label: 'Move Up',
 								key: 'moveUp',
@@ -290,12 +299,32 @@ const preferences = new ElectronPreferences( {
 								key: 'moveRight',
 								type: 'accelerator',
 								help: 'Move the crosshair right 1 pixel.'
-							},
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			id: 'about',
+			label: 'About',
+			icon: 'world',
+			form: {
+				groups: [
+					{
+						label: '🎯 About CrossOver',
+						fields: [
+
 							{
-								label: 'About CrossOver',
-								key: 'about',
-								type: 'accelerator',
-								help: 'Open the "About CrossOver" window for more information.'
+								heading: `CrossOver v${app.getVersion()}`,
+								content: `
+									<p>A crosshair overlay for any screen.<br /> \
+									Feedback and bug reports welcome at <a target="_blank" href="https://github.com/lacymorrow/crossover/issues">lacymorrow/crossover</a>.<br /> \
+									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
+									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
+									<p>${debugInfo()}</p> \
+								`,
+								type: 'message'
 							}
 						]
 					}
