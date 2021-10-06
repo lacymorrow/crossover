@@ -41,6 +41,6 @@
 			"error",
 			"always"
 		],
-		"unicorn/prefer-module": 0
+		"unicorn": 0
 	}
 }
