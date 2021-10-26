@@ -206,12 +206,13 @@ Works     | Game     | Notes
 ✅  | Escape from Tarkov                 |
 ✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_
-✅  | Empyrion: Galactic Survival        | Runs in `windowed` mode
+✅  | Empyrion: Galactic Survival        | Runs in `Windowed` mode
 ✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
+✅  | Overwatch                          | Runs in `Windowed Fullscreen` mode
 ❌  | Rainbow 6: Seige                   | Vulkan-based
 ✅  | Roblox                             | Runs in `Fullscreen` mode *(Windows)* and `Windowed Fullscreen` mode *(MacOS)*
 ✅  | Rocket League                      | Runs in `Windowed` mode
@@ -227,7 +228,7 @@ Works     | Game     | Notes
 
 Works     | OS       | Notes
 ----------|----------|-------
-❌  | MacOS arm64 _(M1)_  | Current reports state M1 Macs do not work with CrossOver [#93](https://github.com/lacymorrow/crossover/issues/47)
+✅  | MacOS arm64 _(M1)_  | Current reports state M1 Macs now with CrossOver [#93](https://github.com/lacymorrow/crossover/issues/93)
 ✅  | MacOS x64 _(Intel)_  | Tested on Catalina 10.15.1
 ✅  | Windows 10 ia32  |
 ✅  | Windows 10 x64  | Custom cursors do not show in draggable taskbar area
