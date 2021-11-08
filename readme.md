@@ -213,6 +213,7 @@ Works     | Game     | Notes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ✅  | Overwatch                          | Runs in `Windowed Fullscreen` mode
+✅  | Phasmophobia                       | Runs in `Windowed` and `Fullscreen` mode
 ❌  | Rainbow 6: Seige                   | Vulkan-based
 ✅  | Roblox                             | Runs in `Fullscreen` mode *(Windows)* and `Windowed Fullscreen` mode *(MacOS)*
 ✅  | Rocket League                      | Runs in `Windowed` mode
