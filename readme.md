@@ -221,7 +221,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Tom Clancy's The Division 2       | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | Tony Hawks Pro Skater 1+2         | Such a fun game!                                                                   |
 | ❌    | Vulkan-based games                |
-| ✅    | Valorant                          | Runs in `Windowed` mode                                                            |
+| ✅    | Valorant                          | Runs in `Borderless` and `Windowed` modes                                          |
 
 > Reported from our users, [add your resuts](https://github.com/lacymorrow/crossover/issues/47)
 
