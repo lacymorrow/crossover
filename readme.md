@@ -199,7 +199,7 @@ Works     | Game     | Notes
 ----------|----------|-------
 ✅  | Among Us                           |
 ✅  | Apex Legends                       | Runs in `Windowed` mode
-✅  | Call of Duty Black Ops Cold War    | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` mode
+✅  | Call of Duty Black Ops Cold War    | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` modes
 ✅  | Call of Duty: Warzone              | Runs in `Windowed` mode
 ✅  | Counter-Strike (1.6)               | Runs in `Windowed` mode
 ✅  | Dead by Daylight                   | Runs in `Windowed` and `Fullscreen` modes
@@ -207,13 +207,14 @@ Works     | Game     | Notes
 ✅  | Deceit                             | Runs in `Windowed` mode
 ✅  | Destiny 2                          | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_
 ✅  | Empyrion: Galactic Survival        | Runs in `Windowed` mode
+✅  | Escape from Tarkov                 | Runs in `Windowed` and `Windowed Fullscreen` modes
 ✅  | FiveM                              | Runs in `Fullscreen` mode
 ✅  | Fortnite                           | Runs in `Windowed Fullscreen` mode
 ✅  | League of Legends                  | Runs in `Borderless` and `Windowed` modes
 ✅  | Halo: The Master Chief Collection  | Runs in `Borderless` and `Windowed` modes
 ❌  | Metro Exodus Gold Edition          | Doesn't work under any circumstances
 ✅  | Overwatch                          | Runs in `Windowed Fullscreen` mode
-✅  | Phasmophobia                       | Runs in `Windowed` and `Fullscreen` mode
+✅  | Phasmophobia                       | Runs in `Windowed` and `Fullscreen` modes
 ❌  | Rainbow 6: Seige                   | Vulkan-based
 ✅  | Roblox                             | Runs in `Fullscreen` mode *(Windows)* and `Windowed Fullscreen` mode *(MacOS)*
 ✅  | Rocket League                      | Runs in `Windowed` mode
