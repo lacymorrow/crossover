@@ -1336,6 +1336,7 @@ const unregisterIOHook = () => {
 
 	if ( ioHook ) {
 
+		ioHook.unregisterAllShortcuts();
 		ioHook.removeAllListeners( 'mousedown' )
 		ioHook.removeAllListeners( 'mouseup' )
 		ioHook.removeAllListeners( 'mousemove' )
