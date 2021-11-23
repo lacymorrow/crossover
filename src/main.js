@@ -925,11 +925,9 @@ const registerTilt = async () => {
 		ioHook.registerShortcut(
 		  [leftKey],
 		  (keys) => {
-		  	console.log('tilt left')
 		    mainWindow.webContents.send( 'tilt', tiltAngle * -1 )
 		  },
 		  (keys) => {
-		  	console.log('tilt right')
 		    mainWindow.webContents.send( 'untilt' )
 		  }
 		);
