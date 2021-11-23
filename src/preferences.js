@@ -145,7 +145,7 @@ const preferences = new ElectronPreferences( {
 						label: 'Mouse Actions',
 						fields: [
 							{
-								label: 'Follow mouse:',
+								label: 'Follow mouse',
 								key: 'followMouse',
 								type: 'checkbox',
 								options: [
@@ -154,7 +154,7 @@ const preferences = new ElectronPreferences( {
 								help: 'Keeps CrossOver centered on the mouse cursor. ',
 							},
 							{
-								label: 'Hide crosshair on mouse button:',
+								label: 'Hide crosshair on mouse button',
 								key: 'hideOnMouse',
 								type: 'radio',
 								options: [
@@ -173,7 +173,7 @@ const preferences = new ElectronPreferences( {
 						label: 'Keyboard Actions',
 						fields: [
 							{
-								label: 'Hide on keypress:',
+								label: 'Hide on keypress',
 								key: 'hideOnKey',
 								type: 'accelerator',
 								help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
@@ -182,7 +182,7 @@ const preferences = new ElectronPreferences( {
 								heading: 'Crosshair Tilt Left/Right'
 							},
 							{
-								label: 'Enable tilt:',
+								label: 'Enable tilt',
 								key: 'tiltEnable',
 								type: 'checkbox',
 								options: [
@@ -191,17 +191,17 @@ const preferences = new ElectronPreferences( {
 								help: 'Crosshair will tilt at an angle while the key is held.'
 							},
 							{
-								label: 'Tilt left:',
+								label: 'Tilt left',
 								key: 'tiltLeft',
 								type: 'accelerator',
 							},
 							{
-								label: 'Tilt right:',
+								label: 'Tilt right',
 								key: 'tiltRight',
 								type: 'accelerator',
 							},
 							{
-								label: 'Tilt angle:',
+								label: 'Tilt angle',
 								key: 'tiltAngle',
 								type: 'slider',
 								min: 1,
