@@ -29,6 +29,8 @@ const preferences = new ElectronPreferences( {
 		mouse: {
 			followMouse: [],
 			hideOnMouse: '-1',
+			tiltEnable: [],
+			tiltAngle: 25,
 		},
 		app: {
 			updates: [ 'updates' ],
@@ -40,7 +42,6 @@ const preferences = new ElectronPreferences( {
 			lock: 'Control+Shift+Alt+X',
 			center: 'Control+Shift+Alt+C',
 			hide: 'Control+Shift+Alt+H',
-			// HideHold: 'Control+Shift+Alt+Y',
 			duplicate: 'Control+Shift+Alt+D',
 			changeDisplay: 'Control+Shift+Alt+M',
 			moveUp: 'Control+Shift+Alt+Up',
@@ -136,12 +137,12 @@ const preferences = new ElectronPreferences( {
 		},
 		{
 			id: 'mouse',
-			label: 'Mouse Events',
+			label: 'Crosshair Actions',
 			icon: 'turtle',
 			form: {
 				groups: [
 					{
-						label: 'Mouse Event Hooks (Beta)',
+						label: 'Mouse Actions',
 						fields: [
 							{
 								label: 'Follow mouse:',
@@ -150,10 +151,10 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' },
 								],
-								help: 'Keeps CrossOver centered on the mouse cursor. This a beta feature, use at your own risk.',
+								help: 'Keeps CrossOver centered on the mouse cursor. ',
 							},
 							{
-								label: 'Hide crosshair when Aiming Down Sights (ADS):',
+								label: 'Hide crosshair on mouse button:',
 								key: 'hideOnMouse',
 								type: 'radio',
 								options: [
@@ -164,7 +165,47 @@ const preferences = new ElectronPreferences( {
 									{ label: 'Backward mouse-button', value: '4' },
 									{ label: 'Forward mouse-button', value: '5' },
 								],
-								help: 'CrossOver can be hidden while aiming down sights. This is a beta feature, use at your own risk.',
+								help: 'Hides the crosshair when the specified mouse button is held.',
+							},
+						],
+					},
+					{
+						label: 'Keyboard Actions',
+						fields: [
+							{
+								label: 'Hide on keypress:',
+								key: 'hideOnKey',
+								type: 'accelerator',
+								help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
+							},
+							{
+								heading: 'Crosshair Tilt Left/Right'
+							},
+							{
+								label: 'Enable tilt:',
+								key: 'tiltEnable',
+								type: 'checkbox',
+								options: [
+									{ label: 'Enable tilting left/right on keypress', value: 'tiltEnable' },
+								],
+								help: 'Crosshair will tilt at an angle while the key is held.'
+							},
+							{
+								label: 'Tilt left:',
+								key: 'tiltLeft',
+								type: 'accelerator',
+							},
+							{
+								label: 'Tilt right:',
+								key: 'tiltRight',
+								type: 'accelerator',
+							},
+							{
+								label: 'Tilt angle:',
+								key: 'tiltAngle',
+								type: 'slider',
+								min: 1,
+								max: 90,
 							},
 						],
 					},
@@ -220,14 +261,17 @@ const preferences = new ElectronPreferences( {
 			form: {
 				groups: [
 					{
-						label: 'Custom Keybinds (Beta)',
+						label: 'Keyboard Actions',
 						fields: [
-
 							{
-								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete. Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
+								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete.</p><p>Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
 								type: 'message',
 							},
-
+						],
+					},
+					{
+						label: 'Custom Keybinds',
+						fields: [
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',

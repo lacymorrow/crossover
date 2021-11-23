@@ -182,12 +182,17 @@ button {
 }
 
 #crosshair {
+	--tilt-angle: 0deg;
+
     // Default width
     width: 100px;
     height: 100px;
     display: flex;
     position: relative;
+	transform: rotate( var(--tilt-angle) );
+	transition: transform .1s ease-in-out;
 }
+
 
 .crosshair-wrapper {
     // This controls what is draggable
