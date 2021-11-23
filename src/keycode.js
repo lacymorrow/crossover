@@ -1,3 +1,5 @@
+/* eslint unicorn/prefer-module: 0 */
+
 module.exports = {
 	0: '11',
 	1: '2',
