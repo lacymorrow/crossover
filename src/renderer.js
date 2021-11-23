@@ -157,14 +157,14 @@
 	// Tilt
 	window.crossover.receive( 'tilt', arg => {
 
-		crosshairElement.style.setProperty('--tilt-angle', `${Number.parseInt(arg, 10)}deg`);
+		crosshairElement.style.setProperty( '--tilt-angle', `${Number.parseInt( arg, 10 )}deg` )
 
 	} )
 
 	// Untilt
-	window.crossover.receive( 'untilt', arg => {
+	window.crossover.receive( 'untilt', () => {
 
-		crosshairElement.style.setProperty('--tilt-angle', '0deg');
+		crosshairElement.style.setProperty( '--tilt-angle', '0deg' )
 
 	} )
 

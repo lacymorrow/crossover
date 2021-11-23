@@ -179,7 +179,7 @@ const preferences = new ElectronPreferences( {
 								help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
 							},
 							{
-								heading: 'Crosshair Tilt Left/Right'
+								heading: 'Crosshair Tilt Left/Right',
 							},
 							{
 								label: 'Enable tilt',
@@ -188,7 +188,7 @@ const preferences = new ElectronPreferences( {
 								options: [
 									{ label: 'Enable tilting left/right on keypress', value: 'tiltEnable' },
 								],
-								help: 'Crosshair will tilt at an angle while the key is held.'
+								help: 'Crosshair will tilt at an angle while the key is held.',
 							},
 							{
 								label: 'Tilt left',

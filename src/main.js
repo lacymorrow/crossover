@@ -456,21 +456,25 @@ const centerAppWindow = options => {
 }
 
 const showWindow = () => {
+
 	mainWindow.show()
 	for ( const currentWindow of shadowWindows ) {
 
 		currentWindow.show()
 
 	}
+
 }
 
 const hideWindow = () => {
+
 	mainWindow.hide()
 	for ( const currentWindow of shadowWindows ) {
 
 		currentWindow.hide()
 
 	}
+
 }
 
 const showHideWindow = () => {
@@ -542,15 +546,17 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
-		if (hideOnKey) {
+		if ( hideOnKey ) {
+
 			registerHideOnKey()
+
 		}
 
-		if (tilt && ( prefs.value( 'mouse.tiltLeft' ) || prefs.value( 'mouse.tiltRight' ) ) ) {
+		if ( tilt && ( prefs.value( 'mouse.tiltLeft' ) || prefs.value( 'mouse.tiltRight' ) ) ) {
+
 			registerTilt()
+
 		}
-
-
 
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
@@ -858,19 +864,23 @@ const registerHideOnMouse = async () => {
 
 	// Register
 	ioHook.on( 'mousedown', event => {
+
 		if ( event.button === mouseButton ) {
 
 			hideWindow()
 
 		}
+
 	} )
 
 	ioHook.on( 'mouseup', event => {
+
 		if ( event.button === mouseButton ) {
 
 			showWindow()
 
 		}
+
 	} )
 
 	// Register and start hook
@@ -885,70 +895,86 @@ const registerHideOnKey = async () => {
 
 	const hideOnKey = prefs.value( 'mouse.hideOnKey' )
 
-	// Windows/Meta -> Command
-	if (hideOnKey === 'Meta') {
-		hideOnKey = 'Command'
-	}
+	if ( Object.prototype.hasOwnProperty.call( keycode, hideOnKey ) ) {
 
-
-	if (keycode.hasOwnProperty(hideOnKey)) {
 		const key = keycode[hideOnKey]
 
 		// Register
 		ioHook.registerShortcut(
-		  [key],
-		  (keys) => {
-		    hideWindow()
-		  },
-		  (keys) => {
-		    showWindow()
-		  }
-		);
+			[ key ],
+			_ => {
+
+				hideWindow()
+
+			},
+			_ => {
+
+				showWindow()
+
+			},
+		)
 
 		// Register and start hook
 		ioHook.start()
+
 	}
 
 }
 
 const registerTilt = async () => {
-	let leftKey, rightKey
-	const tiltAngle = Number.parseInt(prefs.value( 'mouse.tiltAngle' ), 10 )
+
+	let leftKey
+	let rightKey
+	const tiltAngle = Number.parseInt( prefs.value( 'mouse.tiltAngle' ), 10 )
 	const tiltLeft = prefs.value( 'mouse.tiltLeft' )
 	const tiltRight = prefs.value( 'mouse.tiltRight' )
 
 	console.log( 'Setting: Tilt' )
 	ioHook = await importIoHook()
 
-	if (keycode.hasOwnProperty(tiltLeft)) {
-		leftKey = Number.parseInt(keycode[tiltLeft], 10)
+	if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
+
+		leftKey = Number.parseInt( keycode[tiltLeft], 10 )
 		ioHook.registerShortcut(
-		  [leftKey],
-		  (keys) => {
-		    mainWindow.webContents.send( 'tilt', tiltAngle * -1 )
-		  },
-		  (keys) => {
-		    mainWindow.webContents.send( 'untilt' )
-		  }
-		);
+			[ leftKey ],
+			_ => {
+
+				mainWindow.webContents.send( 'tilt', tiltAngle * -1 )
+
+			},
+			_ => {
+
+				mainWindow.webContents.send( 'untilt' )
+
+			},
+		)
+
 	}
 
-	if (keycode.hasOwnProperty(tiltRight)) {
-		rightKey = Number.parseInt(keycode[tiltRight], 10)
+	if ( Object.prototype.hasOwnProperty.call( keycode, tiltRight ) ) {
+
+		rightKey = Number.parseInt( keycode[tiltRight], 10 )
 		ioHook.registerShortcut(
-		  [rightKey],
-		  (keys) => {
-		  	mainWindow.webContents.send( 'tilt', tiltAngle )
-		  },
-		  (keys) => {
-		  	mainWindow.webContents.send( 'untilt' )
-		  }
-		);
+			[ rightKey ],
+			_ => {
+
+				mainWindow.webContents.send( 'tilt', tiltAngle )
+
+			},
+			_ => {
+
+				mainWindow.webContents.send( 'untilt' )
+
+			},
+		)
+
 	}
 
-	if (leftKey || rightKey) {
+	if ( leftKey || rightKey ) {
+
 		// Register and start hook
 		ioHook.start()
+
 	}
 
 }
@@ -1334,7 +1360,7 @@ const unregisterIOHook = () => {
 
 	if ( ioHook ) {
 
-		ioHook.unregisterAllShortcuts();
+		ioHook.unregisterAllShortcuts()
 		ioHook.removeAllListeners( 'mousedown' )
 		ioHook.removeAllListeners( 'mouseup' )
 		ioHook.removeAllListeners( 'mousemove' )
