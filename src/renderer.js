@@ -154,6 +154,20 @@
 
 	} )
 
+	// Tilt
+	window.crossover.receive( 'tilt', arg => {
+
+		crosshairElement.style.setProperty('--tilt-angle', `${Number.parseInt(arg, 10)}deg`);
+
+	} )
+
+	// Untilt
+	window.crossover.receive( 'untilt', arg => {
+
+		crosshairElement.style.setProperty('--tilt-angle', '0deg');
+
+	} )
+
 	// Close window
 	closeBtn.addEventListener( 'click', () => {
 

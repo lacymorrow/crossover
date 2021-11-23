@@ -39,6 +39,7 @@ const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
+const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
@@ -454,26 +455,34 @@ const centerAppWindow = options => {
 
 }
 
+const showWindow = () => {
+	mainWindow.show()
+	for ( const currentWindow of shadowWindows ) {
+
+		currentWindow.show()
+
+	}
+}
+
 const hideWindow = () => {
+	mainWindow.hide()
+	for ( const currentWindow of shadowWindows ) {
+
+		currentWindow.hide()
+
+	}
+}
+
+const showHideWindow = () => {
 
 	// Hide all crosshair windows in place
 	if ( windowHidden ) {
 
-		mainWindow.show()
-		for ( const currentWindow of shadowWindows ) {
-
-			currentWindow.show()
-
-		}
+		showWindow()
 
 	} else {
 
-		mainWindow.hide()
-		for ( const currentWindow of shadowWindows ) {
-
-			currentWindow.hide()
-
-		}
+		hideWindow()
 
 	}
 
@@ -513,26 +522,35 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
-		// Enable follow mouse and hide on mouse
+		/* Actions */
 		const followMouse = checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' )
 		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
+		const hideOnKey = prefs.value( 'mouse.hideOnKey' )
+		const tilt = checkboxTrue( prefs.value( 'mouse.tiltEnable' ), 'tiltEnable' )
 
 		unregisterIOHook()
-		if ( followMouse || hideOnMouse !== -1 ) {
 
-			if ( followMouse ) {
+		if ( followMouse ) {
 
-				registerFollowMouse()
-
-			}
-
-			if ( hideOnMouse !== -1 ) {
-
-				registerHideOnMouse()
-
-			}
+			registerFollowMouse()
 
 		}
+
+		if ( hideOnMouse !== -1 ) {
+
+			registerHideOnMouse()
+
+		}
+
+		if (hideOnKey) {
+			registerHideOnKey()
+		}
+
+		if (tilt && ( prefs.value( 'mouse.tiltLeft' ) || prefs.value( 'mouse.tiltRight' ) ) ) {
+			registerTilt()
+		}
+
+
 
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
@@ -808,24 +826,6 @@ const escapeAction = () => {
 
 }
 
-const mouseAction = ( event, hideOnMouse ) => {
-
-	// Don't do anything if not locked
-	if ( hideOnMouse === -1 || !prefs.value( 'hidden.locked' ) ) {
-
-		return
-
-	}
-
-	// If right click
-	if ( event.button === hideOnMouse ) {
-
-		hideWindow()
-
-	}
-
-}
-
 const registerFollowMouse = async () => {
 
 	// Prevent saving bounds
@@ -854,14 +854,102 @@ const registerHideOnMouse = async () => {
 	console.log( 'Setting: Mouse Hide' )
 	ioHook = await importIoHook()
 
-	const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
+	const mouseButton = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
 
 	// Register
-	ioHook.on( 'mousedown', event => mouseAction( event, hideOnMouse ) )
-	ioHook.on( 'mouseup', event => mouseAction( event, hideOnMouse ) )
+	ioHook.on( 'mousedown', event => {
+		if ( event.button === mouseButton ) {
+
+			hideWindow()
+
+		}
+	} )
+
+	ioHook.on( 'mouseup', event => {
+		if ( event.button === mouseButton ) {
+
+			showWindow()
+
+		}
+	} )
 
 	// Register and start hook
 	ioHook.start()
+
+}
+
+const registerHideOnKey = async () => {
+
+	console.log( 'Setting: Keyboard Hide' )
+	ioHook = await importIoHook()
+
+	const hideOnKey = prefs.value( 'mouse.hideOnKey' )
+
+	// Windows/Meta -> Command
+	if (hideOnKey === 'Meta') {
+		hideOnKey = 'Command'
+	}
+
+
+	if (keycode.hasOwnProperty(hideOnKey)) {
+		const key = keycode[hideOnKey]
+
+		// Register
+		ioHook.registerShortcut(
+		  [key],
+		  (keys) => {
+		    hideWindow()
+		  },
+		  (keys) => {
+		    showWindow()
+		  }
+		);
+
+		// Register and start hook
+		ioHook.start()
+	}
+
+}
+
+const registerTilt = async () => {
+	let leftKey, rightKey
+	const tiltAngle = Number.parseInt(prefs.value( 'mouse.tiltAngle' ), 10 )
+	const tiltLeft = prefs.value( 'mouse.tiltLeft' )
+	const tiltRight = prefs.value( 'mouse.tiltRight' )
+
+	console.log( 'Setting: Tilt' )
+	ioHook = await importIoHook()
+
+	if (keycode.hasOwnProperty(tiltLeft)) {
+		leftKey = Number.parseInt(keycode[tiltLeft], 10)
+		ioHook.registerShortcut(
+		  [leftKey],
+		  (keys) => {
+		    mainWindow.webContents.send( 'tilt', tiltAngle * -1 )
+		  },
+		  (keys) => {
+		    mainWindow.webContents.send( 'untilt' )
+		  }
+		);
+	}
+
+	if (keycode.hasOwnProperty(tiltRight)) {
+		rightKey = Number.parseInt(keycode[tiltRight], 10)
+		ioHook.registerShortcut(
+		  [rightKey],
+		  (keys) => {
+		  	mainWindow.webContents.send( 'tilt', tiltAngle )
+		  },
+		  (keys) => {
+		  	mainWindow.webContents.send( 'untilt' )
+		  }
+		);
+	}
+
+	if (leftKey || rightKey) {
+		// Register and start hook
+		ioHook.start()
+	}
 
 }
 
@@ -896,24 +984,7 @@ const registerStartOnBoot = () => {
 
 const registerEvents = () => {
 
-	if ( prefs.value( 'hidden.locked' ) ) {
-
-		if ( checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' ) ) {
-
-			registerFollowMouse() // Also sets window save bounds
-
-		}
-
-		const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
-		if ( hideOnMouse === -1 ) {
-
-			// Mouse events off
-			registerHideOnMouse()
-
-		}
-
-	}
-
+	// Sync prefs to renderer
 	prefs.on( 'save', preferences => {
 
 		syncSettings( preferences )
@@ -923,7 +994,7 @@ const registerEvents = () => {
 	// Reopen settings/chooser if killed
 	chooserWindow.on( 'close', async () => {
 
-		hideWindow()
+		showHideWindow()
 		await createChooser()
 		registerEvents()
 		mainWindow.show()
@@ -1120,7 +1191,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+H`,
 			fn: () => {
 
-				hideWindow()
+				showHideWindow()
 
 			},
 		},
@@ -1263,6 +1334,7 @@ const unregisterIOHook = () => {
 
 	if ( ioHook ) {
 
+		ioHook.unregisterAllShortcuts();
 		ioHook.removeAllListeners( 'mousedown' )
 		ioHook.removeAllListeners( 'mouseup' )
 		ioHook.removeAllListeners( 'mousemove' )
