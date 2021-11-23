@@ -1,4 +1,4 @@
-const keycode = {
+module.exports = {
 	0: '11',
 	1: '2',
 	2: '3',
@@ -89,5 +89,3 @@ const keycode = {
 	Insert: '61010',
 	Delete: '61011',
 }
-
-export default keycode
