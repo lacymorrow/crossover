@@ -200,6 +200,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Call of Duty Black Ops Cold War   | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` modes                   |
 | ✅    | Call of Duty: Warzone             | Runs in `Windowed` mode                                                            |
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
+| ✅    | CS:GO / Counter-Strike: Global Offensive             | Runs in `Windowed` mode; `Fullscreen` mode works with AHK script|
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Escape from Tarkov                |
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
@@ -293,7 +294,7 @@ _Doesn't work with some games [#47](https://github.com/lacymorrow/crossover/issu
 Install AutoHotKey and run this script with it (save it as `script.ahk` and double-click it):
 
 ```autohotkey
-space::Winset, Alwaysontop, , CrossOver
+Home::Winset, Alwaysontop, , CrossOver
 ```
 
 Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
