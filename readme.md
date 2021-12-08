@@ -202,11 +202,11 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
 | ✅    | CS:GO / Counter-Strike: Global Offensive             | Runs in `Windowed` mode; `Fullscreen` mode works with AHK script|
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
-| ✅    | Escape from Tarkov                |
+| ✅    | Escape from Tarkov                | Users report the game will no longer start with CrossOver running ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
 | ✅    | Empyrion: Galactic Survival       | Runs in `Windowed` mode                                                            |
-| ✅    | Escape from Tarkov                | Runs in `Windowed` and `Windowed Fullscreen` modes                                 |
+| ❓    | Escape from Tarkov                | Runs in `Windowed` and `Windowed Fullscreen` modes                                 |
 | ✅    | FiveM                             | Runs in `Fullscreen` mode                                                          |
 | ✅    | Fortnite                          | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | League of Legends                 | Runs in `Borderless` and `Windowed` modes                                          |
