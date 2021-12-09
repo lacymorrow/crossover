@@ -206,7 +206,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
 | ✅    | Empyrion: Galactic Survival       | Runs in `Windowed` mode                                                            |
-| ❓    | Escape from Tarkov                | Runs in `Windowed` and `Windowed Fullscreen` modes                                 |
+| ❌    | Escape from Tarkov                | Runs in `Windowed` and `Windowed Fullscreen` modes                                 |
 | ✅    | FiveM                             | Runs in `Fullscreen` mode                                                          |
 | ✅    | Fortnite                          | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | League of Legends                 | Runs in `Borderless` and `Windowed` modes                                          |
@@ -234,6 +234,8 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | MacOS x64 _(Intel)_ | Tested on Catalina 10.15.1                                                                                |
 | ✅    | Windows 10 ia32     |
 | ✅    | Windows 10 x64      | Custom cursors do not show in draggable taskbar area                                                      |
+| ✅    | Windows 8           |                                                       |
+| ❓    | Windows 7           | Does not work in Windows 7 Home; Works in Windows 7 Pro [#63](https://github.com/lacymorrow/crossover/issues/63)|
 | ❓    | Arch                | Tested in v2021.01.01                                                                                     |
 | ✅    | Elementary OS       | Tested in v5.1                                                                                            |
 | ✅    | Fedora              | Tested in v33 (Shortcut conflicts with desktop switching)                                                 |
