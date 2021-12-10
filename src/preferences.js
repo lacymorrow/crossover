@@ -30,6 +30,7 @@ const preferences = new ElectronPreferences( {
 			followMouse: [],
 			hideOnMouse: '-1',
 			tiltEnable: [],
+			tiltToggle: [],
 			tiltAngle: 25,
 		},
 		app: {
@@ -57,7 +58,7 @@ const preferences = new ElectronPreferences( {
 			positionX: null,
 			positionY: null,
 			test: true,
-
+			tilted: false,
 		},
 	},
 
@@ -189,6 +190,15 @@ const preferences = new ElectronPreferences( {
 									{ label: 'Enable tilting left/right on keypress', value: 'tiltEnable' },
 								],
 								help: 'Crosshair will tilt at an angle while the key is held.',
+							},
+							{
+								label: 'Toggle tilted crosshair',
+								key: 'tiltToggle',
+								type: 'checkbox',
+								options: [
+									{label: 'Toggle tilt on/off when pressed (vs hold)', value: 'tiltToggle'}
+								],
+								help: 'Use toggle-to-tilt instead of hold-to-tilt.'
 							},
 							{
 								label: 'Tilt left',
