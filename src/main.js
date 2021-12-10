@@ -922,12 +922,19 @@ const registerHideOnKey = async () => {
 	}
 
 }
-const tiltCrosshair = (angle) => {
-	if (!angle) {
-		mainWindow.webContents.send( 'untilt' )
-	} else {
+
+const tiltCrosshair = angle => {
+
+	if ( angle ) {
+
 		mainWindow.webContents.send( 'tilt', angle )
+
+	} else {
+
+		mainWindow.webContents.send( 'untilt' )
+
 	}
+
 }
 
 const registerTilt = async () => {
@@ -946,18 +953,25 @@ const registerTilt = async () => {
 
 		leftKey = Number.parseInt( keycode[tiltLeft], 10 )
 
-		if (tiltToggle){
+		if ( tiltToggle ) {
+
 			ioHook.registerShortcut(
 				[ leftKey ],
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					tilted ? tiltCrosshair(0) : tiltCrosshair( tiltAngle * -1 )
+					if(tilted){
+						tiltCrosshair( 0 )
+					} else {
+						tiltCrosshair( tiltAngle * -1 )
+					}
 					prefs.value( 'hidden.tilted', !tilted )
 
-				}
+				},
 			)
+
 		} else {
+
 			ioHook.registerShortcut(
 				[ leftKey ],
 				_ => {
@@ -967,10 +981,11 @@ const registerTilt = async () => {
 				},
 				_ => {
 
-					tiltCrosshair(0)
+					tiltCrosshair( 0 )
 
 				},
 			)
+
 		}
 
 	}
@@ -979,18 +994,25 @@ const registerTilt = async () => {
 
 		rightKey = Number.parseInt( keycode[tiltRight], 10 )
 
-		if (tiltToggle){
+		if ( tiltToggle ) {
+
 			ioHook.registerShortcut(
 				[ rightKey ],
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					tilted ? tiltCrosshair(0) : tiltCrosshair( tiltAngle )
+					if(tilted){
+						tiltCrosshair( 0 )
+					} else {
+						tiltCrosshair( tiltAngle )
+					}
 					prefs.value( 'hidden.tilted', !tilted )
 
-				}
+				},
 			)
+
 		} else {
+
 			ioHook.registerShortcut(
 				[ rightKey ],
 				_ => {
@@ -1000,10 +1022,11 @@ const registerTilt = async () => {
 				},
 				_ => {
 
-					tiltCrosshair(0)
+					tiltCrosshair( 0 )
 
 				},
 			)
+
 		}
 
 	}

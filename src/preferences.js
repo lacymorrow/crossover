@@ -196,9 +196,9 @@ const preferences = new ElectronPreferences( {
 								key: 'tiltToggle',
 								type: 'checkbox',
 								options: [
-									{label: 'Toggle tilt on/off when pressed (vs hold)', value: 'tiltToggle'}
+									{ label: 'Toggle tilt on/off when pressed (vs hold)', value: 'tiltToggle' },
 								],
-								help: 'Use toggle-to-tilt instead of hold-to-tilt.'
+								help: 'Use toggle-to-tilt instead of hold-to-tilt.',
 							},
 							{
 								label: 'Tilt left',
