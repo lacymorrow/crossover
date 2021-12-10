@@ -10,8 +10,6 @@
 		hide settings on blur
 
 	High:
-		Follow Mouse
-		prevent double keybind
 		test window placement on windows/mac
 		fix unhandled #81
 
@@ -21,7 +19,7 @@
 		shadow window bug on move to next display
 
 	Low:
-		Define preferences browserwindowoverrdes in main.j, make main a parent window
+		Define preferences browserwindowoverrdes in main.js, make main a parent window
 		Conflicting accelerator on Fedora
 		Improve escapeAction to be window-aware
 		dont setPosition if monitor has been unplugged
@@ -464,6 +462,8 @@ const showWindow = () => {
 
 	}
 
+	windowHidden = false
+
 }
 
 const hideWindow = () => {
@@ -474,6 +474,8 @@ const hideWindow = () => {
 		currentWindow.hide()
 
 	}
+
+	windowHidden = true
 
 }
 
@@ -920,12 +922,20 @@ const registerHideOnKey = async () => {
 	}
 
 }
+const tiltCrosshair = (angle) => {
+	if (!angle) {
+		mainWindow.webContents.send( 'untilt' )
+	} else {
+		mainWindow.webContents.send( 'tilt', angle )
+	}
+}
 
 const registerTilt = async () => {
 
 	let leftKey
 	let rightKey
 	const tiltAngle = Number.parseInt( prefs.value( 'mouse.tiltAngle' ), 10 )
+	const tiltToggle = checkboxTrue( prefs.value( 'mouse.tiltToggle' ), 'tiltToggle' )
 	const tiltLeft = prefs.value( 'mouse.tiltLeft' )
 	const tiltRight = prefs.value( 'mouse.tiltRight' )
 
@@ -935,38 +945,66 @@ const registerTilt = async () => {
 	if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
 
 		leftKey = Number.parseInt( keycode[tiltLeft], 10 )
-		ioHook.registerShortcut(
-			[ leftKey ],
-			_ => {
 
-				mainWindow.webContents.send( 'tilt', tiltAngle * -1 )
+		if (tiltToggle){
+			ioHook.registerShortcut(
+				[ leftKey ],
+				_ => {
 
-			},
-			_ => {
+					const tilted = prefs.value( 'hidden.tilted' )
+					tilted ? tiltCrosshair(0) : tiltCrosshair( tiltAngle * -1 )
+					prefs.value( 'hidden.tilted', !tilted )
 
-				mainWindow.webContents.send( 'untilt' )
+				}
+			)
+		} else {
+			ioHook.registerShortcut(
+				[ leftKey ],
+				_ => {
 
-			},
-		)
+					tiltCrosshair( tiltAngle * -1 )
+
+				},
+				_ => {
+
+					tiltCrosshair(0)
+
+				},
+			)
+		}
 
 	}
 
 	if ( Object.prototype.hasOwnProperty.call( keycode, tiltRight ) ) {
 
 		rightKey = Number.parseInt( keycode[tiltRight], 10 )
-		ioHook.registerShortcut(
-			[ rightKey ],
-			_ => {
 
-				mainWindow.webContents.send( 'tilt', tiltAngle )
+		if (tiltToggle){
+			ioHook.registerShortcut(
+				[ rightKey ],
+				_ => {
 
-			},
-			_ => {
+					const tilted = prefs.value( 'hidden.tilted' )
+					tilted ? tiltCrosshair(0) : tiltCrosshair( tiltAngle )
+					prefs.value( 'hidden.tilted', !tilted )
 
-				mainWindow.webContents.send( 'untilt' )
+				}
+			)
+		} else {
+			ioHook.registerShortcut(
+				[ rightKey ],
+				_ => {
 
-			},
-		)
+					tiltCrosshair( tiltAngle )
+
+				},
+				_ => {
+
+					tiltCrosshair(0)
+
+				},
+			)
+		}
 
 	}
 
