@@ -39,6 +39,7 @@ const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
+const EXIT_CODES = require('./config/exit-codes.js')
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
@@ -1585,11 +1586,20 @@ app.on( 'will-quit', () => {
 
 } )
 
-app.on( 'window-all-closed', () => {
+// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
+// a `beforeunload` window event handler results in a disconnected white
+// browser window in GNU/Linux and macOS.
+// The `before-quit` Electron event is triggered in `SIGINT`, so we can
+// make use of it to ensure the browser window is completely destroyed.
+// See https://github.com/electron/electron/issues/5273
+app.on( 'before-quit' , () => {
 
-	app.quit()
+	app.releaseSingleInstanceLock();
+	process.exit(EXIT_CODES.SUCCESS);
 
-} )
+});
+
+app.on( 'window-all-closed', app.quit )
 
 app.on( 'activate', async () => {
 
