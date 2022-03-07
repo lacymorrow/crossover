@@ -4,11 +4,11 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
+const { SETTINGS_WINDOW_DEVTOOLS } = require( './config/config.js' )
 
 const preferences = new ElectronPreferences( {
 	// Custom styles
-	css: 'src/preferences.css',
+	css: 'src/css/preferences.css',
 	/**
 	 * Where should preferences be saved?
 	 */

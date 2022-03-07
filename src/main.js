@@ -39,9 +39,12 @@ const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
-const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const EXIT_CODES = require('./config/exit-codes.js')
+const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
+
+// console.log(`CrossOver ${app.getVersion()} ${is.development && 'Development'}`)
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -62,7 +65,10 @@ const importIoHook = async () => {
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
+// Catch unhandled errors
 unhandled()
+
+// Debug Settings
 debug( {
 	showDevTools: is.development && !is.linux,
 	devToolsMode: 'undocked',
@@ -960,11 +966,16 @@ const registerTilt = async () => {
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					if(tilted){
+					if ( tilted ) {
+
 						tiltCrosshair( 0 )
+
 					} else {
+
 						tiltCrosshair( tiltAngle * -1 )
+
 					}
+
 					prefs.value( 'hidden.tilted', !tilted )
 
 				},
@@ -1001,11 +1012,16 @@ const registerTilt = async () => {
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					if(tilted){
+					if ( tilted ) {
+
 						tiltCrosshair( 0 )
+
 					} else {
+
 						tiltCrosshair( tiltAngle )
+
 					}
+
 					prefs.value( 'hidden.tilted', !tilted )
 
 				},
@@ -1585,11 +1601,20 @@ app.on( 'will-quit', () => {
 
 } )
 
-app.on( 'window-all-closed', () => {
+// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
+// a `beforeunload` window event handler results in a disconnected white
+// browser window in GNU/Linux and macOS.
+// The `before-quit` Electron event is triggered in `SIGINT`, so we can
+// make use of it to ensure the browser window is completely destroyed.
+// See https://github.com/electron/electron/issues/5273
+app.on( 'before-quit' , () => {
 
-	app.quit()
+	app.releaseSingleInstanceLock();
+	process.exit(EXIT_CODES.SUCCESS);
 
-} )
+});
+
+app.on( 'window-all-closed', app.quit )
 
 app.on( 'activate', async () => {
 
