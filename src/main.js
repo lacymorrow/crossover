@@ -44,7 +44,7 @@ const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHA
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
-// console.log(`CrossOver ${app.getVersion()} ${is.development && 'Development'}`)
+console.log(`CrossOver ${app.getVersion()} ${is.development && 'Development'}`)
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -161,6 +161,7 @@ const createMainWindow = async isShadowWindow => {
 		webPreferences: {
 			contextIsolation: !is.linux,
 			enableRemoteModule: true,
+			nativeWindowOpen: true,
 			nodeIntegration: false,
 			preload: path.join( __dirname, 'preload.js' ),
 

@@ -12,12 +12,12 @@
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 
 	// OS Specific
-	if ( window.crossover.isMacOs ) {
+	if ( window.crossover?.isMacOs ) {
 
 		// Set class
 		document.body.classList.add( 'mac' )
 
-	} else if ( window.crossover.isLinux ) {
+	} else if ( window.crossover?.isLinux ) {
 
 		// Set class
 		document.body.classList.add( 'linux' )

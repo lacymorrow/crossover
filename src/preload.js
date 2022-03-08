@@ -8,7 +8,7 @@ const { is } = require( 'electron-util' )
 const { debounce, deepFreeze } = require( './util.js' )
 
 console.log( 'Dev:', is.development )
-console.log( 'contextBridge:', contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled )
+// console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
 	debounce,
@@ -42,22 +42,24 @@ const api = {
 }
 
 // Spectron issue: https://github.com/electron-userland/spectron/issues/693
-if ( contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled ) {
+// if ( contextBridge.internalContextBridge && contextBridge.internalContextBridge.contextIsolationEnabled ) {
 
-	/**
-     * The "Main World" is the JavaScript context that your main renderer code runs in.
-     * By default, the page you load in your renderer executes code in this world.
-     *
-     * @see https://www.electronjs.org/docs/api/context-bridge
-     */
-	contextBridge.exposeInMainWorld( 'crossover', api )
+// 	/**
+//      * The "Main World" is the JavaScript context that your main renderer code runs in.
+//      * By default, the page you load in your renderer executes code in this world.
+//      *
+//      * @see https://www.electronjs.org/docs/api/context-bridge
+//      */
+// 	contextBridge.exposeInMainWorld( 'crossover', api )
 
-} else {
+// } else {
 
-	// DeepFreeze from https://github.com/electron-userland/spectron/issues/693#issuecomment-748482545
-	window.crossover = deepFreeze( api )
-	window.testing = true
-	// Github.com/electron-userland/spectron#node-integration
-	// window.electronRequire = require
+// 	// DeepFreeze from https://github.com/electron-userland/spectron/issues/693#issuecomment-748482545
+// 	window.crossover = deepFreeze( api )
+// 	window.testing = true
+// 	// Github.com/electron-userland/spectron#node-integration
+// 	// window.electronRequire = require
 
-}
+// }
+
+contextBridge.exposeInMainWorld( 'crossover', api )
