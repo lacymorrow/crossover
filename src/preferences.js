@@ -222,48 +222,6 @@ const preferences = new ElectronPreferences( {
 				],
 			},
 		},
-
-		{
-			id: 'app',
-			label: 'System Settings',
-			icon: 'preferences',
-			form: {
-				groups: [
-					{
-						label: 'System Settings',
-						fields: [
-							{
-								label: 'Automatic Updates',
-								key: 'updates',
-								type: 'checkbox',
-								options: [
-									{ label: 'Allow CrossOver to automatically update', value: 'updates' },
-								],
-								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
-							},
-							{
-								label: 'Run at startup',
-								key: 'system',
-								type: 'checkbox',
-								options: [
-									{ label: 'Start on system boot', value: 'boot' },
-								],
-								help: 'CrossOver will start when your computer starts.',
-							},
-							{
-								label: 'Hardware acceleration',
-								key: 'gpu',
-								type: 'checkbox',
-								options: [
-									{ label: 'Enable hardware acceleration', value: 'gpu' },
-								],
-								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
-							},
-						],
-					},
-				],
-			},
-		},
 		{
 			id: 'keybinds',
 			label: 'Keybinds',
@@ -359,6 +317,55 @@ const preferences = new ElectronPreferences( {
 				],
 			},
 		},
+		{
+			id: 'app',
+			label: 'System Settings',
+			icon: 'preferences',
+			form: {
+				groups: [
+					{
+						label: 'System Settings',
+						fields: [
+							{
+								label: 'Automatic Updates',
+								key: 'updates',
+								type: 'checkbox',
+								options: [
+									{ label: 'Allow CrossOver to automatically update', value: 'updates' },
+								],
+								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
+							},
+							{
+								label: 'Run at startup',
+								key: 'system',
+								type: 'checkbox',
+								options: [
+									{ label: 'Start on system boot', value: 'boot' },
+								],
+								help: 'CrossOver will start when your computer starts.',
+							},
+							{
+								label: 'Hardware acceleration',
+								key: 'gpu',
+								type: 'checkbox',
+								options: [
+									{ label: 'Enable hardware acceleration', value: 'gpu' },
+								],
+								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+							},
+							{
+							    'label': 'Reset CrossOver Settings',
+							    'buttonLabel': 'Reset Settings',
+							    'key': 'resetApp',
+							    'type': 'button',
+							    'help': 'Reset all settings to default and clear any custom keybinds',
+							},
+						],
+					},
+				],
+			},
+		},
+
 		{
 			id: 'about',
 			label: 'About',

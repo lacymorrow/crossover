@@ -41,9 +41,9 @@
 		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run sh:copyexe"
 	},
 	"dependencies": {
-		"electron": "13.6.9",
+		"electron": "12.2.3",
 		"electron-debug": "^3.0.1",
-		"electron-preferences": "^2.5.0",
+		"electron-preferences": "../electron-preferences",
 		"electron-reloader": "^1.2.0",
 		"electron-unhandled": "^4.0.1",
 		"electron-updater": "^4.3.1",
@@ -67,7 +67,7 @@
 	"iohook": {
 		"targets": [
 			"node-83",
-			"electron-85"
+			"electron-87"
 		],
 		"platforms": [
 			"win32",

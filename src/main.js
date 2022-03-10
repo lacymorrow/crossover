@@ -54,7 +54,7 @@ const importIoHook = async () => {
 
 	if ( !ioHook ) {
 
-		ioHook = await require( 'iohook' )
+		ioHook = await require('iohook')
 
 	}
 
@@ -1095,6 +1095,20 @@ const registerEvents = () => {
 
 	} )
 
+	// Sync prefs to renderer
+	prefs.on( 'click', key => {
+
+
+		if(key === 'resetPreferences') {
+			resetPreferences()
+		}
+
+		if(key === 'resetApp') {
+			resetApp()
+		}
+
+	} )
+
 	// Reopen settings/chooser if killed
 	chooserWindow.on( 'close', async () => {
 
@@ -1124,6 +1138,12 @@ const registerIpc = () => {
 	ipcMain.on( 'log', ( event, arg ) => {
 
 		console.log( arg )
+
+	} )
+
+	ipcMain.on( 'preferencesReset', ( event, arg ) => {
+
+		console.log( 'RESET' )
 
 	} )
 
@@ -1447,7 +1467,7 @@ const unregisterIOHook = () => {
 
 }
 
-// Temp until implemented in prefs
+// Temp until implemented in electron-preferences
 const resetPreferences = () => {
 
 	const { defaults } = prefs
