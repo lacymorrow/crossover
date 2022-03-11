@@ -570,6 +570,7 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+		/* Unlock */
 
 		// Unregister
 		unregisterIOHook()

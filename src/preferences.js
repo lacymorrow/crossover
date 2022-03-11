@@ -384,6 +384,9 @@ const preferences = new ElectronPreferences( {
 									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
 									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
 									<p>${debugInfo()}</p> \
+									<br/> \
+									<p>Looking for a designer!<br />We want to redesign CrossOver, reach out to <a target="_blank" href="mailto:me@lacymorrow.com">me@lacymorrow.com</a> \
+									for details.</p>
 								`,
 								type: 'message',
 							},
