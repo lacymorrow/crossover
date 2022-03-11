@@ -125,7 +125,6 @@
 	},
 	"build": {
 		"appId": "com.lacymorrow.crossover",
-		"productName": "CrossOver",
 		"artifactName": "${productName}-${version}-${arch}.${ext}",
 		"copyright": "Copyright © Lacy Morrow",
 		"publish": "github",
