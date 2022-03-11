@@ -39,12 +39,12 @@ const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
-const EXIT_CODES = require('./config/exit-codes.js')
+const EXIT_CODES = require( './config/exit-codes.js' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
-console.log(`CrossOver ${app.getVersion()} ${is.development && 'Development'}`)
+console.log( `CrossOver ${app.getVersion()} ${is.development && 'Development'}` )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -54,7 +54,7 @@ const importIoHook = async () => {
 
 	if ( !ioHook ) {
 
-		ioHook = await require('iohook')
+		ioHook = await require( 'iohook' )
 
 	}
 
@@ -570,6 +570,7 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+
 		/* Unlock */
 
 		// Unregister
@@ -1099,13 +1100,16 @@ const registerEvents = () => {
 	// Sync prefs to renderer
 	prefs.on( 'click', key => {
 
+		if ( key === 'resetPreferences' ) {
 
-		if(key === 'resetPreferences') {
 			resetPreferences()
+
 		}
 
-		if(key === 'resetApp') {
+		if ( key === 'resetApp' ) {
+
 			resetApp()
+
 		}
 
 	} )
@@ -1136,13 +1140,13 @@ const registerEvents = () => {
 const registerIpc = () => {
 
 	/* IP Communication */
-	ipcMain.on( 'log', ( event, arg ) => {
+	ipcMain.on( 'log', ( _event, arg ) => {
 
 		console.log( arg )
 
 	} )
 
-	ipcMain.on( 'preferencesReset', ( event, arg ) => {
+	ipcMain.on( 'preferencesReset', ( _event, _arg ) => {
 
 		console.log( 'RESET' )
 
@@ -1281,7 +1285,7 @@ const keyboardShortcuts = () => {
 
 			action: 'duplicate',
 			keybind: `${accelerator}+D`,
-			fn: () => {
+			fn() {
 
 				createShadowWindow()
 
@@ -1292,7 +1296,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'lock',
 			keybind: `${accelerator}+X`,
-			fn: () => {
+			fn() {
 
 				toggleWindowLock()
 
@@ -1303,7 +1307,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'center',
 			keybind: `${accelerator}+C`,
-			fn: () => {
+			fn() {
 
 				centerAppWindow()
 
@@ -1314,7 +1318,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'hide',
 			keybind: `${accelerator}+H`,
-			fn: () => {
+			fn() {
 
 				showHideWindow()
 
@@ -1325,7 +1329,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'changeDisplay',
 			keybind: `${accelerator}+M`,
-			fn: () => {
+			fn() {
 
 				moveWindowToNextDisplay()
 
@@ -1336,7 +1340,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'reset',
 			keybind: `${accelerator}+R`,
-			fn: () => {
+			fn() {
 
 				resetApp()
 
@@ -1362,7 +1366,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveUp',
 			keybind: `${accelerator}+Up`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'up' } )
 
@@ -1371,7 +1375,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveDown',
 			keybind: `${accelerator}+Down`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'down' } )
 
@@ -1380,7 +1384,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveLeft',
 			keybind: `${accelerator}+Left`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'left' } )
 
@@ -1389,7 +1393,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveRight',
 			keybind: `${accelerator}+Right`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'right' } )
 
@@ -1629,12 +1633,12 @@ app.on( 'will-quit', () => {
 // The `before-quit` Electron event is triggered in `SIGINT`, so we can
 // make use of it to ensure the browser window is completely destroyed.
 // See https://github.com/electron/electron/issues/5273
-app.on( 'before-quit' , () => {
+app.on( 'before-quit', () => {
 
-	app.releaseSingleInstanceLock();
-	process.exit(EXIT_CODES.SUCCESS);
+	app.releaseSingleInstanceLock()
+	process.exit( EXIT_CODES.SUCCESS )
 
-});
+} )
 
 app.on( 'window-all-closed', app.quit )
 

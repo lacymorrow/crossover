@@ -113,7 +113,8 @@
 			"space-in-parens": [
 				"error",
 				"always"
-			]
+			],
+			"unicorn/no-process-exit": 0
 		},
 		"semicolon": false
 	},

@@ -5,16 +5,17 @@ const {
 	ipcRenderer,
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const { debounce, deepFreeze } = require( './util.js' )
+const { debounce } = require( './util.js' )
+// const { debounce, deepFreeze } = require( './util.js' )
 
 console.log( 'Dev:', is.development )
-// console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
+// Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
 	debounce,
 	isLinux: is.linux,
 	isMacOs: is.macos,
-	send: ( channel, data ) => {
+	send( channel, data ) {
 
 		// Whitelist channels
 		const validChannels = new Set( [ 'open_settings', 'center_window', 'close_window', 'open_chooser', 'save_custom_image', 'quit' ] )
@@ -27,7 +28,7 @@ const api = {
 
 	},
 
-	receive: ( channel, func ) => {
+	receive( channel, func ) {
 
 		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_custom_image', 'set_opacity', 'set_size', 'set_sight', 'lock_window', 'add_class', 'tilt', 'untilt' ] )
 

@@ -11,7 +11,7 @@ const { is } = require( 'electron-util' )
 contextBridge.exposeInMainWorld( 'crossover', {
 	isMacOs: is.macos,
 	path,
-	send: ( channel, data ) => {
+	send( channel, data ) {
 
 		// Whitelist channels
 		const validChannels = new Set( [ 'log', 'save_crosshair', 'save_custom_image', 'close_chooser', 'get_crosshairs' ] )
@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld( 'crossover', {
 
 	},
 
-	receive: ( channel, func ) => {
+	receive( channel, func ) {
 
 		const validChannels = new Set( [ 'load_crosshairs' ] )
 
