@@ -40,21 +40,23 @@
 		"build:deb": "electron-builder --linux deb",
 		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run sh:copyexe"
 	},
-	"devDependencies": {
-		"ava": "^4.1.0",
-		"bindings": "^1.5.0",
-		"electron": "12.2.3",
-		"electron-builder": "^22.11.11",
-		"electron-builder-squirrel-windows": "^23.0.2",
+	"dependencies": {
 		"electron-debug": "^3.0.1",
 		"electron-preferences": "../electron-preferences",
 		"electron-reloader": "^1.2.0",
 		"electron-unhandled": "^4.0.1",
 		"electron-updater": "^4.3.1",
 		"electron-util": "^0.17.0",
+		"iohook": "^0.9.3"
+	},
+	"devDependencies": {
+		"ava": "^4.1.0",
+		"bindings": "^1.5.0",
+		"electron": "12.2.3",
+		"electron-builder": "^22.11.11",
+		"electron-builder-squirrel-windows": "^23.0.2",
 		"eslint-config-xo": "^0.40.0",
 		"husky": "^7.0.1",
-		"iohook": "^0.9.3",
 		"np": "^7.2.0",
 		"sass": "^1.26.5",
 		"spectron": "15",
