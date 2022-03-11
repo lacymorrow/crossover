@@ -6,7 +6,7 @@ const {
 } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const { debounce } = require( './util.js' )
-// const { debounce, deepFreeze } = require( './util.js' )
+// Const { debounce, deepFreeze } = require( './util.js' )
 
 console.log( 'Dev:', is.development )
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )

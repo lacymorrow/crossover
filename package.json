@@ -114,7 +114,8 @@
 				"error",
 				"always"
 			],
-			"unicorn/no-process-exit": 0
+			"unicorn/no-process-exit": 0,
+			"unicorn/prefer-module": 0
 		},
 		"semicolon": false
 	},
