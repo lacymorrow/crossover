@@ -94,6 +94,7 @@ const preferences = new ElectronPreferences( {
 								help: 'Pick from the list of built-in crosshairs',
 							},
 							{
+								'buttonLabel': 'Select Custom Image',
 								'label': 'Custom crosshair',
 								'key': 'crosshair',
 								'type': 'file',
