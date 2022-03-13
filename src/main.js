@@ -366,6 +366,36 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 } )
 
+const setCrosshair = ( src ) => {
+	if ( src ) {
+
+		console.log( `Save crosshair: ${src}` )
+		hideChooserWindow()
+		mainWindow.webContents.send( 'set_crosshair', src ) // Pass to renderer
+		for ( const currentWindow of shadowWindows ) {
+
+			currentWindow.webContents.send( 'set_crosshair', src )
+
+		}
+
+		prefs.value( 'crosshair.crosshair', src )
+
+	} else {
+
+		console.log( 'Not setting null crosshair.' )
+
+	}
+}
+
+const setCustomCrosshair = ( src ) => {
+	// Is it a file and does it have a supported extension?
+	if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ) ) ) {
+
+		setCrosshair( src )
+
+	}
+}
+
 const setColor = ( color, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_color', color )
@@ -1100,16 +1130,19 @@ const registerEvents = () => {
 	// Sync prefs to renderer
 	prefs.on( 'click', key => {
 
-		if ( key === 'resetPreferences' ) {
-
-			resetPreferences()
-
-		}
-
-		if ( key === 'resetApp' ) {
-
-			resetApp()
-
+		switch (key) {
+			case "chooseCrosshair":
+				openChooserWindow()
+				break;
+			case "resetPreferences":
+				resetPreferences()
+				break;
+			case "resetApp":
+				resetApp()
+				break;
+			default:
+				// key not found
+				break;
 		}
 
 	} )
@@ -1179,21 +1212,8 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-		// Is it a file and does it have a supported extension?
-		if ( fs.lstatSync( arg ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( arg ) ) ) {
-
-			console.log( `Save custom image: ${arg}` )
-			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
-			for ( const currentWindow of shadowWindows ) {
-
-				currentWindow.webContents.send( 'set_custom_image', arg )
-
-			}
-
-			prefs.value( 'crosshair.crosshair', arg )
-			hideChooserWindow()
-
-		}
+		console.log( `Setting custom image: ${arg}` )
+		setCustomCrosshair( arg )
 
 	} )
 
@@ -1213,24 +1233,7 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		if ( arg ) {
-
-			console.log( `Save crosshair: ${arg}` )
-			hideChooserWindow()
-			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
-			for ( const currentWindow of shadowWindows ) {
-
-				currentWindow.webContents.send( 'set_crosshair', arg )
-
-			}
-
-			prefs.value( 'crosshair.crosshair', arg )
-
-		} else {
-
-			console.log( 'Not setting null crosshair.' )
-
-		}
+		setCrosshair(arg)
 
 	} )
 
@@ -1253,6 +1256,9 @@ const syncSettings = preferences => {
 
 	console.log( 'Sync preferences' )
 
+	if(preferences?.crosshair?.crosshair) {
+		setCrosshair( preferences.crosshair.crosshair )
+	}
 	setColor( preferences?.crosshair?.color )
 	setOpacity( preferences?.crosshair?.opacity )
 	setSight( preferences?.crosshair?.reticle )

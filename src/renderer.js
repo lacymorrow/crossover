@@ -70,19 +70,6 @@
 
 	} )
 
-	const setCustomImage = filepath => {
-
-		crosshairImg.src = filepath
-		crosshairImg.style.display = 'block'
-
-	}
-
-	window.crossover.receive( 'set_custom_image', arg => {
-
-		setCustomImage( arg )
-
-	} )
-
 	// Color
 	const setColor = color => {
 

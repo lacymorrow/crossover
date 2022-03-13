@@ -18,6 +18,11 @@
 			color: #fff;
 			text-transform: inherit;
 		}
+		&.field-file {
+			.value {
+				display: none;
+			}
+		}
 	}
 }
 
