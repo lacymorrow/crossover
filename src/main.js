@@ -601,6 +601,7 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
@@ -618,12 +619,14 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 		}
 
 		// Allow dragging to Window on Mac
-		targetWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 		// Bring window to front
 		targetWindow.show()
 
 	}
+
+	setDockVisible( !lock )
 
 	prefs.value( 'hidden.locked', lock )
 
@@ -754,7 +757,8 @@ const openSettingsWindow = async () => {
 
 		} )
 
-		prefsWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+		prefsWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 		// Modal placement is different per OS
 		if ( is.macos ) {
