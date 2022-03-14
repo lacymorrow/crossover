@@ -366,7 +366,8 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 } )
 
-const setCrosshair = ( src ) => {
+const setCrosshair = src => {
+
 	if ( src ) {
 
 		console.log( `Save crosshair: ${src}` )
@@ -385,15 +386,18 @@ const setCrosshair = ( src ) => {
 		console.log( 'Not setting null crosshair.' )
 
 	}
+
 }
 
-const setCustomCrosshair = ( src ) => {
+const setCustomCrosshair = src => {
+
 	// Is it a file and does it have a supported extension?
 	if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ) ) ) {
 
 		setCrosshair( src )
 
 	}
+
 }
 
 const setColor = ( color, targetWindow = mainWindow ) => {
@@ -1130,19 +1134,21 @@ const registerEvents = () => {
 	// Sync prefs to renderer
 	prefs.on( 'click', key => {
 
-		switch (key) {
-			case "chooseCrosshair":
+		switch ( key ) {
+
+			case 'chooseCrosshair':
 				openChooserWindow()
-				break;
-			case "resetPreferences":
+				break
+			case 'resetPreferences':
 				resetPreferences()
-				break;
-			case "resetApp":
+				break
+			case 'resetApp':
 				resetApp()
-				break;
+				break
 			default:
-				// key not found
-				break;
+				// Key not found
+				break
+
 		}
 
 	} )
@@ -1233,7 +1239,7 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		setCrosshair(arg)
+		setCrosshair( arg )
 
 	} )
 
@@ -1256,9 +1262,12 @@ const syncSettings = preferences => {
 
 	console.log( 'Sync preferences' )
 
-	if(preferences?.crosshair?.crosshair) {
+	if ( preferences?.crosshair?.crosshair ) {
+
 		setCrosshair( preferences.crosshair.crosshair )
+
 	}
+
 	setColor( preferences?.crosshair?.color )
 	setOpacity( preferences?.crosshair?.opacity )
 	setSight( preferences?.crosshair?.reticle )
