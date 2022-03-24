@@ -1,4 +1,5 @@
 /* eslint unicorn/prefer-module: 0 */
+
 // Constants
 const DEFAULT_THEME = 'dark'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'

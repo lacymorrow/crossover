@@ -4,11 +4,11 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config.js' )
 
 const preferences = new ElectronPreferences( {
 	// Custom styles
-	css: 'src/css/preferences.css',
+	css: 'src/renderer/styles/dist/preferences.css',
 	/**
 	 * Where should preferences be saved?
 	 */
@@ -19,7 +19,7 @@ const preferences = new ElectronPreferences( {
 	 */
 	defaults: {
 		crosshair: {
-			crosshair: 'static/crosshairs/Actual/leupold-dot.png',
+			crosshair: '../static/crosshairs/Actual/leupold-dot.png',
 			color: '#FFF83B',
 			size: 80,
 			opacity: 80,
@@ -39,7 +39,7 @@ const preferences = new ElectronPreferences( {
 			notify: [ 'notify' ],
 			gpu: [ 'gpu' ],
 			boot: [],
-			theme: DEFAULT_THEME
+			theme: DEFAULT_THEME,
 		},
 		keybinds: {
 			reset: 'Control+Shift+Alt+R',
@@ -117,12 +117,6 @@ const preferences = new ElectronPreferences( {
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Center sight color',
 							},
-							// {
-							// 	label: 'Custom Crosshair',
-							// 	key: 'crosshair',
-							// 	type: 'text',
-							// 	help: 'What is your last name?'
-							// },
 							{
 								label: 'Reticle',
 								key: 'reticle',
@@ -282,12 +276,6 @@ const preferences = new ElectronPreferences( {
 								type: 'accelerator',
 								help: 'Hide CrossOver from the screen.',
 							},
-							// {
-							// 	label: 'Hold Hide Crosshair',
-							// 	key: 'hideHold',
-							// 	type: 'accelerator',
-							// 	help: 'Hide CrossOver from the screen while holding down the shortcut.'
-							// },
 							{
 								label: 'Duplicate Crosshair',
 								key: 'duplicate',
@@ -300,18 +288,13 @@ const preferences = new ElectronPreferences( {
 								type: 'accelerator',
 								help: 'Center CrossOver on the next connected display.',
 							},
+							// Currently we don't allow changing the Reset shortcut
 							// {
 							// 	label: 'Reset All Settings',
 							// 	key: 'reset',
 							// 	type: 'accelerator',
 							// 	help: 'Reset all settings to default and center the crosshair.'
 							// },
-							// {
-							// 	label: 'About CrossOver',
-							// 	key: 'about',
-							// 	type: 'accelerator',
-							// 	help: 'Open the "About CrossOver" window for more information.'
-							// }
 							{
 								label: 'Move Up',
 								key: 'moveUp',

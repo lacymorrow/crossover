@@ -5,9 +5,10 @@ $theme_bg_light: rgba(0, 0, 0, 0.5);
 $text_dark: #555;
 $text_light: #EFEFEF;
 
-$icon_color_light: rgba(255, 255, 255, 0.5);
-$icon_color_dark: rgba(0, 0, 0, 0.5);
-$icon_color_hover: rgba(100,100,100, 0.4);
+$icon_light: rgba(255, 255, 255, 0.5);
+$icon_hover_light: rgba(150, 150, 150, 0.5);
+$icon_dark: rgba(0, 0, 0, 0.5);
+$icon_hover_dark: rgba(0, 0, 0, 0.3);
 $icon_red: rgba(255, 87, 51, 0.95);
 
 $border_dragging: #569aff;
@@ -24,7 +25,6 @@ $chooser_highlight_hover: #2466d8;
 
 $scrollbar_bg: #555;
 $scrollbar_shadow: rgba(0, 0, 0, .3);
-
 
 * {
     box-sizing: border-box;
@@ -173,18 +173,21 @@ button {
     position: absolute;
     z-index: 2;
     .feather {
-        stroke: $icon_color_dark;
+        stroke: $icon_dark;
     }
-    &:hover {
-        .feather {
-            stroke: $icon_color_hover;
-        }
+    &:hover .feather {
+        stroke: $icon_hover_dark;
     }
 }
 
 @media (prefers-color-scheme: light) {
-	.button .feather {
-		stroke: $icon_color_light;
+	.button {
+		.feather {
+			stroke: $icon_light;
+		}
+		&:hover .feather {
+			stroke: $icon_hover_light;
+		}
 	}
 }
 
@@ -210,9 +213,6 @@ button {
     bottom: 1px;
     left: 1px;
     // filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
-    .feather {
-        // stroke:rgba(255,255,255,0.6);
-    }
 }
 
 .info-button {
@@ -223,6 +223,9 @@ button {
         width: 18px;
         height: 18px;
     }
+    &:hover .feather {
+    	stroke: $icon_dark;
+    }
     .aligner {
         display: flex;
         justify-content: flex-end;
@@ -231,6 +234,12 @@ button {
 	    stroke: $icon_red;
 	    fill: white;
     }
+}
+
+@media (prefers-color-scheme: light) {
+	.info-button:hover .feather {
+		stroke: $icon_light;
+	}
 }
 
 #crosshair {
@@ -271,6 +280,7 @@ button {
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
         &:not(.dropping) {
+        	.info-button,
             .crosshair-wrapper,
             .crosshair-wrapper * {
                 // This is the magic to make things draggable

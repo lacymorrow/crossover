@@ -2,26 +2,6 @@
 
 ( () => {
 
-	// try {
-
-	// 	window.crossover.unhandled( {
-	// 		reportButton( error ) {
-
-	// 			window.crossover.openNewGitHubIssue( {
-	// 				user: 'lacymorrow',
-	// 				repo: 'crossover',
-	// 				body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${window.crossover.debugInfo()}`,
-	// 			} )
-
-	// 		},
-	// 	} )
-
-	// } catch ( error ) {
-
-	// 	console.log( error )
-
-	// }
-
 	// DOM elements
 	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )
@@ -68,14 +48,17 @@
 	// Notifications
 	window.crossover.receive( 'notify', arg => {
 
-		if (!arg.title || !arg.body) {
-			console.error('Invalid Notification, title and body are required.')
-			return;
+		if ( !arg.title || !arg.body ) {
+
+			console.error( 'Invalid Notification, title and body are required.' )
+
+			return
+
 		}
 
 		const notif = new window.Notification( arg.title, {
 			body: arg.body,
-			silent: arg.silent // We'll play our own sound
+			silent: arg.silent, // We'll play our own sound
 		} )
 
 		// If the user clicks in the Notifications Center, show the app
@@ -267,7 +250,6 @@
 	crosshairElement.addEventListener( 'dblclick', () => {
 
 		window.crossover.send( 'center_window' )
-
 
 	} )
 

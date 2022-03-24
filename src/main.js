@@ -38,15 +38,16 @@ const electron = require( 'electron' )
 const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeTheme, screen, shell } = electron
 const log = require( 'electron-log' )
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, appMenu, centerWindow, debugInfo, getWindowBoundsCentered, is, openNewGitHubIssue } = require( 'electron-util' )
-const unhandled = require( 'electron-unhandled' )
+const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
 const debug = require( 'electron-debug' )
-const { checkboxTrue, debounce } = require( './util.js' )
+const { checkboxTrue, debounce } = require( './config/utils.js' )
 const EXIT_CODES = require( './config/exit-codes.js' )
 const keycode = require( './config/keycode.js' )
 const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
-const { debugSubmenu, helpSubmenu } = require( './menu.js' )
-const prefs = require( './preferences.js' )
+const { debugSubmenu, helpSubmenu } = require( './main/menu.js' )
+const errorHandling = require( './main/error-handling.js' )
+const prefs = require( './main/preferences.js' )
+const __static = require( './main/static-path.js' )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -68,48 +69,18 @@ const importIoHook = async () => {
 /* App setup */
 log.info( `CrossOver ${app.getVersion()} ${is.development && 'Development'}` )
 
+// Handle errors early
+errorHandling()
+
+// Prevent multiple instances of the app
+if ( !app.requestSingleInstanceLock() ) {
+
+	app.quit()
+
+}
+
 // Note: Must match `build.appId` in package.json
 app.setAppUserModelId( 'com.lacymorrow.crossover' )
-
-// Catch unhandled errors
-unhandled( {
-	logger: log.warn,
-	reportButton( error ) {
-
-		openNewGitHubIssue( {
-			user: 'lacymorrow',
-			repo: 'crossover',
-			body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`,
-		} )
-
-	},
-} )
-
-log.catchErrors({
-  showDialog: true,
-  onError(error, versions, submitIssue) {
-    electron.dialog.showMessageBox({
-      title: 'An error occurred',
-      message: error.message,
-      detail: error.stack,
-      type: 'error',
-      buttons: ['Ignore', 'Report', 'Exit'],
-    })
-      .then((result) => {
-        if (result.response === 1) {
-          submitIssue('https://github.com/lacymorrow/crossover/issues/new', {
-            title: `Error report for ${versions.app}`,
-            body: 'Error:\n```' + error.stack + '\n```\n' + `OS: ${versions.os}`
-          });
-          return;
-        }
-
-        if (result.response === 2) {
-          electron.app.quit();
-        }
-      }).catch(log.warn)
-  }
-});
 
 // Debug Settings
 debug( {
@@ -126,13 +97,6 @@ debug( {
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
-
-	app.quit()
-
-}
-
 // Auto-Update
 const appUpdate = () => {
 
@@ -141,7 +105,7 @@ const appUpdate = () => {
 	if ( checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
 
 		log.info( 'Setting: Automatic Updates' )
-		mainWindow.setProgressBar(50/100 || -1)
+		mainWindow.setProgressBar( 50 / 100 || -1 )
 
 		autoUpdater.logger = log
 		autoUpdater.on( 'update-available', () => {
@@ -171,7 +135,7 @@ const appUpdate = () => {
 
 		} )
 
-		if (!is.linux ) {
+		if ( !is.linux ) {
 
 			autoUpdater.on( 'download-progress', progressObject => {
 
@@ -181,14 +145,15 @@ const appUpdate = () => {
 				log.info( message )
 
 				// Dock progress bar
-				mainWindow.setProgressBar(progressObject.percent/100 || -1)
+				mainWindow.setProgressBar( progressObject.percent / 100 || -1 )
+
 			} )
 
 			autoUpdater.on( 'update-downloaded', () => {
 
-				app.dock.setBadge('!')
+				app.dock.setBadge( '!' )
 				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
-				// playSound( 'DONE' )
+				// PlaySound( 'DONE' )
 
 			} )
 			const FOUR_HOURS = 1000 * 60 * 60 * 4
@@ -216,18 +181,17 @@ if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
 	app.disableHardwareAcceleration()
 
 } else {
+
 	log.info( 'Setting: Enable GPU' )
+
 }
 
 // Prevent window from being garbage collected
 let mainWindow
 let chooserWindow
 let prefsWindow
-const shadowWindows = new Set()
 let windowHidden = false // Maintain hidden state
-
-// __static path
-const __static = path.join( __dirname, 'static' )
+const shadowWindows = new Set() // Keep windows unique
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
@@ -258,7 +222,7 @@ const createMainWindow = async isShadowWindow => {
 			enableRemoteModule: true,
 			nativeWindowOpen: true,
 			nodeIntegration: false,
-			preload: path.join( __dirname, 'preload.js' ),
+			preload: path.join( __dirname, 'renderer', 'preload.js' ),
 
 		},
 	}
@@ -311,7 +275,7 @@ const createMainWindow = async isShadowWindow => {
 
 	}
 
-	await win.loadFile( path.join( __dirname, 'index.html' ) )
+	await win.loadFile( path.join( __dirname, 'renderer', 'index.html' ) )
 
 	return win
 
@@ -339,7 +303,7 @@ const createChildWindow = async ( parent, windowName ) => {
 			nodeIntegration: false, // Is default value after Electron v5
 			contextIsolation: true, // Protect against prototype pollution
 			enableRemoteModule: true, // Turn off remote
-			preload: path.join( __dirname, `preload-${windowName}.js` ),
+			preload: path.join( __dirname, 'renderer', `preload-${windowName}.js` ),
 		},
 	}
 
@@ -351,7 +315,7 @@ const createChildWindow = async ( parent, windowName ) => {
 
 	const win = new BrowserWindow( options )
 
-	await win.loadFile( path.join( __dirname, `${windowName}.html` ) )
+	await win.loadFile( path.join( __dirname, 'renderer', `${windowName}.html` ) )
 
 	return win
 
@@ -1228,7 +1192,7 @@ const registerEvents = () => {
 	// Sync prefs to renderer
 	prefs.on( 'save', preferences => {
 
-		console.log(preferences.app)
+		console.log( preferences.app )
 		syncSettings( preferences )
 
 	} )
@@ -1375,19 +1339,22 @@ const registerIpc = () => {
 }
 
 const setTheme = theme => {
-	THEME_VALUES = ['light', 'dark', 'system']
-	if (THEME_VALUES.includes(theme)) {
-		nativeTheme.themeSource = theme
-	} else {
-		nativeTheme.themeSource = DEFAULT_THEME
-	}
+
+	const THEME_VALUES = [ 'light', 'dark', 'system' ]
+	nativeTheme.themeSource = THEME_VALUES.includes( theme ) ? theme : DEFAULT_THEME
+
 	return nativeTheme.shouldUseDarkColors
+
 }
 
-const notification = (options) => {
-	if(checkboxTrue( prefs.value( 'app.notify' ), 'notify' )) {
+const notification = options => {
+
+	if ( checkboxTrue( prefs.value( 'app.notify' ), 'notify' ) ) {
+
 		mainWindow.webContents.send( 'notify', options )
+
 	}
+
 }
 
 const preloadSounds = () => {
@@ -1397,9 +1364,13 @@ const preloadSounds = () => {
 }
 
 const playSound = sound => {
-	if(checkboxTrue( prefs.value( 'app.sounds' ), 'sounds' )) {
+
+	if ( checkboxTrue( prefs.value( 'app.sounds' ), 'sounds' ) ) {
+
 		mainWindow.webContents.send( 'play_sound', sound )
+
 	}
+
 }
 
 const syncSettings = preferences => {
@@ -1507,21 +1478,6 @@ const keyboardShortcuts = () => {
 
 			},
 		},
-
-		// About CrossOver
-		// {
-		//  action: 'about',
-		//  keybind: `${accelerator}+A`,
-		//  fn: () => {
-
-		//      showAboutWindow( {
-		//          icon: path.join( __static, 'Icon.png' ),
-		//          copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
-		//          text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
-		//      } )
-
-		//  }
-		// },
 
 		// Single pixel movement
 		{
@@ -1633,19 +1589,24 @@ const unregisterIOHook = () => {
 
 }
 
-const resetPreference = (key) => {
-	try {
-		const [groupId, id] = key.split('.')
-		const group = prefs.defaults[groupId]
-		const defaultValue = group[id]
+// Const resetPreference = key => {
 
-		log.info(`Setting default value ${defaultValue} for ${key}`)
-		prefs.value(key, defaultValue)
-	} catch(e) {
-		log.warn(e)
-	}
+// 	try {
 
-}
+// 		const [ groupId, id ] = key.split( '.' )
+// 		const group = prefs.defaults[groupId]
+// 		const defaultValue = group[id]
+
+// 		log.info( `Setting default value ${defaultValue} for ${key}` )
+// 		prefs.value( key, defaultValue )
+
+// 	} catch ( error ) {
+
+// 		log.warn( error )
+
+// 	}
+
+// }
 
 // Temp until implemented in electron-preferences
 const resetPreferences = () => {
@@ -1836,7 +1797,17 @@ const ready = async () => {
 	log.info( 'App ready' )
 
 	/* MENU */
-	const openCustomImageDialog = {
+	const preferencesMenu = {
+		label: 'Preferences…',
+		accelerator: 'CommandOrControl+,',
+		click() {
+
+			openSettingsWindow()
+
+		},
+	}
+
+	const openCustomImageMenu = {
 		label: 'Custom Image…',
 		accelerator: 'Command+O',
 		async click() {
@@ -1866,16 +1837,8 @@ const ready = async () => {
 
 	const macosTemplate = [
 		appMenu( [
-			{
-				label: 'Preferences…',
-				accelerator: 'Command+,',
-				click() {
-
-					openSettingsWindow()
-
-				},
-			},
-			openCustomImageDialog,
+			preferencesMenu,
+			openCustomImageMenu,
 		] ),
 		{
 			role: 'fileMenu',
@@ -1894,16 +1857,8 @@ const ready = async () => {
 		{
 			role: 'fileMenu',
 			submenu: [
-				{
-					label: 'Settings',
-					accelerator: 'Control+,',
-					click() {
-
-						openSettingsWindow()
-
-					},
-				},
-				openCustomImageDialog,
+				preferencesMenu,
+				openCustomImageMenu,
 				{
 					type: 'separator',
 				},
