@@ -22,7 +22,10 @@ const debounce = ( func, delay ) => {
 
 }
 
-const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value.includes( key ) )
+const checkboxTrue = ( value, key ) => {
+	// console.log(value, key, typeof value === 'object', value.includes( key ))
+	return ( typeof value === 'object' && value.includes( key ) )
+}
 
 /* eslint-disable no-prototype-builtins */
 /**

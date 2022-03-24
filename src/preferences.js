@@ -35,8 +35,10 @@ const preferences = new ElectronPreferences( {
 		},
 		app: {
 			updates: [ 'updates' ],
-			boot: [],
+			sounds: [ 'sounds' ],
+			notify: [ 'notify' ],
 			gpu: [ 'gpu' ],
+			boot: [],
 		},
 		keybinds: {
 			reset: 'Control+Shift+Alt+R',
@@ -357,13 +359,22 @@ const preferences = new ElectronPreferences( {
 								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
 							},
 							{
-								label: 'Run at startup',
-								key: 'system',
+								label: 'Enable Sounds',
+								key: 'sounds',
 								type: 'checkbox',
 								options: [
-									{ label: 'Start on system boot', value: 'boot' },
+									{ label: 'Allow CrossOver to play audio', value: 'sounds' },
 								],
-								help: 'CrossOver will start when your computer starts.',
+								help: 'CrossOver makes a little noise to indicate certain events.',
+							},
+							{
+								label: 'Enable Notifications',
+								key: 'notify',
+								type: 'checkbox',
+								options: [
+									{ label: 'Allow CrossOver to create system notifications', value: 'notify' },
+								],
+								help: 'CrossOver will notify you about any issues or new updates.',
 							},
 							{
 								label: 'Hardware acceleration',
@@ -373,6 +384,15 @@ const preferences = new ElectronPreferences( {
 									{ label: 'Enable hardware acceleration', value: 'gpu' },
 								],
 								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+							},
+							{
+								label: 'Run at startup',
+								key: 'system',
+								type: 'checkbox',
+								options: [
+									{ label: 'Start on system boot', value: 'boot' },
+								],
+								help: 'CrossOver will start when your computer starts.',
 							},
 							{
 								label: 'Reset CrossOver Settings',

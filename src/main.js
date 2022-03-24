@@ -116,11 +116,12 @@ const appUpdate = () => {
 	if ( checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
 
 		log.info( 'Setting: Automatic Updates' )
+		mainWindow.setProgressBar(50/100 || -1)
 
 		autoUpdater.logger = log
-
 		autoUpdater.on( 'update-available', () => {
 
+			playSound( 'UPDATE' )
 			mainWindow.webContents.send( 'update_available' )
 
 			if ( is.linux ) {
@@ -154,12 +155,15 @@ const appUpdate = () => {
 				message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
 				log.info( message )
 
+				// Dock progress bar
+				mainWindow.setProgressBar(progressObject.percent/100 || -1)
 			} )
 
 			autoUpdater.on( 'update-downloaded', () => {
 
-				playSound( 'DONE' )
-				mainWindow.webContents.send( 'notify', { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
+				app.dock.setBadge('!')
+				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
+				// playSound( 'DONE' )
 
 			} )
 			const FOUR_HOURS = 1000 * 60 * 60 * 4
@@ -186,6 +190,8 @@ if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
 	app.commandLine.appendSwitch( 'disable-gpu' )
 	app.disableHardwareAcceleration()
 
+} else {
+	log.info( 'Setting: Enable GPU' )
 }
 
 // Prevent window from being garbage collected
@@ -223,7 +229,7 @@ const createMainWindow = async isShadowWindow => {
 		width: APP_WIDTH,
 		height: APP_HEIGHT,
 		webPreferences: {
-			contextIsolation: !is.linux,
+			contextIsolation: true,
 			enableRemoteModule: true,
 			nativeWindowOpen: true,
 			nodeIntegration: false,
@@ -1197,6 +1203,7 @@ const registerEvents = () => {
 	// Sync prefs to renderer
 	prefs.on( 'save', preferences => {
 
+		console.log(preferences.app)
 		syncSettings( preferences )
 
 	} )
@@ -1322,6 +1329,8 @@ const registerIpc = () => {
 	ipcMain.on( 'center_window', () => {
 
 		log.info( 'Center window' )
+
+		playSound( 'CENTER' )
 		centerAppWindow()
 
 	} )
@@ -1340,13 +1349,23 @@ const registerIpc = () => {
 
 }
 
+const notification = (options) => {
+	if(checkboxTrue( prefs.value( 'app.notify' ), 'notify' )) {
+		mainWindow.webContents.send( 'notify', options )
+	}
+}
+
 const preloadSounds = () => {
 
 	mainWindow.webContents.send( 'preload_sounds', path.join( __static, 'sounds' ) + path.sep )
 
 }
 
-const playSound = sound => mainWindow.webContents.send( 'play_sound', sound )
+const playSound = sound => {
+	if(checkboxTrue( prefs.value( 'app.sounds' ), 'sounds' )) {
+		mainWindow.webContents.send( 'play_sound', sound )
+	}
+}
 
 const syncSettings = preferences => {
 
@@ -1573,6 +1592,20 @@ const unregisterIOHook = () => {
 		ioHook.removeAllListeners( 'mouseup' )
 		ioHook.removeAllListeners( 'mousemove' )
 
+	}
+
+}
+
+const resetPreference = (key) => {
+	try {
+		const [groupId, id] = key.split('.')
+		const group = prefs.defaults[groupId]
+		const defaultValue = group[id]
+
+		log.info(`Setting default value ${defaultValue} for ${key}`)
+		prefs.value(key, defaultValue)
+	} catch(e) {
+		log.warn(e)
 	}
 
 }

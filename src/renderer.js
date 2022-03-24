@@ -2,25 +2,25 @@
 
 ( () => {
 
-	try {
+	// try {
 
-		window.crossover.unhandled( {
-			reportButton( error ) {
+	// 	window.crossover.unhandled( {
+	// 		reportButton( error ) {
 
-				window.crossover.openNewGitHubIssue( {
-					user: 'lacymorrow',
-					repo: 'crossover',
-					body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${window.crossover.debugInfo()}`,
-				} )
+	// 			window.crossover.openNewGitHubIssue( {
+	// 				user: 'lacymorrow',
+	// 				repo: 'crossover',
+	// 				body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${window.crossover.debugInfo()}`,
+	// 			} )
 
-			},
-		} )
+	// 		},
+	// 	} )
 
-	} catch ( error ) {
+	// } catch ( error ) {
 
-		console.log( error )
+	// 	console.log( error )
 
-	}
+	// }
 
 	// DOM elements
 	const background = document.querySelector( '.background' )
@@ -68,9 +68,14 @@
 	// Notifications
 	window.crossover.receive( 'notify', arg => {
 
-		const notif = new window.Notification( arg.title || 'CrossOver Test Notification', {
-			body: arg.body || 'You shouldn\'t be seeing this',
-			// Silent: true // We'll play our own sound
+		if (!arg.title || !arg.body) {
+			console.error('Invalid Notification, title and body are required.')
+			return;
+		}
+
+		const notif = new window.Notification( arg.title, {
+			body: arg.body,
+			silent: arg.silent // We'll play our own sound
 		} )
 
 		// If the user clicks in the Notifications Center, show the app
@@ -84,8 +89,6 @@
 
 	// Auto Update info
 	window.crossover.receive( 'update_available', () => {
-
-		window.crossover.play( 'UPDATE' )
 
 		// Change top-left icon
 		infoBtn.querySelector( '.move-icon' ).classList.add( 'd-none' )
@@ -264,7 +267,7 @@
 	crosshairElement.addEventListener( 'dblclick', () => {
 
 		window.crossover.send( 'center_window' )
-		window.crossover.play( 'CENTER' )
+
 
 	} )
 
