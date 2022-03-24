@@ -1615,7 +1615,6 @@ const resetApp = async skipSetup => {
 
 }
 
-
 const setupApp = async triggeredFromReset => {
 
 	// Preferences
