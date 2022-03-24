@@ -359,7 +359,7 @@
   dependencies:
     "@types/node" "*"
 
-"@typescript-eslint/eslint-plugin@*":
+"@typescript-eslint/eslint-plugin@^5.11.0":
   version "5.16.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.16.0.tgz#78f246dd8d1b528fc5bfca99a8a64d4023a3d86d"
   integrity sha512-SJoba1edXvQRMmNI505Uo4XmGbxCK9ARQpkvOd00anxzri9RNQk0DDCxD+LIl+jYhkzOJiOMMKYEHnHEODjdCw==
@@ -374,7 +374,7 @@
     semver "^7.3.5"
     tsutils "^3.21.0"
 
-"@typescript-eslint/parser@*":
+"@typescript-eslint/parser@^5.11.0":
   version "5.16.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.16.0.tgz#e4de1bde4b4dad5b6124d3da227347616ed55508"
   integrity sha512-fkDq86F0zl8FicnJtdXakFs4lnuebH6ZADDw6CYQv0UZeIjHvmEw87m9/29nk2Dv5Lmdp0zQ3zDQhiMWQf/GbA==
@@ -2021,7 +2021,7 @@ electron-osx-sign@^0.6.0:
 
 "electron-preferences@https://github.com/lacymorrow/electron-preferences#crossover":
   version "2.5.0"
-  resolved "https://github.com/lacymorrow/electron-preferences#88835675f6fc4d9b5d5b9d87c1afbe7395830fe5"
+  resolved "https://github.com/lacymorrow/electron-preferences#e11702523d804e14c61074b226501b44dd5c8b7b"
   dependencies:
     eslint "^8.10.0"
     eslint-plugin-react "^7.29.3"
@@ -2262,7 +2262,7 @@ eslint-config-prettier@^8.3.0:
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz#5a81680ec934beca02c7b1a61cf8ca34b66feab1"
   integrity sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==
 
-eslint-config-xo-typescript@*:
+eslint-config-xo-typescript@^0.50.0:
   version "0.50.0"
   resolved "https://registry.yarnpkg.com/eslint-config-xo-typescript/-/eslint-config-xo-typescript-0.50.0.tgz#59a0a704fbd667592ca3ddcc599b9f8c855e4ebe"
   integrity sha512-Ru2tXB8y2w9fFHLm4v2AVfY6P81UbfEuDZuxEpeXlfV65Ezlk0xO4nBaT899ojIFkWfr60rP9Ye4CdVUUT1UYg==
