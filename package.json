@@ -159,8 +159,7 @@
 				"rpm",
 				"freebsd",
 				"pacman",
-				"rpm",
-				"snap"
+				"rpm"
 			],
 			"category": "Game;Shooter"
 		},

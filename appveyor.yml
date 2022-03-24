@@ -30,8 +30,8 @@ install:
 build_script:
   - cmd: node --version
   - cmd: npm --version
-  - cmd: yarn test
-  # - cmd: yarn build:windows
-  # - cmd: if %platform%==x64 npx electron-builder --windows
+  # - cmd: yarn test
+  - cmd: yarn build:windows
+  - cmd: if %platform%==x64 yarn build:windows
 
 
