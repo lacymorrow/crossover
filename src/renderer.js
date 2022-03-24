@@ -12,12 +12,12 @@
 	const crosshairImg = document.querySelector( '#crosshairImg' )
 
 	// OS Specific
-	if ( window.crossover.isMacOs ) {
+	if ( window.crossover?.isMacOs ) {
 
 		// Set class
 		document.body.classList.add( 'mac' )
 
-	} else if ( window.crossover.isLinux ) {
+	} else if ( window.crossover?.isLinux ) {
 
 		// Set class
 		document.body.classList.add( 'linux' )
@@ -67,19 +67,6 @@
 	window.crossover.receive( 'set_crosshair', arg => {
 
 		setCrosshair( arg )
-
-	} )
-
-	const setCustomImage = filepath => {
-
-		crosshairImg.src = filepath
-		crosshairImg.style.display = 'block'
-
-	}
-
-	window.crossover.receive( 'set_custom_image', arg => {
-
-		setCustomImage( arg )
 
 	} )
 
