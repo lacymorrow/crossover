@@ -39,6 +39,7 @@
 		"build:deb": "electron-builder --linux deb",
 		"build:snap": "electron-builder --linux snap",
 		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
+		"build:release:windows": "npm run build:windows && npm run sh:copyexe",
 		"deploy": "electron-builder build --macos --win --publish always"
 	},
 	"dependencies": {
