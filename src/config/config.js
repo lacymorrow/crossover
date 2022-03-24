@@ -1,5 +1,6 @@
 /* eslint unicorn/prefer-module: 0 */
 // Constants
+const DEFAULT_THEME = 'dark'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
 const RELEASES_URL = 'https://github.com/lacymorrow/crossover/releases/latest'
 const APP_HEIGHT = 124
@@ -18,6 +19,7 @@ const FILE_FILTERS = [
 module.exports = {
 	APP_HEIGHT,
 	APP_WIDTH,
+	DEFAULT_THEME,
 	FILE_FILTERS,
 	HOMEPAGE_URL,
 	RELEASES_URL,

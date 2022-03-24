@@ -35,16 +35,16 @@ const process = require( 'process' )
 
 const electron = require( 'electron' )
 
-const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, screen, shell } = electron
+const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeTheme, screen, shell } = electron
 const log = require( 'electron-log' )
 const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, appMenu, centerWindow, debugInfo, getWindowBoundsCentered, is, openNewGitHubIssue } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
-const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
 const EXIT_CODES = require( './config/exit-codes.js' )
-const { APP_HEIGHT, APP_WIDTH, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const keycode = require( './config/keycode.js' )
+const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
 
@@ -85,6 +85,32 @@ unhandled( {
 	},
 } )
 
+log.catchErrors({
+  showDialog: true,
+  onError(error, versions, submitIssue) {
+    electron.dialog.showMessageBox({
+      title: 'An error occurred',
+      message: error.message,
+      detail: error.stack,
+      type: 'error',
+      buttons: ['Ignore', 'Report', 'Exit'],
+    })
+      .then((result) => {
+        if (result.response === 1) {
+          submitIssue('https://github.com/lacymorrow/crossover/issues/new', {
+            title: `Error report for ${versions.app}`,
+            body: 'Error:\n```' + error.stack + '\n```\n' + `OS: ${versions.os}`
+          });
+          return;
+        }
+
+        if (result.response === 2) {
+          electron.app.quit();
+        }
+      }).catch(log.warn)
+  }
+});
+
 // Debug Settings
 debug( {
 	showDevTools: is.development && !is.linux,
@@ -110,7 +136,6 @@ if ( !app.requestSingleInstanceLock() ) {
 // Auto-Update
 const appUpdate = () => {
 
-	prefs.value( 'hidden.updateStatus', '' )
 	// Comment this before publishing your first version.
 	// It's commented out as it throws an error if there are no published versions.
 	if ( checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
@@ -146,7 +171,7 @@ const appUpdate = () => {
 
 		} )
 
-		if ( !is.development && !is.linux ) {
+		if (!is.linux ) {
 
 			autoUpdater.on( 'download-progress', progressObject => {
 
@@ -1349,6 +1374,16 @@ const registerIpc = () => {
 
 }
 
+const setTheme = theme => {
+	THEME_VALUES = ['light', 'dark', 'system']
+	if (THEME_VALUES.includes(theme)) {
+		nativeTheme.themeSource = theme
+	} else {
+		nativeTheme.themeSource = DEFAULT_THEME
+	}
+	return nativeTheme.shouldUseDarkColors
+}
+
 const notification = (options) => {
 	if(checkboxTrue( prefs.value( 'app.notify' ), 'notify' )) {
 		mainWindow.webContents.send( 'notify', options )
@@ -1370,6 +1405,8 @@ const playSound = sound => {
 const syncSettings = preferences => {
 
 	log.info( 'Sync preferences' )
+
+	setTheme( preferences?.app?.theme )
 
 	if ( preferences?.crosshair?.crosshair ) {
 

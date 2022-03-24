@@ -140,7 +140,7 @@
 
 		document
 			.querySelector( '.sight' )
-			.style.setProperty( '--sight-background', `${color}` )
+			.style.setProperty( '--sight-fill', `${color}` )
 
 	}
 

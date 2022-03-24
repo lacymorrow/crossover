@@ -4,7 +4,7 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 
 const preferences = new ElectronPreferences( {
 	// Custom styles
@@ -39,6 +39,7 @@ const preferences = new ElectronPreferences( {
 			notify: [ 'notify' ],
 			gpu: [ 'gpu' ],
 			boot: [],
+			theme: DEFAULT_THEME
 		},
 		keybinds: {
 			reset: 'Control+Shift+Alt+R',
@@ -350,6 +351,16 @@ const preferences = new ElectronPreferences( {
 						label: 'System Settings',
 						fields: [
 							{
+								label: 'Color Scheme',
+								key: 'theme',
+								type: 'radio',
+								options: [
+									{ label: 'Light Mode', value: 'light' },
+									{ label: 'Dark Mode', value: 'dark' },
+									{ label: 'Match the system theme', value: 'system' },
+								],
+							},
+							{
 								label: 'Automatic Updates',
 								key: 'updates',
 								type: 'checkbox',
@@ -359,7 +370,7 @@ const preferences = new ElectronPreferences( {
 								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
 							},
 							{
-								label: 'Enable Sounds',
+								label: 'Sounds',
 								key: 'sounds',
 								type: 'checkbox',
 								options: [
@@ -368,7 +379,7 @@ const preferences = new ElectronPreferences( {
 								help: 'CrossOver makes a little noise to indicate certain events.',
 							},
 							{
-								label: 'Enable Notifications',
+								label: 'Notifications',
 								key: 'notify',
 								type: 'checkbox',
 								options: [
