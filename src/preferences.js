@@ -4,11 +4,11 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { SETTINGS_WINDOW_DEVTOOLS } = require( './config.js' )
+const { SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 
 const preferences = new ElectronPreferences( {
 	// Custom styles
-	css: 'src/preferences.css',
+	css: 'src/css/preferences.css',
 	/**
 	 * Where should preferences be saved?
 	 */
@@ -86,6 +86,29 @@ const preferences = new ElectronPreferences( {
 						 */
 						label: 'Crosshair Settings',
 						fields: [
+							{
+								label: 'Select a crosshair',
+								buttonLabel: 'Choose Crosshair',
+								key: 'chooseCrosshair',
+								type: 'button',
+								help: 'Pick from the list of built-in crosshairs',
+							},
+							{
+								buttonLabel: 'Select Custom Image',
+								label: 'Custom crosshair',
+								key: 'crosshair',
+								type: 'file',
+								help: `Use any image as a custom crosshair. Supported file types: ${JSON.stringify( SUPPORTED_IMAGE_FILE_TYPES )}`,
+								filters: [
+									{ name: 'All Images', extensions: SUPPORTED_IMAGE_FILE_TYPES },
+									// { name: 'All Files', extensions: ['*'] }
+								],
+								multiSelections: false, // Allow multiple paths to be selected
+								showHiddenFiles: false, // Show hidden files in dialog
+								noResolveAliases: false, // (macos) Disable the automatic alias (symlink) path resolution. Selected aliases will now return the alias path instead of their target path.
+								treatPackageAsDirectory: false, // (macos) Treat packages, such as .app folders, as a directory instead of a file.
+								dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
+							},
 							{
 								label: 'Color',
 								key: 'color',
@@ -222,48 +245,6 @@ const preferences = new ElectronPreferences( {
 				],
 			},
 		},
-
-		{
-			id: 'app',
-			label: 'System Settings',
-			icon: 'preferences',
-			form: {
-				groups: [
-					{
-						label: 'System Settings',
-						fields: [
-							{
-								label: 'Automatic Updates',
-								key: 'updates',
-								type: 'checkbox',
-								options: [
-									{ label: 'Allow CrossOver to automatically update', value: 'updates' },
-								],
-								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
-							},
-							{
-								label: 'Run at startup',
-								key: 'system',
-								type: 'checkbox',
-								options: [
-									{ label: 'Start on system boot', value: 'boot' },
-								],
-								help: 'CrossOver will start when your computer starts.',
-							},
-							{
-								label: 'Hardware acceleration',
-								key: 'gpu',
-								type: 'checkbox',
-								options: [
-									{ label: 'Enable hardware acceleration', value: 'gpu' },
-								],
-								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
-							},
-						],
-					},
-				],
-			},
-		},
 		{
 			id: 'keybinds',
 			label: 'Keybinds',
@@ -360,6 +341,55 @@ const preferences = new ElectronPreferences( {
 			},
 		},
 		{
+			id: 'app',
+			label: 'System Settings',
+			icon: 'preferences',
+			form: {
+				groups: [
+					{
+						label: 'System Settings',
+						fields: [
+							{
+								label: 'Automatic Updates',
+								key: 'updates',
+								type: 'checkbox',
+								options: [
+									{ label: 'Allow CrossOver to automatically update', value: 'updates' },
+								],
+								help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
+							},
+							{
+								label: 'Run at startup',
+								key: 'system',
+								type: 'checkbox',
+								options: [
+									{ label: 'Start on system boot', value: 'boot' },
+								],
+								help: 'CrossOver will start when your computer starts.',
+							},
+							{
+								label: 'Hardware acceleration',
+								key: 'gpu',
+								type: 'checkbox',
+								options: [
+									{ label: 'Enable hardware acceleration', value: 'gpu' },
+								],
+								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+							},
+							{
+								label: 'Reset CrossOver Settings',
+								buttonLabel: 'Reset Settings',
+								key: 'resetApp',
+								type: 'button',
+								help: 'Reset all settings to default and clear any custom keybinds',
+							},
+						],
+					},
+				],
+			},
+		},
+
+		{
 			id: 'about',
 			label: 'About',
 			icon: 'world',
@@ -377,6 +407,9 @@ const preferences = new ElectronPreferences( {
 									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
 									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
 									<p>${debugInfo()}</p> \
+									<br/> \
+									<p>Looking for a designer!<br />We want to redesign CrossOver, reach out to <a target="_blank" href="mailto:me@lacymorrow.com">me@lacymorrow.com</a> \
+									for details.</p>
 								`,
 								type: 'message',
 							},

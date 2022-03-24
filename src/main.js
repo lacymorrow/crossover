@@ -39,10 +39,12 @@ const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
-const EXIT_CODES = require('./config/exit-codes.js')
-const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config.js' )
+const EXIT_CODES = require( './config/exit-codes.js' )
+const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
+
+console.log( `CrossOver ${app.getVersion()} ${is.development && 'Development'}` )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -63,7 +65,10 @@ const importIoHook = async () => {
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
+// Catch unhandled errors
 unhandled()
+
+// Debug Settings
 debug( {
 	showDevTools: is.development && !is.linux,
 	devToolsMode: 'undocked',
@@ -156,6 +161,7 @@ const createMainWindow = async isShadowWindow => {
 		webPreferences: {
 			contextIsolation: !is.linux,
 			enableRemoteModule: true,
+			nativeWindowOpen: true,
 			nodeIntegration: false,
 			preload: path.join( __dirname, 'preload.js' ),
 
@@ -360,6 +366,40 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 } )
 
+const setCrosshair = src => {
+
+	if ( src ) {
+
+		console.log( `Save crosshair: ${src}` )
+		hideChooserWindow()
+		mainWindow.webContents.send( 'set_crosshair', src ) // Pass to renderer
+		for ( const currentWindow of shadowWindows ) {
+
+			currentWindow.webContents.send( 'set_crosshair', src )
+
+		}
+
+		prefs.value( 'crosshair.crosshair', src )
+
+	} else {
+
+		console.log( 'Not setting null crosshair.' )
+
+	}
+
+}
+
+const setCustomCrosshair = src => {
+
+	// Is it a file and does it have a supported extension?
+	if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ) ) ) {
+
+		setCrosshair( src )
+
+	}
+
+}
+
 const setColor = ( color, targetWindow = mainWindow ) => {
 
 	targetWindow.webContents.send( 'set_color', color )
@@ -561,9 +601,12 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 		}
 
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
 	} else {
+
+		/* Unlock */
 
 		// Unregister
 		unregisterIOHook()
@@ -576,12 +619,14 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 		}
 
 		// Allow dragging to Window on Mac
-		targetWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 		// Bring window to front
 		targetWindow.show()
 
 	}
+
+	setDockVisible( !lock )
 
 	prefs.value( 'hidden.locked', lock )
 
@@ -712,7 +757,8 @@ const openSettingsWindow = async () => {
 
 		} )
 
-		prefsWindow.setAlwaysOnTop( true, 'pop-up-menu' )
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+		prefsWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 		// Modal placement is different per OS
 		if ( is.macos ) {
@@ -961,11 +1007,16 @@ const registerTilt = async () => {
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					if(tilted){
+					if ( tilted ) {
+
 						tiltCrosshair( 0 )
+
 					} else {
+
 						tiltCrosshair( tiltAngle * -1 )
+
 					}
+
 					prefs.value( 'hidden.tilted', !tilted )
 
 				},
@@ -1002,11 +1053,16 @@ const registerTilt = async () => {
 				_ => {
 
 					const tilted = prefs.value( 'hidden.tilted' )
-					if(tilted){
+					if ( tilted ) {
+
 						tiltCrosshair( 0 )
+
 					} else {
+
 						tiltCrosshair( tiltAngle )
+
 					}
+
 					prefs.value( 'hidden.tilted', !tilted )
 
 				},
@@ -1079,6 +1135,28 @@ const registerEvents = () => {
 
 	} )
 
+	// Sync prefs to renderer
+	prefs.on( 'click', key => {
+
+		switch ( key ) {
+
+			case 'chooseCrosshair':
+				openChooserWindow()
+				break
+			case 'resetPreferences':
+				resetPreferences()
+				break
+			case 'resetApp':
+				resetApp()
+				break
+			default:
+				// Key not found
+				break
+
+		}
+
+	} )
+
 	// Reopen settings/chooser if killed
 	chooserWindow.on( 'close', async () => {
 
@@ -1105,9 +1183,15 @@ const registerEvents = () => {
 const registerIpc = () => {
 
 	/* IP Communication */
-	ipcMain.on( 'log', ( event, arg ) => {
+	ipcMain.on( 'log', ( _event, arg ) => {
 
 		console.log( arg )
+
+	} )
+
+	ipcMain.on( 'preferencesReset', ( _event, _arg ) => {
+
+		console.log( 'RESET' )
 
 	} )
 
@@ -1138,21 +1222,8 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-		// Is it a file and does it have a supported extension?
-		if ( fs.lstatSync( arg ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( arg ) ) ) {
-
-			console.log( `Save custom image: ${arg}` )
-			mainWindow.webContents.send( 'set_custom_image', arg ) // Pass to renderer
-			for ( const currentWindow of shadowWindows ) {
-
-				currentWindow.webContents.send( 'set_custom_image', arg )
-
-			}
-
-			prefs.value( 'crosshair.crosshair', arg )
-			hideChooserWindow()
-
-		}
+		console.log( `Setting custom image: ${arg}` )
+		setCustomCrosshair( arg )
 
 	} )
 
@@ -1172,24 +1243,7 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		if ( arg ) {
-
-			console.log( `Save crosshair: ${arg}` )
-			hideChooserWindow()
-			mainWindow.webContents.send( 'set_crosshair', arg ) // Pass to renderer
-			for ( const currentWindow of shadowWindows ) {
-
-				currentWindow.webContents.send( 'set_crosshair', arg )
-
-			}
-
-			prefs.value( 'crosshair.crosshair', arg )
-
-		} else {
-
-			console.log( 'Not setting null crosshair.' )
-
-		}
+		setCrosshair( arg )
 
 	} )
 
@@ -1211,6 +1265,12 @@ const registerIpc = () => {
 const syncSettings = preferences => {
 
 	console.log( 'Sync preferences' )
+
+	if ( preferences?.crosshair?.crosshair ) {
+
+		setCrosshair( preferences.crosshair.crosshair )
+
+	}
 
 	setColor( preferences?.crosshair?.color )
 	setOpacity( preferences?.crosshair?.opacity )
@@ -1244,7 +1304,7 @@ const keyboardShortcuts = () => {
 
 			action: 'duplicate',
 			keybind: `${accelerator}+D`,
-			fn: () => {
+			fn() {
 
 				createShadowWindow()
 
@@ -1255,7 +1315,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'lock',
 			keybind: `${accelerator}+X`,
-			fn: () => {
+			fn() {
 
 				toggleWindowLock()
 
@@ -1266,7 +1326,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'center',
 			keybind: `${accelerator}+C`,
-			fn: () => {
+			fn() {
 
 				centerAppWindow()
 
@@ -1277,7 +1337,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'hide',
 			keybind: `${accelerator}+H`,
-			fn: () => {
+			fn() {
 
 				showHideWindow()
 
@@ -1288,7 +1348,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'changeDisplay',
 			keybind: `${accelerator}+M`,
-			fn: () => {
+			fn() {
 
 				moveWindowToNextDisplay()
 
@@ -1299,7 +1359,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'reset',
 			keybind: `${accelerator}+R`,
-			fn: () => {
+			fn() {
 
 				resetApp()
 
@@ -1325,7 +1385,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveUp',
 			keybind: `${accelerator}+Up`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'up' } )
 
@@ -1334,7 +1394,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveDown',
 			keybind: `${accelerator}+Down`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'down' } )
 
@@ -1343,7 +1403,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveLeft',
 			keybind: `${accelerator}+Left`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'left' } )
 
@@ -1352,7 +1412,7 @@ const keyboardShortcuts = () => {
 		{
 			action: 'moveRight',
 			keybind: `${accelerator}+Right`,
-			fn: () => {
+			fn() {
 
 				moveWindow( { direction: 'right' } )
 
@@ -1431,7 +1491,7 @@ const unregisterIOHook = () => {
 
 }
 
-// Temp until implemented in prefs
+// Temp until implemented in electron-preferences
 const resetPreferences = () => {
 
 	const { defaults } = prefs
@@ -1592,12 +1652,12 @@ app.on( 'will-quit', () => {
 // The `before-quit` Electron event is triggered in `SIGINT`, so we can
 // make use of it to ensure the browser window is completely destroyed.
 // See https://github.com/electron/electron/issues/5273
-app.on( 'before-quit' , () => {
+app.on( 'before-quit', () => {
 
-	app.releaseSingleInstanceLock();
-	process.exit(EXIT_CODES.SUCCESS);
+	app.releaseSingleInstanceLock()
+	process.exit( EXIT_CODES.SUCCESS )
 
-});
+} )
 
 app.on( 'window-all-closed', app.quit )
 

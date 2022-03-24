@@ -1,7 +1,7 @@
-const SUCCESS = 0;
-const GENERAL_ERROR = 1;
-const VALIDATION_ERROR = 2;
-const CANCELLED = 3;
+const SUCCESS = 0
+const GENERAL_ERROR = 1
+const VALIDATION_ERROR = 2
+const CANCELLED = 3
 
 module.exports = {
 	SUCCESS,
