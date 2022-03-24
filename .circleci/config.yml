@@ -27,11 +27,16 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y dpkg fakeroot
+      - run:
           name: Run tests
           command: yarn test
       - run:
           name: Run tests
-          command: yarn build:all
+          command: yarn build:wl
 
 workflows:
   # Below is the definition of your workflow.
