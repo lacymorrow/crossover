@@ -26,6 +26,7 @@
 		"dev": "nodemon 'npm run css && electron .'",
 		"watch": "watch 'npm run css && electron .' --ignoreDirectoryPattern '/css/'",
 		"release": "np",
+		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"postinstall": "electron-builder install-app-deps",
 		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
@@ -157,7 +158,8 @@
 				"rpm",
 				"freebsd",
 				"pacman",
-				"rpm"
+				"rpm",
+				"snap"
 			],
 			"category": "Game;Shooter"
 		},

@@ -7,7 +7,7 @@
 > 🎯 Adjustable Crosshair Overlay for any screen
 
 CrossOver allows you to place a customizable crosshair overlay above any application window.
-Improve your aim and gain a competitive advantage with a permanant colored crosshair to mark center screen.
+Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
 
 <p align="center">
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>
@@ -40,7 +40,7 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 
 # Features
 
-- Not bannable <sup>[[79]](https://github.com/lacymorrow/crossover/issues/79)</sup>
+- Not bannable <sup>* [[79]](https://github.com/lacymorrow/crossover/issues/79)</sup>
 - Fast and lightweight
 - Choose from tons of true-to-life sights
 - Cross-platform: Windows, MacOS, and Linux support
@@ -48,7 +48,10 @@ Improve your aim and gain a competitive advantage with a permanant colored cross
 - Choose between center **Dot** or **Crosshair**
 - Customize crosshair size, color, and opacity
 - Persistant settings remembers your choices automatically
-- Automatically updates in the background to keep your features fresh
+- Automatically updates in the background to keep your features fresh _(Mac and Windows only)_
+
+<sup>* </sup> Escape from Tarkov will not work with CrossOver ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))
+
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
 
