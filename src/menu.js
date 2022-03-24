@@ -10,7 +10,7 @@ const {
 const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Website',
-		url: 'https://www.electronjs.org/apps/crossover',
+		url: 'lacymorrow.github.io/crossover',
 	} ),
 	openUrlMenuItem( {
 		label: 'Source Code',

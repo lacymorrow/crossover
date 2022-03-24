@@ -27,24 +27,26 @@
 
 // const NativeExtension = require('bindings')('NativeExtension');
 
+console.time( 'init' )
+
 const fs = require( 'fs' )
 const path = require( 'path' )
-const electron = require( 'electron' )
 const process = require( 'process' )
 
-const { app, ipcMain, globalShortcut, BrowserWindow, Menu, screen, shell } = electron
+const electron = require( 'electron' )
+
+const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, screen, shell } = electron
+const log = require( 'electron-log' )
 const { autoUpdater } = require( 'electron-updater' )
-const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
+const { activeWindow, appMenu, centerWindow, debugInfo, getWindowBoundsCentered, is, openNewGitHubIssue } = require( 'electron-util' )
 const unhandled = require( 'electron-unhandled' )
 const debug = require( 'electron-debug' )
 const keycode = require( './keycode.js' )
 const { checkboxTrue, debounce } = require( './util.js' )
 const EXIT_CODES = require( './config/exit-codes.js' )
-const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { APP_HEIGHT, APP_WIDTH, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 const { debugSubmenu, helpSubmenu } = require( './menu.js' )
 const prefs = require( './preferences.js' )
-
-console.log( `CrossOver ${app.getVersion()} ${is.development && 'Development'}` )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -54,6 +56,7 @@ const importIoHook = async () => {
 
 	if ( !ioHook ) {
 
+		log.info( 'Loading IOHook...' )
 		ioHook = await require( 'iohook' )
 
 	}
@@ -62,11 +65,25 @@ const importIoHook = async () => {
 
 }
 
-// Const contextMenu = require('electron-context-menu')
-// contextMenu()
+/* App setup */
+log.info( `CrossOver ${app.getVersion()} ${is.development && 'Development'}` )
+
+// Note: Must match `build.appId` in package.json
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
 // Catch unhandled errors
-unhandled()
+unhandled( {
+	logger: log.warn,
+	reportButton( error ) {
+
+		openNewGitHubIssue( {
+			user: 'lacymorrow',
+			repo: 'crossover',
+			body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`,
+		} )
+
+	},
+} )
 
 // Debug Settings
 debug( {
@@ -79,10 +96,9 @@ debug( {
 //  require( 'electron-reloader' )( module )
 // } catch {}
 
-/* App setup */
-
-// Note: Must match `build.appId` in package.json
-app.setAppUserModelId( 'com.lacymorrow.crossover' )
+//
+// Const contextMenu = require('electron-context-menu')
+// contextMenu()
 
 // Prevent multiple instances of the app
 if ( !app.requestSingleInstanceLock() ) {
@@ -91,33 +107,81 @@ if ( !app.requestSingleInstanceLock() ) {
 
 }
 
-// Auto-Updater
-// Uncomment this before publishing your first version.
-// It's commented out as it throws an error if there are no published versions.
-try {
+// Auto-Update
+const appUpdate = () => {
 
-	if ( !is.development && !is.linux && checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
+	prefs.value( 'hidden.updateStatus', '' )
+	// Comment this before publishing your first version.
+	// It's commented out as it throws an error if there are no published versions.
+	if ( checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
 
-		console.log( 'Setting: Automatic Updates' )
+		log.info( 'Setting: Automatic Updates' )
 
-		const FOUR_HOURS = 1000 * 60 * 60 * 4
-		setInterval( () => {
+		autoUpdater.logger = log
 
-			autoUpdater.checkForUpdates()
+		autoUpdater.on( 'update-available', () => {
 
-		}, FOUR_HOURS )
+			mainWindow.webContents.send( 'update_available' )
 
-		autoUpdater.checkForUpdates()
+			if ( is.linux ) {
+
+				dialog.showMessageBox( {
+					type: 'info',
+					title: 'CrossOver Update Available',
+					message: '',
+					buttons: [ 'Update', 'Ignore' ],
+				} ).then( buttonIndex => {
+
+					if ( buttonIndex === 0 ) {
+
+						// AutoUpdater.downloadUpdate()
+						shell.openExternal( RELEASES_URL )
+
+					}
+
+				} )
+
+			}
+
+		} )
+
+		if ( !is.development && !is.linux ) {
+
+			autoUpdater.on( 'download-progress', progressObject => {
+
+				let message = 'Download speed: ' + progressObject.bytesPerSecond
+				message = message + ' - Downloaded ' + progressObject.percent + '%'
+				message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
+				log.info( message )
+
+			} )
+
+			autoUpdater.on( 'update-downloaded', () => {
+
+				playSound( 'DONE' )
+				mainWindow.webContents.send( 'notify', { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
+
+			} )
+			const FOUR_HOURS = 1000 * 60 * 60 * 4
+			setInterval( () => {
+
+				autoUpdater.checkForUpdates()
+
+			}, FOUR_HOURS )
+
+			autoUpdater.checkForUpdatesAndNotify()
+
+		}
 
 	}
 
-} catch {}
+}
 
 // Fix for Linux transparency issues
 if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
 
 	// Disable hardware acceleration
-	console.log( 'Setting: Disable GPU' )
+	log.info( 'Setting: Disable GPU' )
 	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 	app.commandLine.appendSwitch( 'disable-gpu' )
 	app.disableHardwareAcceleration()
@@ -132,7 +196,7 @@ const shadowWindows = new Set()
 let windowHidden = false // Maintain hidden state
 
 // __static path
-const __static = path.join( __dirname, '/static' ).replace( /\\/g, '\\\\' )
+const __static = path.join( __dirname, 'static' )
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
@@ -271,7 +335,7 @@ const createShadowWindow = async () => {
 		shadowWindows.add( shadow )
 		setupShadowWindow( shadow )
 
-		console.log( `Created shadow window: ${shadow.webContents.id}` )
+		log.info( `Created shadow window: ${shadow.webContents.id}` )
 
 	}
 
@@ -315,7 +379,7 @@ const saveBounds = debounce( win => {
 	}
 
 	const bounds = win.getBounds()
-	console.log( `Save bounds: ${bounds.x}, ${bounds.y}` )
+	log.info( `Save bounds: ${bounds.x}, ${bounds.y}` )
 	prefs.value( 'hidden.positionX', bounds.x )
 	prefs.value( 'hidden.positionY', bounds.y )
 
@@ -370,7 +434,7 @@ const setCrosshair = src => {
 
 	if ( src ) {
 
-		console.log( `Save crosshair: ${src}` )
+		log.info( `Save crosshair: ${src}` )
 		hideChooserWindow()
 		mainWindow.webContents.send( 'set_crosshair', src ) // Pass to renderer
 		for ( const currentWindow of shadowWindows ) {
@@ -383,7 +447,7 @@ const setCrosshair = src => {
 
 	} else {
 
-		console.log( 'Not setting null crosshair.' )
+		log.info( 'Not setting null crosshair.' )
 
 	}
 
@@ -424,7 +488,7 @@ const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
 
 	if ( targetWindow === mainWindow ) {
 
-		console.log( 'Save XY:', posX, posY )
+		log.info( 'Save XY:', posX, posY )
 		prefs.value( 'hidden.positionX', posX )
 		prefs.value( 'hidden.positionY', posY )
 
@@ -539,6 +603,8 @@ const showHideWindow = () => {
 
 const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 
+	playSound( lock ? 'LOCK' : 'UNLOCK' )
+
 	lockWindow( lock )
 	for ( const currentWindow of shadowWindows ) {
 
@@ -551,7 +617,7 @@ const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 // Allows dragging and setting options
 const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
-	console.log( `Locked: ${lock}` )
+	log.info( `Locked: ${lock}` )
 
 	hideChooserWindow()
 	hideSettingsWindow()
@@ -794,7 +860,7 @@ const moveWindow = options => {
 
 	if ( !locked ) {
 
-		console.log( 'Move', options.direction )
+		log.info( 'Move', options.direction )
 		let newBound
 		const bounds = options.targetWindow.getBounds()
 		switch ( options.direction ) {
@@ -873,7 +939,7 @@ const moveWindowToNextDisplay = options => {
 
 const escapeAction = () => {
 
-	console.log( 'Escape event' )
+	log.info( 'Escape event' )
 
 	hideChooserWindow()
 	hideSettingsWindow()
@@ -886,7 +952,7 @@ const registerFollowMouse = async () => {
 	// Prevent saving bounds
 	mainWindow.removeAllListeners( 'move' )
 
-	console.log( 'Setting: Mouse Follow' )
+	log.info( 'Setting: Mouse Follow' )
 	ioHook = await importIoHook()
 	ioHook.removeAllListeners( 'mousemove' )
 
@@ -906,7 +972,7 @@ const registerFollowMouse = async () => {
 
 const registerHideOnMouse = async () => {
 
-	console.log( 'Setting: Mouse Hide' )
+	log.info( 'Setting: Mouse Hide' )
 	ioHook = await importIoHook()
 
 	const mouseButton = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
@@ -939,7 +1005,7 @@ const registerHideOnMouse = async () => {
 
 const registerHideOnKey = async () => {
 
-	console.log( 'Setting: Keyboard Hide' )
+	log.info( 'Setting: Keyboard Hide' )
 	ioHook = await importIoHook()
 
 	const hideOnKey = prefs.value( 'mouse.hideOnKey' )
@@ -993,7 +1059,7 @@ const registerTilt = async () => {
 	const tiltLeft = prefs.value( 'mouse.tiltLeft' )
 	const tiltRight = prefs.value( 'mouse.tiltRight' )
 
-	console.log( 'Setting: Tilt' )
+	log.info( 'Setting: Tilt' )
 	ioHook = await importIoHook()
 
 	if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
@@ -1185,13 +1251,13 @@ const registerIpc = () => {
 	/* IP Communication */
 	ipcMain.on( 'log', ( _event, arg ) => {
 
-		console.log( arg )
+		log.info( arg )
 
 	} )
 
 	ipcMain.on( 'preferencesReset', ( _event, _arg ) => {
 
-		console.log( 'RESET' )
+		log.info( 'RESET' )
 
 	} )
 
@@ -1220,9 +1286,15 @@ const registerIpc = () => {
 
 	} )
 
+	ipcMain.on( 'focus_window', _ => {
+
+		mainWindow.focus()
+
+	} )
+
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-		console.log( `Setting custom image: ${arg}` )
+		log.info( `Setting custom image: ${arg}` )
 		setCustomCrosshair( arg )
 
 	} )
@@ -1249,8 +1321,14 @@ const registerIpc = () => {
 
 	ipcMain.on( 'center_window', () => {
 
-		console.log( 'Center window' )
+		log.info( 'Center window' )
 		centerAppWindow()
+
+	} )
+
+	ipcMain.on( 'restart_app', () => {
+
+		autoUpdater.quitAndInstall()
 
 	} )
 
@@ -1262,9 +1340,17 @@ const registerIpc = () => {
 
 }
 
+const preloadSounds = () => {
+
+	mainWindow.webContents.send( 'preload_sounds', path.join( __static, 'sounds' ) + path.sep )
+
+}
+
+const playSound = sound => mainWindow.webContents.send( 'play_sound', sound )
+
 const syncSettings = preferences => {
 
-	console.log( 'Sync preferences' )
+	log.info( 'Sync preferences' )
 
 	if ( preferences?.crosshair?.crosshair ) {
 
@@ -1368,17 +1454,17 @@ const keyboardShortcuts = () => {
 
 		// About CrossOver
 		// {
-		// 	action: 'about',
-		// 	keybind: `${accelerator}+A`,
-		// 	fn: () => {
+		//  action: 'about',
+		//  keybind: `${accelerator}+A`,
+		//  fn: () => {
 
-		// 		showAboutWindow( {
-		// 			icon: path.join( __static, 'Icon.png' ),
-		// 			copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
-		// 			text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
-		// 		} )
+		//      showAboutWindow( {
+		//          icon: path.join( __static, 'Icon.png' ),
+		//          copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
+		//          text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`
+		//      } )
 
-		// 	}
+		//  }
 		// },
 
 		// Single pixel movement
@@ -1432,12 +1518,12 @@ const registerShortcuts = () => {
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
 
-			console.log( `Clearing keybind for ${shortcut.action}` )
+			log.info( `Clearing keybind for ${shortcut.action}` )
 
 		} else if ( custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action] ) {
 
 			// If a custom shortcut exists for this action
-			console.log( `Custom keybind for ${shortcut.action}` )
+			log.info( `Custom keybind for ${shortcut.action}` )
 			globalShortcut.register( custom[shortcut.action], shortcut.fn )
 
 		} else if ( keybinds[shortcut.action] ) {
@@ -1449,7 +1535,7 @@ const registerShortcuts = () => {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
-			console.log( 'ERROR', shortcut )
+			log.info( 'ERROR', shortcut )
 			globalShortcut.register( shortcut.keybind, shortcut.fn )
 
 		}
@@ -1505,6 +1591,8 @@ const resetPreferences = () => {
 
 const resetApp = async skipSetup => {
 
+	playSound( 'RESET' )
+
 	// Close extra crosshairs
 	closeShadowWindows()
 
@@ -1543,7 +1631,7 @@ const setupApp = async triggeredFromReset => {
 
 	if ( currentCrosshair ) {
 
-		console.log( `Set crosshair: ${currentCrosshair}` )
+		log.info( `Set crosshair: ${currentCrosshair}` )
 		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
 	}
@@ -1592,10 +1680,12 @@ const setupApp = async triggeredFromReset => {
 	// Allow command-line reset
 	if ( process.env.CROSSOVER_RESET && !triggeredFromReset ) {
 
-		console.log( 'Command-line reset triggered' )
+		log.info( 'Command-line reset triggered' )
 		resetApp( true )
 
 	}
+
+	mainWindow.focus()
 
 }
 
@@ -1673,9 +1763,37 @@ app.on( 'activate', async () => {
 
 const ready = async () => {
 
-	console.log( 'App ready' )
+	log.info( 'App ready' )
 
 	/* MENU */
+	const openCustomImageDialog = {
+		label: 'Custom Image…',
+		accelerator: 'Command+O',
+		async click() {
+
+			// Open dialog
+			await dialog.showOpenDialog( {
+				title: 'Select Custom Image',
+				message: 'Choose an image file to load into CrossOver',
+				filters: FILE_FILTERS,
+				properties: [ 'openFile', 'dontAddToRecent' ],
+			} ).then( result => {
+
+				const image = result.filePaths?.[0]
+
+				if ( image ) {
+
+					setCustomCrosshair( image )
+
+					mainWindow.webContents.send( 'notify', { title: 'Crosshair Changed', body: 'Your custom crosshair was loaded.' } )
+
+				}
+
+			} ).catch( log.info )
+
+		},
+	}
+
 	const macosTemplate = [
 		appMenu( [
 			{
@@ -1687,6 +1805,7 @@ const ready = async () => {
 
 				},
 			},
+			openCustomImageDialog,
 		] ),
 		{
 			role: 'fileMenu',
@@ -1714,6 +1833,7 @@ const ready = async () => {
 
 					},
 				},
+				openCustomImageDialog,
 				{
 					type: 'separator',
 				},
@@ -1745,10 +1865,17 @@ const ready = async () => {
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
+	// Log.info( mainWindow.getNativeWindowHandle() )
 
-	// Console.log( mainWindow.getNativeWindowHandle() )
+	preloadSounds()
 
+	/* AUTO-UPDATE */
+	appUpdate()
+
+	/* Press Play >>> */
 	setupApp()
+
+	console.timeEnd( 'init' )
 
 }
 

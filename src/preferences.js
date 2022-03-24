@@ -4,7 +4,7 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
 
 const preferences = new ElectronPreferences( {
 	// Custom styles
@@ -59,6 +59,7 @@ const preferences = new ElectronPreferences( {
 			positionY: null,
 			test: true,
 			tilted: false,
+			updateStatus: '',
 		},
 	},
 
@@ -99,10 +100,7 @@ const preferences = new ElectronPreferences( {
 								key: 'crosshair',
 								type: 'file',
 								help: `Use any image as a custom crosshair. Supported file types: ${JSON.stringify( SUPPORTED_IMAGE_FILE_TYPES )}`,
-								filters: [
-									{ name: 'All Images', extensions: SUPPORTED_IMAGE_FILE_TYPES },
-									// { name: 'All Files', extensions: ['*'] }
-								],
+								filters: FILE_FILTERS,
 								multiSelections: false, // Allow multiple paths to be selected
 								showHiddenFiles: false, // Show hidden files in dialog
 								noResolveAliases: false, // (macos) Disable the automatic alias (symlink) path resolution. Selected aliases will now return the alias path instead of their target path.

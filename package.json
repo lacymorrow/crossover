@@ -23,8 +23,6 @@
 		"test": "npm run lint",
 		"css": "sass src/index.scss:src/css/index.css src/preferences.scss:src/css/preferences.css -s compressed",
 		"start": "npm run css && electron --trace-warnings . ",
-		"dev": "nodemon 'npm run css && electron .'",
-		"watch": "watch 'npm run css && electron .' --ignoreDirectoryPattern '/css/'",
 		"release": "np",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",
@@ -39,10 +37,13 @@
 		"build:wl": "electron-builder -wl --ia32 --x64",
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
-		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run sh:copyexe"
+		"build:snap": "electron-builder --linux snap",
+		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
+		"deploy": "electron-builder build --macos --win --publish always"
 	},
 	"dependencies": {
 		"electron-debug": "^3.0.1",
+		"electron-log": "^4.4.6",
 		"electron-preferences": "../electron-preferences",
 		"electron-reloader": "^1.2.0",
 		"electron-unhandled": "^4.0.1",

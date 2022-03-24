@@ -4,7 +4,9 @@ const {
 	contextBridge,
 	ipcRenderer,
 } = require( 'electron' )
-const { is } = require( 'electron-util' )
+const unhandled = require( 'electron-unhandled' )
+const { is, debugInfo, openNewGitHubIssue } = require( 'electron-util' )
+const { play, preload } = require( './renderer/lib/sounds.js' )
 const { debounce } = require( './util.js' )
 // Const { debounce, deepFreeze } = require( './util.js' )
 
@@ -15,10 +17,15 @@ const api = {
 	debounce,
 	isLinux: is.linux,
 	isMacOs: is.macos,
+	play,
+	preload,
+	unhandled,
+	debugInfo,
+	openNewGitHubIssue,
 	send( channel, data ) {
 
 		// Whitelist channels
-		const validChannels = new Set( [ 'open_settings', 'center_window', 'close_window', 'open_chooser', 'save_custom_image', 'quit' ] )
+		const validChannels = new Set( [ 'center_window', 'close_window', 'focus_window', 'save_custom_image', 'open_chooser', 'open_settings', 'quit' ] )
 
 		if ( validChannels.has( channel ) ) {
 
@@ -30,7 +37,7 @@ const api = {
 
 	receive( channel, func ) {
 
-		const validChannels = new Set( [ 'set_color', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'lock_window', 'add_class', 'tilt', 'untilt' ] )
+		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_color', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'tilt', 'untilt', 'update_available' ] )
 
 		if ( validChannels.has( channel ) ) {
 
