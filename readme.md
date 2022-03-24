@@ -6,6 +6,8 @@
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
 
@@ -13,11 +15,39 @@ Improve your aim and gain a competitive advantage with a permanent colored cross
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>
 </p>
 
+# Download
+
+### [View All Dowloads (for any OS)](https://github.com/lacymorrow/crossover/releases/latest)
+
+### Windows
+
+Download `CrossOver.exe` to install CrossOver to your system and receive automatic updates.
+
+If you just want to try out CrossOver, or don't like installing things, we offer a portable `exe` as well.
+
+### Mac
+
+Download the `dmg` or `zip` file for your architecture:
+
+- Intel (`x64`)
+- M1 (`arm64`)
+
+### Linux
+
+We offer the following formats:
+- `AppImage`
+- `apk`
+- `deb`
+- `freebsd`
+- `rpm`
+- `snap`
+
+Or download from the Snap Store
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/crossover)
+
+
 # Quick Start
-
-### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
-
-##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 - Choose a crosshair from over 50 included or drop a custom image
 - Click and drag the crosshair to move Crossover around
