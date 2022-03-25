@@ -54,6 +54,7 @@ jobs:
       #     name: Create Windows EXE
       #     command: yarn sh:copyexe
       - run:
+          name: Create dist
           command: |
             mkdir -p /tmp/dist
             cp dist/* /tmp/dist

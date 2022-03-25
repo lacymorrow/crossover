@@ -182,11 +182,11 @@
 		},
 		"portable": {
 			"unicode": false,
-			"artifactName": "${productName}-Portable-${version}.${ext}"
+			"artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
 		},
 		"nsis": {
 			"unicode": false,
-			"artifactName": "${productName}-${version}.${ext}"
+			"artifactName": "${productName}-${version}-${arch}.${ext}"
 		}
 	},
 	"husky": {
