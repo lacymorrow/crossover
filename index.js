@@ -1,6 +1,6 @@
 /* eslint unicorn/prefer-module: 0 */
 
-const process = require('process');
+const process = require( 'process' )
 
 // CLI version
 const args = new Set( process.argv.map( ( element, i ) => ( i > 0 && i < 4 ) && String( element ).toLowerCase() ) )

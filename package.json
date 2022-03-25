@@ -34,6 +34,7 @@
 		"build:mac": "electron-builder --macos --arm64 --x64",
 		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
+		"build:windows:exe": "electron-builder -c electron-builder-windows.yaml --win",
 		"build:wl": "electron-builder -wl --ia32 --x64",
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",

@@ -2,9 +2,11 @@
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
-# CrossOver ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
+# CrossOver
 
 > 🎯 Adjustable Crosshair Overlay for any screen
+
+![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
 
@@ -338,11 +340,6 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 ### Graphical issues on Linux
 
 Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
-
-## Linux Snap Store
-
-<iframe src="https://snapcraft.io/crossover/embedded?button=black&channels=true&summary=true&screenshot=true" frameborder="0" width="100%" height="400px" style="border: 1px solid #CCC; border-radius: 2px;"></iframe>
-
 
 ## Credits
 
