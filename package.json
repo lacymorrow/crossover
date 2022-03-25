@@ -20,9 +20,9 @@
 	"scripts": {
 		"ava": "ava -v",
 		"lint": "xo --fix",
-		"test": "npm run lint",
+		"test": "yarn lint",
 		"css": "sass src/index.scss:src/css/index.css src/preferences.scss:src/css/preferences.css -s compressed",
-		"start": "npm run css && electron --trace-warnings . ",
+		"start": "yarn css && electron --trace-warnings . ",
 		"release": "np",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",
@@ -38,9 +38,8 @@
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
 		"build:snap": "electron-builder --linux snap",
-		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
-		"build:release:windows": "npm run build:windows && npm run sh:copyexe",
-		"deploy": "electron-builder build --macos --win --publish always"
+		"build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
+		"build:release:windows": "yarn build:windows && yarn sh:copyexe"
 	},
 	"dependencies": {
 		"electron-debug": "^3.0.1",
