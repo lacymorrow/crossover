@@ -102,10 +102,10 @@ jobs:
 
   cleanup:
     executor: macos-executor
-    - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
     steps:
+      - attach_workspace:
+            # Must be absolute path or relative path from working_directory
+            at: /tmp/crossover
       # - run:
       #     name: Create dist
       #     command: |
