@@ -26,6 +26,9 @@ jobs:
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
       - run:
+          name: Brew Clean
+          command: rm '/usr/local/lib/python3.9/site-packages/six.py'
+      - run:
           name: Install Dependencies
           command: brew install snapcraft
       - node/install-packages:
