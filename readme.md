@@ -374,8 +374,8 @@ You can run CrossOver from the command line to see debug output. Open a terminal
 > (Mac, Linux)
 ```sh
 ╭─  lacymorrow in /Applications/CrossOver.app/Contents/MacOS using
-╰─○ $ ./CrossOver
-09:45:16.023 › CrossOver 2.7.4
+╰─○ $ ./CrossOver --debug
+09:45:16.023 › CrossOver 2.7.4 Development
 09:45:16.030 › Setting: Enable GPU
 09:45:16.487 › App ready
 ```
