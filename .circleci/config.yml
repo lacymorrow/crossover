@@ -109,6 +109,9 @@ jobs:
           name: Install Dependencies
           command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
           # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
+      - run:
+          name: Snapcraft Login
+          command: echo "$SNAP_TOKEN" | snapcraft login --with -
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn

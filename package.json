@@ -170,7 +170,8 @@
 				"default",
 				"camera",
 				"removable-media"
-			]
+			],
+			"publish": ["github", "snapStore"]
 		},
 		"win": {
 			"target": [
