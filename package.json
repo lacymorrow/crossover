@@ -54,7 +54,7 @@
 	"devDependencies": {
 		"ava": "^4.1.0",
 		"bindings": "^1.5.0",
-		"electron": "12.2.3",
+		"electron": "13.6.6",
 		"electron-builder": "^22.11.11",
 		"electron-builder-squirrel-windows": "^23.0.2",
 		"eslint-config-xo": "^0.40.0",
