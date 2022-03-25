@@ -169,8 +169,7 @@ jobs:
           name: Create Artifacts
           command: |
             mkdir -p /Users/distiller/project/upload
-            cp /Users/distiller/project/dist/* /Users/distiller/project/upload
-          when: on_fail
+            cp /Users/distiller/project/dist/CrossOver* /Users/distiller/project/upload
       - store_artifacts:
           path: /Users/distiller/project/upload
 
