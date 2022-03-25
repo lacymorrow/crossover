@@ -69,20 +69,20 @@ jobs:
 
   build_linux:
     executor: macos-executor
-    - attach_workspace:
+    steps:
+      - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: /tmp/crossover
-    steps:
       - run:
           name: Run snap
           command: yarn build:linux
 
   build_windows:
     executor: macos-executor
-    - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
     steps:
+      - attach_workspace:
+            # Must be absolute path or relative path from working_directory
+            at: /tmp/crossover
       - run:
           name: Run windows
           command: yarn build:windows
@@ -92,10 +92,10 @@ jobs:
 
   build_mac:
     executor: macos-executor
-    - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
     steps:
+      - attach_workspace:
+            # Must be absolute path or relative path from working_directory
+            at: /tmp/crossover
       - run:
           name: Run mac
           command: yarn build:mac
