@@ -20,7 +20,6 @@ jobs:
     #   - image: cimg/node:16.10
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
-    working_directory: /tmp
     steps:
       # Checkout the code as the first step.
       - checkout
