@@ -30,7 +30,7 @@ jobs:
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
       - run:
           name: Install Dependencies
-          command: brew install snapcraft rpm
+          command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
           # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpmbuild
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
@@ -38,21 +38,28 @@ jobs:
       - run:
           name: Run tests
           command: yarn test
-      - run:
-          name: Run windows
-          command: yarn build:windows
-      - run:
-          name: Run linux
-          command: yarn build:linux
-      - run:
-          name: Run snap
-          command: yarn build:snap
+      # - run:
+      #     name: Run windows
+      #     command: yarn build:windows
+      # - run:
+      #     name: Run linux
+      #     command: yarn build:linux
+      # - run:
+      #     name: Run snap
+      #     command: yarn build:snap
       - run:
           name: Run mac
           command: yarn build:mac
+      # - run:
+      #     name: Create Windows EXE
+      #     command: yarn sh:copyexe
       - run:
-          name: Create Windows EXE
-          command: yarn sh:copyexe
+          command: |
+            mkdir -p /tmp/dist
+            cp dist/* /tmp/dist
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/dist
 
 workflows:
   # Below is the definition of your workflow.

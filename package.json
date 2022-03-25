@@ -2,7 +2,7 @@
 	"name": "crossover",
 	"productName": "CrossOver",
 	"version": "2.5.5",
-	"description": "A Crosshair Overlay for any screen",
+	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
 	"homepage": "https://lacymorrow.github.io/crossover",
@@ -165,6 +165,8 @@
 			"category": "Game;Shooter"
 		},
 		"snap": {
+			"summary": "🎯 A Crosshair Overlay for any screen.",
+			"description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
 			"plugs": [
 				"default",
 				"camera",
