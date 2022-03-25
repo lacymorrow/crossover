@@ -58,7 +58,7 @@ jobs:
           name: Create dist
           command: |
             mkdir -p /tmp/dist
-            cp dist/* /tmp/dist
+            cp -a dist/. /tmp/dist
           when: on_fail
       - store_artifacts:
           path: /tmp/dist
