@@ -173,6 +173,7 @@ jobs:
           command: |
             mkdir -p /Users/distiller/project/upload
             cp /Users/distiller/project/dist/CrossOver* /Users/distiller/project/upload
+            cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
       - store_artifacts:
           path: /Users/distiller/project/upload
 
