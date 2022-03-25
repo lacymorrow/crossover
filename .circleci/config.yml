@@ -38,8 +38,20 @@ jobs:
           name: Run tests
           command: yarn test
       - run:
-          name: Run tests
-          command: yarn build:release
+          name: Run windows
+          command: yarn build:windows
+      - run:
+          name: Run linux
+          command: yarn build:linux
+      - run:
+          name: Run snap
+          command: yarn build:snap
+      - run:
+          name: Run mac
+          command: yarn build:mac
+      - run:
+          name: Create Windows EXE
+          command: yarn sh:copyexe
 
 workflows:
   # Below is the definition of your workflow.
