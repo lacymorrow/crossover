@@ -29,11 +29,12 @@ Improve your aim and gain a competitive advantage with a permanent colored cross
 - [Install](#install)
 - [Usage](#usage)
   - [Settings](#settings)
-  - [[What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)](#what-worksdoesnt-work-compatabilityhttpsgithubcomlacymorrowcrossoverissues47)
+  - [What works/doesn't work (compatability)](#what-worksdoesnt-work-compatability)
 - [Development](#development)
   - [Bugs](#bugs)
   - [Debugging](#debugging)
 - [Credits](#credits)
+- [Support this project](#support-this-project)
 
 # Download
 
@@ -393,4 +394,14 @@ See CrossOver in the [Electron Apps library](https://www.electronjs.org/apps/cro
 
 Created by [Lacy Morrow](http://lacymorrow.com)
 
-<a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="40" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+# Support this project
+
+##### This project is developed, built, and maintained by one person. I've put hundreds of hours into this and I love being able to give it away for free.
+Problem is, downloads don't pay the bills.
+
+#### If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or another channel.
+
+##### If you would like to see specific features or improvements added to CrossOver, consider donating on [OpenCollective](https://opencollective.com/crossover)
+
+<a href="https://www.patreon.com/bePatron?u=55065733" data-patreon-widget-type="become-patron-button">Become a Patron!</a> <a href="https://opencollective.com/webpack/donate" target="_blank"><img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=300 /></a> <a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="40" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
