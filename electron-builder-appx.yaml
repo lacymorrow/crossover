@@ -5,5 +5,4 @@ win:
         - x64
         - ia32
 appx:
-  unicode: false
   artifactName: ${productName}.${ext}

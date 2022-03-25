@@ -3,7 +3,7 @@
 	"productName": "CrossOver",
 	"version": "2.7.5",
 	"description": "A Crosshair Overlay for any screen",
-	"license": "MIT",
+	"copyright": "Copyright © Lacy Morrow",
 	"repository": "lacymorrow/crossover",
 	"homepage": "https://lacymorrow.github.io/crossover",
 	"author": {
@@ -11,8 +11,12 @@
 		"email": "me@lacymorrow.com",
 		"url": "https://lacymorrow.com"
 	},
+	"company": "Fly5",
 	"bugs": {
 		"url": "https://github.com/lacymorrow/crossover/issues"
+	},
+	"license": {
+		"url": "https://github.com/lacymorrow/crossover/blob/master/LICENSE"
 	},
 	"engines": {
 		"node": "14.17.x || >=16"
