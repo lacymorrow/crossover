@@ -341,6 +341,20 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 
 Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
 
+
+## Debugging (Mac, Linux)
+
+You can run CrossOver from the command line to see debug output. Open a terminal and navigate to the CrossOver app, run `./CrossOver` to see output:
+
+```sh
+╭─  lacymorrow in /Applications/CrossOver.app/Contents/MacOS using
+╰─○ $ ./CrossOver
+09:45:16.023 › CrossOver 2.7.3 false
+09:45:16.030 › Setting: Enable GPU
+09:45:16.487 › App ready
+```
+
+
 ## Credits
 
 An extra big thanks to the crosshair providers, as this wouldn't be possible without them:
