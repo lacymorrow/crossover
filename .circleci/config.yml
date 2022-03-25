@@ -33,7 +33,7 @@ jobs:
           command: yarn test
       - run:
           name: Run tests
-          command: yarn build:wl
+          command: yarn build:release
 
 workflows:
   # Below is the definition of your workflow.
