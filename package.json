@@ -31,8 +31,8 @@
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"build": "electron-builder --macos --linux",
 		"build:all": "electron-builder -mwl --ia32 --x64",
-		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:mac": "electron-builder --macos --arm64 --x64",
+		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
 		"build:wl": "electron-builder -wl --ia32 --x64",
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
@@ -160,8 +160,7 @@
 				"rpm",
 				"freebsd",
 				"pacman",
-				"rpm",
-				"snap"
+				"rpm"
 			],
 			"category": "Game;Shooter"
 		},
