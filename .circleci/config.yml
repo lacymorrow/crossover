@@ -30,7 +30,8 @@ jobs:
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
       - run:
           name: Install Dependencies
-          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpmbuild
+          command: brew install snapcraft rpmbuild
+          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpmbuild
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn
