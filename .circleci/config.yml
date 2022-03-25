@@ -118,18 +118,15 @@ jobs:
   buildall:
     macos:
       xcode: 12.5.1
-    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
-    # docker:
-    #   - image: cimg/node:16.10
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
     steps:
       # Checkout the code as the first step.
       - checkout
-      # Next, the node orb's install-packages step will install the dependencies from a package.json.
-      # The orb install-packages step will also automatically cache them for faster future runs.
+      - run:
+          name: ls
+          command: ls
+      - run:
+          name: pwd
+          command: pwd
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
@@ -177,25 +174,25 @@ workflows:
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
   # CircleCI will run this workflow on every commit.
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
-  # build:
-  #   jobs:
-  #   - buildall
-
-  concurrent:
+  build:
     jobs:
-      - prepare
-      - build_snap:
-        requires:
-          - prepare
-      # - build_linux:
-      #   requires:
-      #     - prepare
-      # - build_win:
-      #   requires:
-      #     - prepare
-      # - build_mac:
-      #   requires:
-      #     - prepare
-      - cleanup:
-        requires:
-          - build_snap
+    - buildall
+
+  # concurrent:
+  #   jobs:
+  #     - prepare
+  #     - build_snap:
+  #       requires:
+  #         - prepare
+  #     - build_linux:
+  #       requires:
+  #         - prepare
+  #     - build_win:
+  #       requires:
+  #         - prepare
+  #     - build_mac:
+  #       requires:
+  #         - prepare
+  #     - cleanup:
+  #       requires:
+  #         - build_snap
