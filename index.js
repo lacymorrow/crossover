@@ -6,7 +6,6 @@ if (args.includes('--version') || args.includes('-v')) {
 	const version = require('./package.json').version
 	process.stdout.write(version)
 	process.exit()
-	return version
 }
 
 // App entry
