@@ -9,6 +9,8 @@
 ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+##### [All Downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest/)
+
 
 ##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt/Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 
@@ -20,7 +22,7 @@ Improve your aim and gain a competitive advantage with a permanent colored cross
 </p>
 
 
-# Table of contents
+# Documentation
 
 - [CrossOver](#crossover)
 - [Download](#download)
@@ -374,7 +376,7 @@ You can run CrossOver from the command line to see debug output. Open a terminal
 ```sh
 ╭─  lacymorrow in /Applications/CrossOver.app/Contents/MacOS using
 ╰─○ $ ./CrossOver
-09:45:16.023 › CrossOver 2.7.3 false
+09:45:16.023 › CrossOver 2.7.4
 09:45:16.030 › Setting: Enable GPU
 09:45:16.487 › App ready
 ```
