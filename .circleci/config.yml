@@ -168,11 +168,9 @@ jobs:
       - run:
           name: Create Artifacts
           command: |
-            mkdir -p upload
-            cp dist/* upload
+            mkdir -p /Users/distiller/project/upload
+            cp /Users/distiller/project/dist/* /Users/distiller/project/upload
           when: on_fail
-      - store_artifacts:
-          path: /tmp/dist
       - store_artifacts:
           path: /Users/distiller/project/upload
 
