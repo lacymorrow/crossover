@@ -144,21 +144,24 @@ jobs:
       - run:
           name: Run tests
           command: yarn test
-      # - run:
-      #     name: Run snap
-      #     command: yarn build:snap --publish always
-      # - run:
-      #     name: Run linux
-      #     command: yarn build:linux
+      - run:
+          name: Run windows
+          command: yarn build:windows:exe
+      - run:
+          name: Run snap
+          command: yarn build:snap --publish always
+      - run:
+          name: Run linux
+          command: yarn build:linux
       - run:
           name: Run mac
           command: yarn build:mac
-      # - run:
-      #     name: Run windows
-      #     command: yarn build:windows
-      # - run:
-      #     name: Create Windows EXE
-      #     command: yarn sh:copyexe
+      - run:
+          name: Run windows
+          command: yarn build:windows
+      - run:
+          name: Create Windows EXE
+          command: yarn sh:copyexe
       - run:
           name: ls dist
           command: ls dist
