@@ -67,7 +67,7 @@ const importIoHook = async () => {
 }
 
 /* App setup */
-log.info( `CrossOver ${app.getVersion()} ${is.development ? 'Development' : ''}` )
+log.info( `CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}` )
 
 // Handle errors early
 errorHandling()
