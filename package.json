@@ -20,9 +20,9 @@
 	"scripts": {
 		"ava": "ava -v",
 		"lint": "xo --fix",
-		"test": "yarn lint",
-		"css": "sass src/index.scss:src/css/index.css src/preferences.scss:src/css/preferences.css -s compressed",
-		"start": "yarn css && electron --trace-warnings . ",
+		"test": "npm run lint ",
+		"css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
+		"start": "npm run css && electron --trace-warnings . ",
 		"release": "np",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",

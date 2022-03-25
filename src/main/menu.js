@@ -2,6 +2,7 @@
 const path = require( 'path' )
 const { app, shell } = require( 'electron' )
 const {
+	aboutMenuItem,
 	openUrlMenuItem,
 	openNewGitHubIssue,
 	debugInfo,
@@ -9,13 +10,20 @@ const {
 
 const helpSubmenu = [
 	openUrlMenuItem( {
-		label: 'Website',
+		label: 'Learn more about CrossOver',
 		url: 'lacymorrow.github.io/crossover',
 	} ),
 	openUrlMenuItem( {
-		label: 'Source Code',
+		label: 'Contribute on GitHub',
 		url: 'https://github.com/lacymorrow/crossover',
 	} ),
+	openUrlMenuItem( {
+		label: 'Support the Developer',
+		url: 'https://www.patreon.com/lacymorrow',
+	} ),
+	{
+		type: 'separator',
+	},
 	{
 		label: 'Report an Issue…',
 		click() {
@@ -36,27 +44,41 @@ ${debugInfo()}`
 
 		},
 	},
+	aboutMenuItem( {
+		icon: path.join( __dirname, 'static', 'Icon.png' ),
+		text: 'Created by Lacy Morrow',
+	} ),
 ]
 
 const debugSubmenu = [
 	{
-		label: 'Show Preferences…',
-		click() {
+		label: 'Show Preferences File',
+		async click() {
 
-			shell.openItem( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			await shell.openPath( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
 
 		},
 	},
 	{
 		label: 'Show App Data',
-		click() {
+		async click() {
 
-			shell.openItem( app.getPath( 'userData' ) )
+			await shell.openPath( app.getPath( 'userData' ) )
 
 		},
 	},
 	{
 		type: 'separator',
+	},
+	{
+		label: 'Delete Preferences',
+		click() {
+
+			shell.moveItemToTrash( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			app.relaunch()
+			app.quit()
+
+		},
 	},
 	{
 		label: 'Delete App Data',
@@ -70,5 +92,7 @@ const debugSubmenu = [
 	},
 ]
 
-exports.debugSubmenu = debugSubmenu
-exports.helpSubmenu = helpSubmenu
+module.exports = {
+	debugSubmenu,
+	helpSubmenu,
+}

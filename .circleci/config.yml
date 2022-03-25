@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpmbuild
+          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn

@@ -17,7 +17,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "14.15.4"
+  nodejs_version: "14.17.4"
 
 cache:
   - node_modules -> package.json
@@ -30,8 +30,8 @@ install:
 build_script:
   - cmd: node --version
   - cmd: npm --version
-  - cmd: yarn test
-  # - cmd: yarn build:windows
-  # - cmd: if %platform%==x64 npx electron-builder --windows
+  # - cmd: yarn test
+  - cmd: yarn build:windows
+  - cmd: if %platform%==x64 yarn build:windows
 
 
