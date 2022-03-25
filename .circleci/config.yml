@@ -11,11 +11,13 @@ orbs:
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:
+    macos:
+      xcode: 12.5.1
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
-    docker:
-      - image: cimg/node:16.10
+    # docker:
+    #   - image: cimg/node:16.10
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
     steps:
@@ -23,22 +25,48 @@ jobs:
       - checkout
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
+      - run:
+          name: Brew Clean
+          command: rm '/usr/local/lib/python3.9/site-packages/six.py'
+      - run:
+          name: Install Dependencies
+          command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
+          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn
       - run:
           name: Run tests
           command: yarn test
+      # - run:
+      #     name: Run windows
+      #     command: yarn build:windows
+      # - run:
+      #     name: Run linux
+      #     command: yarn build:linux
+      # - run:
+      #     name: Run snap
+      #     command: yarn build:snap
       - run:
-          name: Run tests
-          command: yarn build:all
+          name: Run mac
+          command: yarn build:mac
+      # - run:
+      #     name: Create Windows EXE
+      #     command: yarn sh:copyexe
+      - run:
+          command: |
+            mkdir -p /tmp/dist
+            cp dist/* /tmp/dist
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/dist
 
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
   # CircleCI will run this workflow on every commit.
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
-  sample:
+  build:
     jobs:
       - build-and-test
       # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.

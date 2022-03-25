@@ -2,7 +2,7 @@
 	"name": "crossover",
 	"productName": "CrossOver",
 	"version": "2.5.5",
-	"description": "A Crosshair Overlay for any screen",
+	"description": "🎯 A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
 	"homepage": "https://lacymorrow.github.io/crossover",
@@ -31,14 +31,15 @@
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"build": "electron-builder --macos --linux",
 		"build:all": "electron-builder -mwl --ia32 --x64",
-		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:mac": "electron-builder --macos --arm64 --x64",
+		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
 		"build:wl": "electron-builder -wl --ia32 --x64",
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
 		"build:snap": "electron-builder --linux snap",
 		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
+		"build:release:windows": "npm run build:windows && npm run sh:copyexe",
 		"deploy": "electron-builder build --macos --win --publish always"
 	},
 	"dependencies": {
@@ -164,6 +165,8 @@
 			"category": "Game;Shooter"
 		},
 		"snap": {
+			"summary": "🎯 A Crosshair Overlay for any screen.",
+			"description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
 			"plugs": [
 				"default",
 				"camera",
