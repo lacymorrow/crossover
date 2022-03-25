@@ -10,12 +10,30 @@
 
 ### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
 
+##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt/Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
+
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
 
 <p align="center">
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>
 </p>
+
+
+# Table of contents
+
+- [CrossOver](#crossover)
+- [Download](#download)
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [Install](#install)
+- [Usage](#usage)
+  - [Settings](#settings)
+  - [[What works/doesn't work (compatability)](https://github.com/lacymorrow/crossover/issues/47)](#what-worksdoesnt-work-compatabilityhttpsgithubcomlacymorrowcrossoverissues47)
+- [Development](#development)
+  - [Bugs](#bugs)
+  - [Debugging](#debugging)
+- [Credits](#credits)
 
 # Download
 
@@ -134,9 +152,11 @@ _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-
 <p align="center">
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-chooser.png"/>
 </p>
+
+
 ---
 
-## Usage
+# Usage
 
 > ❌ marks the spot...
 
@@ -168,6 +188,8 @@ _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-
 <p align="center">
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-settings.png"/>
 </p>
+
+
 ---
 
 ## Settings
@@ -278,7 +300,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 ---
 
-## Development
+# Development
 
 Built with [Electron](https://electronjs.org). Simple HTML and Javascript, no framework.
 
@@ -342,7 +364,9 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
 
 
-## Debugging (Mac, Linux)
+## Debugging
+
+> (Mac, Linux)
 
 You can run CrossOver from the command line to see debug output. Open a terminal and navigate to the CrossOver app, run `./CrossOver` to see output:
 
@@ -355,7 +379,7 @@ You can run CrossOver from the command line to see debug output. Open a terminal
 ```
 
 
-## Credits
+# Credits
 
 An extra big thanks to the crosshair providers, as this wouldn't be possible without them:
 
