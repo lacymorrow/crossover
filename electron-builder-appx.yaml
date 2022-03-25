@@ -1,9 +1,9 @@
 win:
   target:
-    - target: nsis
+    - target: appx
       arch:
         - x64
         - ia32
-nsis:
+appx:
   unicode: false
   artifactName: ${productName}.${ext}

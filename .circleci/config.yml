@@ -150,6 +150,9 @@ jobs:
       - run:
           name: Run windows single EXE
           command: yarn build:windows:exe || echo 'We error here since latest.yml has already beeen uploaded.'
+      # - run:
+      #     name: Create Windows EXE
+      #     command: yarn sh:copyexe
       - run:
           name: Run snap
           command: yarn build:snap --publish always
@@ -159,9 +162,6 @@ jobs:
       - run:
           name: Run mac
           command: yarn build:mac
-      - run:
-          name: Create Windows EXE
-          command: yarn sh:copyexe
       - run:
           name: ls dist
           command: ls dist

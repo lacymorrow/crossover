@@ -369,10 +369,9 @@ Check your desktop environment. CrossOver may not work on KDE, try GNOME if you 
 
 ## Debugging
 
-> (Mac, Linux)
-
 You can run CrossOver from the command line to see debug output. Open a terminal and navigate to the CrossOver app, run `./CrossOver` to see output:
 
+> (Mac, Linux)
 ```sh
 ╭─  lacymorrow in /Applications/CrossOver.app/Contents/MacOS using
 ╰─○ $ ./CrossOver
@@ -380,6 +379,26 @@ You can run CrossOver from the command line to see debug output. Open a terminal
 09:45:16.030 › Setting: Enable GPU
 09:45:16.487 › App ready
 ```
+
+### Command-line lags
+
+#### `--debug`
+
+_alias_ `-d`
+
+Start CrossOver in debug mode, with Chrome DevTools open.
+
+#### `--reset`
+
+_alias_ `-r`
+
+Reset all app preferences to default, in case you get into a broken state.
+
+#### `--version`
+
+_alias_ `-v`
+
+Print the app version to `stdout` (Good for CI).
 
 
 # Credits
