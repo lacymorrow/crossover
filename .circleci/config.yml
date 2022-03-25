@@ -172,11 +172,9 @@ jobs:
             cp -r /Users/distiller/project/dist /tmp/dist
           when: on_fail
       - store_artifacts:
-          path:
-            - /tmp/dist
+          path: /tmp/dist
       - store_artifacts:
-          path:
-            - /Users/distiller/project/dist
+          path: /Users/distiller/project/dist
 
 
 workflows:
