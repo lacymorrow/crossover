@@ -40,14 +40,14 @@ jobs:
           name: Run tests
           command: yarn test
       - run:
-          name: Run windows
-          command: yarn build:windows
+          name: Run snap
+          command: yarn build:snap
       - run:
           name: Run linux
           command: yarn build:linux
       - run:
-          name: Run snap
-          command: yarn build:snap
+          name: Run windows
+          command: yarn build:windows
       - run:
           name: Run mac
           command: yarn build:mac
