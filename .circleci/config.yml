@@ -49,13 +49,13 @@ jobs:
       - run:
           name: Run tests
           command: yarn test
-    - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: crossover
-          # Must be relative path from root
-          paths:
-            - dist/*
+      - persist_to_workspace:
+            # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+            # taken to be the root directory of the workspace.
+            root: crossover
+            # Must be relative path from root
+            paths:
+              - dist/*
 
   build_snap:
     executor: macos-executor
