@@ -2,9 +2,7 @@
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
-<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="50" style="float: right;"/></a>
-
-# CrossOver
+# CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="50" />](https://www.patreon.com/bePatron?u=55065733)
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
