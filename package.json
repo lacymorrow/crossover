@@ -1,7 +1,7 @@
 {
 	"name": "crossover",
 	"productName": "CrossOver",
-	"version": "2.7.0",
+	"version": "2.7.1",
 	"description": "A Crosshair Overlay for any screen",
 	"license": "MIT",
 	"repository": "lacymorrow/crossover",
@@ -171,7 +171,10 @@
 				"camera",
 				"removable-media"
 			],
-			"publish": ["github", "snapStore"]
+			"publish": [
+				"github",
+				"snapStore"
+			]
 		},
 		"win": {
 			"target": [
