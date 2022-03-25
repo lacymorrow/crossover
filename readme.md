@@ -397,12 +397,11 @@ Created by [Lacy Morrow](http://lacymorrow.com)
 
 # Support this project
 
-##### This project is developed, built, and maintained by one person. I've put hundreds of hours into this and I love being able to give it away for free.
+### This project is developed, built, and maintained by one person. I've put hundreds of hours into this and I love being able to give it away for free.
 Problem is, downloads don't pay the bills.
-
-#### If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or another channel.
 
 ##### If you would like to see specific features or improvements added to CrossOver, consider donating on [OpenCollective](https://opencollective.com/crossover)
 
-<a href="https://www.patreon.com/bePatron?u=55065733" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
-<a href="https://opencollective.com/webpack/donate" target="_blank"><img src="https://opencollective.com/webpack/donate/button@2x.png?color=blue" width=300 /></a> <a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="40" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or another channel.
+
+<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" width=300 /></a>        <a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" width=300 /></a>       <a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="40" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
