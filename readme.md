@@ -2,8 +2,7 @@
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
-# CrossOver ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![crossover](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![crossover](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover)
-[![CircleCI Status](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
+# CrossOver ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
