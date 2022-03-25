@@ -2,7 +2,10 @@
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
 </p>
 
-# CrossOver [![CircleCI Status](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover)
+# CrossOver [![CircleCI Status](https://circleci.com/gh/lacymorrow/crossover.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/master?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover) [![crossover](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover)
+[![crossover](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover)
+
+
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
@@ -338,6 +341,11 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 ### Graphical issues on Linux
 
 Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
+
+## Linux Snap Store
+
+<iframe src="https://snapcraft.io/crossover/embedded?button=black&channels=true&summary=true&screenshot=true" frameborder="0" width="100%" height="400px" style="border: 1px solid #CCC; border-radius: 2px;"></iframe>
+
 
 ## Credits
 
