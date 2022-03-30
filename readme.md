@@ -12,7 +12,8 @@
 ##### [All Downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest/)
 
 
-##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt/Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
+##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
+###### Mac: <kbd>Control</kbd>-<kbd>Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 
 CrossOver allows you to place a customizable crosshair overlay above any application window.
 Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
