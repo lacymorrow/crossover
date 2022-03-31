@@ -1,85 +1,190 @@
 const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
-const { startApp, visualMouse, wait } = require( './helpers.js' )
+const { getMainWindow, startApp, visualMouse, wait } = require( './helpers.js' )
+const { productName } = require('../package.json');
 
 let electronApp
-let mainWindow
+let mainPage
 
 test.beforeAll( async () => {
 
 	const app = await startApp()
 	electronApp = app.electronApp
-	mainWindow = app.mainWindow
+	mainPage = app.mainPage
+
+ 	await visualMouse( mainPage )
 
 } )
+
+test.afterEach( async () => await wait(500) )
+
 // End setup
 
 test( 'Validate buttons: info button', async () => {
 
-	await expect( await mainWindow.locator( '.info-button .move-icon' ) ).toBeVisible()
-	await expect( await mainWindow.locator( '.info-button .info-icon' ) ).toBeHidden()
+	expect( await mainPage.locator( '.info-button .move-icon' ) ).toBeVisible()
+	expect( await mainPage.locator( '.info-button .info-icon' ) ).toBeHidden()
 
 } )
 
-test( 'Validate buttons: drag + center button', async () => {
-
-	// await mainWindow.pause()
-
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
-
-	await mainWindow.dragAndDrop( '.info-button', '.center-button' )
-
-	const drag = await mainWindow.locator( '.info-button' )
-	const button = await mainWindow.locator( '.center-button' )
-	const { x: x1, y: y1 } = await drag.boundingBox()
-	console.log( x1, y1 )
-	await mainWindow.mouse.move( x1 + 4, y1 + 4 )
-	await mainWindow.mouse.down()
-	const { x: x2, y: y2 } = await button.boundingBox()
-	await mainWindow.mouse.move( x2, y2 )
-	await mainWindow.mouse.up()
-
+test( 'Validate buttons: move + center button', async () => {
+	const button = await mainPage.locator( '.center-button' )
 	await button.dblclick()
+	await wait(500)
+
+	// Get app bounds
+	const bounds = await electronApp.evaluate( async ( app ) => {
+		return await Promise.all(
+			app.BrowserWindow.getAllWindows().filter(w => {
+				return w.title === 'CrossOver'
+			}).map(async w=>{
+				return w.getBounds()
+			})
+		)
+	}).then(arr => arr[0])
+
+	// Move
+	await electronApp.evaluate( async ( app ) => {
+		await app.ipcMain.emit( 'move_window', {distance: 50, direction: 'right'} )
+		await app.ipcMain.emit( 'move_window', {distance: 50, direction: 'down'} )
+	})
+	await wait(500)
+
+	let newBounds = await electronApp.evaluate( async ( app ) => {
+		return await Promise.all(
+			app.BrowserWindow.getAllWindows().filter(w => {
+				return w.title === 'CrossOver'
+			}).map(async w=>{
+				return w.getBounds()
+			})
+		)
+	}).then(arr => arr[0])
+
+	expect(newBounds.x).toBe(bounds.x + 50)
+	expect(newBounds.y).toBe(bounds.y + 50)
+
+	// Recenter
+	await button.dblclick()
+	await wait(500)
+
+	newBounds = await electronApp.evaluate( async ( app ) => {
+		return await Promise.all(
+			app.BrowserWindow.getAllWindows().filter(w => {
+				return w.title === 'CrossOver'
+			}).map(async w=>{
+				return w.getBounds()
+			})
+		)
+	}).then(arr => arr[0])
+
+	expect(newBounds.x).toBe(bounds.x)
+	expect(newBounds.y).toBe(bounds.y)
 
 } )
 
+test( 'Validate buttons: chooser button', async () => {
+
+	const button = await mainPage.locator( '.center-button' )
+	button.click()
+
+	await wait(500)
+
+	const focused = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'Crosshairs'
+		})[0]
+		win.focus()
+		return win.isFocused()
+	})
+	expect( focused ).toBe( true )
+
+	const minimized = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'Crosshairs'
+		})[0]
+		return win.isMinimized()
+	})
+	expect( minimized ).toBe( false )
+
+	const visible = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'Crosshairs'
+		})[0]
+		return win.isVisible()
+	})
+	expect( visible ).toBe( true )
+
+} )
+
+test( 'Validate buttons: preferences', async () => {
+
+	const button = await mainPage.locator( '.settings-button' )
+	button.click()
+
+	await wait(500)
+
+	const windows = electronApp.windows()
+	const titles = await Promise.all(
+		windows.map(async w=>{
+			const i = await w.title()
+			return await i
+		})
+	)
+
+	console.log('All windows: ', titles)
+
+	const focused = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver Preferences'
+		})[0]
+		win.focus()
+		return win.isFocused()
+	})
+	expect( focused ).toBe( true )
+
+	const minimized = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver Preferences'
+		})[0]
+		return win.isMinimized()
+	})
+	expect( minimized ).toBe( false )
+
+	const visible = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver Preferences'
+		})[0]
+		return win.isVisible()
+	})
+	expect( visible ).toBe( true )
+
+} )
+
+// Quit app
 test( 'Validate buttons: close button', async () => {
 
 	let PASS = false
- 	await visualMouse( mainWindow )
-	const isMac = Boolean( await mainWindow.locator( '.mac' ) )
+	const isMac = Boolean( await mainPage.locator( '.mac' ) )
 	if ( isMac ) {
 
 		// Close button is hidden on mac
 		console.log( 'MacOS, skipping close button test' )
-		await electronApp.close()
+		await mainPage.addScriptTag( { content: `document.body.classList.remove('mac')` } )
+
+	}
+	await wait(500)
+
+	await mainPage.locator( '.close-button' ).click({ force: true })
+	try {
+
+		console.log( 'This should throw an error!', await mainPage.title() )
+
+	} catch {
+
 		PASS = true
-
-	} else {
-
-		await mainWindow.locator( '.close-button' ).click({ force: true })
-		try {
-
-			console.log( 'This should throw an error!', await mainWindow.title() )
-
-		} catch {
-
-			PASS = true
-
-		}
 
 	}
 
-	await expect( PASS, 'app should be quit' ).toBeTruthy()
+	expect( PASS, 'app should be quit' ).toBeTruthy()
 
 } )

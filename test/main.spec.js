@@ -1,19 +1,21 @@
 const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
 const { startApp, wait } = require( './helpers.js' )
-
-// Breakpoint: await mainWindow.pause()
+const { productName } = require('../package.json');
+// Breakpoint: await mainPage.pause()
 
 let electronApp
-let mainWindow
+let mainPage
 
 test.beforeAll( async () => {
 
 	const app = await startApp()
 	electronApp = app.electronApp
-	mainWindow = app.mainWindow
+	mainPage = app.mainPage
 
 } )
+
+// test.afterEach( async () => await wait(500) )
 
 test.afterAll( async () => {
 
@@ -21,45 +23,42 @@ test.afterAll( async () => {
 
 } )
 
-test( 'check isPackaged', async () => {
-
-	const isPackaged = await electronApp.evaluate( async ( {
-  	app } ) =>
-	// This runs in Electron's main process, parameter here is always
-	// the result of the require('electron') in the main app script.
-		app.isPackaged,
-	)
-	console.log( `Packaged: ${isPackaged}` ) // False (because we're in development mode)
-
-} )
-
-test( 'Validate BrowserWindows', async () => {
-
-	const windows = electronApp.windows()
-	if ( await windows[1].title() === 'DevTools' ) {
-
-		expect( windows.length ).toBe( 3 )
-
-	} else {
-
-		expect( windows.length ).toBe( 2 )
-
-	}
-
-} )
-
 test( 'Validate app launches: launch.png', async () => {
+	// Capture a screenshot.
+	await mainPage.screenshot()
+
+	// TODO: wait for app load
+	await wait(1500)
 
 	// Print the title.
-	const title = await mainWindow.title()
-	expect( title ).toBe( 'CrossOver' )
+	const title = await mainPage.title()
+	expect( title ).toBe( productName )
 
-	// Visible
-	await mainWindow.waitForSelector( '#crosshair' )
-	expect( mainWindow.locator( '#crosshair ' ) ).toBeVisible()
+	// App properties - focused, minimized, visible
+	const focused = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver'
+		})[0]
+		win.focus()
+		return win.isFocused()
+	})
+	expect( focused ).toBe( true )
 
-	// Capture a screenshot.
-	await mainWindow.screenshot( { path: 'test/screenshots/launch.png' } )
+	const minimized = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver'
+		})[0]
+		return win.isMinimized()
+	})
+	expect( minimized ).toBe( false )
+
+	const visible = await electronApp.evaluate( async ( app ) => {
+		const win = app.BrowserWindow.getAllWindows().filter(w => {
+			return w.title === 'CrossOver'
+		})[0]
+		return win.isVisible()
+	})
+	expect( visible ).toBe( true )
 
 } )
 
@@ -68,21 +67,21 @@ test( 'Validate feather icons loaded', async () => {
 	// Await wait(500)
 
 	// Number of buttons
-	let button = mainWindow.locator( '#main .button' )
+	let button = mainPage.locator( '#main .button' )
 	expect( await button.count() ).toBe( 4 )
 
 	// Feather converts <i/> --> <svg/>
-	button = mainWindow.locator( '.close-button svg' )
+	button = mainPage.locator( '.close-button svg' )
 	expect( await button.count() ).toBe( 1 )
 
-	button = mainWindow.locator( '.center-button svg' )
+	button = mainPage.locator( '.center-button svg' )
 	expect( await button.count() ).toBe( 1 )
 
-	button = mainWindow.locator( '.settings-button svg' )
+	button = mainPage.locator( '.settings-button svg' )
 	expect( await button.count() ).toBe( 1 )
 
 	// Info button has more
-	button = mainWindow.locator( '.info-button svg' )
+	button = mainPage.locator( '.info-button svg' )
 	expect( await button.count() ).toBe( 2 )
 
 } )

@@ -67,6 +67,7 @@ const importIoHook = async () => {
 }
 
 /* App setup */
+console.log('***************')
 log.info( `CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}` )
 
 // Handle errors early
@@ -843,12 +844,13 @@ const openSettingsWindow = async () => {
 
 }
 
-const moveWindow = options => {
+const moveWindow = opts => {
 
 	options = {
+		distance: 1,
 		direction: 'none',
 		targetWindow: getActiveWindow(),
-		...options,
+		...opts,
 	}
 
 	const saveSettings = options.targetWindow === mainWindow
@@ -862,7 +864,7 @@ const moveWindow = options => {
 		switch ( options.direction ) {
 
 			case 'up':
-				newBound = bounds.y - 1
+				newBound = bounds.y - options.distance
 				options.targetWindow.setBounds( { y: newBound } )
 				if ( saveSettings ) {
 
@@ -872,7 +874,7 @@ const moveWindow = options => {
 
 				break
 			case 'down':
-				newBound = bounds.y + 1
+				newBound = bounds.y + options.distance
 				options.targetWindow.setBounds( { y: newBound } )
 				if ( saveSettings ) {
 
@@ -882,7 +884,7 @@ const moveWindow = options => {
 
 				break
 			case 'left':
-				newBound = bounds.x - 1
+				newBound = bounds.x - options.distance
 				options.targetWindow.setBounds( { x: newBound } )
 				if ( saveSettings ) {
 
@@ -892,7 +894,7 @@ const moveWindow = options => {
 
 				break
 			case 'right':
-				newBound = bounds.x + 1
+				newBound = bounds.x + options.distance
 				options.targetWindow.setBounds( { x: newBound } )
 				if ( saveSettings ) {
 
@@ -1336,6 +1338,20 @@ const registerIpc = () => {
 		app.quit()
 
 	} )
+
+	// Used for testing
+	ipcMain.on( 'play_sound', arg => {
+
+		playSound( arg )
+
+	} )
+
+	ipcMain.on( 'move_window', arg => {
+
+		moveWindow( arg )
+
+	} )
+
 
 }
 

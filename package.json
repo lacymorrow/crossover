@@ -23,7 +23,9 @@
 	},
 	"scripts": {
 		"lint": "xo --fix",
-		"test": "PWDEBUG=console playwright test --headed",
+		"test": "playwright test --headed",
+		"test:debug": "PWDEBUG=1 playwright test --headed",
+		"test:debug:console": "PWDEBUG=console playwright test --headed",
 		"check": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
 		"start": "yarn css && electron --trace-warnings .",
 		"release": "np",

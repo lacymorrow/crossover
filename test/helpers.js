@@ -23,7 +23,7 @@ const startApp = async () => {
 	electronApp.on( 'window', async page => {
 
 		const filename = page.url()?.split( '/' ).pop()
-		console.log( `Window opened: ${filename}; File: ${page.isFile}` )
+		console.log( `Window opened: ${filename}` )
 
 		// Capture errors
 		page.on( 'pageerror', error => {
@@ -40,13 +40,14 @@ const startApp = async () => {
 
 	} )
 
-	const mainWindow = await electronApp.firstWindow()
-	const windows = await electronApp.windows
-	// Await mainWindow.screenshot( {
+	const mainPage = await electronApp.firstWindow()
+	const windows = await electronApp.windows()
+
+	// Await mainPage.screenshot( {
 	// 	path: 'test/screenshots/start.png',
 	// } )
 
-	return { electronApp, mainWindow, windows }
+	return { electronApp, mainPage, page: mainPage, windows }
 
 }
 
@@ -54,7 +55,7 @@ const startApp = async () => {
 // via https://github.com/puppeteer/puppeteer/issues/4378#issuecomment-499726973
 function visualMouseCode() {
 
-	console.log( '*VISUAL MOUSE*' )
+	console.log( '* VISUAL MOUSE *' )
 	const box = document.createElement( 'puppeteer-mouse-pointer' )
 	const styleElement = document.createElement( 'style' )
 	styleElement.innerHTML = `
@@ -127,14 +128,9 @@ function visualMouseCode() {
 
 }
 
-const visualMouse = async mainWindow => {
+const visualMouse = async mainPage => {
 
-	await mainWindow.addScriptTag( { content: `${visualMouseCode}` } )
-	await mainWindow.evaluate( async () => {
-
-		await visualMouseCode()
-
-	} )
+	await mainPage.addScriptTag( { content: `(${visualMouseCode})()` } )
 
 }
 

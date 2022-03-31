@@ -163,28 +163,3 @@
 // // 	expect( data ).toBe( 'Main Asynchronous Data' )
 
 // // } )
-
-// // test( 'select a menu item via the main process', async () => {
-
-// // 	await clickMenuItemById( electronApp, 'new-window' )
-// // 	const newPage = await electronApp.waitForEvent( 'window' )
-// // 	expect( newPage ).toBeTruthy()
-// // 	expect( await newPage.title() ).toBe( 'Window 5' )
-// // 	page = newPage
-
-// // } )
-
-// test( 'make sure two screenshots of the same page match', async ( {page} ) => {
-
-// 	// Take a screenshot of the current page
-// 	const screenshot1: Buffer = await page.screenshot()
-// 	// Create a visual hash using Jimp
-// 	const screenshot1hash = ( await jimp.read( screenshot1 ) ).hash()
-// 	// Take a screenshot of the page
-// 	const screenshot2: Buffer = await page.screenshot()
-// 	// Create a visual hash using Jimp
-// 	const screenshot2hash = ( await jimp.read( screenshot2 ) ).hash()
-// 	// Compare the two hashes
-// 	expect( screenshot1hash ).toEqual( screenshot2hash )
-
-// } )

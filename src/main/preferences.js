@@ -14,6 +14,15 @@ const preferences = new ElectronPreferences( {
 	 */
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
+
+	browserWindowOverrides: {
+		title: 'CrossOver Preferences',
+		webPreferences: {
+			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
+		},
+
+	},
+
 	/**
 	 * Default values.
 	 */
@@ -64,14 +73,6 @@ const preferences = new ElectronPreferences( {
 			tilted: false,
 			updateStatus: '',
 		},
-	},
-
-	browserWindowOverrides: {
-		title: 'CrossOver Preferences',
-		webPreferences: {
-			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
-		},
-
 	},
 	/**
 	 * The preferences window is divided into sections. Each section has a label, an icon, and one or

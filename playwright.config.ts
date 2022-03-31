@@ -1,13 +1,17 @@
+const path = require('path');
+
 const config = {
 
 	retries: 0,
 
 	testDir: 'test',
-	outputDir: 'test/results'
+	outputDir: 'test/results',
 
 	timeout: 10_000,
 
-	workers: process.env.CI ? 2 : undefined,
+	workers: 1,
+
+	shard: { total: 1, current: 1 },
 
 	expect: {
 
@@ -15,8 +19,24 @@ const config = {
 
 	},
 
+	projects: [
+		{
+		  name: 'chromium',  // We use 'chromium' here to share screenshots with chromium.
+		  metadata: {
+			  platform: process.platform,
+			  headful: true,
+			  browserName: 'electron',
+			  channel: undefined,
+			  mode: 'default',
+			  video: false,
+			},
+		}
+	],
+
 	use: {
-		slowMo: 100,
+		browserName: 'chromium',
+		coverageName: 'electron',
+		// slowMo: 100,
 		headless: false,
 		ignoreHTTPSErrors: true,
 		screenshot: 'on',
@@ -26,33 +46,5 @@ const config = {
 	},
 }
 
-const metadata = {
-  platform: process.platform,
-  headful: true,
-  browserName: 'electron',
-  channel: undefined,
-  mode: 'default',
-  video: false,
-};
-
-config.projects.push({
-  name: 'chromium',  // We use 'chromium' here to share screenshots with chromium.
-  use: {
-    browserName: 'chromium',
-    coverageName: 'electron',
-  },
-  testDir: path.join(config.testDir, 'electron'),
-  metadata,
-});
-
-config.projects.push({
-  name: 'chromium',  // We use 'chromium' here to share screenshots with chromium.
-  use: {
-    browserName: 'chromium',
-    coverageName: 'electron',
-  },
-  testDir: path.join(config.testDir, 'page'),
-  metadata,
-});
 
 export default config
