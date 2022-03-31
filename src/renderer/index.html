@@ -3,16 +3,16 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CrossOver</title>
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'sha256-O7z3XfDqpo/k6SAoVjTQ4HzFpPcC/KgXDRT6QeppF5g=' 'sha256-eHMO46Jg9CEM0Bz16lpWlKCAqToeYtIRKX3tSEbJ800='">
 		<link rel="stylesheet" href="styles/dist/index.css">
 		<script type="text/javascript" src="vendor/feather/feather-icons.min.js"></script>
 		<script type="text/javascript" src="vendor/random-color/randomColor.min.js"></script>
 	</head>
 	<body>
-		<div class="main container">
+		<div id="main" class="main-window container">
 			<div class="background"></div>
 
-			<button class="close-button main button"><i data-feather="x-circle"></i></button>
+			<button class="close-button button" aria-label=""><i data-feather="x-circle"></i></button>
 			<button class="settings-button button"><i data-feather="settings"></i></button>
 			<button class="center-button button"><i data-feather="target"></i></button>
 			<div class="info-button button"><div class="aligner"><i class="move-icon" data-feather="move"></i><i class="info-icon d-none" data-feather="alert-circle"></i></div></div>

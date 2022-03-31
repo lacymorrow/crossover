@@ -101,7 +101,7 @@ button {
 #chooser-container {
     user-select: none;
     &.dropping {
-        &.main * {
+        &.main-window * {
             pointer-events: none;
         }
         &:before {
@@ -198,7 +198,7 @@ button {
     user-select: inherit;
 }
 
-.main.close-button {
+.main-window .close-button {
     display: none;
     right: auto;
     left: 1px;
@@ -297,8 +297,8 @@ button {
     .button {
         display: block;
     }
-    // Show close button on linux
-    &.mac .main.close-button {
+    // Show close button on linux/windows
+    &.mac .main-window .close-button {
         display: none;
     }
     .info-button {

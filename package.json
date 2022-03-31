@@ -22,9 +22,9 @@
 		"node": "14.17.x || >=16"
 	},
 	"scripts": {
-		"ava": "ava -v",
 		"lint": "xo --fix",
-		"test": "yarn lint",
+		"test": "PWDEBUG=console playwright test --headed",
+		"check": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
 		"start": "yarn css && electron --trace-warnings .",
 		"release": "np",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
@@ -58,16 +58,19 @@
 		"iohook": "^0.9.3"
 	},
 	"devDependencies": {
-		"ava": "^4.1.0",
+		"@playwright/test": "^1.20.1",
 		"bindings": "^1.5.0",
+		"depcheck": "^1.4.3",
 		"electron": "12.2.3",
 		"electron-builder": "^22.11.11",
 		"electron-builder-squirrel-windows": "^23.0.2",
+		"electron-playwright-helpers": "^1.1.1",
 		"eslint-config-xo": "^0.40.0",
 		"husky": "^7.0.1",
+		"jimp": "^0.16.1",
 		"np": "^7.2.0",
+		"playwright": "^1.20.1",
 		"sass": "^1.26.5",
-		"spectron": "15",
 		"xo": "^0.48.0"
 	},
 	"iohook": {

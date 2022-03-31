@@ -287,6 +287,7 @@ const createChildWindow = async ( parent, windowName ) => {
 
 	const options = {
 		parent,
+		title: 'Crosshairs',
 		modal: true,
 		show: false,
 		type: 'toolbar',
