@@ -13,9 +13,6 @@ test.beforeAll( async () => {
 	await visualMouse( mainPage )
 
 } )
-
-test.afterEach( async () => wait( 500 ) )
-
 // End setup
 
 test( 'Validate buttons: info button', async () => {

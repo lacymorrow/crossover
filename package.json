@@ -1,213 +1,172 @@
 {
-	"name": "crossover",
-	"productName": "CrossOver",
-	"version": "2.7.5",
-	"description": "A Crosshair Overlay for any screen",
-	"copyright": "Copyright © Lacy Morrow",
-	"repository": "lacymorrow/crossover",
-	"homepage": "https://lacymorrow.github.io/crossover",
-	"author": {
-		"name": "Lacy Morrow",
-		"email": "me@lacymorrow.com",
-		"url": "https://lacymorrow.com"
-	},
-	"company": "Fly5",
-	"bugs": {
-		"url": "https://github.com/lacymorrow/crossover/issues"
-	},
-	"license": {
-		"url": "https://github.com/lacymorrow/crossover/blob/master/LICENSE"
-	},
-	"engines": {
-		"node": "14.17.x || >=16"
-	},
-	"scripts": {
-		"lint": "xo --fix",
-		"test": "playwright test --headed",
-		"test:debug": "PWDEBUG=1 playwright test --headed",
-		"test:debug:console": "PWDEBUG=console playwright test --headed",
-		"check": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
-		"start": "yarn css && electron --trace-warnings .",
-		"release": "np",
-		"release:snap": "snapcraft upload --release=CrossOver*.snap",
-		"pack": "rm -f *.tgz && electron-builder --dir",
-		"postinstall": "electron-builder install-app-deps",
-		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
-		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
-		"build": "electron-builder",
-		"build:all": "electron-builder -mwl --ia32 --x64",
-		"build:mac": "electron-builder --macos --arm64 --x64",
-		"build:linux": "electron-builder --linux --ia32 --x64",
-		"build:windows": "electron-builder --win --ia32 --x64",
-		"build:windows:appx": "electron-builder -c electron-builder-appx.yaml --win",
-		"build:windows:exe": "electron-builder -c electron-builder-windows.yaml --win",
-		"build:wl": "electron-builder -wl --ia32 --x64",
-		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
-		"build:deb": "electron-builder --linux deb",
-		"build:snap": "electron-builder --linux snap",
-		"build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
-		"build:release:windows": "yarn build:windows && yarn sh:copyexe",
-		"css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed"
-	},
-	"dependencies": {
-		"electron-debug": "^3.0.1",
-		"electron-log": "^4.4.6",
-		"electron-preferences": "../electron-preferences",
-		"electron-reloader": "^1.2.0",
-		"electron-unhandled": "^4.0.1",
-		"electron-updater": "^4.3.1",
-		"electron-util": "^0.17.0",
-		"iohook": "^0.9.3"
-	},
-	"devDependencies": {
-		"@playwright/test": "^1.20.1",
-		"axe-playwright": "^1.1.11",
-		"bindings": "^1.5.0",
-		"depcheck": "^1.4.3",
-		"electron": "12.2.3",
-		"electron-builder": "^22.11.11",
-		"electron-builder-squirrel-windows": "^23.0.2",
-		"electron-playwright-helpers": "^1.1.1",
-		"eslint-config-xo": "^0.40.0",
-		"husky": "^7.0.1",
-		"jimp": "^0.16.1",
-		"np": "^7.2.0",
-		"playwright": "^1.20.1",
-		"sass": "^1.26.5",
-		"xo": "^0.48.0"
-	},
-	"iohook": {
-		"targets": [
-			"node-83",
-			"electron-87"
-		],
-		"platforms": [
-			"win32",
-			"darwin",
-			"linux"
-		],
-		"arches": [
-			"x64",
-			"ia32"
-		]
-	},
-	"xo": {
-		"envs": [
-			"node",
-			"browser"
-		],
-		"rules": {
-			"array-bracket-spacing": [
-				"error",
-				"always"
-			],
-			"padded-blocks": [
-				"error",
-				{
-					"blocks": "always",
-					"switches": "always",
-					"classes": "always"
-				}
-			],
-			"padding-line-between-statements": [
-				"error",
-				{
-					"blankLine": "always",
-					"prev": "multiline-block-like",
-					"next": "*"
-				},
-				{
-					"blankLine": "always",
-					"prev": "*",
-					"next": "return"
-				}
-			],
-			"object-curly-spacing": [
-				"error",
-				"always"
-			],
-			"space-in-parens": [
-				"error",
-				"always"
-			],
-			"unicorn/no-process-exit": 0,
-			"unicorn/prefer-module": 0
-		},
-		"semicolon": false
-	},
-	"np": {
-		"publish": false,
-		"releaseDraft": true
-	},
-	"build": {
-		"appId": "com.lacymorrow.crossover",
-		"artifactName": "${productName}-${version}-${arch}.${ext}",
-		"copyright": "Copyright © Lacy Morrow",
-		"publish": "github",
-		"mac": {
-			"category": "public.app-category.utilities",
-			"darkModeSupport": true
-		},
-		"dmg": {
-			"iconSize": 160,
-			"contents": [
-				{
-					"x": 180,
-					"y": 170
-				},
-				{
-					"x": 480,
-					"y": 170,
-					"type": "link",
-					"path": "/Applications"
-				}
-			]
-		},
-		"linux": {
-			"target": [
-				"AppImage",
-				"apk",
-				"deb",
-				"rpm",
-				"freebsd",
-				"pacman",
-				"rpm"
-			],
-			"category": "Game;Shooter"
-		},
-		"snap": {
-			"summary": "🎯 A Crosshair Overlay for any screen.",
-			"description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
-			"plugs": [
-				"default",
-				"camera",
-				"removable-media"
-			],
-			"publish": [
-				"github",
-				"snapStore"
-			]
-		},
-		"win": {
-			"target": [
-				"nsis",
-				"portable"
-			],
-			"publish": "github",
-			"verifyUpdateCodeSignature": false
-		},
-		"portable": {
-			"unicode": false,
-			"artifactName": "${productName}-Portable-${version}.${ext}"
-		},
-		"nsis": {
-			"unicode": false,
-			"artifactName": "${productName}-${version}.${ext}"
-		}
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npm test"
-		}
-	}
+    "name": "crossover",
+    "productName": "CrossOver",
+    "version": "2.7.5",
+    "description": "A Crosshair Overlay for any screen",
+    "copyright": "Copyright © Lacy Morrow",
+    "repository": "lacymorrow/crossover",
+    "homepage": "https://lacymorrow.github.io/crossover",
+    "author": {
+        "name": "Lacy Morrow",
+        "email": "me@lacymorrow.com",
+        "url": "https://lacymorrow.com"
+    },
+    "company": "Fly5",
+    "bugs": {
+        "url": "https://github.com/lacymorrow/crossover/issues"
+    },
+    "license": "CC-BY-NC-SA-4.0",
+    "engines": {
+        "node": "14.17.x || >=16"
+    },
+    "scripts": {
+        "lint": "eslint --fix .",
+        "lint:src": "xo --fix src",
+        "lint:test": "xo --fix test",
+        "lint:xo": "xo --fix",
+        "test": "playwright test --headed",
+        "test:debug": "PWDEBUG=1 playwright test --headed",
+        "test:debug:console": "PWDEBUG=console playwright test --headed",
+        "check": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
+        "start": "yarn css && electron --trace-warnings .",
+        "release": "np",
+        "release:snap": "snapcraft upload --release=CrossOver*.snap",
+        "pack": "rm -f *.tgz && electron-builder --dir",
+        "postinstall": "electron-builder install-app-deps",
+        "sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
+        "sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
+        "build": "electron-builder",
+        "build:all": "electron-builder -mwl --ia32 --x64",
+        "build:mac": "electron-builder --macos --arm64 --x64",
+        "build:linux": "electron-builder --linux --ia32 --x64",
+        "build:windows": "electron-builder --win --ia32 --x64",
+        "build:windows:appx": "electron-builder -c electron-builder-appx.yaml --win",
+        "build:windows:exe": "electron-builder -c electron-builder-windows.yaml --win",
+        "build:wl": "electron-builder -wl --ia32 --x64",
+        "build:mw": "electron-builder -wm --arm64 --ia32 --x64",
+        "build:deb": "electron-builder --linux deb",
+        "build:snap": "electron-builder --linux snap",
+        "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
+        "build:release:windows": "yarn build:windows && yarn sh:copyexe",
+        "css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed"
+    },
+    "dependencies": {
+        "electron-debug": "^3.0.1",
+        "electron-log": "^4.4.6",
+        "electron-preferences": "../electron-preferences",
+        "electron-reloader": "^1.2.0",
+        "electron-unhandled": "^4.0.1",
+        "electron-updater": "^4.3.1",
+        "electron-util": "^0.17.0",
+        "iohook": "^0.9.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.17.8",
+        "@babel/eslint-parser": "^7.17.0",
+        "@playwright/test": "^1.20.1",
+        "axe-playwright": "^1.1.11",
+        "bindings": "^1.5.0",
+        "depcheck": "^1.4.3",
+        "electron": "12.2.3",
+        "electron-builder": "^22.11.11",
+        "electron-builder-squirrel-windows": "^23.0.2",
+        "electron-playwright-helpers": "^1.1.1",
+        "eslint": "^8.12.0",
+        "eslint-config-xo": "^0.40.0",
+        "husky": "^7.0.1",
+        "jimp": "^0.16.1",
+        "np": "^7.2.0",
+        "playwright": "^1.20.1",
+        "sass": "^1.26.5"
+    },
+    "iohook": {
+        "targets": [
+            "node-83",
+            "electron-87"
+        ],
+        "platforms": [
+            "win32",
+            "darwin",
+            "linux"
+        ],
+        "arches": [
+            "x64",
+            "ia32"
+        ]
+    },
+    "np": {
+        "publish": false,
+        "releaseDraft": true
+    },
+    "build": {
+        "appId": "com.lacymorrow.crossover",
+        "artifactName": "${productName}-${version}-${arch}.${ext}",
+        "copyright": "Copyright © Lacy Morrow",
+        "publish": "github",
+        "mac": {
+            "category": "public.app-category.utilities",
+            "darkModeSupport": true
+        },
+        "dmg": {
+            "iconSize": 160,
+            "contents": [
+                {
+                    "x": 180,
+                    "y": 170
+                },
+                {
+                    "x": 480,
+                    "y": 170,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "apk",
+                "deb",
+                "rpm",
+                "freebsd",
+                "pacman",
+                "rpm"
+            ],
+            "category": "Game;Shooter"
+        },
+        "snap": {
+            "summary": "🎯 A Crosshair Overlay for any screen.",
+            "description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
+            "plugs": [
+                "default",
+                "camera",
+                "removable-media"
+            ],
+            "publish": [
+                "github",
+                "snapStore"
+            ]
+        },
+        "win": {
+            "target": [
+                "nsis",
+                "portable"
+            ],
+            "publish": "github",
+            "verifyUpdateCodeSignature": false
+        },
+        "portable": {
+            "unicode": false,
+            "artifactName": "${productName}-Portable-${version}.${ext}"
+        },
+        "nsis": {
+            "unicode": false,
+            "artifactName": "${productName}-${version}.${ext}"
+        }
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm test"
+        }
+    }
 }
