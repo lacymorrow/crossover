@@ -26,27 +26,27 @@
 
 // const NativeExtension = require('bindings')('NativeExtension');
 
-console.time('init')
+console.time( 'init' )
 
-const fs = require('fs')
-const path = require('path')
-const process = require('process')
+const fs = require( 'fs' )
+const path = require( 'path' )
+const process = require( 'process' )
 
-const electron = require('electron')
+const electron = require( 'electron' )
 
 const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeTheme, screen, shell } = electron
-const log = require('electron-log')
-const { autoUpdater } = require('electron-updater')
-const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require('electron-util')
-const debug = require('electron-debug')
-const { checkboxTrue, debounce } = require('./config/utils.js')
-const EXIT_CODES = require('./config/exit-codes.js')
-const keycode = require('./config/keycode.js')
-const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require('./config/config.js')
-const { debugSubmenu, helpSubmenu } = require('./main/menu.js')
-const errorHandling = require('./main/error-handling.js')
-const prefs = require('./main/preferences.js')
-const __static = require('./main/static-path.js')
+const log = require( 'electron-log' )
+const { autoUpdater } = require( 'electron-updater' )
+const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
+const debug = require( 'electron-debug' )
+const { checkboxTrue, debounce } = require( './config/utils.js' )
+const EXIT_CODES = require( './config/exit-codes.js' )
+const keycode = require( './config/keycode.js' )
+const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { debugSubmenu, helpSubmenu } = require( './main/menu.js' )
+const errorHandling = require( './main/error-handling.js' )
+const prefs = require( './main/preferences.js' )
+const __static = require( './main/static-path.js' )
 
 let ioHook // Dynamic Import
 const importIoHook = async() => {
@@ -54,10 +54,10 @@ const importIoHook = async() => {
     // Dynamically require ioHook
     // We do this in case it gets flagged by anti-cheat
 
-    if (!ioHook) {
+    if ( !ioHook ) {
 
-        log.info('Loading IOHook...')
-        ioHook = await require('iohook')
+        log.info( 'Loading IOHook...' )
+        ioHook = await require( 'iohook' )
 
     }
 
@@ -66,27 +66,27 @@ const importIoHook = async() => {
 }
 
 /* App setup */
-console.log('***************')
-log.info(`CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}`)
+console.log( '***************' )
+log.info( `CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}` )
 
 // Handle errors early
 errorHandling()
 
 // Prevent multiple instances of the app
-if (!app.requestSingleInstanceLock()) {
+if ( !app.requestSingleInstanceLock() ) {
 
     app.quit()
 
 }
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId('com.lacymorrow.crossover')
+app.setAppUserModelId( 'com.lacymorrow.crossover' )
 
 // Debug Settings
-debug({
+debug( {
     showDevTools: is.development && !is.linux,
     devToolsMode: 'undocked',
-})
+} )
 
 // Electron reloader is janky sometimes
 // try {
@@ -102,66 +102,66 @@ const appUpdate = () => {
 
     // Comment this before publishing your first version.
     // It's commented out as it throws an error if there are no published versions.
-    if (checkboxTrue(prefs.value('app.updates'), 'updates')) {
+    if ( checkboxTrue( prefs.value( 'app.updates' ), 'updates' ) ) {
 
-        log.info('Setting: Automatic Updates')
-        mainWindow.setProgressBar(50 / 100 || -1)
+        log.info( 'Setting: Automatic Updates' )
+        mainWindow.setProgressBar( 50 / 100 || -1 )
 
         autoUpdater.logger = log
-        autoUpdater.on('update-available', () => {
+        autoUpdater.on( 'update-available', () => {
 
-            playSound('UPDATE')
-            mainWindow.webContents.send('update_available')
+            playSound( 'UPDATE' )
+            mainWindow.webContents.send( 'update_available' )
 
-            if (is.linux) {
+            if ( is.linux ) {
 
-                dialog.showMessageBox({
+                dialog.showMessageBox( {
                     type: 'info',
                     title: 'CrossOver Update Available',
                     message: '',
                     buttons: [ 'Update', 'Ignore' ],
-                }).then(buttonIndex => {
+                } ).then( buttonIndex => {
 
-                    if (buttonIndex === 0) {
+                    if ( buttonIndex === 0 ) {
 
                         // AutoUpdater.downloadUpdate()
-                        shell.openExternal(RELEASES_URL)
+                        shell.openExternal( RELEASES_URL )
 
                     }
 
-                })
+                } )
 
             }
 
-        })
+        } )
 
-        if (!is.linux) {
+        if ( !is.linux ) {
 
-            autoUpdater.on('download-progress', progressObject => {
+            autoUpdater.on( 'download-progress', progressObject => {
 
                 let message = 'Download speed: ' + progressObject.bytesPerSecond
                 message = message + ' - Downloaded ' + progressObject.percent + '%'
                 message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
-                log.info(message)
+                log.info( message )
 
                 // Dock progress bar
-                mainWindow.setProgressBar(progressObject.percent / 100 || -1)
+                mainWindow.setProgressBar( progressObject.percent / 100 || -1 )
 
-            })
+            } )
 
-            autoUpdater.on('update-downloaded', () => {
+            autoUpdater.on( 'update-downloaded', () => {
 
-                app.dock.setBadge('!')
-                notification({ title: 'CrossOver has been Updated', body: 'Relaunch to take effect' })
+                app.dock.setBadge( '!' )
+                notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
                     // PlaySound( 'DONE' )
 
-            })
+            } )
             const FOUR_HOURS = 1000 * 60 * 60 * 4
-            setInterval(() => {
+            setInterval( () => {
 
                 autoUpdater.checkForUpdates()
 
-            }, FOUR_HOURS)
+            }, FOUR_HOURS )
 
             autoUpdater.checkForUpdatesAndNotify()
 
@@ -172,17 +172,17 @@ const appUpdate = () => {
 }
 
 // Fix for Linux transparency issues
-if (is.linux || !checkboxTrue(prefs.value('app.gpu'), 'gpu')) {
+if ( is.linux || !checkboxTrue( prefs.value( 'app.gpu' ), 'gpu' ) ) {
 
     // Disable hardware acceleration
-    log.info('Setting: Disable GPU')
-    app.commandLine.appendSwitch('enable-transparent-visuals')
-    app.commandLine.appendSwitch('disable-gpu')
+    log.info( 'Setting: Disable GPU' )
+    app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+    app.commandLine.appendSwitch( 'disable-gpu' )
     app.disableHardwareAcceleration()
 
 } else {
 
-    log.info('Setting: Enable GPU')
+    log.info( 'Setting: Enable GPU' )
 
 }
 
@@ -194,7 +194,7 @@ let windowHidden = false // Maintain hidden state
 const shadowWindows = new Set() // Keep windows unique
 
 // Crosshair images
-const crosshairsPath = path.join(__static, 'crosshairs')
+const crosshairsPath = path.join( __static, 'crosshairs' )
 
 const createMainWindow = async isShadowWindow => {
 
@@ -222,47 +222,47 @@ const createMainWindow = async isShadowWindow => {
             enableRemoteModule: true,
             nativeWindowOpen: true,
             nodeIntegration: false,
-            preload: path.join(__dirname, 'renderer', 'preload.js'),
+            preload: path.join( __dirname, 'renderer', 'preload.js' ),
 
         },
     }
 
-    if (is.windows) {
+    if ( is.windows ) {
 
         options.type = 'toolbar'
 
     }
 
-    const win = new BrowserWindow(options)
+    const win = new BrowserWindow( options )
 
     // Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
-    setDockVisible(false)
-    win.setFullScreenable(false)
+    setDockVisible( false )
+    win.setFullScreenable( false )
 
     // VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
-    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+    win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
     // SetDockVisible( true )
 
-    if (isShadowWindow) {
+    if ( isShadowWindow ) {
 
         // Duplicate shadow windows
-        win.once('ready-to-show', () => {
+        win.once( 'ready-to-show', () => {
 
             win.show()
 
-        })
+        } )
 
-        win.on('closed', () => {
+        win.on( 'closed', () => {
 
             // Dereference the window
-            shadowWindows.delete(win)
+            shadowWindows.delete( win )
 
-        })
+        } )
 
     } else {
 
-        win.on('closed', () => {
+        win.on( 'closed', () => {
 
             // Dereference the window
             // For multiple windows store them in an array
@@ -271,17 +271,17 @@ const createMainWindow = async isShadowWindow => {
             // Quit if main window closed
             app.quit()
 
-        })
+        } )
 
     }
 
-    await win.loadFile(path.join(__dirname, 'renderer', 'index.html'))
+    await win.loadFile( path.join( __dirname, 'renderer', 'index.html' ) )
 
     return win
 
 }
 
-const createChildWindow = async(parent, windowName) => {
+const createChildWindow = async( parent, windowName ) => {
 
     const VALID_WINDOWS = [ 'chooser' ]
 
@@ -291,7 +291,7 @@ const createChildWindow = async(parent, windowName) => {
         modal: true,
         show: false,
         type: 'toolbar',
-        frame: prefs.value('hidden.frame'),
+        frame: prefs.value( 'hidden.frame' ),
         hasShadow: true,
         titleBarStyle: 'customButtonsOnHover',
         fullscreenable: false,
@@ -304,19 +304,19 @@ const createChildWindow = async(parent, windowName) => {
             nodeIntegration: false, // Is default value after Electron v5
             contextIsolation: true, // Protect against prototype pollution
             enableRemoteModule: true, // Turn off remote
-            preload: path.join(__dirname, 'renderer', `preload-${windowName}.js`),
+            preload: path.join( __dirname, 'renderer', `preload-${windowName}.js` ),
         },
     }
 
-    if (!VALID_WINDOWS.includes(windowName)) {
+    if ( !VALID_WINDOWS.includes( windowName ) ) {
 
         return
 
     }
 
-    const win = new BrowserWindow(options)
+    const win = new BrowserWindow( options )
 
-    await win.loadFile(path.join(__dirname, 'renderer', `${windowName}.html`))
+    await win.loadFile( path.join( __dirname, 'renderer', `${windowName}.html` ) )
 
     return win
 
@@ -325,13 +325,13 @@ const createChildWindow = async(parent, windowName) => {
 const createShadowWindow = async() => {
 
     // Don't allow a bunch of crosshairs, max 20
-    if (shadowWindows.size < MAX_SHADOW_WINDOWS) {
+    if ( shadowWindows.size < MAX_SHADOW_WINDOWS ) {
 
-        const shadow = await createMainWindow(true)
-        shadowWindows.add(shadow)
-        setupShadowWindow(shadow)
+        const shadow = await createMainWindow( true )
+        shadowWindows.add( shadow )
+        setupShadowWindow( shadow )
 
-        log.info(`Created shadow window: ${shadow.webContents.id}`)
+        log.info( `Created shadow window: ${shadow.webContents.id}` )
 
     }
 
@@ -339,9 +339,9 @@ const createShadowWindow = async() => {
 
 const closeShadowWindows = id => {
 
-    for (const currentWindow of shadowWindows) {
+    for ( const currentWindow of shadowWindows ) {
 
-        if (!id || id === currentWindow.webContents.id) {
+        if ( !id || id === currentWindow.webContents.id ) {
 
             currentWindow.close()
 
@@ -354,7 +354,7 @@ const closeShadowWindows = id => {
 const getActiveWindow = () => {
 
     let currentWindow = activeWindow()
-    if (!shadowWindows.has(currentWindow) && currentWindow !== mainWindow) {
+    if ( !shadowWindows.has( currentWindow ) && currentWindow !== mainWindow ) {
 
         // Not shadow and not main window, probably a console or dialog
         currentWindow = mainWindow
@@ -366,84 +366,84 @@ const getActiveWindow = () => {
 }
 
 // Save position
-const saveBounds = debounce(win => {
+const saveBounds = debounce( win => {
 
-    if (!win) {
+    if ( !win ) {
 
         win = mainWindow
 
     }
 
     const bounds = win.getBounds()
-    log.info(`Save bounds: ${bounds.x}, ${bounds.y}`)
-    prefs.value('hidden.positionX', bounds.x)
-    prefs.value('hidden.positionY', bounds.y)
+    log.info( `Save bounds: ${bounds.x}, ${bounds.y}` )
+    prefs.value( 'hidden.positionX', bounds.x )
+    prefs.value( 'hidden.positionY', bounds.y )
 
-}, 1000)
+}, 1000 )
 
 const getCrosshairImages = async() => {
 
     // How many levels deep to recurse
-    const crosshairsObject = await getImages(crosshairsPath, 2)
+    const crosshairsObject = await getImages( crosshairsPath, 2 )
 
     return crosshairsObject
 
 }
 
-const getImages = (directory, level) => new Promise((resolve, reject) => {
+const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
     const crosshairs = []
-    fs.promises.readdir(directory, async(error, dir) => {
+    fs.promises.readdir( directory, async( error, dir ) => {
 
-        if (error) {
+        if ( error ) {
 
-            reject(new Error(`Promise Errored: ${error}`, directory))
+            reject( new Error( `Promise Errored: ${error}`, directory ) )
 
         }
 
-        for (let i = 0, filepath;
-            (filepath = dir[i]); i++) {
+        for ( let i = 0, filepath;
+            ( filepath = dir[i] ); i++ ) {
 
-            const stat = fs.lstatSync(path.join(directory, filepath))
+            const stat = fs.lstatSync( path.join( directory, filepath ) )
 
-            if (stat.isDirectory() && level > 0) {
+            if ( stat.isDirectory() && level > 0 ) {
 
-                const next = await getImages(path.join(directory, filepath), level - 1) // eslint-disable-line no-await-in-loop
-                crosshairs.push(next)
+                const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+                crosshairs.push( next )
 
-            } else if (stat.isFile() && !/^\..*|.*\.docx$/.test(filepath)) {
+            } else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {
 
                 // Filename
-                crosshairs.push(path.join(directory, filepath))
+                crosshairs.push( path.join( directory, filepath ) )
 
             }
 
         }
 
-        resolve(crosshairs)
+        resolve( crosshairs )
 
-    })
+    } )
 
-})
+} )
 
 const setCrosshair = src => {
 
-    if (src) {
+    if ( src ) {
 
-        log.info(`Save crosshair: ${src}`)
+        log.info( `Save crosshair: ${src}` )
         hideChooserWindow()
-        mainWindow.webContents.send('set_crosshair', src) // Pass to renderer
-        for (const currentWindow of shadowWindows) {
+        mainWindow.webContents.send( 'set_crosshair', src ) // Pass to renderer
+        for ( const currentWindow of shadowWindows ) {
 
-            currentWindow.webContents.send('set_crosshair', src)
+            currentWindow.webContents.send( 'set_crosshair', src )
 
         }
 
-        prefs.value('crosshair.crosshair', src)
+        prefs.value( 'crosshair.crosshair', src )
 
     } else {
 
-        log.info('Not setting null crosshair.')
+        log.info( 'Not setting null crosshair.' )
 
     }
 
@@ -452,64 +452,64 @@ const setCrosshair = src => {
 const setCustomCrosshair = src => {
 
     // Is it a file and does it have a supported extension?
-    if (fs.lstatSync(src).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes(path.extname(src))) {
+    if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ) ) ) {
 
-        setCrosshair(src)
+        setCrosshair( src )
 
     }
 
 }
 
-const setColor = (color, targetWindow = mainWindow) => {
+const setColor = ( color, targetWindow = mainWindow ) => {
 
-    targetWindow.webContents.send('set_color', color)
-
-}
-
-const setOpacity = (opacity, targetWindow = mainWindow) => {
-
-    targetWindow.webContents.send('set_opacity', opacity)
+    targetWindow.webContents.send( 'set_color', color )
 
 }
 
-const setPosition = (posX, posY, targetWindow = mainWindow) => {
+const setOpacity = ( opacity, targetWindow = mainWindow ) => {
 
-    if (posX === null || posY === null || typeof posX === 'undefined' || typeof posY === 'undefined') {
+    targetWindow.webContents.send( 'set_opacity', opacity )
+
+}
+
+const setPosition = ( posX, posY, targetWindow = mainWindow ) => {
+
+    if ( posX === null || posY === null || typeof posX === 'undefined' || typeof posY === 'undefined' ) {
 
         return
 
     }
 
-    targetWindow.setBounds({ x: posX, y: posY })
+    targetWindow.setBounds( { x: posX, y: posY } )
 
-    if (targetWindow === mainWindow) {
+    if ( targetWindow === mainWindow ) {
 
-        log.info('Save XY:', posX, posY)
-        prefs.value('hidden.positionX', posX)
-        prefs.value('hidden.positionY', posY)
+        log.info( 'Save XY:', posX, posY )
+        prefs.value( 'hidden.positionX', posX )
+        prefs.value( 'hidden.positionY', posY )
 
     }
 
 }
 
-const setSight = (sight, targetWindow = mainWindow) => {
+const setSight = ( sight, targetWindow = mainWindow ) => {
 
-    targetWindow.webContents.send('set_sight', sight)
+    targetWindow.webContents.send( 'set_sight', sight )
 
 }
 
-const setSize = (size, targetWindow = mainWindow) => {
+const setSize = ( size, targetWindow = mainWindow ) => {
 
-    targetWindow.webContents.send('set_size', size)
+    targetWindow.webContents.send( 'set_size', size )
 
 }
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
 const setDockVisible = visible => {
 
-    if (is.macos) {
+    if ( is.macos ) {
 
-        if (visible) {
+        if ( visible ) {
 
             app.dock.show()
 
@@ -526,7 +526,7 @@ const setDockVisible = visible => {
 const centerAppWindow = options => {
 
     options = {
-        display: screen.getDisplayNearestPoint(screen.getCursorScreenPoint()),
+        display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
         targetWindow: getActiveWindow(),
         ...options,
     }
@@ -537,18 +537,18 @@ const centerAppWindow = options => {
     // const bounds = options.targetWindow.getBounds()
 
     // This is the Sindre way
-    centerWindow({
+    centerWindow( {
         window: options.targetWindow,
         animated: true,
         useFullBounds: true,
-    })
+    } )
 
     options.targetWindow.show()
 
     // Save game
-    if (options.targetWindow === mainWindow) {
+    if ( options.targetWindow === mainWindow ) {
 
-        saveBounds(mainWindow)
+        saveBounds( mainWindow )
 
     }
 
@@ -557,7 +557,7 @@ const centerAppWindow = options => {
 const showWindow = () => {
 
     mainWindow.show()
-    for (const currentWindow of shadowWindows) {
+    for ( const currentWindow of shadowWindows ) {
 
         currentWindow.show()
 
@@ -570,7 +570,7 @@ const showWindow = () => {
 const hideWindow = () => {
 
     mainWindow.hide()
-    for (const currentWindow of shadowWindows) {
+    for ( const currentWindow of shadowWindows ) {
 
         currentWindow.hide()
 
@@ -583,7 +583,7 @@ const hideWindow = () => {
 const showHideWindow = () => {
 
     // Hide all crosshair windows in place
-    if (windowHidden) {
+    if ( windowHidden ) {
 
         showWindow()
 
@@ -597,74 +597,74 @@ const showHideWindow = () => {
 
 }
 
-const toggleWindowLock = (lock = !prefs.value('hidden.locked')) => {
+const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 
-    playSound(lock ? 'LOCK' : 'UNLOCK')
+    playSound( lock ? 'LOCK' : 'UNLOCK' )
 
-    lockWindow(lock)
-    for (const currentWindow of shadowWindows) {
+    lockWindow( lock )
+    for ( const currentWindow of shadowWindows ) {
 
-        lockWindow(lock, currentWindow)
+        lockWindow( lock, currentWindow )
 
     }
 
 }
 
 // Allows dragging and setting options
-const lockWindow = (lock, targetWindow = mainWindow) => {
+const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
-    log.info(`Locked: ${lock}`)
+    log.info( `Locked: ${lock}` )
 
     hideChooserWindow()
     hideSettingsWindow()
     targetWindow.closable = !lock
-    targetWindow.setFocusable(!lock)
-    targetWindow.setIgnoreMouseEvents(lock)
-    targetWindow.webContents.send('lock_window', lock)
+    targetWindow.setFocusable( !lock )
+    targetWindow.setIgnoreMouseEvents( lock )
+    targetWindow.webContents.send( 'lock_window', lock )
 
-    if (lock) {
+    if ( lock ) {
 
         // Don't save bounds when locked
-        if (targetWindow === mainWindow) {
+        if ( targetWindow === mainWindow ) {
 
-            mainWindow.removeAllListeners('move')
+            mainWindow.removeAllListeners( 'move' )
 
         }
 
         /* Actions */
-        const followMouse = checkboxTrue(prefs.value('mouse.followMouse'), 'followMouse')
-        const hideOnMouse = Number.parseInt(prefs.value('mouse.hideOnMouse'), 10)
-        const hideOnKey = prefs.value('mouse.hideOnKey')
-        const tilt = checkboxTrue(prefs.value('mouse.tiltEnable'), 'tiltEnable')
+        const followMouse = checkboxTrue( prefs.value( 'mouse.followMouse' ), 'followMouse' )
+        const hideOnMouse = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
+        const hideOnKey = prefs.value( 'mouse.hideOnKey' )
+        const tilt = checkboxTrue( prefs.value( 'mouse.tiltEnable' ), 'tiltEnable' )
 
         unregisterIOHook()
 
-        if (followMouse) {
+        if ( followMouse ) {
 
             registerFollowMouse()
 
         }
 
-        if (hideOnMouse !== -1) {
+        if ( hideOnMouse !== -1 ) {
 
             registerHideOnMouse()
 
         }
 
-        if (hideOnKey) {
+        if ( hideOnKey ) {
 
             registerHideOnKey()
 
         }
 
-        if (tilt && (prefs.value('mouse.tiltLeft') || prefs.value('mouse.tiltRight'))) {
+        if ( tilt && ( prefs.value( 'mouse.tiltLeft' ) || prefs.value( 'mouse.tiltRight' ) ) ) {
 
             registerTilt()
 
         }
 
         // Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-        targetWindow.setAlwaysOnTop(true, 'screen-saver')
+        targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
     } else {
 
@@ -674,30 +674,30 @@ const lockWindow = (lock, targetWindow = mainWindow) => {
         unregisterIOHook()
 
         // Enable saving bounds
-        if (targetWindow === mainWindow) {
+        if ( targetWindow === mainWindow ) {
 
             registerSaveWindowBounds()
 
         }
 
         // Allow dragging to Window on Mac
-        targetWindow.setAlwaysOnTop(true, 'modal-panel')
+        targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
         // Bring window to front
         targetWindow.show()
 
     }
 
-    setDockVisible(!lock)
+    setDockVisible( !lock )
 
-    prefs.value('hidden.locked', lock)
+    prefs.value( 'hidden.locked', lock )
 
 }
 
 // Switch window type when hiding chooser
 const hideChooserWindow = () => {
 
-    if (chooserWindow) {
+    if ( chooserWindow ) {
 
         chooserWindow.hide()
 
@@ -708,9 +708,9 @@ const hideChooserWindow = () => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-    if (prefsWindow && prefsWindow.isVisible()) {
+    if ( prefsWindow && prefsWindow.isVisible() ) {
 
-        prefs.value('hidden.showSettings', false)
+        prefs.value( 'hidden.showSettings', false )
         prefsWindow.close()
         prefsWindow = null
 
@@ -721,7 +721,7 @@ const hideSettingsWindow = () => {
 const openChooserWindow = async() => {
 
     // Don't do anything if locked
-    if (prefs.value('hidden.locked')) {
+    if ( prefs.value( 'hidden.locked' ) ) {
 
         return
 
@@ -729,7 +729,7 @@ const openChooserWindow = async() => {
 
     hideSettingsWindow()
 
-    if (!chooserWindow) {
+    if ( !chooserWindow ) {
 
         chooserWindow = await createChooser()
 
@@ -738,25 +738,25 @@ const openChooserWindow = async() => {
     chooserWindow.show()
 
     // Create shortcut to close chooser
-    if (!globalShortcut.isRegistered('Escape')) {
+    if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
-        globalShortcut.register('Escape', escapeAction)
+        globalShortcut.register( 'Escape', escapeAction )
 
     }
 
     // Modal placement is different per OS
-    if (is.macos) {
+    if ( is.macos ) {
 
         const bounds = mainWindow.getBounds()
-        chooserWindow.setBounds({ y: bounds.y + APP_HEIGHT })
+        chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
     } else {
 
         // Windows
         // Windows
-        const bounds = getWindowBoundsCentered({ window: chooserWindow, useFullBounds: true })
+        const bounds = getWindowBoundsCentered( { window: chooserWindow, useFullBounds: true } )
         const mainBounds = mainWindow.getBounds()
-        chooserWindow.setBounds({ x: bounds.x, y: mainBounds.y + mainBounds.height + 1 })
+        chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
     }
 
@@ -765,13 +765,13 @@ const openChooserWindow = async() => {
 const openSettingsWindow = async() => {
 
     // Don't do anything if locked
-    if (prefs.value('hidden.locked')) { //  || prefs.value( 'hidden.showSettings' )
+    if ( prefs.value( 'hidden.locked' ) ) { //  || prefs.value( 'hidden.showSettings' )
 
         return
 
     }
 
-    if (prefs.value('hidden.showSettings')) {
+    if ( prefs.value( 'hidden.showSettings' ) ) {
 
         // Hide if already visible
         return escapeAction()
@@ -781,63 +781,63 @@ const openSettingsWindow = async() => {
     hideChooserWindow()
 
     // Create shortcut to close window
-    if (!globalShortcut.isRegistered('Escape')) {
+    if ( !globalShortcut.isRegistered( 'Escape' ) ) {
 
-        globalShortcut.register('Escape', escapeAction)
+        globalShortcut.register( 'Escape', escapeAction )
 
     }
 
     prefsWindow = prefs.show()
 
     // Set events on prefs window
-    if (prefsWindow) {
+    if ( prefsWindow ) {
 
         // Hide window when clicked away
-        prefsWindow.on('blur', () => {
+        prefsWindow.on( 'blur', () => {
 
-            if (!SETTINGS_WINDOW_DEVTOOLS) {
+            if ( !SETTINGS_WINDOW_DEVTOOLS ) {
 
                 hideSettingsWindow()
 
             }
 
-        })
+        } )
 
         // Force opening URLs in the default browser (remember to use `target="_blank"`)
-        prefsWindow.webContents.on('new-window', (event, url) => {
+        prefsWindow.webContents.on( 'new-window', ( event, url ) => {
 
             event.preventDefault()
-            shell.openExternal(url)
+            shell.openExternal( url )
 
-        })
+        } )
 
         // Track window state
-        prefsWindow.on('closed', () => {
+        prefsWindow.on( 'closed', () => {
 
-            prefs.value('hidden.showSettings', false)
+            prefs.value( 'hidden.showSettings', false )
             prefsWindow = null
 
-        })
+        } )
 
         // Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-        prefsWindow.setAlwaysOnTop(true, 'modal-panel')
+        prefsWindow.setAlwaysOnTop( true, 'modal-panel' )
 
         // Modal placement is different per OS
-        if (is.macos) {
+        if ( is.macos ) {
 
             const bounds = mainWindow.getBounds()
-            prefsWindow.setBounds({ y: bounds.y + APP_HEIGHT })
+            prefsWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
         } else {
 
             // Windows
-            const bounds = getWindowBoundsCentered({ window: prefsWindow, useFullBounds: true })
+            const bounds = getWindowBoundsCentered( { window: prefsWindow, useFullBounds: true } )
             const mainBounds = mainWindow.getBounds()
-            prefsWindow.setBounds({ x: bounds.x, y: mainBounds.y + mainBounds.height + 1 })
+            prefsWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
         }
 
-        prefs.value('hidden.showSettings', true)
+        prefs.value( 'hidden.showSettings', true )
 
     }
 
@@ -853,51 +853,51 @@ const moveWindow = options_ => {
     }
 
     const saveSettings = options.targetWindow === mainWindow
-    const locked = prefs.value('hidden.locked')
+    const locked = prefs.value( 'hidden.locked' )
 
-    if (!locked) {
+    if ( !locked ) {
 
-        log.info('Move', options.direction)
+        log.info( 'Move', options.direction )
         let newBound
         const bounds = options.targetWindow.getBounds()
-        switch (options.direction) {
+        switch ( options.direction ) {
 
             case 'up':
                 newBound = bounds.y - options.distance
-                options.targetWindow.setBounds({ y: newBound })
-                if (saveSettings) {
+                options.targetWindow.setBounds( { y: newBound } )
+                if ( saveSettings ) {
 
-                    prefs.value('hidden.positionY', newBound)
+                    prefs.value( 'hidden.positionY', newBound )
 
                 }
 
                 break
             case 'down':
                 newBound = bounds.y + options.distance
-                options.targetWindow.setBounds({ y: newBound })
-                if (saveSettings) {
+                options.targetWindow.setBounds( { y: newBound } )
+                if ( saveSettings ) {
 
-                    prefs.value('hidden.positionY', newBound)
+                    prefs.value( 'hidden.positionY', newBound )
 
                 }
 
                 break
             case 'left':
                 newBound = bounds.x - options.distance
-                options.targetWindow.setBounds({ x: newBound })
-                if (saveSettings) {
+                options.targetWindow.setBounds( { x: newBound } )
+                if ( saveSettings ) {
 
-                    prefs.value('hidden.positionX', newBound)
+                    prefs.value( 'hidden.positionX', newBound )
 
                 }
 
                 break
             case 'right':
                 newBound = bounds.x + options.distance
-                options.targetWindow.setBounds({ x: newBound })
-                if (saveSettings) {
+                options.targetWindow.setBounds( { x: newBound } )
+                if ( saveSettings ) {
 
-                    prefs.value('hidden.positionX', newBound)
+                    prefs.value( 'hidden.positionX', newBound )
 
                 }
 
@@ -922,78 +922,78 @@ const moveWindowToNextDisplay = options => {
     const displays = screen.getAllDisplays()
 
     // Get current display
-    const currentDisplay = screen.getDisplayNearestPoint(options.targetWindow.getBounds())
+    const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
 
     // Get index of current
-    let index = displays.map(element => element.id).indexOf(currentDisplay.id)
+    let index = displays.map( element => element.id ).indexOf( currentDisplay.id )
 
     // Increment and save
-    index = (index + 1) % displays.length
+    index = ( index + 1 ) % displays.length
 
-    centerAppWindow({ display: displays[index], targetWindow: options.targetWindow })
+    centerAppWindow( { display: displays[index], targetWindow: options.targetWindow } )
 
 }
 
 const escapeAction = () => {
 
-    log.info('Escape event')
+    log.info( 'Escape event' )
 
     hideChooserWindow()
     hideSettingsWindow()
-    globalShortcut.unregister('Escape')
+    globalShortcut.unregister( 'Escape' )
 
 }
 
 const registerFollowMouse = async() => {
 
     // Prevent saving bounds
-    mainWindow.removeAllListeners('move')
+    mainWindow.removeAllListeners( 'move' )
 
-    log.info('Setting: Mouse Follow')
+    log.info( 'Setting: Mouse Follow' )
     ioHook = await importIoHook()
-    ioHook.removeAllListeners('mousemove')
+    ioHook.removeAllListeners( 'mousemove' )
 
     // Unregister
 
     // Register
-    ioHook.on('mousemove', event => {
+    ioHook.on( 'mousemove', event => {
 
-        mainWindow.setBounds({
-            x: event.x - (APP_WIDTH / 2),
-            y: event.y - (APP_HEIGHT / 2),
-        })
+        mainWindow.setBounds( {
+            x: event.x - ( APP_WIDTH / 2 ),
+            y: event.y - ( APP_HEIGHT / 2 ),
+        } )
 
-    })
+    } )
 
 }
 
 const registerHideOnMouse = async() => {
 
-    log.info('Setting: Mouse Hide')
+    log.info( 'Setting: Mouse Hide' )
     ioHook = await importIoHook()
 
-    const mouseButton = Number.parseInt(prefs.value('mouse.hideOnMouse'), 10)
+    const mouseButton = Number.parseInt( prefs.value( 'mouse.hideOnMouse' ), 10 )
 
     // Register
-    ioHook.on('mousedown', event => {
+    ioHook.on( 'mousedown', event => {
 
-        if (event.button === mouseButton) {
+        if ( event.button === mouseButton ) {
 
             hideWindow()
 
         }
 
-    })
+    } )
 
-    ioHook.on('mouseup', event => {
+    ioHook.on( 'mouseup', event => {
 
-        if (event.button === mouseButton) {
+        if ( event.button === mouseButton ) {
 
             showWindow()
 
         }
 
-    })
+    } )
 
     // Register and start hook
     ioHook.start()
@@ -1002,12 +1002,12 @@ const registerHideOnMouse = async() => {
 
 const registerHideOnKey = async() => {
 
-    log.info('Setting: Keyboard Hide')
+    log.info( 'Setting: Keyboard Hide' )
     ioHook = await importIoHook()
 
-    const hideOnKey = prefs.value('mouse.hideOnKey')
+    const hideOnKey = prefs.value( 'mouse.hideOnKey' )
 
-    if (Object.prototype.hasOwnProperty.call(keycode, hideOnKey)) {
+    if ( Object.prototype.hasOwnProperty.call( keycode, hideOnKey ) ) {
 
         const key = keycode[hideOnKey]
 
@@ -1035,13 +1035,13 @@ const registerHideOnKey = async() => {
 
 const tiltCrosshair = angle => {
 
-    if (angle) {
+    if ( angle ) {
 
-        mainWindow.webContents.send('tilt', angle)
+        mainWindow.webContents.send( 'tilt', angle )
 
     } else {
 
-        mainWindow.webContents.send('untilt')
+        mainWindow.webContents.send( 'untilt' )
 
     }
 
@@ -1051,36 +1051,36 @@ const registerTilt = async() => {
 
     let leftKey
     let rightKey
-    const tiltAngle = Number.parseInt(prefs.value('mouse.tiltAngle'), 10)
-    const tiltToggle = checkboxTrue(prefs.value('mouse.tiltToggle'), 'tiltToggle')
-    const tiltLeft = prefs.value('mouse.tiltLeft')
-    const tiltRight = prefs.value('mouse.tiltRight')
+    const tiltAngle = Number.parseInt( prefs.value( 'mouse.tiltAngle' ), 10 )
+    const tiltToggle = checkboxTrue( prefs.value( 'mouse.tiltToggle' ), 'tiltToggle' )
+    const tiltLeft = prefs.value( 'mouse.tiltLeft' )
+    const tiltRight = prefs.value( 'mouse.tiltRight' )
 
-    log.info('Setting: Tilt')
+    log.info( 'Setting: Tilt' )
     ioHook = await importIoHook()
 
-    if (Object.prototype.hasOwnProperty.call(keycode, tiltLeft)) {
+    if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
 
-        leftKey = Number.parseInt(keycode[tiltLeft], 10)
+        leftKey = Number.parseInt( keycode[tiltLeft], 10 )
 
-        if (tiltToggle) {
+        if ( tiltToggle ) {
 
             ioHook.registerShortcut(
                 [ leftKey ],
                 _ => {
 
-                    const tilted = prefs.value('hidden.tilted')
-                    if (tilted) {
+                    const tilted = prefs.value( 'hidden.tilted' )
+                    if ( tilted ) {
 
-                        tiltCrosshair(0)
+                        tiltCrosshair( 0 )
 
                     } else {
 
-                        tiltCrosshair(tiltAngle * -1)
+                        tiltCrosshair( tiltAngle * -1 )
 
                     }
 
-                    prefs.value('hidden.tilted', !tilted)
+                    prefs.value( 'hidden.tilted', !tilted )
 
                 },
             )
@@ -1091,12 +1091,12 @@ const registerTilt = async() => {
                 [ leftKey ],
                 _ => {
 
-                    tiltCrosshair(tiltAngle * -1)
+                    tiltCrosshair( tiltAngle * -1 )
 
                 },
                 _ => {
 
-                    tiltCrosshair(0)
+                    tiltCrosshair( 0 )
 
                 },
             )
@@ -1105,28 +1105,28 @@ const registerTilt = async() => {
 
     }
 
-    if (Object.prototype.hasOwnProperty.call(keycode, tiltRight)) {
+    if ( Object.prototype.hasOwnProperty.call( keycode, tiltRight ) ) {
 
-        rightKey = Number.parseInt(keycode[tiltRight], 10)
+        rightKey = Number.parseInt( keycode[tiltRight], 10 )
 
-        if (tiltToggle) {
+        if ( tiltToggle ) {
 
             ioHook.registerShortcut(
                 [ rightKey ],
                 _ => {
 
-                    const tilted = prefs.value('hidden.tilted')
-                    if (tilted) {
+                    const tilted = prefs.value( 'hidden.tilted' )
+                    if ( tilted ) {
 
-                        tiltCrosshair(0)
+                        tiltCrosshair( 0 )
 
                     } else {
 
-                        tiltCrosshair(tiltAngle)
+                        tiltCrosshair( tiltAngle )
 
                     }
 
-                    prefs.value('hidden.tilted', !tilted)
+                    prefs.value( 'hidden.tilted', !tilted )
 
                 },
             )
@@ -1137,12 +1137,12 @@ const registerTilt = async() => {
                 [ rightKey ],
                 _ => {
 
-                    tiltCrosshair(tiltAngle)
+                    tiltCrosshair( tiltAngle )
 
                 },
                 _ => {
 
-                    tiltCrosshair(0)
+                    tiltCrosshair( 0 )
 
                 },
             )
@@ -1151,7 +1151,7 @@ const registerTilt = async() => {
 
     }
 
-    if (leftKey || rightKey) {
+    if ( leftKey || rightKey ) {
 
         // Register and start hook
         ioHook.start()
@@ -1162,28 +1162,28 @@ const registerTilt = async() => {
 
 const registerSaveWindowBounds = () => {
 
-    mainWindow.on('move', () => {
+    mainWindow.on( 'move', () => {
 
-        saveBounds(mainWindow)
+        saveBounds( mainWindow )
 
-    })
+    } )
 
 }
 
 const registerStartOnBoot = () => {
 
     // Start app on boot
-    if (!is.development && checkboxTrue(prefs.value('app.boot'), 'boot')) {
+    if ( !is.development && checkboxTrue( prefs.value( 'app.boot' ), 'boot' ) ) {
 
-        app.setLoginItemSettings({
+        app.setLoginItemSettings( {
             openAtLogin: true,
-        })
+        } )
 
     } else {
 
-        app.setLoginItemSettings({
+        app.setLoginItemSettings( {
             openAtLogin: false,
-        })
+        } )
 
     }
 
@@ -1192,17 +1192,17 @@ const registerStartOnBoot = () => {
 const registerEvents = () => {
 
     // Sync prefs to renderer
-    prefs.on('save', preferences => {
+    prefs.on( 'save', preferences => {
 
-        console.log(preferences.app)
-        syncSettings(preferences)
+        console.log( preferences.app )
+        syncSettings( preferences )
 
-    })
+    } )
 
     // Sync prefs to renderer
-    prefs.on('click', key => {
+    prefs.on( 'click', key => {
 
-        switch (key) {
+        switch ( key ) {
 
             case 'chooseCrosshair':
                 openChooserWindow()
@@ -1219,26 +1219,26 @@ const registerEvents = () => {
 
         }
 
-    })
+    } )
 
     // Reopen settings/chooser if killed
-    chooserWindow.on('close', async() => {
+    chooserWindow.on( 'close', async() => {
 
         showHideWindow()
         await createChooser()
         registerEvents()
         mainWindow.show()
 
-    })
+    } )
 
     // Close windows if clicked away (mac only)
-    if (!is.development) {
+    if ( !is.development ) {
 
-        chooserWindow.on('blur', () => {
+        chooserWindow.on( 'blur', () => {
 
             hideChooserWindow()
 
-        })
+        } )
 
     }
 
@@ -1247,124 +1247,124 @@ const registerEvents = () => {
 const registerIpc = () => {
 
     /* IP Communication */
-    ipcMain.on('log', (_event, arg) => {
+    ipcMain.on( 'log', ( _event, arg ) => {
 
-        log.info(arg)
+        log.info( arg )
 
-    })
+    } )
 
-    ipcMain.on('preferencesReset', (_event, _arg) => {
+    ipcMain.on( 'preferencesReset', ( _event, _arg ) => {
 
-        log.info('RESET')
+        log.info( 'RESET' )
 
-    })
+    } )
 
-    ipcMain.on('open_chooser', _ => {
+    ipcMain.on( 'open_chooser', _ => {
 
         openChooserWindow()
 
-    })
+    } )
 
-    ipcMain.on('open_settings', _ => {
+    ipcMain.on( 'open_settings', _ => {
 
         openSettingsWindow()
 
-    })
+    } )
 
-    ipcMain.on('close_chooser', _ => {
+    ipcMain.on( 'close_chooser', _ => {
 
         hideChooserWindow()
 
-    })
+    } )
 
-    ipcMain.on('close_window', event => {
+    ipcMain.on( 'close_window', event => {
 
         // Close a shadow window
-        closeShadowWindows(event.sender.id)
+        closeShadowWindows( event.sender.id )
 
-    })
+    } )
 
-    ipcMain.on('focus_window', _ => {
+    ipcMain.on( 'focus_window', _ => {
 
         mainWindow.focus()
 
-    })
+    } )
 
-    ipcMain.on('save_custom_image', (event, arg) => {
+    ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
-        log.info(`Setting custom image: ${arg}`)
-        setCustomCrosshair(arg)
+        log.info( `Setting custom image: ${arg}` )
+        setCustomCrosshair( arg )
 
-    })
+    } )
 
-    ipcMain.on('get_crosshairs', async _ => {
+    ipcMain.on( 'get_crosshairs', async _ => {
 
         // Setup crosshair chooser, must come before the check below
-        if (chooserWindow) {
+        if ( chooserWindow ) {
 
-            chooserWindow.webContents.send('load_crosshairs', {
+            chooserWindow.webContents.send( 'load_crosshairs', {
                 crosshairs: await getCrosshairImages(),
-                current: prefs.value('crosshair.crosshair'),
-            })
+                current: prefs.value( 'crosshair.crosshair' ),
+            } )
 
         }
 
-    })
+    } )
 
-    ipcMain.on('save_crosshair', (event, arg) => {
+    ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-        setCrosshair(arg)
+        setCrosshair( arg )
 
-    })
+    } )
 
-    ipcMain.on('center_window', () => {
+    ipcMain.on( 'center_window', () => {
 
-        log.info('Center window')
+        log.info( 'Center window' )
 
-        playSound('CENTER')
+        playSound( 'CENTER' )
         centerAppWindow()
 
-    })
+    } )
 
-    ipcMain.on('restart_app', () => {
+    ipcMain.on( 'restart_app', () => {
 
         autoUpdater.quitAndInstall()
 
-    })
+    } )
 
-    ipcMain.on('quit', () => {
+    ipcMain.on( 'quit', () => {
 
         app.quit()
 
-    })
+    } )
 
     // Used for testing
-    ipcMain.handle('invoke-test', async(event, arg) => {
+    ipcMain.handle( 'invoke-test', async( event, arg ) => {
 
-        console.log('invoke-test', arg)
+        console.log( 'invoke-test', arg )
 
         return 'ok'
 
-    })
+    } )
 
-    ipcMain.on('move_window', arg => {
+    ipcMain.on( 'move_window', arg => {
 
-        moveWindow(arg)
+        moveWindow( arg )
 
-    })
+    } )
 
-    ipcMain.on('play_sound', arg => {
+    ipcMain.on( 'play_sound', arg => {
 
-        playSound(arg)
+        playSound( arg )
 
-    })
+    } )
 
 }
 
 const setTheme = theme => {
 
     const THEME_VALUES = [ 'light', 'dark', 'system' ]
-    nativeTheme.themeSource = THEME_VALUES.includes(theme) ? theme : DEFAULT_THEME
+    nativeTheme.themeSource = THEME_VALUES.includes( theme ) ? theme : DEFAULT_THEME
 
     return nativeTheme.shouldUseDarkColors
 
@@ -1372,9 +1372,9 @@ const setTheme = theme => {
 
 const notification = options => {
 
-    if (checkboxTrue(prefs.value('app.notify'), 'notify')) {
+    if ( checkboxTrue( prefs.value( 'app.notify' ), 'notify' ) ) {
 
-        mainWindow.webContents.send('notify', options)
+        mainWindow.webContents.send( 'notify', options )
 
     }
 
@@ -1382,15 +1382,15 @@ const notification = options => {
 
 const preloadSounds = () => {
 
-    mainWindow.webContents.send('preload_sounds', path.join(__static, 'sounds') + path.sep)
+    mainWindow.webContents.send( 'preload_sounds', path.join( __static, 'sounds' ) + path.sep )
 
 }
 
 const playSound = sound => {
 
-    if (checkboxTrue(prefs.value('app.sounds'), 'sounds')) {
+    if ( checkboxTrue( prefs.value( 'app.sounds' ), 'sounds' ) ) {
 
-        mainWindow.webContents.send('play_sound', sound)
+        mainWindow.webContents.send( 'play_sound', sound )
 
     }
 
@@ -1398,27 +1398,27 @@ const playSound = sound => {
 
 const syncSettings = preferences => {
 
-    log.info('Sync preferences')
+    log.info( 'Sync preferences' )
 
-    setTheme(preferences?.app?.theme)
+    setTheme( preferences?.app?.theme )
 
-    if (preferences?.crosshair?.crosshair) {
+    if ( preferences?.crosshair?.crosshair ) {
 
-        setCrosshair(preferences.crosshair.crosshair)
+        setCrosshair( preferences.crosshair.crosshair )
 
     }
 
-    setColor(preferences?.crosshair?.color)
-    setOpacity(preferences?.crosshair?.opacity)
-    setSight(preferences?.crosshair?.reticle)
-    setSize(preferences?.crosshair?.size)
+    setColor( preferences?.crosshair?.color )
+    setOpacity( preferences?.crosshair?.opacity )
+    setSight( preferences?.crosshair?.reticle )
+    setSize( preferences?.crosshair?.size )
 
     // Reset all custom shortcuts
-    const escapeActive = globalShortcut.isRegistered('Escape')
+    const escapeActive = globalShortcut.isRegistered( 'Escape' )
     globalShortcut.unregisterAll()
-    if (escapeActive) {
+    if ( escapeActive ) {
 
-        globalShortcut.register('Escape', escapeAction)
+        globalShortcut.register( 'Escape', escapeAction )
 
     }
 
@@ -1508,7 +1508,7 @@ const keyboardShortcuts = () => {
             keybind: `${accelerator}+Up`,
             fn() {
 
-                moveWindow({ direction: 'up' })
+                moveWindow( { direction: 'up' } )
 
             },
         },
@@ -1517,7 +1517,7 @@ const keyboardShortcuts = () => {
             keybind: `${accelerator}+Down`,
             fn() {
 
-                moveWindow({ direction: 'down' })
+                moveWindow( { direction: 'down' } )
 
             },
         },
@@ -1526,7 +1526,7 @@ const keyboardShortcuts = () => {
             keybind: `${accelerator}+Left`,
             fn() {
 
-                moveWindow({ direction: 'left' })
+                moveWindow( { direction: 'left' } )
 
             },
         },
@@ -1535,7 +1535,7 @@ const keyboardShortcuts = () => {
             keybind: `${accelerator}+Right`,
             fn() {
 
-                moveWindow({ direction: 'right' })
+                moveWindow( { direction: 'right' } )
 
             },
         },
@@ -1547,31 +1547,31 @@ const registerShortcuts = () => {
 
     // Register all shortcuts
     const { keybinds } = prefs.defaults
-    const custom = prefs.value('keybinds') // Defaults
-    for (const shortcut of keyboardShortcuts()) {
+    const custom = prefs.value( 'keybinds' ) // Defaults
+    for ( const shortcut of keyboardShortcuts() ) {
 
         // Custom shortcuts
-        if (custom[shortcut.action] === '') {
+        if ( custom[shortcut.action] === '' ) {
 
-            log.info(`Clearing keybind for ${shortcut.action}`)
+            log.info( `Clearing keybind for ${shortcut.action}` )
 
-        } else if (custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action]) {
+        } else if ( custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action] ) {
 
             // If a custom shortcut exists for this action
-            log.info(`Custom keybind for ${shortcut.action}`)
-            globalShortcut.register(custom[shortcut.action], shortcut.fn)
+            log.info( `Custom keybind for ${shortcut.action}` )
+            globalShortcut.register( custom[shortcut.action], shortcut.fn )
 
-        } else if (keybinds[shortcut.action]) {
+        } else if ( keybinds[shortcut.action] ) {
 
             // Set default keybind
-            globalShortcut.register(keybinds[shortcut.action], shortcut.fn)
+            globalShortcut.register( keybinds[shortcut.action], shortcut.fn )
 
         } else {
 
             // Fallback to internal bind - THIS SHOULDNT HAPPEN
             // if it does you forgot to add a default keybind for this shortcut
-            log.info('ERROR', shortcut)
-            globalShortcut.register(shortcut.keybind, shortcut.fn)
+            log.info( 'ERROR', shortcut )
+            globalShortcut.register( shortcut.keybind, shortcut.fn )
 
         }
 
@@ -1581,19 +1581,19 @@ const registerShortcuts = () => {
 
 const createChooser = async currentCrosshair => {
 
-    if (!currentCrosshair) {
+    if ( !currentCrosshair ) {
 
-        currentCrosshair = prefs.value('crosshair.crosshair')
+        currentCrosshair = prefs.value( 'crosshair.crosshair' )
 
     }
 
-    chooserWindow = await createChildWindow(mainWindow, 'chooser')
+    chooserWindow = await createChildWindow( mainWindow, 'chooser' )
 
     // Setup crosshair chooser, must come before the check below
-    chooserWindow.webContents.send('load_crosshairs', {
+    chooserWindow.webContents.send( 'load_crosshairs', {
         crosshairs: await getCrosshairImages(),
         current: currentCrosshair,
-    })
+    } )
 
     return chooserWindow
 
@@ -1601,12 +1601,12 @@ const createChooser = async currentCrosshair => {
 
 const unregisterIOHook = () => {
 
-    if (ioHook) {
+    if ( ioHook ) {
 
         ioHook.unregisterAllShortcuts()
-        ioHook.removeAllListeners('mousedown')
-        ioHook.removeAllListeners('mouseup')
-        ioHook.removeAllListeners('mousemove')
+        ioHook.removeAllListeners( 'mousedown' )
+        ioHook.removeAllListeners( 'mouseup' )
+        ioHook.removeAllListeners( 'mousemove' )
 
     }
 
@@ -1635,9 +1635,9 @@ const unregisterIOHook = () => {
 const resetPreferences = () => {
 
     const { defaults } = prefs
-    for (const [ key, value ] of Object.entries(defaults)) {
+    for ( const [ key, value ] of Object.entries( defaults ) ) {
 
-        prefs.value(key, value)
+        prefs.value( key, value )
 
     }
 
@@ -1645,7 +1645,7 @@ const resetPreferences = () => {
 
 const resetApp = async skipSetup => {
 
-    playSound('RESET')
+    playSound( 'RESET' )
 
     // Close extra crosshairs
     closeShadowWindows()
@@ -1653,17 +1653,17 @@ const resetApp = async skipSetup => {
     // Hides chooser and preferences
     escapeAction()
     resetPreferences()
-    centerAppWindow({ targetWindow: mainWindow })
+    centerAppWindow( { targetWindow: mainWindow } )
 
-    if (!skipSetup) {
+    if ( !skipSetup ) {
 
         unregisterIOHook()
 
         globalShortcut.unregisterAll()
             // IpcMain.removeAllListeners()
-        mainWindow.removeAllListeners('move')
+        mainWindow.removeAllListeners( 'move' )
 
-        setupApp(true)
+        setupApp( true )
 
     }
 
@@ -1672,7 +1672,7 @@ const resetApp = async skipSetup => {
 const setupApp = async triggeredFromReset => {
 
     // Preferences
-    prefs.value('hidden.showSettings', false)
+    prefs.value( 'hidden.showSettings', false )
 
     // IPC
     registerIpc()
@@ -1681,50 +1681,50 @@ const setupApp = async triggeredFromReset => {
     registerStartOnBoot()
 
     // Set to previously selected crosshair
-    const currentCrosshair = prefs.value('crosshair.crosshair')
+    const currentCrosshair = prefs.value( 'crosshair.crosshair' )
 
-    if (currentCrosshair) {
+    if ( currentCrosshair ) {
 
-        log.info(`Set crosshair: ${currentCrosshair}`)
-        mainWindow.webContents.send('set_crosshair', currentCrosshair)
+        log.info( `Set crosshair: ${currentCrosshair}` )
+        mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
 
     }
 
-    setColor(prefs.value('crosshair.color'))
-    setOpacity(prefs.value('crosshair.opacity'))
-    setSight(prefs.value('crosshair.reticle'))
-    setSize(prefs.value('crosshair.size'))
+    setColor( prefs.value( 'crosshair.color' ) )
+    setOpacity( prefs.value( 'crosshair.opacity' ) )
+    setSight( prefs.value( 'crosshair.reticle' ) )
+    setSize( prefs.value( 'crosshair.size' ) )
 
     // Center app by default - set position if exists
-    if (prefs.value('hidden.positionX') !== null && typeof prefs.value('hidden.positionX') !== 'undefined') {
+    if ( prefs.value( 'hidden.positionX' ) !== null && typeof prefs.value( 'hidden.positionX' ) !== 'undefined' ) {
 
-        setPosition(prefs.value('hidden.positionX'), prefs.value('hidden.positionY'))
+        setPosition( prefs.value( 'hidden.positionX' ), prefs.value( 'hidden.positionY' ) )
 
     }
 
     // Set lock state, timeout makes it pretty
-    setTimeout(() => {
+    setTimeout( () => {
 
         // Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
         registerShortcuts()
 
-        const locked = prefs.value('hidden.locked')
+        const locked = prefs.value( 'hidden.locked' )
 
-        lockWindow(locked)
+        lockWindow( locked )
 
         // Show on first load if unlocked (unlocking shows already)
         // if locked we have to call show() if another window has focus
-        if (locked) {
+        if ( locked ) {
 
             mainWindow.show()
 
         }
 
-    }, 500)
+    }, 500 )
 
-    if (!chooserWindow) {
+    if ( !chooserWindow ) {
 
-        await createChooser(currentCrosshair)
+        await createChooser( currentCrosshair )
 
     }
 
@@ -1732,10 +1732,10 @@ const setupApp = async triggeredFromReset => {
     registerEvents()
 
     // Allow command-line reset
-    if (process.env.CROSSOVER_RESET && !triggeredFromReset) {
+    if ( process.env.CROSSOVER_RESET && !triggeredFromReset ) {
 
-        log.info('Command-line reset triggered')
-        resetApp(true)
+        log.info( 'Command-line reset triggered' )
+        resetApp( true )
 
     }
 
@@ -1745,31 +1745,31 @@ const setupApp = async triggeredFromReset => {
 
 const setupShadowWindow = async shadow => {
 
-    shadow.webContents.send('add_class', 'shadow')
-    shadow.webContents.send('set_crosshair', prefs.value('crosshair.crosshair'))
-    setColor(prefs.value('crosshair.color'), shadow)
-    setOpacity(prefs.value('crosshair.opacity'), shadow)
-    setSight(prefs.value('crosshair.reticle'), shadow)
-    setSize(prefs.value('crosshair.size'), shadow)
-    if (prefs.value('hidden.positionX') > -1) {
+    shadow.webContents.send( 'add_class', 'shadow' )
+    shadow.webContents.send( 'set_crosshair', prefs.value( 'crosshair.crosshair' ) )
+    setColor( prefs.value( 'crosshair.color' ), shadow )
+    setOpacity( prefs.value( 'crosshair.opacity' ), shadow )
+    setSight( prefs.value( 'crosshair.reticle' ), shadow )
+    setSize( prefs.value( 'crosshair.size' ), shadow )
+    if ( prefs.value( 'hidden.positionX' ) > -1 ) {
 
         // Offset position slightly
-        setPosition(prefs.value('hidden.positionX') + (shadowWindows.size * SHADOW_WINDOW_OFFSET), prefs.value('hidden.positionY') + (shadowWindows.size * SHADOW_WINDOW_OFFSET), shadow)
+        setPosition( prefs.value( 'hidden.positionX' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), prefs.value( 'hidden.positionY' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
     }
 
-    lockWindow(prefs.value('hidden.locked'), shadow)
+    lockWindow( prefs.value( 'hidden.locked' ), shadow )
 
 }
 
 // Opening 2nd instance focuses app
-app.on('second-instance', () => {
+app.on( 'second-instance', () => {
 
-    if (mainWindow) {
+    if ( mainWindow ) {
 
         createShadowWindow()
 
-        if (mainWindow.isMinimized()) {
+        if ( mainWindow.isMinimized() ) {
 
             mainWindow.restore()
 
@@ -1777,18 +1777,18 @@ app.on('second-instance', () => {
 
         mainWindow.show()
 
-        toggleWindowLock(false)
+        toggleWindowLock( false )
 
     }
 
-})
+} )
 
-app.on('will-quit', () => {
+app.on( 'will-quit', () => {
 
     // Unregister all shortcuts.
     globalShortcut.unregisterAll()
 
-})
+} )
 
 // Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
 // a `beforeunload` window event handler results in a disconnected white
@@ -1796,28 +1796,28 @@ app.on('will-quit', () => {
 // The `before-quit` Electron event is triggered in `SIGINT`, so we can
 // make use of it to ensure the browser window is completely destroyed.
 // See https://github.com/electron/electron/issues/5273
-app.on('before-quit', () => {
+app.on( 'before-quit', () => {
 
     app.releaseSingleInstanceLock()
-    process.exit(EXIT_CODES.SUCCESS)
+    process.exit( EXIT_CODES.SUCCESS )
 
-})
+} )
 
-app.on('window-all-closed', app.quit)
+app.on( 'window-all-closed', app.quit )
 
-app.on('activate', async() => {
+app.on( 'activate', async() => {
 
-    if (!mainWindow) {
+    if ( !mainWindow ) {
 
         mainWindow = await createMainWindow()
 
     }
 
-})
+} )
 
 const ready = async() => {
 
-    log.info('App ready')
+    log.info( 'App ready' )
 
     /* MENU */
     const preferencesMenu = {
@@ -1836,33 +1836,33 @@ const ready = async() => {
         async click() {
 
             // Open dialog
-            await dialog.showOpenDialog({
+            await dialog.showOpenDialog( {
                 title: 'Select Custom Image',
                 message: 'Choose an image file to load into CrossOver',
                 filters: FILE_FILTERS,
                 properties: [ 'openFile', 'dontAddToRecent' ],
-            }).then(result => {
+            } ).then( result => {
 
                 const image = result.filePaths?.[0]
 
-                if (image) {
+                if ( image ) {
 
-                    setCustomCrosshair(image)
+                    setCustomCrosshair( image )
 
-                    mainWindow.webContents.send('notify', { title: 'Crosshair Changed', body: 'Your custom crosshair was loaded.' })
+                    mainWindow.webContents.send( 'notify', { title: 'Crosshair Changed', body: 'Your custom crosshair was loaded.' } )
 
                 }
 
-            }).catch(log.info)
+            } ).catch( log.info )
 
         },
     }
 
     const macosTemplate = [
-        appMenu([
+        appMenu( [
             preferencesMenu,
             openCustomImageMenu,
-        ]),
+        ] ),
         {
             role: 'fileMenu',
         },
@@ -1897,21 +1897,21 @@ const ready = async() => {
 
     const template = process.platform === 'darwin' ? macosTemplate : otherTemplate
 
-    if (is.development) {
+    if ( is.development ) {
 
-        template.push({
+        template.push( {
             label: 'Debug',
             submenu: debugSubmenu,
-        })
+        } )
 
     }
 
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    Menu.setApplicationMenu( Menu.buildFromTemplate( template ) )
 
     mainWindow = await createMainWindow()
 
     // Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-    mainWindow.setAlwaysOnTop(true, 'screen-saver')
+    mainWindow.setAlwaysOnTop( true, 'screen-saver' )
         // Log.info( mainWindow.getNativeWindowHandle() )
 
     preloadSounds()
@@ -1922,7 +1922,7 @@ const ready = async() => {
     /* Press Play >>> */
     setupApp()
 
-    console.timeEnd('init')
+    console.timeEnd( 'init' )
 
 }
 
@@ -1931,6 +1931,6 @@ module.exports = async() => {
     await app.whenReady()
 
     // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-    setTimeout(ready, 400)
+    setTimeout( ready, 400 )
 
 }
