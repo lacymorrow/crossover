@@ -10,7 +10,7 @@ test.beforeAll( async () => {
 	electronApp = app.electronApp
 	mainPage = app.mainPage
 
-	await visualMouse( mainPage )
+	// await visualMouse( mainPage )
 
 } )
 // End setup
@@ -104,7 +104,7 @@ test( 'Validate buttons: preferences', async () => {
 	const button = await mainPage.locator( '.settings-button' )
 	button.click()
 
-	await wait( 500 )
+	await wait( 1000 )
 
 	const windows = electronApp.windows()
 	const titles = await Promise.all(

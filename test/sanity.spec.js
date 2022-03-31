@@ -43,7 +43,7 @@ test( 'Test get mainWindow', async () => {
 
 	const result = await electronApp.evaluate( async app => app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' ).title )
 
-	expect( result ).toBe( productName )
+	expect( result, 'should be `CrossOver`' ).toBe( productName )
 
 } )
 

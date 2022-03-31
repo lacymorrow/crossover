@@ -11,7 +11,7 @@ const config = {
 
 	workers: 1,
 
-	shard: { total: 1, current: 1 },
+	// shard: { total: 1, current: 1 },
 
 	expect: {
 
