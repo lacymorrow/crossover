@@ -1,7 +1,5 @@
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
-const { getMainWindow, startApp, visualMouse, wait } = require( './helpers.js' )
-const { productName } = require('../package.json');
+const { startApp, visualMouse, wait } = require( './helpers.js' )
 
 let electronApp
 let mainPage
@@ -12,11 +10,11 @@ test.beforeAll( async () => {
 	electronApp = app.electronApp
 	mainPage = app.mainPage
 
- 	await visualMouse( mainPage )
+	await visualMouse( mainPage )
 
 } )
 
-test.afterEach( async () => await wait(500) )
+test.afterEach( async () => wait( 500 ) )
 
 // End setup
 
@@ -28,57 +26,42 @@ test( 'Validate buttons: info button', async () => {
 } )
 
 test( 'Validate buttons: move + center button', async () => {
+
 	const button = await mainPage.locator( '.center-button' )
 	await button.dblclick()
-	await wait(500)
+	await wait( 500 )
 
 	// Get app bounds
-	const bounds = await electronApp.evaluate( async ( app ) => {
-		return await Promise.all(
-			app.BrowserWindow.getAllWindows().filter(w => {
-				return w.title === 'CrossOver'
-			}).map(async w=>{
-				return w.getBounds()
-			})
-		)
-	}).then(arr => arr[0])
+	const bounds = await electronApp.evaluate( async app => Promise.all(
+		app.BrowserWindow.getAllWindows().filter( w => w.title === 'CrossOver' ).map( async w => w.getBounds() ),
+	) ).then( array => array[0] )
 
 	// Move
-	await electronApp.evaluate( async ( app ) => {
-		await app.ipcMain.emit( 'move_window', {distance: 50, direction: 'right'} )
-		await app.ipcMain.emit( 'move_window', {distance: 50, direction: 'down'} )
-	})
-	await wait(500)
+	await electronApp.evaluate( async app => {
 
-	let newBounds = await electronApp.evaluate( async ( app ) => {
-		return await Promise.all(
-			app.BrowserWindow.getAllWindows().filter(w => {
-				return w.title === 'CrossOver'
-			}).map(async w=>{
-				return w.getBounds()
-			})
-		)
-	}).then(arr => arr[0])
+		await app.ipcMain.emit( 'move_window', { distance: 50, direction: 'right' } )
+		await app.ipcMain.emit( 'move_window', { distance: 50, direction: 'down' } )
 
-	expect(newBounds.x).toBe(bounds.x + 50)
-	expect(newBounds.y).toBe(bounds.y + 50)
+	} )
+	await wait( 500 )
+
+	let newBounds = await electronApp.evaluate( async app => Promise.all(
+		app.BrowserWindow.getAllWindows().filter( w => w.title === 'CrossOver' ).map( async w => w.getBounds() ),
+	) ).then( array => array[0] )
+
+	expect( newBounds.x ).toBe( bounds.x + 50 )
+	expect( newBounds.y ).toBe( bounds.y + 50 )
 
 	// Recenter
 	await button.dblclick()
-	await wait(500)
+	await wait( 500 )
 
-	newBounds = await electronApp.evaluate( async ( app ) => {
-		return await Promise.all(
-			app.BrowserWindow.getAllWindows().filter(w => {
-				return w.title === 'CrossOver'
-			}).map(async w=>{
-				return w.getBounds()
-			})
-		)
-	}).then(arr => arr[0])
+	newBounds = await electronApp.evaluate( async app => Promise.all(
+		app.BrowserWindow.getAllWindows().filter( w => w.title === 'CrossOver' ).map( async w => w.getBounds() ),
+	) ).then( array => array[0] )
 
-	expect(newBounds.x).toBe(bounds.x)
-	expect(newBounds.y).toBe(bounds.y)
+	expect( newBounds.x ).toBe( bounds.x )
+	expect( newBounds.y ).toBe( bounds.y )
 
 } )
 
@@ -87,31 +70,34 @@ test( 'Validate buttons: chooser button', async () => {
 	const button = await mainPage.locator( '.center-button' )
 	button.click()
 
-	await wait(500)
+	await wait( 500 )
 
-	const focused = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'Crosshairs'
-		})[0]
+	const focused = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Crosshairs' )
 		win.focus()
+
 		return win.isFocused()
-	})
+
+	} )
 	expect( focused ).toBe( true )
 
-	const minimized = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'Crosshairs'
-		})[0]
+	const minimized = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Crosshairs' )
+
 		return win.isMinimized()
-	})
+
+	} )
 	expect( minimized ).toBe( false )
 
-	const visible = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'Crosshairs'
-		})[0]
+	const visible = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Crosshairs' )
+
 		return win.isVisible()
-	})
+
+	} )
 	expect( visible ).toBe( true )
 
 } )
@@ -121,41 +107,47 @@ test( 'Validate buttons: preferences', async () => {
 	const button = await mainPage.locator( '.settings-button' )
 	button.click()
 
-	await wait(500)
+	await wait( 500 )
 
 	const windows = electronApp.windows()
 	const titles = await Promise.all(
-		windows.map(async w=>{
+		windows.map( async w => {
+
 			const i = await w.title()
-			return await i
-		})
+
+			return i
+
+		} ),
 	)
 
-	console.log('All windows: ', titles)
+	console.log( 'All windows:', titles )
 
-	const focused = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'CrossOver Preferences'
-		})[0]
+	const focused = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Preferences' )
 		win.focus()
+
 		return win.isFocused()
-	})
+
+	} )
 	expect( focused ).toBe( true )
 
-	const minimized = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'CrossOver Preferences'
-		})[0]
+	const minimized = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Preferences' )
+
 		return win.isMinimized()
-	})
+
+	} )
 	expect( minimized ).toBe( false )
 
-	const visible = await electronApp.evaluate( async ( app ) => {
-		const win = app.BrowserWindow.getAllWindows().filter(w => {
-			return w.title === 'CrossOver Preferences'
-		})[0]
+	const visible = await electronApp.evaluate( async app => {
+
+		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'Preferences' )
+
 		return win.isVisible()
-	})
+
+	} )
 	expect( visible ).toBe( true )
 
 } )
@@ -169,12 +161,13 @@ test( 'Validate buttons: close button', async () => {
 
 		// Close button is hidden on mac
 		console.log( 'MacOS, skipping close button test' )
-		await mainPage.addScriptTag( { content: `document.body.classList.remove('mac')` } )
+		await mainPage.addScriptTag( { content: 'document.body.classList.remove(\'mac\')' } )
 
 	}
-	await wait(500)
 
-	await mainPage.locator( '.close-button' ).click({ force: true })
+	await wait( 500 )
+
+	await mainPage.locator( '.close-button' ).click( { force: true } )
 	try {
 
 		console.log( 'This should throw an error!', await mainPage.title() )

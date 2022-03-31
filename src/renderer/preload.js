@@ -21,14 +21,14 @@ const api = {
 	unhandled,
 	debugInfo,
 	openNewGitHubIssue,
-	send( channel, data ) {
+	send( channel, ...args ) {
 
 		// Whitelist channels
 		const validChannels = new Set( [ 'center_window', 'close_window', 'focus_window', 'save_custom_image', 'open_chooser', 'open_settings', 'quit' ] )
 
 		if ( validChannels.has( channel ) ) {
 
-			ipcRenderer.send( channel, data )
+			ipcRenderer.send( channel, ...args )
 
 		}
 
@@ -46,6 +46,21 @@ const api = {
 		}
 
 	},
+
+	invoke( channel, arg ) {
+
+		console.log( 'preload', arg )
+
+		const validChannels = new Set( [ 'invoke-test', 'get_bounds', 'play_sound' ] )
+
+		if ( validChannels.has( channel ) ) {
+
+			ipcRenderer.invoke( channel, arg )
+
+		}
+
+	},
+
 }
 
 // Spectron issue: https://github.com/electron-userland/spectron/issues/693

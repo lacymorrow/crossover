@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require( 'path' )
 
 const config = {
 
@@ -21,7 +21,7 @@ const config = {
 
 	projects: [
 		{
-		  name: 'chromium',  // We use 'chromium' here to share screenshots with chromium.
+		  name: 'chromium', // We use 'chromium' here to share screenshots with chromium.
 		  metadata: {
 			  platform: process.platform,
 			  headful: true,
@@ -30,13 +30,13 @@ const config = {
 			  mode: 'default',
 			  video: false,
 			},
-		}
+		},
 	],
 
 	use: {
 		browserName: 'chromium',
 		coverageName: 'electron',
-		// slowMo: 100,
+		// SlowMo: 100,
 		headless: false,
 		ignoreHTTPSErrors: true,
 		screenshot: 'on',
@@ -45,6 +45,5 @@ const config = {
 		viewport: { width: 1280, height: 720 },
 	},
 }
-
 
 export default config

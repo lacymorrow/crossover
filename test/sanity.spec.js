@@ -1,8 +1,6 @@
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
+const { productName } = require( '../package.json' )
 const { startApp, wait } = require( './helpers.js' )
-const { productName } = require('../package.json');
-
 
 // Breakpoint: await mainPage.pause()
 
@@ -19,7 +17,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterEach( async () => await wait(500) )
+test.afterEach( async () => wait( 500 ) )
 
 test.afterAll( async () => {
 
@@ -27,7 +25,7 @@ test.afterAll( async () => {
 
 } )
 
-// test( 'Validate Fixtures', async ({browser, browserName, page}) => {
+// Test( 'Validate Fixtures', async ({browser, browserName, page}) => {
 // 	const mainWindow = await electronApp.evaluate( async ( app ) => {
 // 		const { BrowserWindow } = app
 // 		const mainWindow = await BrowserWindow.getAllWindows()[0]
@@ -43,39 +41,55 @@ test.afterAll( async () => {
 
 test( 'Test get mainWindow', async () => {
 
-	const result = await electronApp.evaluate( async ( app ) => {
-		return await Promise.all(
-			app.BrowserWindow.getAllWindows().filter(w => {
-				return w.title === 'CrossOver'
-			}).map(async w=>{
-				return w.title
-			})
-		)
-	})
+	const result = await electronApp.evaluate( async app => app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' ).title )
 
-	expect(result[0]).toBe(productName)
-})
+	expect( result ).toBe( productName )
 
+} )
 
 test( 'Test playwright input', async () => {
 
-	expect(windows[0]).toBe(mainPage)
-	expect(await electronApp.windows()[0]).toBe(mainPage)
+	expect( windows[0] ).toBe( mainPage )
+	expect( await electronApp.windows()[0] ).toBe( mainPage )
 
-})
+} )
 
 test( 'Test script', async () => {
 
-	await mainPage.addScriptTag( { content: `(() => console.log('Added script tag.'))()` } )
+	await mainPage.addScriptTag( { content: '(() => console.log(\'Added script tag.\'))()' } )
 
-})
-test( 'Test sound', async () => {
+} )
 
-	await electronApp.evaluate( async ( app ) => {
-		await app.ipcMain.emit( 'play_sound', 'RESET' )
-		// await webContents.getAllWebContents().map(e=>e.send( 'play_sound', 'CENTER' ))
-		// await new Promise( r => setTimeout( r, 2000 ) )
+test( 'Play sound from renderer', async () => {
+
+	test.fixme()
+
+	await wait( 500 )
+
+	// Evaluate this script in render process
+	// requires webPreferences.nodeIntegration true and contextIsolation false
+	const result = await mainPage.evaluate( async () => {
+
+		const out = await window.crossover.invoke( 'invoke-test', 'tested!' )
+		console.log( out )
+
+		return out
+
 	} )
-	await wait(2000)
+	console.log( 'success?', result )
+	await wait( 2000 )
 
-})
+} )
+
+test( 'Play sound', async () => {
+
+	await electronApp.evaluate( async app => {
+
+		await app.ipcMain.emit( 'play_sound', 'RESET' )
+		// Await webContents.getAllWebContents().map(e=>e.send( 'play_sound', 'CENTER' ))
+		// await new Promise( r => setTimeout( r, 2000 ) )
+
+	} )
+	await wait( 2000 )
+
+} )

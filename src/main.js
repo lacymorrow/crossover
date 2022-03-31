@@ -67,7 +67,7 @@ const importIoHook = async () => {
 }
 
 /* App setup */
-console.log('***************')
+console.log( '***************' )
 log.info( `CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}` )
 
 // Handle errors early
@@ -200,7 +200,7 @@ const crosshairsPath = path.join( __static, 'crosshairs' )
 const createMainWindow = async isShadowWindow => {
 
 	const options = {
-		title: app.name,
+		title: 'asdasd',
 		titleBarStyle: 'customButtonsOnHover',
 		backgroundColor: '#00FFFFFF',
 		acceptFirstMouse: true,
@@ -844,13 +844,13 @@ const openSettingsWindow = async () => {
 
 }
 
-const moveWindow = opts => {
+const moveWindow = options_ => {
 
 	options = {
 		distance: 1,
 		direction: 'none',
 		targetWindow: getActiveWindow(),
-		...opts,
+		...options_,
 	}
 
 	const saveSettings = options.targetWindow === mainWindow
@@ -1340,9 +1340,11 @@ const registerIpc = () => {
 	} )
 
 	// Used for testing
-	ipcMain.on( 'play_sound', arg => {
+	ipcMain.handle( 'invoke-test', async ( event, arg ) => {
 
-		playSound( arg )
+		console.log( 'invoke-test', arg )
+
+		return 'ok'
 
 	} )
 
@@ -1352,6 +1354,11 @@ const registerIpc = () => {
 
 	} )
 
+	ipcMain.on( 'play_sound', arg => {
+
+		playSound( arg )
+
+	} )
 
 }
 
