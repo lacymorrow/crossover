@@ -25,6 +25,18 @@ test( 'Validate buttons: drag + center button', async () => {
 
 	// await mainWindow.pause()
 
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+	await mainWindow.keyboard.press('Control+Alt+Shift+ArrowRight');
+
 	await mainWindow.dragAndDrop( '.info-button', '.center-button' )
 
 	const drag = await mainWindow.locator( '.info-button' )
