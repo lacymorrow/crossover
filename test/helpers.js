@@ -1,6 +1,15 @@
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
-const { expect, test } = require( '@playwright/test' )
+const { _electron: electron } = require( 'playwright' )
 
+const CHOOSER_WINDOW = 'Crosshairs'
+const SETTINGS_WINDOW = 'Preferences'
+
+const delays = {
+	short: 500,
+	medium: 1000,
+	long: 5000,
+}
+
+// eslint-disable-next-line no-promise-executor-return
 const wait = ms => new Promise( r => setTimeout( r, ms ) )
 
 const startApp = async () => {
@@ -47,9 +56,23 @@ const startApp = async () => {
 	// 	path: 'test/screenshots/start.png',
 	// } )
 
+	await wait( 500 )
+
 	return { electronApp, mainPage, page: mainPage, windows }
 
 }
+
+const focusedMinimizedVisible = ( { electronApp, windowName } ) => electronApp.evaluate( async ( { BrowserWindow }, windowName ) => {
+
+	console.log( windowName )
+	const win = BrowserWindow.getAllWindows().find( w => w.title === windowName )
+	win.focus()
+
+	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
+
+}, windowName )
+
+const getBounds = async ( { electronApp, windowName } ) => electronApp.evaluate( async ( { BrowserWindow }, windowName ) => BrowserWindow.getAllWindows().filter( w => w.title === windowName )[0].getBounds(), windowName )
 
 // This injects a box into the page that moves with the mouse;
 // via https://github.com/puppeteer/puppeteer/issues/4378#issuecomment-499726973
@@ -120,6 +143,7 @@ function visualMouseCode() {
 
 		for ( let i = 0; i < 5; i++ ) {
 
+			// eslint-disable-next-line no-bitwise
 			box.classList.toggle( 'button-' + i, buttons & ( 1 << i ) )
 
 		}
@@ -134,4 +158,4 @@ const visualMouse = async mainPage => {
 
 }
 
-module.exports = { startApp, visualMouse, wait }
+module.exports = { CHOOSER_WINDOW, SETTINGS_WINDOW, delays, focusedMinimizedVisible, getBounds, startApp, visualMouse, wait }

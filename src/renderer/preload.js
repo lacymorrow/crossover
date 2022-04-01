@@ -1,7 +1,7 @@
 // Via https://github.com/reZach/secure-electron-template
 const {
-    contextBridge,
-    ipcRenderer,
+	contextBridge,
+	ipcRenderer,
 } = require( 'electron' )
 const unhandled = require( 'electron-unhandled' )
 const { is, debugInfo, openNewGitHubIssue } = require( 'electron-util' )
@@ -12,53 +12,53 @@ console.log( 'Dev:', is.development )
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
-    debounce,
-    isLinux: is.linux,
-    isMacOs: is.macos,
-    play,
-    preload,
-    unhandled,
-    debugInfo,
-    openNewGitHubIssue,
-    send( channel, ...args ) {
+	debounce,
+	isLinux: is.linux,
+	isMacOs: is.macos,
+	play,
+	preload,
+	unhandled,
+	debugInfo,
+	openNewGitHubIssue,
+	send( channel, ...args ) {
 
-        // Whitelist channels
-        const validChannels = new Set( [ 'center_window', 'close_window', 'focus_window', 'save_custom_image', 'open_chooser', 'open_settings', 'quit' ] )
+		// Whitelist channels
+		const validChannels = new Set( [ 'center_window', 'close_window', 'focus_window', 'save_custom_image', 'open_chooser', 'open_settings', 'quit' ] )
 
-        if ( validChannels.has( channel ) ) {
+		if ( validChannels.has( channel ) ) {
 
-            ipcRenderer.send( channel, ...args )
+			ipcRenderer.send( channel, ...args )
 
-        }
+		}
 
-    },
+	},
 
-    receive( channel, func ) {
+	receive( channel, func ) {
 
-        const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_color', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'tilt', 'untilt', 'update_available' ] )
+		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_color', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'tilt', 'untilt', 'update_available' ] )
 
-        if ( validChannels.has( channel ) ) {
+		if ( validChannels.has( channel ) ) {
 
-            // Deliberately strip event as it includes `sender`
-            ipcRenderer.on( channel, ( event, ...args ) => func( ...args ) )
+			// Deliberately strip event as it includes `sender`
+			ipcRenderer.on( channel, ( event, ...args ) => func( ...args ) )
 
-        }
+		}
 
-    },
+	},
 
-    invoke( channel, arg ) {
+	invoke( channel, arg ) {
 
-        console.log( 'preload', arg )
+		console.log( 'preload', arg )
 
-        const validChannels = new Set( [ 'invoke-test', 'get_bounds', 'play_sound' ] )
+		const validChannels = new Set( [ 'invoke_test', 'get_bounds', 'play_sound' ] )
 
-        if ( validChannels.has( channel ) ) {
+		if ( validChannels.has( channel ) ) {
 
-            ipcRenderer.invoke( channel, arg )
+			ipcRenderer.invoke( channel, arg )
 
-        }
+		}
 
-    },
+	},
 
 }
 

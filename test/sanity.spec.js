@@ -1,6 +1,6 @@
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
-const { startApp, wait } = require( './helpers.js' )
+const { startApp, wait, delays } = require( './helpers.js' )
 
 // Breakpoint: await mainPage.pause()
 
@@ -17,7 +17,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterEach( async () => wait( 500 ) )
+test.afterEach( async () => wait( delays.short ) )
 
 test.afterAll( async () => {
 
@@ -41,9 +41,11 @@ test.afterAll( async () => {
 
 test( 'Test get mainWindow', async () => {
 
-	const result = await electronApp.evaluate( async app => app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' ).title )
+	await wait( delays.short )
 
-	expect( result, 'should be `CrossOver`' ).toBe( productName )
+	const result = await electronApp.evaluate( async ( { BrowserWindow }, windowName ) => BrowserWindow.getAllWindows().find( w => w.title === windowName ).title, productName )
+
+	expect( result, 'should be productName' ).toBe( productName )
 
 } )
 
@@ -64,20 +66,20 @@ test( 'Play sound from renderer', async () => {
 
 	test.fixme()
 
-	await wait( 500 )
+	await wait( delays.short )
 
 	// Evaluate this script in render process
 	// requires webPreferences.nodeIntegration true and contextIsolation false
 	const result = await mainPage.evaluate( async () => {
 
-		const out = await window.crossover.invoke( 'invoke-test', 'tested!' )
+		const out = await window.crossover.invoke( 'invoke_test', 'tested!' )
 		console.log( out )
 
 		return out
 
 	} )
 	console.log( 'success?', result )
-	await wait( 2000 )
+	await wait( delays.medium )
 
 } )
 
@@ -87,9 +89,9 @@ test( 'Play sound', async () => {
 
 		await app.ipcMain.emit( 'play_sound', 'RESET' )
 		// Await webContents.getAllWebContents().map(e=>e.send( 'play_sound', 'CENTER' ))
-		// await new Promise( r => setTimeout( r, 2000 ) )
+		// await new Promise( r => setTimeout( r, delays.medium ) )
 
 	} )
-	await wait( 2000 )
+	await wait( delays.medium )
 
 } )

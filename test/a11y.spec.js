@@ -1,7 +1,6 @@
-const { injectAxe, checkA11y, getViolations, reportViolations } = require( 'axe-playwright' )
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
-const { expect, test } = require( '@playwright/test' )
-const { startApp, wait } = require( './helpers.js' )
+const { injectAxe, checkA11y } = require( 'axe-playwright' )
+const { test } = require( '@playwright/test' )
+const { startApp, wait, delays } = require( './helpers.js' )
 
 // Breakpoint: await mainPage.pause()
 
@@ -17,7 +16,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterEach( async () => await wait( 500 ) )
+test.afterEach( async () => wait( delays.short ) )
 
 test.afterAll( async () => {
 
@@ -27,14 +26,12 @@ test.afterAll( async () => {
 
 test( 'Check A11y simple', async () => {
 
-	test.fixme()
 	await checkA11y( mainPage )
 
 } )
 
 test( 'Check A11y AXE', async () => {
 
-	test.fixme()
 	await checkA11y( mainPage, null, {
 		axeOptions: {
 			runOnly: {

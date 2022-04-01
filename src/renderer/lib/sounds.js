@@ -9,8 +9,8 @@ const VOLUME = 0.15
 const cache = {}
 
 const sounds = {
-	RESET: {
-		url: 'navigation_selection-complete-celebration.wav',
+	HERO: {
+		url: 'hero_decorative-celebration-01.wav',
 		volume: VOLUME,
 	},
 	DONE: {
@@ -40,7 +40,11 @@ const sounds = {
 	// STARTUP: {
 	// 	url: 'startup.wav',
 	// 	volume: VOLUME * 2
-	// }
+	// },
+	RESET: {
+		url: 'navigation_selection-complete-celebration.wav',
+		volume: VOLUME,
+	},
 }
 
 function preload( basepath = '' ) {

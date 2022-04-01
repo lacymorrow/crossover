@@ -1,4 +1,4 @@
-const path = require( 'path' )
+const path = require('path')
 
 const config = {
 
@@ -15,20 +15,20 @@ const config = {
 
 	expect: {
 
-		toMatchSnapshot: {threshold: 0.1},
+		toMatchSnapshot: { threshold: 0.1 },
 
 	},
 
 	projects: [
 		{
-		  name: 'chromium', // We use 'chromium' here to share screenshots with chromium.
-		  metadata: {
-			  platform: process.platform,
-			  headful: true,
-			  browserName: 'electron',
-			  channel: undefined,
-			  mode: 'default',
-			  video: false,
+			name: 'chromium', // We use 'chromium' here to share screenshots with chromium.
+			metadata: {
+				platform: process.platform,
+				headful: true,
+				browserName: 'electron',
+				channel: undefined,
+				mode: 'default',
+				video: false,
 			},
 		},
 	],

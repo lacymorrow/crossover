@@ -1,7 +1,6 @@
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
-const { startApp, wait } = require( './helpers.js' )
+const { startApp, wait, delays, focusedMinimizedVisible } = require( './helpers.js' )
 // Breakpoint: await mainPage.pause()
 
 let electronApp
@@ -15,7 +14,7 @@ test.beforeAll( async () => {
 
 } )
 
-// Test.afterEach( async () => await wait(500) )
+test.afterEach( async () => wait( delays.short ) )
 
 test.afterAll( async () => {
 
@@ -29,46 +28,24 @@ test( 'Validate app launches: launch.png', async () => {
 	await mainPage.screenshot()
 
 	// TODO: wait for app load
-	await wait( 1500 )
+	await wait( delays.medium )
 
 	// Print the title.
 	const title = await mainPage.title()
 	expect( title ).toBe( productName )
 
 	// App properties - focused, minimized, visible
-	const focused = await electronApp.evaluate( async app => {
+	const { focused, minimized, visible } = await focusedMinimizedVisible( { electronApp, windowName: productName } )
 
-		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' )
-		win.focus()
-
-		return win.isFocused()
-
-	} )
 	expect( focused ).toBe( true )
-
-	const minimized = await electronApp.evaluate( async app => {
-
-		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' )
-
-		return win.isMinimized()
-
-	} )
 	expect( minimized ).toBe( false )
-
-	const visible = await electronApp.evaluate( async app => {
-
-		const win = app.BrowserWindow.getAllWindows().find( w => w.title === 'CrossOver' )
-
-		return win.isVisible()
-
-	} )
 	expect( visible ).toBe( true )
 
 } )
 
 test( 'Validate feather icons loaded', async () => {
 
-	// Await wait(500)
+	// Await wait(delays.short)
 
 	// Number of buttons
 	let button = mainPage.locator( '#main .button' )

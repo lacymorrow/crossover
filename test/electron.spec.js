@@ -1,9 +1,8 @@
 const path = require( 'path' )
-const { ElectronApplication, Page, _electron: electron } = require( 'playwright' )
 const { expect, test } = require( '@playwright/test' )
 const jimp = require( 'jimp' )
 const { productName } = require( '../package.json' )
-const { startApp, visualMouse, wait } = require( './helpers.js' )
+const { startApp, wait, delays } = require( './helpers.js' )
 
 let electronApp
 let mainPage
@@ -16,7 +15,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterEach( async () => await wait( 500 ) )
+test.afterEach( async () => wait( delays.short ) )
 // End setup
 
 // test( 'has working devtools', async t => {
@@ -29,25 +28,6 @@ test.afterEach( async () => await wait( 500 ) )
 
 // } )
 
-// test( 'has working window bounds', async t => {
-
-// 	const bounds = await t.context.app.browserWindow.getBounds()
-// 	t.true( bounds.width > 0 )
-// 	t.true( bounds.height > 0 )
-
-// 	// Windows builds need time to process - else race condition
-// 	await delay( 1000 )
-
-// 	bounds.x += 10
-// 	bounds.y += 10
-// 	t.context.app.browserWindow.setBounds( { x: bounds.x, y: bounds.y } )
-// 	const newBounds = await t.context.app.browserWindow.getBounds()
-
-// 	t.is( newBounds.x, bounds.x )
-// 	t.is( newBounds.y, bounds.y )
-
-// } )
-
 test( 'Validate windows', async () => {
 
 	const windows = electronApp.windows()
@@ -56,12 +36,14 @@ test( 'Validate windows', async () => {
 
 			const i = await w.title()
 
-			return await i
+			return i
 
 		} ),
 	)
 
 	console.log( 'All windows:', titles )
+
+	test.fixme()
 	if ( titles.includes( 'DevTools' ) ) {
 
 		expect( windows.length ).toBe( 2 )
@@ -72,7 +54,7 @@ test( 'Validate windows', async () => {
 
 	}
 
-	// Expect(titles).toEqual( expect.arrayContaining([productName, 'Crosshairs']) );
+	// Expect(titles).toEqual( expect.arrayContaining([productName, CHOOSER_WINDOW]) );
 	expect( titles ).toEqual( expect.arrayContaining( [ productName ] ) )
 
 } )
@@ -106,8 +88,6 @@ test( 'Verify screenshots of the same mainPage match', async () => {
 
 	test.fixme()
 
-	await wait( 1000 )
-
 	// Take a screenshot of the current mainPage
 	const screenshot1 = await mainPage.screenshot()
 	// Create a visual hash using Jimp
@@ -122,7 +102,7 @@ test( 'Verify screenshots of the same mainPage match', async () => {
 } )
 
 // Quit
-test( 'Validate close event', async ( { playwright } ) => {
+test( 'Validate close event', async () => {
 
 	const events = []
 	electronApp.on( 'close', () => events.push( 'application' ) )
