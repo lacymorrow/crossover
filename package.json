@@ -51,6 +51,8 @@
         "css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed"
     },
     "dependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
+        "@typescript-eslint/parser": "^5.17.0",
         "electron-debug": "^3.0.1",
         "electron-log": "^4.4.6",
         "electron-preferences": "../electron-preferences",

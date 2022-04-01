@@ -1,6 +1,15 @@
 module.exports = {
-	extends: 'xo',
-	// Parser: "@babel/eslint-parser",
+	root: true,
+	parser: '@babel/eslint-parser',
+	// parser: '@typescript-eslint/parser',
+	plugins: [
+		// '@typescript-eslint',
+	],
+	extends: [
+		'xo',
+		'eslint:recommended',
+		// 'plugin:@typescript-eslint/recommended',
+	],
 	env: {
 		browser: true,
 		node: true,

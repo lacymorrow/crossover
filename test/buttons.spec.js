@@ -144,9 +144,10 @@ test( 'Validate buttons: close button', async () => {
 		// Close button is hidden on mac - show it
 		console.log( 'MacOS, skipping close button test' )
 		await mainPage.addScriptTag( { content: 'document.body.classList.remove(\'mac\')' } )
-		await wait( delays.short )
 
 	}
+
+	expect( await mainPage.locator( '.close-button' ) ).toBeVisible()
 
 	await mainPage.locator( '.close-button' ).click( { force: true } )
 	try {

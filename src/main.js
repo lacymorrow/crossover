@@ -30,21 +30,22 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const process = require( 'process' )
 
-const electron = require( 'electron' )
-
-const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeTheme, screen, shell } = electron
-const log = require( 'electron-log' )
+const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeTheme, screen, shell } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
 const { activeWindow, appMenu, centerWindow, getWindowBoundsCentered, is } = require( 'electron-util' )
 const debug = require( 'electron-debug' )
 const { checkboxTrue, debounce } = require( './config/utils.js' )
 const EXIT_CODES = require( './config/exit-codes.js' )
 const keycode = require( './config/keycode.js' )
-const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, MAX_SHADOW_WINDOWS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+const { APP_HEIGHT, APP_WIDTH, DEFAULT_THEME, FILE_FILTERS, RELEASES_URL, SETTINGS_WINDOW_DEVTOOLS, SHADOW_WINDOW_OFFSET, SUPPORTED_IMAGE_FILE_TYPES } = require( './config/config.js' )
+
+const dock = require( './main/dock.js' )
 const { debugSubmenu, helpSubmenu } = require( './main/menu.js' )
 const errorHandling = require( './main/error-handling.js' )
+const log = require( './main/log.js' )
 const prefs = require( './main/preferences.js' )
-const __static = require( './main/static-path.js' )
+const { __static } = require( './main/paths.js' )
+const windows = require( './main/windows.js' )
 
 let ioHook // Dynamic Import
 const importIoHook = async () => {
@@ -65,7 +66,7 @@ const importIoHook = async () => {
 
 /* App setup */
 console.log( '***************' )
-log.info( `CrossOver ${app.getVersion()} ${is.development ? '*Development*' : ''}` )
+log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
 
 // Handle errors early
 errorHandling()
@@ -149,7 +150,7 @@ const appUpdate = () => {
 
 			autoUpdater.on( 'update-downloaded', () => {
 
-				app.dock.setBadge( '!' )
+				dock.setBadge( '!' )
 				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
 				// PlaySound( 'DONE' )
 
@@ -189,95 +190,9 @@ let mainWindow
 let chooserWindow
 let prefsWindow
 let windowHidden = false // Maintain hidden state
-const shadowWindows = new Set() // Keep windows unique
 
 // Crosshair images
 const crosshairsPath = path.join( __static, 'crosshairs' )
-
-const createMainWindow = async isShadowWindow => {
-
-	const options = {
-		title: 'asdasd',
-		titleBarStyle: 'customButtonsOnHover',
-		backgroundColor: '#00FFFFFF',
-		acceptFirstMouse: true,
-		alwaysOnTop: true,
-		frame: false,
-		hasShadow: false,
-		closable: true,
-		fullscreenable: false,
-		maximizable: false,
-		minimizable: false,
-		resizable: false,
-		skipTaskbar: false,
-		transparent: true,
-		useContentSize: true,
-		show: false,
-		width: APP_WIDTH,
-		height: APP_HEIGHT,
-		webPreferences: {
-			contextIsolation: true,
-			enableRemoteModule: true,
-			nativeWindowOpen: true,
-			nodeIntegration: false,
-			preload: path.join( __dirname, 'renderer', 'preload.js' ),
-
-		},
-	}
-
-	if ( is.windows ) {
-
-		options.type = 'toolbar'
-
-	}
-
-	const win = new BrowserWindow( options )
-
-	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
-	setDockVisible( false )
-	win.setFullScreenable( false )
-
-	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
-	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
-
-	// SetDockVisible( true )
-
-	if ( isShadowWindow ) {
-
-		// Duplicate shadow windows
-		win.once( 'ready-to-show', () => {
-
-			win.show()
-
-		} )
-
-		win.on( 'closed', () => {
-
-			// Dereference the window
-			shadowWindows.delete( win )
-
-		} )
-
-	} else {
-
-		win.on( 'closed', () => {
-
-			// Dereference the window
-			// For multiple windows store them in an array
-			mainWindow = undefined
-
-			// Quit if main window closed
-			app.quit()
-
-		} )
-
-	}
-
-	await win.loadFile( path.join( __dirname, 'renderer', 'index.html' ) )
-
-	return win
-
-}
 
 const createChildWindow = async ( parent, windowName ) => {
 
@@ -320,39 +235,10 @@ const createChildWindow = async ( parent, windowName ) => {
 
 }
 
-const createShadowWindow = async () => {
-
-	// Don't allow a bunch of crosshairs, max 20
-	if ( shadowWindows.size < MAX_SHADOW_WINDOWS ) {
-
-		const shadow = await createMainWindow( true )
-		shadowWindows.add( shadow )
-		setupShadowWindow( shadow )
-
-		log.info( `Created shadow window: ${shadow.webContents.id}` )
-
-	}
-
-}
-
-const closeShadowWindows = id => {
-
-	for ( const currentWindow of shadowWindows ) {
-
-		if ( !id || id === currentWindow.webContents.id ) {
-
-			currentWindow.close()
-
-		}
-
-	}
-
-}
-
 const getActiveWindow = () => {
 
 	let currentWindow = activeWindow()
-	if ( !shadowWindows.has( currentWindow ) && currentWindow !== mainWindow ) {
+	if ( !windows.shadowWindows.has( currentWindow ) && currentWindow !== mainWindow ) {
 
 		// Not shadow and not main window, probably a console or dialog
 		currentWindow = mainWindow
@@ -431,7 +317,7 @@ const setCrosshair = src => {
 		log.info( `Save crosshair: ${src}` )
 		hideChooserWindow()
 		mainWindow.webContents.send( 'set_crosshair', src ) // Pass to renderer
-		for ( const currentWindow of shadowWindows ) {
+		for ( const currentWindow of windows.shadowWindows ) {
 
 			currentWindow.webContents.send( 'set_crosshair', src )
 
@@ -502,25 +388,6 @@ const setSize = ( size, targetWindow = mainWindow ) => {
 
 }
 
-// Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
-const setDockVisible = visible => {
-
-	if ( is.macos ) {
-
-		if ( visible ) {
-
-			app.dock.show()
-
-		} else {
-
-			app.dock.hide()
-
-		}
-
-	}
-
-}
-
 const centerAppWindow = options => {
 
 	options = {
@@ -555,7 +422,7 @@ const centerAppWindow = options => {
 const showWindow = () => {
 
 	mainWindow.show()
-	for ( const currentWindow of shadowWindows ) {
+	for ( const currentWindow of windows.shadowWindows ) {
 
 		currentWindow.show()
 
@@ -568,7 +435,7 @@ const showWindow = () => {
 const hideWindow = () => {
 
 	mainWindow.hide()
-	for ( const currentWindow of shadowWindows ) {
+	for ( const currentWindow of windows.shadowWindows ) {
 
 		currentWindow.hide()
 
@@ -600,7 +467,7 @@ const toggleWindowLock = ( lock = !prefs.value( 'hidden.locked' ) ) => {
 	playSound( lock ? 'LOCK' : 'UNLOCK' )
 
 	lockWindow( lock )
-	for ( const currentWindow of shadowWindows ) {
+	for ( const currentWindow of windows.shadowWindows ) {
 
 		lockWindow( lock, currentWindow )
 
@@ -686,7 +553,7 @@ const lockWindow = ( lock, targetWindow = mainWindow ) => {
 
 	}
 
-	setDockVisible( !lock )
+	dock.setVisible( !lock )
 
 	prefs.value( 'hidden.locked', lock )
 
@@ -1276,7 +1143,7 @@ const registerIpc = () => {
 	ipcMain.on( 'close_window', event => {
 
 		// Close a shadow window
-		closeShadowWindows( event.sender.id )
+		windows.closeShadow( event.sender.id )
 
 	} )
 
@@ -1413,10 +1280,14 @@ const syncSettings = preferences => {
 
 	}
 
-	setColor( preferences?.crosshair?.color )
-	setOpacity( preferences?.crosshair?.opacity )
-	setSight( preferences?.crosshair?.reticle )
-	setSize( preferences?.crosshair?.size )
+	windows.each( win => {
+
+		setColor( preferences?.crosshair?.color, win )
+		setOpacity( preferences?.crosshair?.opacity, win )
+		setSight( preferences?.crosshair?.reticle, win )
+		setSize( preferences?.crosshair?.size, win )
+
+	} )
 
 	// Reset all custom shortcuts
 	const escapeActive = globalShortcut.isRegistered( 'Escape' )
@@ -1445,9 +1316,9 @@ const keyboardShortcuts = () => {
 
 			action: 'duplicate',
 			keybind: `${accelerator}+D`,
-			fn() {
+			async fn() {
 
-				createShadowWindow()
+				setupShadowWindow( await windows.createShadow() )
 
 			},
 		},
@@ -1653,7 +1524,7 @@ const resetApp = async skipSetup => {
 	playSound( 'RESET' )
 
 	// Close extra crosshairs
-	closeShadowWindows()
+	windows.closeAllShadows()
 
 	// Hides chooser and preferences
 	escapeAction()
@@ -1758,8 +1629,10 @@ const setupShadowWindow = async shadow => {
 	setSize( prefs.value( 'crosshair.size' ), shadow )
 	if ( prefs.value( 'hidden.positionX' ) > -1 ) {
 
+		console.log( 'setting' )
+
 		// Offset position slightly
-		setPosition( prefs.value( 'hidden.positionX' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), prefs.value( 'hidden.positionY' ) + ( shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
+		setPosition( prefs.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), prefs.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 	}
 
@@ -1768,11 +1641,11 @@ const setupShadowWindow = async shadow => {
 }
 
 // Opening 2nd instance focuses app
-app.on( 'second-instance', () => {
+app.on( 'second-instance', async () => {
 
 	if ( mainWindow ) {
 
-		createShadowWindow()
+		setupShadowWindow( await windows.createShadow() )
 
 		if ( mainWindow.isMinimized() ) {
 
@@ -1815,7 +1688,7 @@ app.on( 'activate', async () => {
 
 	if ( !mainWindow ) {
 
-		mainWindow = await createMainWindow()
+		mainWindow = await windows.init()
 
 	}
 
@@ -1913,7 +1786,7 @@ const ready = async () => {
 
 	Menu.setApplicationMenu( Menu.buildFromTemplate( template ) )
 
-	mainWindow = await createMainWindow()
+	mainWindow = await windows.init()
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
