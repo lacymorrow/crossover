@@ -1,5 +1,5 @@
 const { globalShortcut } = require( 'electron' )
-const crossover = require( './crossover' )
+const actions = require( './actions' )
 const electronPreferences = require( './electron-preferences' )
 const iohook = require( './iohook' )
 const log = require( './log' )
@@ -14,7 +14,7 @@ const app = skipSetup => {
 	windows.closeAllShadows()
 
 	// Hides chooser and preferences
-	crossover.escapeAction()
+	actions.escapeAction()
 
 	windows.center()
 	reset.preferences()
@@ -29,7 +29,7 @@ const app = skipSetup => {
 
 		windows.unregister()
 
-		setupApp( true )
+		// setupApp( true )
 
 	}
 

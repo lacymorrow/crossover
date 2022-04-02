@@ -48,6 +48,7 @@ const autoUpdate = require( './main/auto-update.js' )
 const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
 const ipc = require( './main/ipc.js' )
+const crossover = require( './main/crossover.js' )
 let ioHook
 
 /* App setup */
@@ -438,7 +439,7 @@ const setupApp = async () => {
 	setTimeout( () => {
 
 		// Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
-		register.shortcuts()
+		crossover.registerKeyboardShortcuts()
 
 		const locked = preferences.value( 'hidden.locked' )
 

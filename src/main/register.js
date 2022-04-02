@@ -1,12 +1,9 @@
 const { is } = require( 'electron-util' )
 const EXIT_CODES = require( '../config/exit-codes' )
-const { checkboxTrue } = require( '../config/utils' )
 const crossover = require( './crossover' )
 const preferences = require( './electron-preferences' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
-const keyboardShortcuts = require( './keyboard-shortcuts' )
-const log = require( './log' )
 const reset = require( './reset' )
 const save = require( './save' )
 const windows = require( './windows' )
@@ -135,66 +132,9 @@ const saveWindowBounds = () => {
 
 }
 
-const shortcuts = () => {
-
-	// Register all shortcuts
-	const { keybinds } = preferences.defaults
-	const custom = preferences.value( 'keybinds' ) // Defaults
-	for ( const shortcut of keyboardShortcuts() ) {
-
-		// Custom shortcuts
-		if ( custom[shortcut.action] === '' ) {
-
-			log.info( `Clearing keybind for ${shortcut.action}` )
-
-		} else if ( custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action] ) {
-
-			// If a custom shortcut exists for this action
-			log.info( `Custom keybind for ${shortcut.action}` )
-			keyboard.registerShortcut( custom[shortcut.action], shortcut.fn )
-
-		} else if ( keybinds[shortcut.action] ) {
-
-			// Set default keybind
-			keyboard.registerShortcut( keybinds[shortcut.action], shortcut.fn )
-
-		} else {
-
-			// Fallback to internal bind - THIS SHOULDNT HAPPEN
-			// if it does you forgot to add a default keybind for this shortcut
-			log.info( 'ERROR', shortcut )
-			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
-
-		}
-
-	}
-
-}
-
-const startOnBoot = () => {
-
-	// Start app on boot
-	if ( !is.development && checkboxTrue( preferences.value( 'app.boot' ), 'boot' ) ) {
-
-		app.setLoginItemSettings( {
-			openAtLogin: true,
-		} )
-
-	} else {
-
-		app.setLoginItemSettings( {
-			openAtLogin: false,
-		} )
-
-	}
-
-}
-
 const register = {
 	app,
 	events,
 	saveWindowBounds,
-	shortcuts,
-	startOnBoot,
 }
 module.exports = register
