@@ -1,3 +1,4 @@
+const { app: electronApp } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const EXIT_CODES = require( '../config/exit-codes' )
 const crossover = require( './crossover' )
@@ -11,7 +12,7 @@ const windows = require( './windows' )
 const app = () => {
 
 	// Opening 2nd instance focuses app
-	app.on( 'second-instance', async () => {
+	electronApp.on( 'second-instance', async () => {
 
 		if ( windows.win ) {
 
@@ -35,7 +36,7 @@ const app = () => {
 
 	} )
 
-	app.on( 'will-quit', () => {
+	electronApp.on( 'will-quit', () => {
 
 		// Unregister all shortcuts.
 		iohook.unregisterIOHook()
@@ -43,22 +44,22 @@ const app = () => {
 
 	} )
 
-	// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
+	// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron electronApp that registers
 	// a `beforeunload` window event handler results in a disconnected white
 	// browser window in GNU/Linux and macOS.
 	// The `before-quit` Electron event is triggered in `SIGINT`, so we can
 	// make use of it to ensure the browser window is completely destroyed.
 	// See https://github.com/electron/electron/issues/5273
-	app.on( 'before-quit', () => {
+	electronApp.on( 'before-quit', () => {
 
-		app.releaseSingleInstanceLock()
+		electronApp.releaseSingleInstanceLock()
 		process.exit( EXIT_CODES.SUCCESS )
 
 	} )
 
-	app.on( 'window-all-closed', app.quit )
+	electronApp.on( 'window-all-closed', electronApp.quit )
 
-	app.on( 'activate', async () => {
+	electronApp.on( 'activate', async () => {
 
 		// Will return current window if exists
 		await windows.init()

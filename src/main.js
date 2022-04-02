@@ -83,8 +83,6 @@ debug( {
 // Const contextMenu = require('electron-context-menu')
 // contextMenu()
 
-// Auto-Update
-
 // Fix for Linux transparency issues
 if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
@@ -411,7 +409,7 @@ const setupApp = async () => {
 	ipc.init()
 
 	// Start on boot
-	register.startOnBoot()
+	set.startOnBoot()
 
 	// Set to previously selected crosshair
 	const currentCrosshair = preferences.value( 'crosshair.crosshair' )
