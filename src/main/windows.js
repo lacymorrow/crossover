@@ -8,26 +8,8 @@ const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
 const log = require( './log.js' )
 const { __renderer } = require( './paths.js' )
-const set = require( './save.js' )
 const preferences = require( './electron-preferences.js' )
 const helpers = require( './helpers.js' )
-
-console.log( set )
-
-const setBounds = win => {
-
-	if ( !win ) {
-
-		win = windows.win
-
-	}
-
-	const winBounds = win.getBounds()
-	log.info( `Save winBounds: ${winBounds.x}, ${winBounds.y}` )
-	preferences.value( 'hidden.positionX', winBounds.x )
-	preferences.value( 'hidden.positionY', winBounds.y )
-
-}
 
 let hidden = false
 
@@ -247,7 +229,7 @@ const createShadow = async () => {
 
 		// Sync Preferences
 		shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
-		set.color( preferences.value( 'crosshair.color' ), shadow )
+		// set.color( preferences.value( 'crosshair.color' ), shadow )
 		// setOpacity( preferences.value( 'crosshair.opacity' ), shadow )
 		// setSight( preferences.value( 'crosshair.reticle' ), shadow )
 		// setSize( preferences.value( 'crosshair.size' ), shadow )
@@ -255,7 +237,7 @@ const createShadow = async () => {
 		if ( preferences.value( 'hidden.positionX' ) > -1 ) {
 
 			// Offset position slightly
-			set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
+			// set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 		}
 
@@ -359,15 +341,6 @@ const center = options => {
 		useFullBounds: true,
 	} )
 
-	options.targetWindow.show()
-
-	// Save game
-	if ( options.targetWindow === windows.win ) {
-
-		setBounds( windows.win )
-
-	}
-
 }
 
 const showWindow = () => {
@@ -403,6 +376,30 @@ const showHideWindow = () => {
 	}
 
 	hidden = !hidden
+
+}
+
+const moveToNextDisplay = options => {
+
+	options = {
+		targetWindow: windows.getActiveWindow(),
+		...options,
+	}
+
+	// Get list of displays
+	const displays = screen.getAllDisplays()
+
+	// Get current display
+	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
+
+	// Get index of current
+	let index = displays.map( element => element.id ).indexOf( currentDisplay.id )
+
+	// Increment and save
+	index = ( index + 1 ) % displays.length
+
+	// Center
+	center( { display: displays[index], targetWindow: options.targetWindow } )
 
 }
 
@@ -471,30 +468,6 @@ const moveWindow = options_ => {
 		}
 
 	}
-
-}
-
-const moveToNextDisplay = options => {
-
-	options = {
-		targetWindow: windows.getActiveWindow(),
-		...options,
-	}
-
-	// Get list of displays
-	const displays = screen.getAllDisplays()
-
-	// Get current display
-	const currentDisplay = screen.getDisplayNearestPoint( options.targetWindow.getBounds() )
-
-	// Get index of current
-	let index = displays.map( element => element.id ).indexOf( currentDisplay.id )
-
-	// Increment and save
-	index = ( index + 1 ) % displays.length
-
-	// Center
-	center( { display: displays[index], targetWindow: options.targetWindow } )
 
 }
 
@@ -600,22 +573,22 @@ const windows = {
 	init,
 	load,
 	each,
+	center,
 	create,
 	createShadow,
 	closeShadow,
 	closeAllShadows,
 	createChooser,
-	hideChooserWindow,
-	hideSettingsWindow,
-	center,
 	getActiveWindow,
 	hidden,
-	shadowWindows: new Set(),
-	showWindow,
+	hideChooserWindow,
+	hideSettingsWindow,
 	hideWindow,
-	showHideWindow,
-	moveWindow,
 	moveToNextDisplay,
+	moveWindow,
+	shadowWindows: new Set(),
+	showHideWindow,
+	showWindow,
 	win: null,
 	chooserWindow: null,
 	preferencesWindow: null,

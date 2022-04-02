@@ -19,7 +19,7 @@
 
 	Low:
 		Conflicting accelerator on Fedora
-		dont save.position if monitor has been unplugged
+		dont set.position if monitor has been unplugged
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
@@ -42,7 +42,7 @@ const { debugSubmenu, helpSubmenu } = require( './main/menu.js' )
 const errorHandling = require( './main/error-handling.js' )
 const iohook = require( './main/iohook.js' )
 const log = require( './main/log.js' )
-const save = require( './main/save.js' )
+const set = require( './main/set.js' )
 const preferences = require( './main/electron-preferences.js' )
 const windows = require( './main/windows.js' )
 const sound = require( './main/sound.js' )
@@ -189,6 +189,23 @@ if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 // Prevent window from being garbage collected
 let mainWindow
 let chooserWindow
+
+const centerWindow = options => {
+
+	options = { targetWindow: windows.getActiveWindow(), ...options }
+
+	windows.center( options )
+
+	options.targetWindow.show()
+
+	// Save game
+	if ( options.targetWindow === windows.win ) {
+
+		set.bounds( windows.win )
+
+	}
+
+}
 
 const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
@@ -768,7 +785,7 @@ const registerIpc = () => {
 	ipcMain.on( 'save_custom_image', ( event, arg ) => {
 
 		log.info( `Setting custom image: ${arg}` )
-		save.custom( arg )
+		set.custom( arg )
 
 	} )
 
@@ -788,7 +805,7 @@ const registerIpc = () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		save.crosshair( arg )
+		set.crosshair( arg )
 
 	} )
 
@@ -796,7 +813,7 @@ const registerIpc = () => {
 
 		log.info( 'Center window' )
 		sound.play( 'CENTER' )
-		windows.center()
+		centerWindow()
 
 	} )
 
@@ -872,16 +889,16 @@ const syncSettings = options => {
 
 	if ( options?.crosshair?.crosshair ) {
 
-		save.crosshair( options.crosshair.crosshair )
+		set.crosshair( options.crosshair.crosshair )
 
 	}
 
 	windows.each( win => {
 
-		save.color( options?.crosshair?.color, win )
-		save.opacity( options?.crosshair?.opacity, win )
-		save.sight( options?.crosshair?.reticle, win )
-		save.size( options?.crosshair?.size, win )
+		set.color( options?.crosshair?.color, win )
+		set.opacity( options?.crosshair?.opacity, win )
+		set.sight( options?.crosshair?.reticle, win )
+		set.size( options?.crosshair?.size, win )
 
 	} )
 
@@ -941,7 +958,7 @@ const resetApp = async skipSetup => {
 	// Hides chooser and preferences
 	escapeAction()
 	resetPreferences()
-	windows.center( { targetWindow: mainWindow } )
+	centerWindow()
 
 	if ( !skipSetup ) {
 
@@ -978,15 +995,15 @@ const setupApp = async triggeredFromReset => {
 
 	}
 
-	save.color( preferences.value( 'crosshair.color' ) )
-	save.opacity( preferences.value( 'crosshair.opacity' ) )
-	save.sight( preferences.value( 'crosshair.reticle' ) )
-	save.size( preferences.value( 'crosshair.size' ) )
+	set.color( preferences.value( 'crosshair.color' ) )
+	set.opacity( preferences.value( 'crosshair.opacity' ) )
+	set.sight( preferences.value( 'crosshair.reticle' ) )
+	set.size( preferences.value( 'crosshair.size' ) )
 
-	// Center app by default - set position if exists
+	// App centered by default - set position if exists
 	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' ) {
 
-		save.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
+		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
 
 	}
 
@@ -1035,16 +1052,16 @@ const setupShadowWindow = async shadow => {
 
 	shadow.webContents.send( 'add_class', 'shadow' )
 	shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
-	save.color( preferences.value( 'crosshair.color' ), shadow )
-	save.opacity( preferences.value( 'crosshair.opacity' ), shadow )
-	save.sight( preferences.value( 'crosshair.reticle' ), shadow )
-	save.size( preferences.value( 'crosshair.size' ), shadow )
+	set.color( preferences.value( 'crosshair.color' ), shadow )
+	set.opacity( preferences.value( 'crosshair.opacity' ), shadow )
+	set.sight( preferences.value( 'crosshair.reticle' ), shadow )
+	set.size( preferences.value( 'crosshair.size' ), shadow )
 	if ( preferences.value( 'hidden.positionX' ) > -1 ) {
 
 		console.log( 'setting' )
 
 		// Offset position slightly
-		save.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
+		set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 	}
 
@@ -1138,7 +1155,7 @@ const ready = async () => {
 
 				if ( image ) {
 
-					save.custom( image )
+					set.custom( image )
 
 					mainWindow.webContents.send( 'notify', { title: 'Crosshair Changed', body: 'Your custom crosshair was loaded.' } )
 
