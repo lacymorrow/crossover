@@ -4,7 +4,20 @@ const { debugInfo, openNewGitHubIssue } = require( 'electron-util' )
 
 // Const { openReportCrashDialog } = require( './dialog.js' )
 
-const errorHandling = () => {
+const reportBody = error => `
+	<!-- Please succinctly describe your issue and steps to reproduce it. Screenshots are worth a hundred bug reports! -->
+
+
+	---
+	${error && `
+	${error}:
+	${error.stack}
+
+	---`}
+
+	${debugInfo()}`
+
+const init = () => {
 
 	// Catch unhandled errors
 	unhandled( {
@@ -15,7 +28,7 @@ const errorHandling = () => {
 			openNewGitHubIssue( {
 				user: 'lacymorrow',
 				repo: 'crossover',
-				body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`,
+				body: reportBody( error ),
 			} )
 
 		},
@@ -29,5 +42,7 @@ const errorHandling = () => {
 	// } )
 
 }
+
+const errorHandling = { init, reportBody }
 
 module.exports = errorHandling

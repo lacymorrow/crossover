@@ -1,7 +1,6 @@
-const { globalShortcut } = require( 'electron' )
-const log = require( './log' )
-const preferences = require( './electron-preferences.js' )
 const windows = require( './windows' )
+const crossover = require( './crossover' )
+const reset = require( './reset' )
 
 const keyboardShortcuts = () => {
 
@@ -17,7 +16,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+D`,
 			async fn() {
 
-				setupShadowWindow( await windows.createShadow() )
+				await crossover.initShadowWindow()
 
 			},
 		},
@@ -28,7 +27,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+X`,
 			fn() {
 
-				windows.toggleWindowLock()
+				crossover.toggleWindowLock()
 
 			},
 		},
@@ -72,7 +71,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+R`,
 			fn() {
 
-				resetApp()
+				reset.app()
 
 			},
 		},
@@ -118,44 +117,4 @@ const keyboardShortcuts = () => {
 
 }
 
-const registerShortcuts = () => {
-
-	// Register all shortcuts
-	const { keybinds } = preferences.defaults
-	const custom = preferences.value( 'keybinds' ) // Defaults
-	for ( const shortcut of keyboardShortcuts() ) {
-
-		// Custom shortcuts
-		if ( custom[shortcut.action] === '' ) {
-
-			log.info( `Clearing keybind for ${shortcut.action}` )
-
-		} else if ( custom[shortcut.action] && keybinds[shortcut.action] && custom[shortcut.action] !== keybinds[shortcut.action] ) {
-
-			// If a custom shortcut exists for this action
-			log.info( `Custom keybind for ${shortcut.action}` )
-			globalShortcut.register( custom[shortcut.action], shortcut.fn )
-
-		} else if ( keybinds[shortcut.action] ) {
-
-			// Set default keybind
-			globalShortcut.register( keybinds[shortcut.action], shortcut.fn )
-
-		} else {
-
-			// Fallback to internal bind - THIS SHOULDNT HAPPEN
-			// if it does you forgot to add a default keybind for this shortcut
-			log.info( 'ERROR', shortcut )
-			globalShortcut.register( shortcut.keybind, shortcut.fn )
-
-		}
-
-	}
-
-}
-
-const shortcut = {
-	registerShortcuts,
-}
-
-module.exports = shortcut
+module.exports = keyboardShortcuts

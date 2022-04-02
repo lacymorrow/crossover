@@ -1,10 +1,6 @@
-const fs = require( 'fs' )
-const path = require( 'path' )
 const { debounce } = require( '../config/utils' )
 const log = require( './log' )
 const preferences = require( './electron-preferences' )
-const windows = require( './windows' )
-const { SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config' )
 
 const crosshair = value => {
 
@@ -18,15 +14,15 @@ const crosshair = value => {
 }
 
 // Save position
-const position = boundsObj => {
+const position = debounce( bounds => {
 
-	if ( !boundsObj ) {
+	if ( !bounds ) {
 
 		return
 
 	}
 
-	const { x, y } = boundsObj
+	const { x, y } = bounds
 
 	if ( !x || !y ) {
 
@@ -34,13 +30,13 @@ const position = boundsObj => {
 
 	}
 
-	log.info( 'Save XY:', x, y )
+	log.info( `Save position: ${x}, ${y}` )
 	preferences.value( 'hidden.positionX', x )
 	preferences.value( 'hidden.positionY', y )
 
-}
+}, 500 )
 
-const save = { bounds, color, crosshair, custom, opacity, position, sight, size }
+const save = { crosshair, position }
 
 console.log( save )
 

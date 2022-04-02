@@ -3,7 +3,7 @@ const path = require( 'path' )
 const { app, BrowserWindow, screen } = require( 'electron' )
 
 const { activeWindow, centerWindow, is } = require( 'electron-util' )
-const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, SHADOW_WINDOW_OFFSET } = require( '../config/config.js' )
+const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS } = require( '../config/config.js' )
 const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
 const log = require( './log.js' )
@@ -13,6 +13,7 @@ const helpers = require( './helpers.js' )
 
 let hidden = false
 
+// Will return current window if exists
 const init = async options => {
 
 	if ( windows.win ) {
@@ -30,6 +31,7 @@ const init = async options => {
 
 }
 
+// Load HTML file
 async function load( win = this.win ) {
 
 	await win.loadFile( path.join( __renderer, 'index.html' ) )
@@ -39,6 +41,7 @@ async function load( win = this.win ) {
 }
 
 // I'm proud of this one
+// windows.each( win => console.log(win)) or each(windows, win => console.log(win))
 async function each( w, fn, ...args ) {
 
 	if ( typeof w === 'function' ) {
@@ -174,7 +177,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 }
 
-const createChildWindow = async ( parent, windowName ) => {
+const createChild = async ( parent, windowName ) => {
 
 	const VALID_WINDOWS = [ 'chooser' ]
 
@@ -224,25 +227,6 @@ const createShadow = async () => {
 		const shadow = await create( { isShadowWindow: true } ).load()
 		windows.shadowWindows.add( shadow )
 
-		// Setup
-		shadow.webContents.send( 'add_class', 'shadow' )
-
-		// Sync Preferences
-		shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
-		// set.color( preferences.value( 'crosshair.color' ), shadow )
-		// setOpacity( preferences.value( 'crosshair.opacity' ), shadow )
-		// setSight( preferences.value( 'crosshair.reticle' ), shadow )
-		// setSize( preferences.value( 'crosshair.size' ), shadow )
-
-		if ( preferences.value( 'hidden.positionX' ) > -1 ) {
-
-			// Offset position slightly
-			// set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
-
-		}
-
-		// lockWindow( preferences.value( 'hidden.locked' ), shadow )
-
 		log.info( `Created shadow window: ${shadow.webContents.id}` )
 
 		return shadow
@@ -250,6 +234,34 @@ const createShadow = async () => {
 	}
 
 	return Array.from( windows.shadowWindows ).pop()
+
+}
+
+const createChooser = async currentCrosshair => {
+
+	if ( windows.chooserWindow ) {
+
+		windows.chooserWindow.show()
+
+		return windows.chooserWindow
+
+	}
+
+	if ( !currentCrosshair ) {
+
+		currentCrosshair = preferences.value( 'crosshair.crosshair' )
+
+	}
+
+	windows.chooserWindow = await createChild( windows.win, 'chooser' )
+
+	// Setup crosshair chooser, must come before the check below
+	windows.chooserWindow.webContents.send( 'load_crosshairs', {
+		crosshairs: await helpers.getCrosshairImages(),
+		current: currentCrosshair,
+	} )
+
+	return windows.chooserWindow
 
 }
 
@@ -274,26 +286,6 @@ const closeAllShadows = () => {
 		currentWindow.close()
 
 	}
-
-}
-
-const createChooser = async currentCrosshair => {
-
-	if ( !currentCrosshair ) {
-
-		currentCrosshair = preferences.value( 'crosshair.crosshair' )
-
-	}
-
-	windows.chooserWindow = await createChildWindow( windows.win, 'chooser' )
-
-	// Setup crosshair chooser, must come before the check below
-	windows.chooserWindow.webContents.send( 'load_crosshairs', {
-		crosshairs: await helpers.getCrosshairImages(),
-		current: currentCrosshair,
-	} )
-
-	return windows.chooserWindow
 
 }
 
@@ -471,102 +463,15 @@ const moveWindow = options_ => {
 
 }
 
-// // Allows dragging and setting options
-// const lockWindow = ( lock, targetWindow = mainWindow ) => {
+const unregister = () => {
 
-// 	log.info( `Locked: ${lock}` )
+	if ( windows.win ) {
 
-// 	hideChooserWindow()
-// 	hideSettingsWindow()
-// 	targetWindow.closable = !lock
-// 	targetWindow.setFocusable( !lock )
-// 	targetWindow.setIgnoreMouseEvents( lock )
-// 	targetWindow.webContents.send( 'lock_window', lock )
+		windows.win.removeAllListeners( 'move' )
 
-// 	if ( lock ) {
+	}
 
-// 		// Don't save bounds when locked
-// 		if ( targetWindow === mainWindow ) {
-
-// 			mainWindow.removeAllListeners( 'move' )
-
-// 		}
-
-// 		/* Actions */
-// 		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
-// 		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-// 		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-// 		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
-
-// 		unregisterIOHook()
-
-// 		if ( followMouse ) {
-
-// 			registerFollowMouse()
-
-// 		}
-
-// 		if ( hideOnMouse !== -1 ) {
-
-// 			registerHideOnMouse()
-
-// 		}
-
-// 		if ( hideOnKey ) {
-
-// 			registerHideOnKey()
-
-// 		}
-
-// 		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
-
-// 			registerTilt()
-
-// 		}
-
-// 		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-// 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
-
-// 	} else {
-
-// 		/* Unlock */
-
-// 		// Unregister
-// 		unregisterIOHook()
-
-// 		// Enable saving bounds
-// 		if ( targetWindow === mainWindow ) {
-
-// 			registerSaveWindowBounds()
-
-// 		}
-
-// 		// Allow dragging to Window on Mac
-// 		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
-
-// 		// Bring window to front
-// 		targetWindow.show()
-
-// 	}
-
-// 	dock.setVisible( !lock )
-
-// 	preferences.value( 'hidden.locked', lock )
-
-// }
-
-// const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
-
-// 	// playSound( lock ? 'LOCK' : 'UNLOCK' )
-
-// 	lockWindow( lock )
-// 	for ( const currentWindow of windows.shadowWindows ) {
-
-// 		lockWindow( lock, currentWindow )
-
-// 	}
-
-// }
+}
 
 const windows = {
 
@@ -589,6 +494,7 @@ const windows = {
 	shadowWindows: new Set(),
 	showHideWindow,
 	showWindow,
+	unregister,
 	win: null,
 	chooserWindow: null,
 	preferencesWindow: null,

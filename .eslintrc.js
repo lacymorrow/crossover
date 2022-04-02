@@ -1,19 +1,20 @@
 module.exports = {
+	env: {
+		browser: true,
+		node: true,
+	},
+	extends: [
+		'xo',
+		'eslint:recommended',
+		// 'plugin:@typescript-eslint/recommended',
+	],
+	ignorePatterns: [ '**/vendor/*' ],
 	root: true,
 	parser: '@babel/eslint-parser',
 	// parser: '@typescript-eslint/parser',
 	plugins: [
 		// '@typescript-eslint',
 	],
-	extends: [
-		'xo',
-		'eslint:recommended',
-		// 'plugin:@typescript-eslint/recommended',
-	],
-	env: {
-		browser: true,
-		node: true,
-	},
 	parserOptions: {
 		ecmaVersion: 13,
 		// SourceType: "module",
