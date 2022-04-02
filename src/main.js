@@ -32,12 +32,8 @@ const { app } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const debug = require( 'electron-debug' )
 const { checkboxTrue } = require( './config/utils.js' )
-const keycode = require( './config/keycode.js' )
-const { APP_HEIGHT, APP_WIDTH } = require( './config/config.js' )
 
-const dock = require( './main/dock.js' )
 const errorHandling = require( './main/error-handling.js' )
-const iohook = require( './main/iohook.js' )
 const log = require( './main/log.js' )
 const set = require( './main/set.js' )
 const preferences = require( './main/electron-preferences.js' )
@@ -49,7 +45,6 @@ const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
 const ipc = require( './main/ipc.js' )
 const crossover = require( './main/crossover.js' )
-let ioHook
 
 /* App setup */
 console.log( '***************' )
@@ -99,306 +94,6 @@ if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 }
 
 // Prevent window from being garbage collected
-let mainWindow
-let chooserWindow
-
-// Allows dragging and setting options
-const lockWindow = ( lock, targetWindow = mainWindow ) => {
-
-	log.info( `Locked: ${lock}` )
-
-	windows.hideChooserWindow()
-	windows.hideSettingsWindow()
-	targetWindow.closable = !lock
-	targetWindow.setFocusable( !lock )
-	targetWindow.setIgnoreMouseEvents( lock )
-	targetWindow.webContents.send( 'lock_window', lock )
-
-	if ( lock ) {
-
-		// Don't save bounds when locked
-		if ( targetWindow === mainWindow ) {
-
-			mainWindow.removeAllListeners( 'move' )
-
-		}
-
-		/* Actions */
-		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
-		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
-
-		iohook.unregisterIOHook()
-
-		if ( followMouse ) {
-
-			registerFollowMouse()
-
-		}
-
-		if ( hideOnMouse !== -1 ) {
-
-			registerHideOnMouse()
-
-		}
-
-		if ( hideOnKey ) {
-
-			registerHideOnKey()
-
-		}
-
-		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
-
-			registerTilt()
-
-		}
-
-		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
-
-	} else {
-
-		/* Unlock */
-
-		// Unregister
-		iohook.unregisterIOHook()
-
-		// Enable saving bounds
-		if ( targetWindow === mainWindow ) {
-
-			register.saveWindowBounds()
-
-		}
-
-		// Allow dragging to Window on Mac
-		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
-
-		// Bring window to front
-		targetWindow.show()
-
-	}
-
-	dock.setVisible( !lock )
-
-	preferences.value( 'hidden.locked', lock )
-
-}
-
-const registerFollowMouse = async () => {
-
-	// Prevent saving bounds
-	mainWindow.removeAllListeners( 'move' )
-
-	log.info( 'Setting: Mouse Follow' )
-	ioHook = await iohook.importIoHook()
-	ioHook.removeAllListeners( 'mousemove' )
-
-	// Register
-	ioHook.on( 'mousemove', event => {
-
-		mainWindow.setBounds( {
-			x: event.x - ( APP_WIDTH / 2 ),
-			y: event.y - ( APP_HEIGHT / 2 ),
-		} )
-
-	} )
-
-}
-
-const registerHideOnMouse = async () => {
-
-	log.info( 'Setting: Mouse Hide' )
-	ioHook = await iohook.importIoHook()
-
-	const mouseButton = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-
-	// Register
-	ioHook.on( 'mousedown', event => {
-
-		if ( event.button === mouseButton ) {
-
-			windows.hideWindow()
-
-		}
-
-	} )
-
-	ioHook.on( 'mouseup', event => {
-
-		if ( event.button === mouseButton ) {
-
-			windows.showWindow()
-
-		}
-
-	} )
-
-	// Register and start hook
-	ioHook.start()
-
-}
-
-const registerHideOnKey = async () => {
-
-	log.info( 'Setting: Keyboard Hide' )
-	ioHook = await iohook.importIoHook()
-
-	const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-
-	if ( Object.prototype.hasOwnProperty.call( keycode, hideOnKey ) ) {
-
-		const key = keycode[hideOnKey]
-
-		// Register
-		ioHook.registerShortcut(
-			[ key ],
-			_ => {
-
-				windows.hideWindow()
-
-			},
-			_ => {
-
-				windows.showWindow()
-
-			},
-		)
-
-		// Register and start hook
-		ioHook.start()
-
-	}
-
-}
-
-const tiltCrosshair = angle => {
-
-	if ( angle ) {
-
-		mainWindow.webContents.send( 'tilt', angle )
-
-	} else {
-
-		mainWindow.webContents.send( 'untilt' )
-
-	}
-
-}
-
-const registerTilt = async () => {
-
-	let leftKey
-	let rightKey
-	const tiltAngle = Number.parseInt( preferences.value( 'mouse.tiltAngle' ), 10 )
-	const tiltToggle = checkboxTrue( preferences.value( 'mouse.tiltToggle' ), 'tiltToggle' )
-	const tiltLeft = preferences.value( 'mouse.tiltLeft' )
-	const tiltRight = preferences.value( 'mouse.tiltRight' )
-
-	log.info( 'Setting: Tilt' )
-	ioHook = await iohook.importIoHook()
-
-	if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
-
-		leftKey = Number.parseInt( keycode[tiltLeft], 10 )
-
-		if ( tiltToggle ) {
-
-			ioHook.registerShortcut(
-				[ leftKey ],
-				_ => {
-
-					const tilted = preferences.value( 'hidden.tilted' )
-					if ( tilted ) {
-
-						tiltCrosshair( 0 )
-
-					} else {
-
-						tiltCrosshair( tiltAngle * -1 )
-
-					}
-
-					preferences.value( 'hidden.tilted', !tilted )
-
-				},
-			)
-
-		} else {
-
-			ioHook.registerShortcut(
-				[ leftKey ],
-				_ => {
-
-					tiltCrosshair( tiltAngle * -1 )
-
-				},
-				_ => {
-
-					tiltCrosshair( 0 )
-
-				},
-			)
-
-		}
-
-	}
-
-	if ( Object.prototype.hasOwnProperty.call( keycode, tiltRight ) ) {
-
-		rightKey = Number.parseInt( keycode[tiltRight], 10 )
-
-		if ( tiltToggle ) {
-
-			ioHook.registerShortcut(
-				[ rightKey ],
-				_ => {
-
-					const tilted = preferences.value( 'hidden.tilted' )
-					if ( tilted ) {
-
-						tiltCrosshair( 0 )
-
-					} else {
-
-						tiltCrosshair( tiltAngle )
-
-					}
-
-					preferences.value( 'hidden.tilted', !tilted )
-
-				},
-			)
-
-		} else {
-
-			ioHook.registerShortcut(
-				[ rightKey ],
-				_ => {
-
-					tiltCrosshair( tiltAngle )
-
-				},
-				_ => {
-
-					tiltCrosshair( 0 )
-
-				},
-			)
-
-		}
-
-	}
-
-	if ( leftKey || rightKey ) {
-
-		// Register and start hook
-		ioHook.start()
-
-	}
-
-}
 
 const setupApp = async () => {
 
@@ -417,7 +112,7 @@ const setupApp = async () => {
 	if ( currentCrosshair ) {
 
 		log.info( `Set crosshair: ${currentCrosshair}` )
-		mainWindow.webContents.send( 'set_crosshair', currentCrosshair )
+		windows.win.webContents.send( 'set_crosshair', currentCrosshair )
 
 	}
 
@@ -441,32 +136,32 @@ const setupApp = async () => {
 
 		const locked = preferences.value( 'hidden.locked' )
 
-		lockWindow( locked )
+		crossover.lockWindow( locked )
 
 		// Show on first load if unlocked (unlocking shows already)
 		// if locked we have to call show() if another window has focus
 		if ( locked ) {
 
-			mainWindow.show()
+			windows.win.show()
 
 		}
 
 	}, 500 )
 
-	if ( !chooserWindow ) {
+	if ( !windows.chooserWindow ) {
 
-		chooserWindow = await windows.createChooser( currentCrosshair )
+		windows.chooserWindow = await windows.createChooser( currentCrosshair )
 
 	}
 
 	// Window Events after windows are created
 	register.events()
 
-	mainWindow.focus()
+	windows.win.focus()
 
 }
 
-register.app()
+register.appEvents()
 
 const ready = async () => {
 
@@ -475,11 +170,11 @@ const ready = async () => {
 	/* MENU */
 	menu.init()
 
-	mainWindow = await windows.init()
+	await windows.init()
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	mainWindow.setAlwaysOnTop( true, 'screen-saver' )
-	// Log.info( mainWindow.getNativeWindowHandle() )
+	windows.win.setAlwaysOnTop( true, 'screen-saver' )
+	// Log.info( windows.win.getNativeWindowHandle() )
 
 	sound.preload()
 

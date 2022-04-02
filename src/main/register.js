@@ -1,4 +1,4 @@
-const { app: electronApp } = require( 'electron' )
+const { app } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const EXIT_CODES = require( '../config/exit-codes' )
 const crossover = require( './crossover' )
@@ -6,13 +6,12 @@ const preferences = require( './electron-preferences' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const reset = require( './reset' )
-const save = require( './save' )
 const windows = require( './windows' )
 
-const app = () => {
+const appEvents = () => {
 
 	// Opening 2nd instance focuses app
-	electronApp.on( 'second-instance', async () => {
+	app.on( 'second-instance', async () => {
 
 		if ( windows.win ) {
 
@@ -36,7 +35,7 @@ const app = () => {
 
 	} )
 
-	electronApp.on( 'will-quit', () => {
+	app.on( 'will-quit', () => {
 
 		// Unregister all shortcuts.
 		iohook.unregisterIOHook()
@@ -44,22 +43,22 @@ const app = () => {
 
 	} )
 
-	// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron electronApp that registers
+	// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
 	// a `beforeunload` window event handler results in a disconnected white
 	// browser window in GNU/Linux and macOS.
 	// The `before-quit` Electron event is triggered in `SIGINT`, so we can
 	// make use of it to ensure the browser window is completely destroyed.
 	// See https://github.com/electron/electron/issues/5273
-	electronApp.on( 'before-quit', () => {
+	app.on( 'before-quit', () => {
 
-		electronApp.releaseSingleInstanceLock()
+		app.releaseSingleInstanceLock()
 		process.exit( EXIT_CODES.SUCCESS )
 
 	} )
 
-	electronApp.on( 'window-all-closed', electronApp.quit )
+	app.on( 'window-all-closed', app.quit )
 
-	electronApp.on( 'activate', async () => {
+	app.on( 'activate', async () => {
 
 		// Will return current window if exists
 		await windows.init()
@@ -123,19 +122,8 @@ const events = () => {
 
 }
 
-const saveWindowBounds = () => {
-
-	windows.win.on( 'move', () => {
-
-		save.position( windows.win.getBounds() )
-
-	} )
-
-}
-
 const register = {
-	app,
+	appEvents,
 	events,
-	saveWindowBounds,
 }
 module.exports = register

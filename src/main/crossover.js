@@ -10,6 +10,11 @@ const windows = require( './windows' )
 const keyboard = require( './keyboard' )
 const reset = require( './reset' )
 const actions = require( './actions' )
+const { checkboxTrue } = require( '../config/utils' )
+const iohook = require( './iohook' )
+const dock = require( './dock' )
+
+const quit = () => app.quit()
 
 const centerWindow = options => {
 
@@ -179,7 +184,15 @@ const registerKeyboardShortcuts = () => {
 
 }
 
-const quit = () => app.quit()
+const registerSaveWindowBounds = () => {
+
+	windows.win.on( 'move', () => {
+
+		save.position( windows.win.getBounds() )
+
+	} )
+
+}
 
 const registerEscape = ( action = actions.escape ) => {
 
@@ -379,88 +392,88 @@ const syncSettings = options => {
 }
 
 // Allows dragging and setting options
-// const lockWindow = ( lock, targetWindow = windows.win ) => {
+const lockWindow = ( lock, targetWindow = windows.win ) => {
 
-// 	log.info( `Locked: ${lock}` )
+	log.info( `Locked: ${lock}` )
 
-// 	hideChooserWindow()
-// 	hideSettingsWindow()
-// 	targetWindow.closable = !lock
-// 	targetWindow.setFocusable( !lock )
-// 	targetWindow.setIgnoreMouseEvents( lock )
-// 	targetWindow.webContents.send( 'lock_window', lock )
+	windows.hideChooserWindow()
+	windows.hideSettingsWindow()
+	targetWindow.closable = !lock
+	targetWindow.setFocusable( !lock )
+	targetWindow.setIgnoreMouseEvents( lock )
+	targetWindow.webContents.send( 'lock_window', lock )
 
-// 	if ( lock ) {
+	if ( lock ) {
 
-// 		// Don't save bounds when locked
-// 		if ( targetWindow === windows.win ) {
+		// Don't save bounds when locked
+		if ( targetWindow === windows.win ) {
 
-// 			targetWindow.removeAllListeners( 'move' )
+			targetWindow.removeAllListeners( 'move' )
 
-// 		}
+		}
 
-// 		/* Actions */
-// 		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
-// 		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-// 		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-// 		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
+		/* Actions */
+		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
+		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
+		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
+		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
 
-// 		iohook.unregisterIOHook()
+		iohook.unregisterIOHook()
 
-// 		if ( followMouse ) {
+		if ( followMouse ) {
 
-// 			registerFollowMouse()
+			iohook.followMouse()
 
-// 		}
+		}
 
-// 		if ( hideOnMouse !== -1 ) {
+		if ( hideOnKey ) {
 
-// 			registerHideOnMouse()
+			iohook.hideOnKey()
 
-// 		}
+		}
 
-// 		if ( hideOnKey ) {
+		if ( hideOnMouse !== -1 ) {
 
-// 			registerHideOnKey()
+			iohook.hideOnMouse()
 
-// 		}
+		}
 
-// 		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
+		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
 
-// 			registerTilt()
+			iohook.tilt()
 
-// 		}
+		}
 
-// 		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-// 		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
 
-// 	} else {
+	} else {
 
-// 		/* Unlock */
+		/* Unlock */
 
-// 		// Unregister
-// 		iohook.unregisterIOHook()
+		// Unregister
+		iohook.unregisterIOHook()
 
-// 		// Enable saving bounds
-// 		if ( targetWindow === windows.win ) {
+		// Enable saving bounds
+		if ( targetWindow === windows.win ) {
 
-// 			register.saveWindowBounds()
+			registerSaveWindowBounds()
 
-// 		}
+		}
 
-// 		// Allow dragging to Window on Mac
-// 		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
+		// Allow dragging to Window on Mac
+		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
-// 		// Bring window to front
-// 		targetWindow.show()
+		// Bring window to front
+		targetWindow.show()
 
-// 	}
+	}
 
-// 	dock.setVisible( !lock )
+	dock.setVisible( !lock )
 
-// 	preferences.value( 'hidden.locked', lock )
+	preferences.value( 'hidden.locked', lock )
 
-// }
+}
 
 const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
@@ -470,5 +483,5 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
 }
 
-const crossover = { centerWindow, initShadowWindow, quit, registerKeyboardShortcuts, setTheme, syncSettings, toggleWindowLock, openChooserWindow, openSettingsWindow }
+const crossover = { centerWindow, initShadowWindow, lockWindow, quit, registerKeyboardShortcuts, setTheme, syncSettings, toggleWindowLock, openChooserWindow, openSettingsWindow }
 module.exports = crossover
