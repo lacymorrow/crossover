@@ -3,9 +3,11 @@ const GENERAL_ERROR = 1
 const VALIDATION_ERROR = 2
 const CANCELLED = 3
 
-module.exports = {
+const EXIT_CODES = {
 	SUCCESS,
 	GENERAL_ERROR,
 	VALIDATION_ERROR,
 	CANCELLED,
 }
+
+module.exports = EXIT_CODES
