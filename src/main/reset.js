@@ -29,7 +29,7 @@ const app = skipSetup => {
 
 		windows.unregister()
 
-		// setupApp( true )
+		//  setupApp( true )
 
 	}
 
