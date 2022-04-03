@@ -25,7 +25,7 @@ const init = async options => {
 	}
 
 	// or create(); await load()
-	windows.win = await create( options ).load()
+	windows.win = await windows.create( options ).load()
 
 	return windows.win
 

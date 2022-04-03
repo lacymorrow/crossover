@@ -4,7 +4,6 @@ const crossover = require( './crossover' )
 const preferences = require( './electron-preferences' )
 const helpers = require( './helpers' )
 const log = require( './log' )
-const reset = require( './reset' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
@@ -21,7 +20,7 @@ const init = () => {
 	ipcMain.on( 'reset_preferences', ( _event, _arg ) => {
 
 		log.info( 'RESET' )
-		reset.preferences()
+		crossover.resetPreferences()
 
 	} )
 

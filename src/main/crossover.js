@@ -1,18 +1,17 @@
 const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
 const { is, getWindowBoundsCentered } = require( 'electron-util' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
+const actions = require( './actions' )
+const dock = require( './dock' )
+const iohook = require( './iohook' )
+const keyboard = require( './keyboard' )
 const log = require( './log' )
 const preferences = require( './electron-preferences' )
 const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
-const keyboard = require( './keyboard' )
-const reset = require( './reset' )
-const actions = require( './actions' )
 const { checkboxTrue } = require( '../config/utils' )
-const iohook = require( './iohook' )
-const dock = require( './dock' )
 
 const quit = () => app.quit()
 
@@ -47,7 +46,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+D`,
 			async fn() {
 
-				await initShadowWindow()
+				await crossover.initShadowWindow()
 
 			},
 		},
@@ -58,7 +57,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+X`,
 			fn() {
 
-				toggleWindowLock()
+				crossover.toggleWindowLock()
 
 			},
 		},
@@ -102,7 +101,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+R`,
 			fn() {
 
-				reset.app()
+				crossover.reset()
 
 			},
 		},
@@ -179,6 +178,68 @@ const registerKeyboardShortcuts = () => {
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
+
+	}
+
+}
+
+const reset = skipSetup => {
+
+	sound.play( 'RESET' )
+
+	// Close extra crosshairs
+	windows.closeAllShadows()
+
+	// Hides chooser and preferences
+	actions.escape()
+
+	windows.center()
+	resetPreferences()
+
+	if ( !skipSetup ) {
+
+		iohook.unregisterIOHook()
+
+		globalShortcut.unregisterAll()
+
+		// IpcMain.removeAllListeners()
+
+		windows.unregister()
+
+		// TODO NOT WORKING
+		// crossover.init()
+
+	}
+
+}
+
+const resetPreference = key => {
+
+	try {
+
+		const [ groupId, id ] = key.split( '.' )
+		const group = preferences.defaults[groupId]
+		const defaultValue = group[id]
+
+		log.info( `Setting default value ${defaultValue} for ${key}` )
+		preferences.value( key, defaultValue )
+
+	} catch ( error ) {
+
+		log.warn( error )
+
+	}
+
+}
+
+// Temp until implemented in electron-preferences
+
+const resetPreferences = () => {
+
+	const { defaults } = preferences
+	for ( const [ key, value ] of Object.entries( defaults ) ) {
+
+		preferences.value( key, value )
 
 	}
 
@@ -484,5 +545,19 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
 }
 
-const crossover = { centerWindow, initShadowWindow, lockWindow, quit, registerKeyboardShortcuts, setTheme, syncSettings, toggleWindowLock, openChooserWindow, openSettingsWindow }
+const crossover = {
+	centerWindow,
+	initShadowWindow,
+	lockWindow,
+	openChooserWindow,
+	openSettingsWindow,
+	quit,
+	registerKeyboardShortcuts,
+	reset,
+	resetPreference,
+	resetPreferences,
+	setTheme,
+	syncSettings,
+	toggleWindowLock,
+}
 module.exports = crossover
