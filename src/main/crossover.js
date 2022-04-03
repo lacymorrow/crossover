@@ -355,12 +355,13 @@ const openSettingsWindow = async () => {
 
 }
 
-const syncSettings = options => {
+const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
 	setTheme( options?.app?.theme )
 
+	// Set to previously selected crosshair
 	if ( options?.crosshair?.crosshair ) {
 
 		set.crosshair( options.crosshair.crosshair )
@@ -376,6 +377,8 @@ const syncSettings = options => {
 
 	} )
 
+	set.startOnBoot()
+
 	// Reset all custom shortcuts
 	const escapeActive = globalShortcut.isRegistered( 'Escape' )
 	globalShortcut.unregisterAll()
@@ -386,8 +389,6 @@ const syncSettings = options => {
 	}
 
 	registerKeyboardShortcuts()
-
-	set.startOnBoot()
 
 }
 

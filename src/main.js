@@ -35,7 +35,6 @@ const { checkboxTrue } = require( './config/utils.js' )
 
 const errorHandling = require( './main/error-handling.js' )
 const log = require( './main/log.js' )
-const set = require( './main/set.js' )
 const preferences = require( './main/electron-preferences.js' )
 const windows = require( './main/windows.js' )
 const sound = require( './main/sound.js' )
@@ -43,8 +42,7 @@ const reset = require( './main/reset.js' )
 const autoUpdate = require( './main/auto-update.js' )
 const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
-const ipc = require( './main/ipc.js' )
-const crossover = require( './main/crossover.js' )
+const init = require( './main/init.js' )
 
 /* App setup */
 console.log( '***************' )
@@ -95,72 +93,6 @@ if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
 // Prevent window from being garbage collected
 
-const setupApp = async () => {
-
-	// Preferences
-	preferences.value( 'hidden.showSettings', false )
-
-	// IPC
-	ipc.init()
-
-	// Start on boot
-	set.startOnBoot()
-
-	// Set to previously selected crosshair
-	const currentCrosshair = preferences.value( 'crosshair.crosshair' )
-
-	if ( currentCrosshair ) {
-
-		log.info( `Set crosshair: ${currentCrosshair}` )
-		windows.win.webContents.send( 'set_crosshair', currentCrosshair )
-
-	}
-
-	set.color( preferences.value( 'crosshair.color' ) )
-	set.opacity( preferences.value( 'crosshair.opacity' ) )
-	set.sight( preferences.value( 'crosshair.reticle' ) )
-	set.size( preferences.value( 'crosshair.size' ) )
-
-	// App centered by default - set position if exists
-	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' ) {
-
-		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
-
-	}
-
-	// Set lock state, timeout makes it pretty
-	setTimeout( () => {
-
-		// Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
-		crossover.registerKeyboardShortcuts()
-
-		const locked = preferences.value( 'hidden.locked' )
-
-		crossover.lockWindow( locked )
-
-		// Show on first load if unlocked (unlocking shows already)
-		// if locked we have to call show() if another window has focus
-		if ( locked ) {
-
-			windows.win.show()
-
-		}
-
-	}, 500 )
-
-	if ( !windows.chooserWindow ) {
-
-		windows.chooserWindow = await windows.createChooser( currentCrosshair )
-
-	}
-
-	// Window Events after windows are created
-	register.events()
-
-	windows.win.focus()
-
-}
-
 register.appEvents()
 
 const ready = async () => {
@@ -190,7 +122,7 @@ const ready = async () => {
 	}
 
 	/* Press Play >>> */
-	setupApp()
+	init()
 
 	console.timeEnd( 'init' )
 

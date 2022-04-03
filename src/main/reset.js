@@ -17,7 +17,7 @@ const app = skipSetup => {
 	actions.escapeAction()
 
 	windows.center()
-	reset.preferences()
+	preferences()
 
 	if ( !skipSetup ) {
 
@@ -29,7 +29,7 @@ const app = skipSetup => {
 
 		windows.unregister()
 
-		//  setupApp( true )
+		// crossover.setupApp( true )
 
 	}
 

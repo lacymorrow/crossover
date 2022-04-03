@@ -72,7 +72,6 @@ const events = () => {
 	// Sync preferences to renderer
 	preferences.on( 'save', options => {
 
-		console.log( options.app )
 		crossover.syncSettings( options )
 
 	} )
@@ -104,7 +103,7 @@ const events = () => {
 
 		windows.showHideWindow()
 		await windows.createChooser()
-		register.events()
+		events()
 		windows.win.show()
 
 	} )

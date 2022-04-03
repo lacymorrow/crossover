@@ -112,6 +112,4 @@ const startOnBoot = () => {
 
 const set = { color, crosshair, custom, opacity, position, sight, size, startOnBoot }
 
-console.log( set )
-
 module.exports = set

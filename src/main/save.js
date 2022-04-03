@@ -38,6 +38,4 @@ const position = debounce( bounds => {
 
 const save = { crosshair, position }
 
-console.log( save )
-
 module.exports = save

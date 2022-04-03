@@ -344,8 +344,6 @@ const showWindow = () => {
 
 const hideWindow = () => {
 
-	console.log( 'ASD' )
-
 	each( win => win.hide() )
 
 	hidden = true
@@ -353,8 +351,6 @@ const hideWindow = () => {
 }
 
 const showHideWindow = () => {
-
-	console.log( 'showhide', windows )
 
 	// Hide all crosshair windows in place
 	if ( hidden ) {
