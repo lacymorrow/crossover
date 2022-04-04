@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
-/dist
-/src/renderer/styles/dist
+dist
+src/renderer/styles/dist

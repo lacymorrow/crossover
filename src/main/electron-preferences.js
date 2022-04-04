@@ -190,7 +190,7 @@ const preferences = new ElectronPreferences( {
 					heading: 'Crosshair Tilt Left/Right',
 				},
 				{
-					label: 'Keyboard Tilt',
+					label: 'Enable Tilt',
 					key: 'tiltEnable',
 					type: 'checkbox',
 					options: [

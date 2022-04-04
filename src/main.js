@@ -20,6 +20,11 @@
 	Low:
 		Conflicting accelerator on Fedora
 		dont set.position if monitor has been unplugged
+
+	Todo: when updating electron to 12+:
+		- Test iohook
+		- Test closing the devtools windows, opacity should not go to 100%
+
 */
 
 // const NativeExtension = require('bindings')('NativeExtension');
