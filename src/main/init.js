@@ -5,13 +5,22 @@ const windows = require( './windows' )
 const register = require( './register' )
 const ipc = require( './ipc' )
 const crossover = require( './crossover' )
+const { checkboxTrue } = require( '../config/utils' )
 
 const init = async () => {
 
 	log.info( 'Init' )
 
-	// Preferences
+	// Reset some preferences
 	preferences.value( 'hidden.showSettings', false )
+	preferences.value( 'hidden.tilted', false )
+
+	// Start unlocked?
+	if ( checkboxTrue( preferences.value( 'app.startUnlocked' ), 'startUnlocked' ) ) {
+
+		preferences.value( 'hidden.locked', false )
+
+	}
 
 	// IPC
 	ipc.init()
@@ -22,6 +31,7 @@ const init = async () => {
 	// App centered by default - set position if exists
 	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' ) {
 
+		// Todo: do not set invalid bounds
 		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
 
 	}
@@ -33,28 +43,13 @@ const init = async () => {
 		// Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
 		crossover.registerKeyboardShortcuts()
 
-		const locked = preferences.value( 'hidden.locked' )
-		crossover.lockWindow( locked )
-
-		// Show on first load if unlocked (unlocking shows already)
-		// if locked we have to call show() if another window has focus
-		if ( locked ) {
-
-			windows.win.show()
-
-		}
+		// Show or hide window
+		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
 	}, 500 )
 
-	// Spawn chooser window
-	if ( !windows.chooserWindow ) {
-
-		windows.chooserWindow = await windows.createChooser( preferences.value( 'crosshair.crosshair' ) )
-
-	}
-
-	// Focus
-	windows.win.focus()
+	// Spawn chooser window (if resetting it may exist)
+	await windows.createChooser( preferences.value( 'crosshair.crosshair' ) )
 
 	// Window Events after windows are created
 	register.events()

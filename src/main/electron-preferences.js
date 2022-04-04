@@ -42,12 +42,13 @@ const preferences = new ElectronPreferences( {
 			tiltAngle: 25,
 		},
 		app: {
+			theme: DEFAULT_THEME,
 			updates: [ 'updates' ],
 			sounds: [ 'sounds' ],
 			notify: [ 'notify' ],
 			gpu: [ 'gpu' ],
+			startUnlocked: [ 'startUnlocked' ],
 			boot: [],
-			theme: DEFAULT_THEME,
 		},
 		keybinds: {
 			reset: 'Control+Shift+Alt+R',
@@ -68,9 +69,7 @@ const preferences = new ElectronPreferences( {
 			showSettings: false,
 			positionX: null,
 			positionY: null,
-			test: true,
 			tilted: false,
-			updateStatus: '',
 		},
 	},
 	/**
@@ -88,7 +87,7 @@ const preferences = new ElectronPreferences( {
                      */
 				label: 'Crosshair Settings',
 				fields: [ {
-					label: 'Select a crosshair',
+					label: 'Select a Crosshair',
 					buttonLabel: 'Choose Crosshair',
 					key: 'chooseCrosshair',
 					type: 'button',
@@ -96,7 +95,7 @@ const preferences = new ElectronPreferences( {
 				},
 				{
 					buttonLabel: 'Select Custom Image',
-					label: 'Custom crosshair',
+					label: 'Custom Crosshair',
 					key: 'crosshair',
 					type: 'file',
 					help: `Use any image as a custom crosshair. Supported file types: ${JSON.stringify( SUPPORTED_IMAGE_FILE_TYPES )}`,
@@ -156,7 +155,7 @@ const preferences = new ElectronPreferences( {
 			groups: [ {
 				label: 'Mouse Actions',
 				fields: [ {
-					label: 'Follow mouse',
+					label: 'Follow Mouse',
 					key: 'followMouse',
 					type: 'checkbox',
 					options: [
@@ -165,7 +164,7 @@ const preferences = new ElectronPreferences( {
 					help: 'Keeps CrossOver centered on the mouse cursor. ',
 				},
 				{
-					label: 'Hide crosshair on mouse button',
+					label: 'Hide Crosshair on Mouse Button',
 					key: 'hideOnMouse',
 					type: 'radio',
 					options: [
@@ -191,7 +190,7 @@ const preferences = new ElectronPreferences( {
 					heading: 'Crosshair Tilt Left/Right',
 				},
 				{
-					label: 'Enable tilt',
+					label: 'Keyboard Tilt',
 					key: 'tiltEnable',
 					type: 'checkbox',
 					options: [
@@ -200,26 +199,26 @@ const preferences = new ElectronPreferences( {
 					help: 'Crosshair will tilt at an angle while the key is held.',
 				},
 				{
-					label: 'Toggle tilted crosshair',
+					label: 'Toggle/Hold to Tilt',
 					key: 'tiltToggle',
 					type: 'checkbox',
 					options: [
-						{ label: 'Toggle tilt on/off when pressed (vs hold)', value: 'tiltToggle' },
+						{ label: 'Toggle tilt on/off when pressed (instead of hold)', value: 'tiltToggle' },
 					],
-					help: 'Use toggle-to-tilt instead of hold-to-tilt.',
+					help: 'Keypress toggles tilt on and off i.e. Use toggle-to-tilt instead of hold-to-tilt.',
 				},
 				{
-					label: 'Tilt left',
+					label: 'Tilt Left',
 					key: 'tiltLeft',
 					type: 'accelerator',
 				},
 				{
-					label: 'Tilt right',
+					label: 'Tilt Right',
 					key: 'tiltRight',
 					type: 'accelerator',
 				},
 				{
-					label: 'Tilt angle',
+					label: 'Tilt Angle',
 					key: 'tiltAngle',
 					type: 'slider',
 					min: 1,
@@ -324,6 +323,15 @@ const preferences = new ElectronPreferences( {
 					],
 				},
 				{
+					label: 'Show On App Start',
+					key: 'startUnlocked',
+					type: 'checkbox',
+					options: [
+						{ label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' },
+					],
+					help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
+				},
+				{
 					label: 'Automatic Updates',
 					key: 'updates',
 					type: 'checkbox',
@@ -331,15 +339,6 @@ const preferences = new ElectronPreferences( {
 						{ label: 'Allow CrossOver to automatically update', value: 'updates' },
 					],
 					help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
-				},
-				{
-					label: 'Sounds',
-					key: 'sounds',
-					type: 'checkbox',
-					options: [
-						{ label: 'Allow CrossOver to play audio', value: 'sounds' },
-					],
-					help: 'CrossOver makes a little noise to indicate certain events.',
 				},
 				{
 					label: 'Notifications',
@@ -351,7 +350,16 @@ const preferences = new ElectronPreferences( {
 					help: 'CrossOver will notify you about any issues or new updates.',
 				},
 				{
-					label: 'Hardware acceleration',
+					label: 'Sounds',
+					key: 'sounds',
+					type: 'checkbox',
+					options: [
+						{ label: 'Allow CrossOver to play audio', value: 'sounds' },
+					],
+					help: 'CrossOver makes a little noise to indicate certain events.',
+				},
+				{
+					label: 'Hardware Acceleration',
 					key: 'gpu',
 					type: 'checkbox',
 					options: [
@@ -360,8 +368,8 @@ const preferences = new ElectronPreferences( {
 					help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
 				},
 				{
-					label: 'Run at startup',
-					key: 'system',
+					label: 'Run App On System Start',
+					key: 'boot',
 					type: 'checkbox',
 					options: [
 						{ label: 'Start on system boot', value: 'boot' },

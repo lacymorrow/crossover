@@ -1,13 +1,11 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
-const { __static } = require( './paths' )
-
-const crosshairsPath = path.join( __static, 'crosshairs' )
+const { __crosshairs } = require( './paths' )
 
 const getCrosshairImages = async () => {
 
 	// How many levels deep to recurse
-	const crosshairsObject = await getImages( crosshairsPath, 2 )
+	const crosshairsObject = await getImages( __crosshairs, 2 )
 
 	return crosshairsObject
 

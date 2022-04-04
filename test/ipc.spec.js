@@ -41,11 +41,13 @@ const { startApp, wait, focusedMinimizedVisible, getBounds, delays, CHOOSER_WIND
 const { productName } = require( '../package.json' )
 
 let electronApp
+let mainPage
 
 test.beforeAll( async () => {
 
 	const app = await startApp()
 	electronApp = app.electronApp
+	mainPage = app.mainPage
 
 } )
 // End setup
@@ -128,5 +130,26 @@ test( 'Validate open_settings + focus', async () => {
 } )
 
 test( 'Validate set_preference + reset_preference', async () => {
+
+} )
+
+test( 'Validate quit', async () => {
+
+	let PASS = false
+
+	// quit app
+	await electronApp.evaluate( async app => app.ipcMain.emit( 'quit' ) )
+
+	try {
+
+		console.log( 'This should throw an error!', await mainPage.title() )
+
+	} catch {
+
+		PASS = true
+
+	}
+
+	expect( PASS, 'app should be quit' ).toBeTruthy()
 
 } )

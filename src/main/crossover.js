@@ -519,10 +519,10 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 		// Allow dragging to Window on Mac
 		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
-		// Bring window to front
-		targetWindow.show()
-
 	}
+
+	// Bring window to front
+	targetWindow.show()
 
 	dock.setVisible( !lock )
 
