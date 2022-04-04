@@ -29,7 +29,7 @@ const init = async () => {
 	// Set lock state, timeout makes it pretty
 	setTimeout( () => {
 
-		// Todo: We don't need a timeout here
+		// Todo: We shouldn't need a timeout here
 		// Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
 		crossover.registerKeyboardShortcuts()
 

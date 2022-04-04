@@ -79,7 +79,7 @@ const init = () => {
 
 	ipcMain.on( 'save_crosshair', ( event, arg ) => {
 
-		set.crosshair( arg )
+		crossover.changeCrosshair( arg )
 
 	} )
 
@@ -91,7 +91,7 @@ const init = () => {
 
 	} )
 
-	ipcMain.on( 'restart_app', () => {
+	ipcMain.on( 'update_and_restart', () => {
 
 		autoUpdate.install()
 

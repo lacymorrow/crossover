@@ -33,7 +33,7 @@
 // 	- save_custom_image
 // 	- get_crosshairs
 // 	- save_crosshair
-// 	- restart_app
+// 	- update_and_restart
 // 	- quit
 
 const { expect, test } = require( '@playwright/test' )

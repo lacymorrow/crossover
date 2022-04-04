@@ -31,7 +31,8 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 			if ( stat.isDirectory() && level > 0 ) {
 
-				const next = await getImages( path.join( directory, filepath ), level - 1 ) // eslint-disable-line no-await-in-loop
+				// eslint-disable-next-line no-await-in-loop
+				const next = await getImages( path.join( directory, filepath ), level - 1 )
 				crosshairs.push( next )
 
 			} else if ( stat.isFile() && !/^\..*|.*\.docx$/.test( filepath ) ) {

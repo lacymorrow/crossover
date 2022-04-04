@@ -32,6 +32,8 @@ const centerWindow = options => {
 
 }
 
+const changeCrosshair = src => windows.each( win => set.crosshair( src, win ) )
+
 const keyboardShortcuts = () => {
 
 	/* Default accelerator */
@@ -183,7 +185,7 @@ const registerKeyboardShortcuts = () => {
 
 }
 
-const reset = skipSetup => {
+const reset = skipFullReset => {
 
 	sound.play( 'RESET' )
 
@@ -196,18 +198,13 @@ const reset = skipSetup => {
 	windows.center()
 	resetPreferences()
 
-	if ( !skipSetup ) {
+	if ( !skipFullReset ) {
 
-		iohook.unregisterIOHook()
-
-		globalShortcut.unregisterAll()
-
-		// IpcMain.removeAllListeners()
-
-		windows.unregister()
-
-		// TODO NOT WORKING
-		// crossover.init()
+		// todo
+		// init()
+		// or, to restart completely
+		app.relaunch()
+		app.exit()
 
 	}
 
@@ -296,7 +293,7 @@ const initShadowWindow = async () => {
 
 	}
 
-	// lockWindow( preferences.value( 'hidden.locked' ), shadow )
+	lockWindow( preferences.value( 'hidden.locked' ), shadow )
 
 	return shadow
 
@@ -423,14 +420,10 @@ const syncSettings = ( options = preferences.preferences ) => {
 	setTheme( options?.app?.theme )
 
 	// Set to previously selected crosshair
-	if ( options?.crosshair?.crosshair ) {
-
-		set.crosshair( options.crosshair.crosshair )
-
-	}
 
 	windows.each( win => {
 
+		set.crosshair( options?.crosshair?.crosshair, win )
 		set.color( options?.crosshair?.color, win )
 		set.opacity( options?.crosshair?.opacity, win )
 		set.sight( options?.crosshair?.reticle, win )
@@ -547,6 +540,7 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
 const crossover = {
 	centerWindow,
+	changeCrosshair,
 	initShadowWindow,
 	lockWindow,
 	openChooserWindow,

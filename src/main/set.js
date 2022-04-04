@@ -9,18 +9,12 @@ const { app } = require( 'electron' )
 const preferences = require( './electron-preferences' )
 const { checkboxTrue } = require( '../config/utils' )
 
-const crosshair = src => {
+const crosshair = ( src, targetWindow = windows.win ) => {
 
 	if ( src ) {
 
 		windows.hideChooserWindow()
-		windows.win.webContents.send( 'set_crosshair', src ) // Pass to renderer
-		for ( const currentWindow of windows.shadowWindows ) {
-
-			currentWindow.webContents.send( 'set_crosshair', src )
-
-		}
-
+		targetWindow.webContents.send( 'set_crosshair', src )
 		save.crosshair( src )
 
 	} else {
