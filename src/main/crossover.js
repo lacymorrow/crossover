@@ -363,6 +363,8 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	setTheme( options.app?.theme )
 
+	console.log( options.crosshair?.color )
+
 	// Set to previously selected crosshair
 	windows.each( win => {
 

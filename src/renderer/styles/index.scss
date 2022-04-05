@@ -244,9 +244,6 @@ button {
 
 #crosshair {
 	--tilt-angle: 0deg;
-	// --svg-fill-color: inherit;
-	// --svg-stroke-color: inherit;
-	// --svg-stroke-width: inherit;
 
     // Default width
     width: 100px;
@@ -255,12 +252,6 @@ button {
     position: relative;
 	transform: rotate( var(--tilt-angle) );
 	transition: transform .1s ease-in-out;
-
-	// svg {
-	// 	fill: var(--svg-fill-color);
-	// 	stroke: var(--svg-stroke-color);
-	// 	stroke-width: var(--svg-stroke-width);
-	// }
 }
 
 
