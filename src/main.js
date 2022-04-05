@@ -46,8 +46,8 @@ const sound = require( './main/sound.js' )
 const autoUpdate = require( './main/auto-update.js' )
 const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
-const crossover = require( './main/crossover.js' )
 const init = require( './main/init.js' )
+const reset = require( './main/reset.js' )
 
 /* App setup */
 console.log( '***************' )
@@ -118,7 +118,7 @@ const ready = async () => {
 	if ( process.env.CROSSOVER_RESET ) {
 
 		log.info( 'Command-line reset triggered' )
-		crossover.reset( true )
+		reset.app( true )
 
 	}
 

@@ -12,6 +12,7 @@ const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const { checkboxTrue } = require( '../config/utils' )
+const reset = require( './reset' )
 
 const quit = () => app.quit()
 
@@ -103,7 +104,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+R`,
 			fn() {
 
-				crossover.reset()
+				reset.app()
 
 			},
 		},
@@ -180,65 +181,6 @@ const registerKeyboardShortcuts = () => {
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
-
-	}
-
-}
-
-const reset = skipFullReset => {
-
-	sound.play( 'RESET' )
-
-	// Close extra crosshairs
-	windows.closeAllShadows()
-
-	// Hides chooser and preferences
-	actions.escape()
-
-	windows.center()
-	resetPreferences()
-
-	if ( !skipFullReset ) {
-
-		// todo - circular dependency using:
-		// init()
-		// Using app.relaunch to cheat
-
-		// or, to restart completely
-		app.relaunch()
-		app.exit()
-
-	}
-
-}
-
-const resetPreference = key => {
-
-	try {
-
-		const [ groupId, id ] = key.split( '.' )
-		const group = preferences.defaults[groupId]
-		const defaultValue = group[id]
-
-		log.info( `Setting default value ${defaultValue} for ${key}` )
-		preferences.value( key, defaultValue )
-
-	} catch ( error ) {
-
-		log.warn( error )
-
-	}
-
-}
-
-// Temp until implemented in electron-preferences
-
-const resetPreferences = () => {
-
-	const { defaults } = preferences
-	for ( const [ key, value ] of Object.entries( defaults ) ) {
-
-		preferences.value( key, value )
 
 	}
 
@@ -419,17 +361,20 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
-	setTheme( options?.app?.theme )
+	setTheme( options.app?.theme )
 
 	// Set to previously selected crosshair
-
 	windows.each( win => {
 
-		set.crosshair( options?.crosshair?.crosshair, win )
-		set.color( options?.crosshair?.color, win )
-		set.opacity( options?.crosshair?.opacity, win )
-		set.sight( options?.crosshair?.reticle, win )
-		set.size( options?.crosshair?.size, win )
+		set.crosshair( options.crosshair?.crosshair, win )
+		set.color( options.crosshair?.color, win )
+		set.opacity( options.crosshair?.opacity, win )
+		set.sight( options.crosshair?.reticle, win )
+		set.size( options.crosshair?.size, win )
+
+		// set.fillColor( options.crosshair?.fillColor, win )
+		// set.strokeColor( options.crosshair?.strokeColor, win )
+		// set.strokeColor( options.crosshair?.strokeColor, win )
 
 	} )
 
@@ -549,9 +494,6 @@ const crossover = {
 	openSettingsWindow,
 	quit,
 	registerKeyboardShortcuts,
-	reset,
-	resetPreference,
-	resetPreferences,
 	setTheme,
 	syncSettings,
 	toggleWindowLock,

@@ -1,5 +1,7 @@
 /* global feather, randomColor */
 
+// Todo: better error handling for img onError
+
 ( () => {
 
 	// DOM elements
@@ -173,6 +175,49 @@
 		setSight( arg )
 
 	} )
+
+	// // SVG options
+	// const setFillColor = color => {
+
+	// 	document
+	// 		.querySelector( '#crosshair' )
+	// 		.style.setProperty( '--svg-fill-color', `${color}` )
+
+	// }
+
+	// window.crossover.receive( 'set_fill_color', arg => {
+
+	// 	setFillColor( arg )
+
+	// } )
+
+	// const setStrokeColor = color => {
+
+	// 	document
+	// 		.querySelector( '#crosshair' )
+	// 		.style.setProperty( '--svg-stroke-color', `${color}` )
+
+	// }
+
+	// window.crossover.receive( 'set_stroke_color', arg => {
+
+	// 	setStrokeColor( arg )
+
+	// } )
+
+	// const setStrokeWidth = width => {
+
+	// 	document
+	// 		.querySelector( '#crosshair' )
+	// 		.style.setProperty( '--svg-stroke-width', `${width}` )
+
+	// }
+
+	// window.crossover.receive( 'set_stroke_width', arg => {
+
+	// 	setStrokeWidth( arg )
+
+	// } )
 
 	// Lock
 	window.crossover.receive( 'lock_window', lock => {

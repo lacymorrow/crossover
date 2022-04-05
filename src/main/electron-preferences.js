@@ -86,64 +86,91 @@ const preferences = new ElectronPreferences( {
                      * Group heading is optional.
                      */
 				label: 'Crosshair Settings',
-				fields: [ {
-					label: 'Select a Crosshair',
-					buttonLabel: 'Choose Crosshair',
-					key: 'chooseCrosshair',
-					type: 'button',
-					help: 'Pick from the list of built-in crosshairs',
-				},
-				{
-					buttonLabel: 'Select Custom Image',
-					label: 'Custom Crosshair',
-					key: 'crosshair',
-					type: 'file',
-					help: `Use any image as a custom crosshair. Supported file types: ${JSON.stringify( SUPPORTED_IMAGE_FILE_TYPES )}`,
-					filters: FILE_FILTERS,
-					multiSelections: false, // Allow multiple paths to be selected
-					showHiddenFiles: false, // Show hidden files in dialog
-					noResolveAliases: false, // (macos) Disable the automatic alias (symlink) path resolution. Selected aliases will now return the alias path instead of their target path.
-					treatPackageAsDirectory: false, // (macos) Treat packages, such as .app folders, as a directory instead of a file.
-					dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
-				},
-				{
-					label: 'Color',
-					key: 'color',
-					type: 'color',
-					format: 'hex', // Can be hex, hsl or rgb
-					help: 'Center sight color',
-				},
-				{
-					label: 'Reticle',
-					key: 'reticle',
-					type: 'radio',
-					options: [
-						{ label: 'Dot', value: 'dot' },
-						{ label: 'Cross', value: 'cross' },
-						{ label: 'No sight', value: 'off' },
-					],
-				},
-				// {
-				//  label: 'Reticle size',
-				//  key: 'reticleSize',
-				//  type: 'slider',
-				//  min: 1,
-				//  max: 50
-				// },
-				{
-					label: 'Crosshair Size',
-					key: 'size',
-					type: 'slider',
-					min: 1,
-					max: 125,
-				},
-				{
-					label: 'Opacity',
-					key: 'opacity',
-					type: 'slider',
-					min: 1,
-					max: 100,
-				} ],
+				fields: [
+					{
+						label: 'Select a Crosshair',
+						buttonLabel: 'Choose Crosshair',
+						key: 'chooseCrosshair',
+						type: 'button',
+						help: 'Pick from the list of built-in crosshairs',
+					},
+					{
+						buttonLabel: 'Select Custom Image',
+						label: 'Custom Crosshair',
+						key: 'crosshair',
+						type: 'file',
+						help: `Use any image as a custom crosshair. Supported file types: ${JSON.stringify( SUPPORTED_IMAGE_FILE_TYPES )}`,
+						filters: FILE_FILTERS,
+						multiSelections: false, // Allow multiple paths to be selected
+						showHiddenFiles: false, // Show hidden files in dialog
+						noResolveAliases: false, // (macos) Disable the automatic alias (symlink) path resolution. Selected aliases will now return the alias path instead of their target path.
+						treatPackageAsDirectory: false, // (macos) Treat packages, such as .app folders, as a directory instead of a file.
+						dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
+					},
+					{
+						label: 'Color',
+						key: 'color',
+						type: 'color',
+						format: 'hex', // Can be hex, hsl or rgb
+						help: 'Center sight color',
+					},
+					{
+						label: 'Reticle',
+						key: 'reticle',
+						type: 'radio',
+						options: [
+							{ label: 'Dot', value: 'dot' },
+							{ label: 'Cross', value: 'cross' },
+							{ label: 'No sight', value: 'off' },
+						],
+					},
+					// {
+					//  label: 'Reticle size',
+					//  key: 'reticleSize',
+					//  type: 'slider',
+					//  min: 1,
+					//  max: 50
+					// },
+					{
+						label: 'Crosshair Size',
+						key: 'size',
+						type: 'slider',
+						min: 1,
+						max: 125,
+					},
+					{
+						label: 'Opacity',
+						key: 'opacity',
+						type: 'slider',
+						min: 1,
+						max: 100,
+					},
+					{
+						heading: 'SVG Customization Options',
+					},
+					{
+						label: 'Fill Color',
+						key: 'fillColor',
+						type: 'color',
+						format: 'hex', // Can be hex, hsl or rgb
+						help: 'SVG fill, often the background color.',
+					},
+					{
+						label: 'Stroke Color',
+						key: 'strokeColor',
+						type: 'color',
+						format: 'hex', // Can be hex, hsl or rgb
+						help: 'SVG stroke color.',
+					},
+					{
+						label: 'Stroke Width',
+						key: 'strokeWidth',
+						type: 'slider',
+						min: 1,
+						max: 25,
+						help: 'SVG stroke width.',
+					},
+				],
 			} ],
 		},
 	},
@@ -185,6 +212,7 @@ const preferences = new ElectronPreferences( {
 					key: 'hideOnKey',
 					type: 'accelerator',
 					help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
+					allowOnlyModifier: true,
 				},
 				{
 					heading: 'Crosshair Tilt Left/Right',
@@ -211,11 +239,13 @@ const preferences = new ElectronPreferences( {
 					label: 'Tilt Left',
 					key: 'tiltLeft',
 					type: 'accelerator',
+					allowOnlyModifier: true,
 				},
 				{
 					label: 'Tilt Right',
 					key: 'tiltRight',
 					type: 'accelerator',
+					allowOnlyModifier: true,
 				},
 				{
 					label: 'Tilt Angle',
@@ -246,30 +276,35 @@ const preferences = new ElectronPreferences( {
 					key: 'lock',
 					type: 'accelerator',
 					help: 'Unlock CrossOver to change settings, then lock the app in place to game.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Center Crosshair',
 					key: 'center',
 					type: 'accelerator',
 					help: 'Center the crosshair window on the current screen.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Toggle Hide Crosshair',
 					key: 'hide',
 					type: 'accelerator',
 					help: 'Hide CrossOver from the screen.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Duplicate Crosshair',
 					key: 'duplicate',
 					type: 'accelerator',
 					help: 'Create a duplicate "shadow" crosshair. Settings are not saved for shadow crosshairs.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Change Display',
 					key: 'changeDisplay',
 					type: 'accelerator',
 					help: 'Center CrossOver on the next connected display.',
+					modifierRequired: true,
 				},
 				// Currently we don't allow changing the Reset shortcut
 				// {
@@ -277,30 +312,35 @@ const preferences = new ElectronPreferences( {
 				//  key: 'reset',
 				//  type: 'accelerator',
 				//  help: 'Reset all settings to default and center the crosshair.'
+				// modifierRequired: true,
 				// },
 				{
 					label: 'Move Up',
 					key: 'moveUp',
 					type: 'accelerator',
 					help: 'Move the crosshair up 1 pixel.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Move Down',
 					key: 'moveDown',
 					type: 'accelerator',
 					help: 'Move the crosshair down 1 pixel.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Move Left',
 					key: 'moveLeft',
 					type: 'accelerator',
 					help: 'Move the crosshair left 1 pixel.',
+					modifierRequired: true,
 				},
 				{
 					label: 'Move Right',
 					key: 'moveRight',
 					type: 'accelerator',
 					help: 'Move the crosshair right 1 pixel.',
+					modifierRequired: true,
 				} ],
 			} ],
 		},
