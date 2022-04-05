@@ -1,15 +1,14 @@
 const keyboard = require( './keyboard' )
+const log = require( './windows' )
 const windows = require( './windows' )
 
 const escape = () => {
 
-	// log.info( 'Escape event' )
+	log.info( 'Escape event' )
 
 	windows.hideChooserWindow()
 	windows.hideSettingsWindow()
 
-	// TODO: circular dep - when using keyboard
-	// globalShortcut.unregister( 'Escape' )
 	keyboard.unregisterShortcut( 'Escape' )
 
 }

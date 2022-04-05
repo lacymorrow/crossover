@@ -200,8 +200,10 @@ const reset = skipFullReset => {
 
 	if ( !skipFullReset ) {
 
-		// todo
+		// todo - circular dependency using:
 		// init()
+		// Using app.relaunch to cheat
+
 		// or, to restart completely
 		app.relaunch()
 		app.exit()
