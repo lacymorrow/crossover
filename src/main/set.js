@@ -85,6 +85,24 @@ const position = ( posX, posY, targetWindow = windows.win ) => {
 
 }
 
+const fillColor = ( color, targetWindow = windows.win ) => {
+
+	targetWindow.webContents.send( 'set_fill_color', color )
+
+}
+
+const strokeColor = ( color, targetWindow = windows.win ) => {
+
+	targetWindow.webContents.send( 'set_stroke_color', color )
+
+}
+
+const strokeWidth = ( width, targetWindow = windows.win ) => {
+
+	targetWindow.webContents.send( 'set_stroke_width', width )
+
+}
+
 const startOnBoot = () => {
 
 	// Start app on boot
@@ -104,6 +122,18 @@ const startOnBoot = () => {
 
 }
 
-const set = { color, crosshair, custom, opacity, position, sight, size, startOnBoot }
+const set = {
+	color,
+	crosshair,
+	custom,
+	opacity,
+	position,
+	sight,
+	size,
+	fillColor,
+	strokeColor,
+	strokeWidth,
+	startOnBoot,
+}
 
 module.exports = set

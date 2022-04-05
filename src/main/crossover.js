@@ -419,17 +419,21 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
-	setTheme( options?.app?.theme )
+	setTheme( options.app?.theme )
 
 	// Set to previously selected crosshair
 
 	windows.each( win => {
 
-		set.crosshair( options?.crosshair?.crosshair, win )
-		set.color( options?.crosshair?.color, win )
-		set.opacity( options?.crosshair?.opacity, win )
-		set.sight( options?.crosshair?.reticle, win )
-		set.size( options?.crosshair?.size, win )
+		set.crosshair( options.crosshair?.crosshair, win )
+		set.color( options.crosshair?.color, win )
+		set.opacity( options.crosshair?.opacity, win )
+		set.sight( options.crosshair?.reticle, win )
+		set.size( options.crosshair?.size, win )
+
+		// set.fillColor( options.crosshair?.fillColor, win )
+		// set.strokeColor( options.crosshair?.strokeColor, win )
+		// set.strokeColor( options.crosshair?.strokeColor, win )
 
 	} )
 

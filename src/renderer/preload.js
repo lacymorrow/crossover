@@ -29,18 +29,26 @@ const api = {
 
 			ipcRenderer.send( channel, ...args )
 
+		} else {
+
+			console.warn( `Renderer refused to send IPC message on ${channel}` )
+
 		}
 
 	},
 
 	receive( channel, func ) {
 
-		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_color', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'tilt', 'untilt', 'update_available' ] )
+		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_color', 'set_fill_color', 'set_stroke_color', 'set_stroke_width', 'set_crosshair', 'set_opacity', 'set_size', 'set_sight', 'tilt', 'untilt', 'update_available' ] )
 
 		if ( validChannels.has( channel ) ) {
 
 			// Deliberately strip event as it includes `sender`
 			ipcRenderer.on( channel, ( event, ...args ) => func( ...args ) )
+
+		} else {
+
+			console.warn( `Renderer refused to receive IPC message on ${channel}` )
 
 		}
 
@@ -55,6 +63,10 @@ const api = {
 		if ( validChannels.has( channel ) ) {
 
 			ipcRenderer.invoke( channel, arg )
+
+		} else {
+
+			console.warn( `Renderer refused to invoke IPC message on ${channel}` )
 
 		}
 

@@ -244,6 +244,9 @@ button {
 
 #crosshair {
 	--tilt-angle: 0deg;
+	--svg-fill-color: inherit;
+	--svg-stroke-color: inherit;
+	--svg-stroke-width: inherit;
 
     // Default width
     width: 100px;
@@ -252,6 +255,38 @@ button {
     position: relative;
 	transform: rotate( var(--tilt-angle) );
 	transition: transform .1s ease-in-out;
+
+	svg {
+		fill: var(--svg-fill-color);
+		stroke: var(--svg-stroke-color);
+		stroke-width: var(--svg-stroke-width);
+	}
+
+	.sight {
+		--sight-fill: $default_sight_fill;
+		position: absolute;
+		z-index: 1;
+		svg {
+			display: none;
+			width: 100%;
+			height: 100%;
+			* {
+				fill: var(--sight-fill);
+			}
+		}
+		// Selectively show/hide
+		&.dot {
+			#dot {
+				display: block;
+			}
+		}
+		&.cross {
+			#cross {
+				display: block;
+			}
+		}
+	}
+
 }
 
 
@@ -334,31 +369,6 @@ label {
     margin-bottom: 4px;
     &:first-of-type {
         margin-top: 0;
-    }
-}
-
-.sight {
-    --sight-fill: $default_sight_fill;
-    position: absolute;
-    z-index: 1;
-    svg {
-        display: none;
-        width: 100%;
-        height: 100%;
-        * {
-            fill: var(--sight-fill);
-        }
-    }
-    // Selectively show/hide
-    &.dot {
-        #dot {
-            display: block;
-        }
-    }
-    &.cross {
-        #cross {
-            display: block;
-        }
     }
 }
 

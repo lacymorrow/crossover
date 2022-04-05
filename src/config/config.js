@@ -8,7 +8,7 @@ const MAX_SHADOW_WINDOWS = 20
 const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
 
-const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.jpg', '.jpeg', 'jfif', 'jfi', 'jif', '.png', '.gif', '.webp' ]
+const SUPPORTED_IMAGE_FILE_TYPES = [ '.bmp', '.gif', '.jpg', '.jpeg', 'jfif', 'jfi', 'jif', '.png', '.svg', '.webp' ]
 
 const FILE_FILTERS = [
 	{ name: 'Images', extensions: SUPPORTED_IMAGE_FILE_TYPES },
