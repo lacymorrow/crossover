@@ -1,5 +1,5 @@
 const keyboard = require( './keyboard' )
-const log = require( './windows' )
+const log = require( './log' )
 const windows = require( './windows' )
 
 const escape = () => {

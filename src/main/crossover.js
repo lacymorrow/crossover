@@ -431,9 +431,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 		set.sight( options.crosshair?.reticle, win )
 		set.size( options.crosshair?.size, win )
 
-		// set.fillColor( options.crosshair?.fillColor, win )
-		// set.strokeColor( options.crosshair?.strokeColor, win )
-		// set.strokeColor( options.crosshair?.strokeColor, win )
+		set.fillColor( options.crosshair?.fillColor, win )
+		set.strokeColor( options.crosshair?.strokeColor, win )
+		set.strokeColor( options.crosshair?.strokeColor, win )
 
 	} )
 

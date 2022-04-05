@@ -9,6 +9,13 @@ const windows = require( './windows' )
 
 const appEvents = () => {
 
+	app.on( 'activate', async () => {
+
+		// Will return current window if exists
+		await windows.init()
+
+	} )
+
 	// Opening 2nd instance focuses app
 	app.on( 'second-instance', async () => {
 
@@ -56,13 +63,6 @@ const appEvents = () => {
 	} )
 
 	app.on( 'window-all-closed', app.quit )
-
-	app.on( 'activate', async () => {
-
-		// Will return current window if exists
-		await windows.init()
-
-	} )
 
 }
 

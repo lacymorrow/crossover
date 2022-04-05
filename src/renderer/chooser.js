@@ -81,6 +81,8 @@
 
 		img.addEventListener( 'click', event => {
 
+			console.log( `Select crosshair: ${file}` )
+
 			setCrosshair( file )
 
 			// Set 'selected' border color

@@ -1,4 +1,4 @@
-/* global feather, randomColor */
+/* global feather, inlineSVG, randomColor */
 
 ( () => {
 
@@ -10,7 +10,13 @@
 	const settingsBtn = document.querySelector( '.settings-button' )
 	const container = document.querySelector( '.container' )
 	const crosshairElement = document.querySelector( '#crosshair' )
-	const crosshairImg = document.querySelector( '#crosshairImg' )
+	let crosshairImg = document.querySelector( '#crosshairImg' )
+
+	const img = document.createElement( 'IMG' )
+	img.id = 'crosshairImg'
+	img.draggable = false
+	img.addEventListener( 'error', event => console.log( event ) )
+	img.src = '../static/crosshairs/Actual/leupold-dot.png'
 
 	// OS Specific
 	if ( window.crossover?.isMacOs ) {
@@ -81,14 +87,45 @@
 
 	const setCrosshair = crosshair => {
 
+		// Don't set if same image already set
+		if ( document.querySelector( '#crosshairImg' ).dataset.src === crosshair ) {
+
+			return
+
+		}
+
+		// Reset to IMG element if SVG
+		if ( document.querySelector( 'svg#crosshairImg' ) ) {
+
+			document.querySelector( '#crosshairImg' ).remove()
+			crosshairElement.prepend( img.cloneNode( true ) )
+
+		}
+
+		crosshairImg = document.querySelector( '#crosshairImg' )
+
+		// Hide if no crosshair selected
 		if ( crosshair === 'none' ) {
 
 			crosshairImg.style.display = 'none'
 
-		} else {
+		}
 
-			crosshairImg.src = crosshair
-			crosshairImg.style.display = 'block'
+		// Set image
+		crosshairImg.src = crosshair
+		crosshairImg.dataset.src = crosshair
+		crosshairImg.style.display = 'block'
+
+		// Inline if SVG
+		if ( crosshair.split( '.' ).pop() === 'svg' ) {
+
+			inlineSVG.init( {
+				svgSelector: '#crosshairImg', // the class attached to all images that should be inlined
+			}, () => {
+
+				console.log( 'SVG inlined' )
+
+			} )
 
 		}
 
