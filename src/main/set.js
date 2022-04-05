@@ -6,7 +6,8 @@ const windows = require( './windows' )
 const { SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config' )
 const { is } = require( 'electron-util' )
 const { app } = require( 'electron' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
+
 const { checkboxTrue } = require( '../config/utils' )
 
 const crosshair = ( src, targetWindow = windows.win ) => {

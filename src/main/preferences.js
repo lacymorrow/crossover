@@ -8,7 +8,7 @@ const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_F
 /**
  * Default values.
  */
-const defaults = {
+const getDefaults = () => ( {
 	crosshair: {
 		crosshair: '../static/crosshairs/Actual/leupold-dot.png',
 		color: '#FFF83B',
@@ -57,7 +57,7 @@ const defaults = {
 		positionY: null,
 		tilted: false,
 	},
-}
+} )
 
 const preferencesConfig = {
 	// Custom styles
@@ -67,7 +67,7 @@ const preferencesConfig = {
      */
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
-	defaults,
+	defaults: getDefaults(),
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
 		webPreferences: {
@@ -503,7 +503,8 @@ const init = () => {
 
 const preferences = {
 	init,
-	defaults,
+	defaults: getDefaults(),
+	getDefaults,
 	instance: null,
 }
 

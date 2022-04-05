@@ -1,6 +1,6 @@
 const { debounce } = require( '../config/utils' )
 const log = require( './log' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
 
 const crosshair = value => {
 

@@ -7,13 +7,14 @@ const dock = require( './dock' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
-const preferences = require( './electron-preferences' )
 const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const { checkboxTrue } = require( '../config/utils' )
 const reset = require( './reset' )
+const Preferences = require( './preferences' )
+const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
 
@@ -156,7 +157,7 @@ const keyboardShortcuts = () => {
 const registerKeyboardShortcuts = () => {
 
 	// Register all shortcuts
-	const { keybinds } = preferences.defaults
+	const { keybinds } = Preferences.getDefaults()
 	const custom = preferences.value( 'keybinds' ) // Defaults
 	for ( const shortcut of keyboardShortcuts() ) {
 

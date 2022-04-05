@@ -40,7 +40,7 @@ const { checkboxTrue } = require( './config/utils.js' )
 
 const errorHandling = require( './main/error-handling.js' )
 const log = require( './main/log.js' )
-const preferences = require( './main/electron-preferences.js' )
+const preferences = require( './main/preferences.js' ).init()
 const windows = require( './main/windows.js' )
 const sound = require( './main/sound.js' )
 const autoUpdate = require( './main/auto-update.js' )

@@ -6,37 +6,30 @@ const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
-const preferences = require( './electron-preferences' )
-
-// Temp until implemented in electron-preferences
-const resetPreferences = () => {
-
-	const { defaults } = preferences
-	console.log( 'def', defaults.hidden, preferences.options.defaults.hidden )
-	for ( const [ key, value ] of Object.entries( defaults ) ) {
-
-		// console.log( 'default', key, value )
-		preferences.value( key, value )
-
-	}
-
-}
+const preferences = require( './preferences' ).init()
 
 const init = async options => {
 
+	// Cleanup (if reset)
+	// TODO explicitly remove channels
+	// ipcMain.removeAllListeners()
+
+	// Todo see if this conditional is needed to prevent multiple ipc
 	if ( options?.triggeredByReset ) {
 
-		resetPreferences()
 		windows.center()
+
+	} else {
+
+		// First boot
+		// IPC
+		ipc.init()
 
 	}
 
-	log.info( 'Init', preferences.value( 'hidden.positionX' ) )
+	log.info( 'Init' )
 
-	// Cleanup (if reset)
-	// ipcMain.removeAllListeners()
-
-	// Reset some preferences
+	// Reset some preferences for app startup
 	preferences.value( 'hidden.showSettings', false )
 	preferences.value( 'hidden.tilted', false )
 
@@ -46,9 +39,6 @@ const init = async options => {
 		preferences.value( 'hidden.locked', false )
 
 	}
-
-	// IPC
-	ipc.init()
 
 	// Sync Settings
 	crossover.syncSettings()
@@ -83,8 +73,9 @@ const init = async options => {
 	// Window Events after windows are created
 	register.events()
 
-	ipcMain.on( 'init', () => {
+	ipcMain.once( 'init', () => {
 
+		console.log( 'INIT TRIGGERED' )
 		init( { triggeredByReset: true } )
 
 	} )

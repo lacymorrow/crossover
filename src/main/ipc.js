@@ -1,7 +1,7 @@
 const { ipcMain } = require( 'electron' )
 const autoUpdate = require( './auto-update' )
 const crossover = require( './crossover' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
 const helpers = require( './helpers' )
 const log = require( './log' )
 const reset = require( './reset' )
@@ -21,7 +21,7 @@ const init = () => {
 	ipcMain.on( 'reset_preferences', ( _event, _arg ) => {
 
 		log.info( 'RESET' )
-		reset.preferences()
+		reset.allPreferences()
 
 	} )
 

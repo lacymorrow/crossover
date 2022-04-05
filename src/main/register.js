@@ -2,7 +2,7 @@ const { app } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const EXIT_CODES = require( '../config/exit-codes' )
 const crossover = require( './crossover' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const reset = require( './reset' )
@@ -85,7 +85,7 @@ const events = () => {
 				crossover.openChooserWindow()
 				break
 			case 'resetPreferences':
-				reset.preferences()
+				reset.allPreferences()
 				break
 			case 'resetApp':
 				reset.app()

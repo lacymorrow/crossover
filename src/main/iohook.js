@@ -2,7 +2,7 @@
 const { APP_HEIGHT, APP_WIDTH } = require( '../config/config.js' )
 const keycode = require( '../config/keycode.js' )
 const { checkboxTrue } = require( '../config/utils.js' )
-const preferences = require( './electron-preferences.js' )
+const preferences = require( './preferences' ).init()
 const log = require( './log.js' )
 const set = require( './set.js' )
 const windows = require( './windows.js' )

@@ -1,5 +1,5 @@
 const { checkboxTrue } = require( '../config/utils' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
 const windows = require( './windows' )
 
 const notification = options => {

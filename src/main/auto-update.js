@@ -1,6 +1,6 @@
 const { checkboxTrue } = require( '../config/utils' )
 const log = require( './log' )
-const preferences = require( './electron-preferences' )
+const preferences = require( './preferences' ).init()
 const sound = require( './sound' )
 const windows = require( './windows' )
 const { shell } = require( 'electron' )
