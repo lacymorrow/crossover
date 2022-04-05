@@ -1,6 +1,6 @@
 /* Colors */
-$theme_bg_dark: rgba(255, 255, 255, 0.5);
-$theme_bg_light: rgba(0, 0, 0, 0.5);
+$theme_bg_dark: rgb(255, 255, 255);
+$theme_bg_light: rgb(0, 0, 0);
 
 $text_dark: #555;
 $text_light: #EFEFEF;
@@ -26,6 +26,36 @@ $chooser_highlight_hover: #2466d8;
 $scrollbar_bg: #555;
 $scrollbar_shadow: rgba(0, 0, 0, .3);
 
+:root {
+	// App theme
+	--app-bg-color-initial: #{$theme_bg_dark};
+	--app-bg-color: #{$theme_bg_dark};
+	--app-text-color: #{$text_dark};
+	--app-bg-opacity: 0.5;
+
+	--icon-color: #{$icon_dark};
+	--icon-hover-color: #{$icon_hover_dark};
+
+	@media (prefers-color-scheme: light) {
+		--app-bg-color: #{$theme_bg_light};
+		--app-text-color: #{$text_light};
+
+		--icon-color: #{$icon_light};
+		--icon-hover-color: #{$icon_hover_light};
+	}
+
+
+	// Settings
+	--crosshair-width: 100px;
+	--crosshair-height: 100px;
+	--crosshair-opacity: 1;
+	--sight-fill-color: #{$default_sight_fill};
+	--tilt-angle: 0deg;
+	--svg-fill-color: inherit;
+	--svg-stroke-color: inherit;
+	--svg-stroke-width: inherit;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -40,7 +70,8 @@ body {
 
 /* Use OS default fonts */
 body {
-    color: $text_dark;
+
+    color: var(--app-text-color);
     font-size: 11px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     text-rendering: optimizeLegibility;
@@ -48,10 +79,6 @@ body {
     &.hidden {
         display: none;
     }
-
-	@media (prefers-color-scheme: light) {
-		color: $text_light;
-	}
 }
 
 button {
@@ -150,21 +177,14 @@ button {
     left: 0;
     z-index: -1;
     display: none;
-    background: $theme_bg_dark;
+    background: var(--app-bg-color-initial);
+    background: var(--app-bg-color);
+	opacity: var(--app-bg-opacity);
 }
 
 // Child window background
 .shadow .background {
-    background: $theme_bg_dark;
-}
-
-@media (prefers-color-scheme: light) {
-	.background {
-		background: $theme_bg_light;
-	}
-	.shadow .background {
-	    background: $theme_bg_light;
-	}
+    background: var(--app-bg-color);
 }
 
 .button {
@@ -173,22 +193,11 @@ button {
     position: absolute;
     z-index: 2;
     .feather {
-        stroke: $icon_dark;
+        stroke: var(--icon-color);
     }
     &:hover .feather {
-        stroke: $icon_hover_dark;
+        stroke: var(--icon-hover-color);
     }
-}
-
-@media (prefers-color-scheme: light) {
-	.button {
-		.feather {
-			stroke: $icon_light;
-		}
-		&:hover .feather {
-			stroke: $icon_hover_light;
-		}
-	}
 }
 
 .close-button {
@@ -224,7 +233,7 @@ button {
         height: 18px;
     }
     &:hover .feather {
-    	stroke: $icon_dark;
+    	stroke: var(--icon-color);
     }
     .aligner {
         display: flex;
@@ -236,21 +245,11 @@ button {
     }
 }
 
-@media (prefers-color-scheme: light) {
-	.info-button:hover .feather {
-		stroke: $icon_light;
-	}
-}
-
 #crosshair {
-	--tilt-angle: 0deg;
-	--svg-fill-color: inherit;
-	--svg-stroke-color: inherit;
-	--svg-stroke-width: inherit;
-
     // Default width
-    width: 100px;
-    height: 100px;
+    width: var(--crosshair-width);
+    height: var(--crosshair-height);
+	opacity: var(--crosshair-opacity);
     display: flex;
     position: relative;
 	transform: rotate( var(--tilt-angle) );
@@ -263,7 +262,6 @@ button {
 	}
 
 	.sight {
-		--sight-fill: $default_sight_fill;
 		position: absolute;
 		z-index: 1;
 		svg {
@@ -271,7 +269,7 @@ button {
 			width: 100%;
 			height: 100%;
 			* {
-				fill: var(--sight-fill);
+				fill: var(--sight-fill-color);
 			}
 		}
 		// Selectively show/hide

@@ -4,6 +4,7 @@ const keycode = require( '../config/keycode.js' )
 const { checkboxTrue } = require( '../config/utils.js' )
 const preferences = require( './electron-preferences.js' )
 const log = require( './log.js' )
+const set = require( './set.js' )
 const windows = require( './windows.js' )
 
 const importIoHook = async () => {
@@ -126,11 +127,11 @@ const tiltCrosshair = angle => {
 
 	if ( angle && windows.win ) {
 
-		windows.win.webContents.send( 'tilt', angle )
+		set.rendererProperties( { '--tilt-angle': `${angle}deg` }, windows.win )
 
 	} else {
 
-		windows.win.webContents.send( 'untilt' )
+		set.rendererProperties( { '--tilt-angle': '0deg' }, windows.win )
 
 	}
 

@@ -155,45 +155,14 @@
 
 	} )
 
-	// Color
-	const setColor = color => {
+	window.crossover.receive( 'set_properties', arg => {
 
-		document
-			.querySelector( '.sight' )
-			.style.setProperty( '--sight-fill', `${color}` )
+		for ( const [ key, value ] of Object.entries( arg ) ) {
 
-	}
+			console.log( 'Setting:', key, value )
+			document.documentElement.style.setProperty( key, value )
 
-	window.crossover.receive( 'set_color', arg => {
-
-		setColor( arg )
-
-	} )
-
-	// Opacity
-	const setOpacity = opacity => {
-
-		crosshairImg.style.opacity = `${opacity / 100}`
-		document.querySelector( '.sight' ).style.opacity = `${opacity / 100}`
-
-	}
-
-	window.crossover.receive( 'set_opacity', arg => {
-
-		setOpacity( arg )
-
-	} )
-
-	// Size
-	const setSize = size => {
-
-		crosshairElement.style = `width: ${size}px;height: ${size}px;`
-
-	}
-
-	window.crossover.receive( 'set_size', arg => {
-
-		setSize( arg )
+		}
 
 	} )
 
@@ -211,49 +180,6 @@
 
 	} )
 
-	// SVG options
-	const setFillColor = color => {
-
-		document
-			.querySelector( '#crosshair' )
-			.style.setProperty( '--svg-fill-color', `${color}` )
-
-	}
-
-	window.crossover.receive( 'set_fill_color', arg => {
-
-		setFillColor( arg )
-
-	} )
-
-	const setStrokeColor = color => {
-
-		document
-			.querySelector( '#crosshair' )
-			.style.setProperty( '--svg-stroke-color', `${color}` )
-
-	}
-
-	window.crossover.receive( 'set_stroke_color', arg => {
-
-		setStrokeColor( arg )
-
-	} )
-
-	const setStrokeWidth = width => {
-
-		document
-			.querySelector( '#crosshair' )
-			.style.setProperty( '--svg-stroke-width', `${width}` )
-
-	}
-
-	window.crossover.receive( 'set_stroke_width', arg => {
-
-		setStrokeWidth( arg )
-
-	} )
-
 	// Lock
 	window.crossover.receive( 'lock_window', lock => {
 
@@ -266,20 +192,6 @@
 			document.body.classList.add( 'draggable' )
 
 		}
-
-	} )
-
-	// Tilt
-	window.crossover.receive( 'tilt', arg => {
-
-		crosshairElement.style.setProperty( '--tilt-angle', `${Number.parseInt( arg, 10 )}deg` )
-
-	} )
-
-	// Untilt
-	window.crossover.receive( 'untilt', () => {
-
-		crosshairElement.style.setProperty( '--tilt-angle', '0deg' )
 
 	} )
 

@@ -35,7 +35,7 @@ const preferences = new ElectronPreferences( {
 			reticleSize: 80,
 			fillColor: 'inherit',
 			strokeColor: 'inherit',
-			strokeWidth: 0,
+			strokeWidth: 'inherit',
 		},
 		mouse: {
 			followMouse: [],
@@ -85,9 +85,13 @@ const preferences = new ElectronPreferences( {
 		icon: 'vector',
 		form: {
 			groups: [ {
-				/**
-                     * Group heading is optional.
-                     */
+				label: 'Welcome to CrossOver',
+				fields: [ {
+					content: '<p>Use <code>CTRL+ALT+SHIFT+X</code> to lock CrossOver in place and hide the background window.</p>',
+					type: 'message',
+				} ],
+			},
+			{
 				label: 'Crosshair Settings',
 				fields: [
 					{
@@ -111,13 +115,6 @@ const preferences = new ElectronPreferences( {
 						dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
 					},
 					{
-						label: 'Color',
-						key: 'color',
-						type: 'color',
-						format: 'hex', // Can be hex, hsl or rgb
-						help: 'Center sight color',
-					},
-					{
 						label: 'Reticle',
 						key: 'reticle',
 						type: 'radio',
@@ -126,6 +123,13 @@ const preferences = new ElectronPreferences( {
 							{ label: 'Cross', value: 'cross' },
 							{ label: 'No sight', value: 'off' },
 						],
+					},
+					{
+						label: 'Reticle Color',
+						key: 'color',
+						type: 'color',
+						format: 'hex', // Can be hex, hsl or rgb
+						help: 'Center sight color',
 					},
 					// {
 					//  label: 'Reticle size',
@@ -142,7 +146,7 @@ const preferences = new ElectronPreferences( {
 						max: 125,
 					},
 					{
-						label: 'Opacity',
+						label: 'Crosshair Opacity',
 						key: 'opacity',
 						type: 'slider',
 						min: 1,
@@ -150,6 +154,15 @@ const preferences = new ElectronPreferences( {
 					},
 					{
 						heading: 'SVG Customization Options',
+					},
+					{
+						label: 'Enable SVG Customization',
+						key: 'svgCustomization',
+						type: 'checkbox',
+						options: [
+							{ label: 'Apply customization options to SVG images', value: 'svgCustomization' },
+						],
+						help: 'The following CSS values will only apply to ".svg" files.',
 					},
 					{
 						label: 'Fill Color',
@@ -364,6 +377,13 @@ const preferences = new ElectronPreferences( {
 						{ label: 'Dark Mode', value: 'dark' },
 						{ label: 'Match the system theme', value: 'system' },
 					],
+				},
+				{
+					label: 'App Window Color',
+					key: 'appColor',
+					type: 'color',
+					format: 'hex', // Can be hex, hsl or rgb
+					help: 'Background color of the app window when unlocked.',
 				},
 				{
 					label: 'Show On App Start',

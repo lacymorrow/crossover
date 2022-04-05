@@ -3,6 +3,7 @@ const { is, getWindowBoundsCentered } = require( 'electron-util' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
 const actions = require( './actions' )
 const dock = require( './dock' )
+// const init = require( './init' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
@@ -12,6 +13,8 @@ const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const { checkboxTrue } = require( '../config/utils' )
+
+let previousPreferences = preferences.preferences
 
 const quit = () => app.quit()
 
@@ -419,21 +422,43 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
-	setTheme( options.app?.theme )
+	if ( previousPreferences.app?.theme !== options.app?.theme ) {
 
-	// Set to previously selected crosshair
+		console.log( 'NEW THEME' )
 
+		preferences.value( 'app.appColor', '' )
+		options.app.appColor = ''
+		setTheme( options.app.theme )
+
+	}
+
+	// Properties to apply to renderer
+	const properties = {
+		'--app-bg-color': options.app?.appColor,
+		'--crosshair-width': `${options.crosshair?.size}px`,
+		'--crosshair-height': `${options.crosshair?.size}px`,
+		'--crosshair-opacity': ( options.crosshair?.opacity || 100 ) / 100,
+		'--sight-fill-color': options.crosshair?.color,
+		'--tilt-angle': options.crosshair?.size,
+		'--svg-fill-color': 'inherit',
+		'--svg-stroke-color': 'inherit',
+		'--svg-stroke-width': 'inherit',
+	}
+
+	if ( !checkboxTrue( options.crosshair?.svgCustomization, 'svgCustomization' ) ) {
+
+		properties['--svg-fill-color'] = options.crosshair?.fillColor
+		properties['--svg-stroke-color'] = options.crosshair?.strokeColor
+		properties['--svg-stroke-width'] = options.crosshair?.strokeWidth
+
+	}
+
+	// Set settings for every window
 	windows.each( win => {
 
 		set.crosshair( options.crosshair?.crosshair, win )
-		set.color( options.crosshair?.color, win )
-		set.opacity( options.crosshair?.opacity, win )
 		set.sight( options.crosshair?.reticle, win )
-		set.size( options.crosshair?.size, win )
-
-		set.fillColor( options.crosshair?.fillColor, win )
-		set.strokeColor( options.crosshair?.strokeColor, win )
-		set.strokeColor( options.crosshair?.strokeColor, win )
+		set.rendererProperties( properties, win )
 
 	} )
 
@@ -449,6 +474,8 @@ const syncSettings = ( options = preferences.preferences ) => {
 	}
 
 	registerKeyboardShortcuts()
+
+	previousPreferences = options
 
 }
 
@@ -551,6 +578,7 @@ const crossover = {
 	lockWindow,
 	openChooserWindow,
 	openSettingsWindow,
+	previousPreferences,
 	quit,
 	registerKeyboardShortcuts,
 	reset,

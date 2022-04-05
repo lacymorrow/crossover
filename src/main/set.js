@@ -36,17 +36,10 @@ const custom = src => {
 
 }
 
-// Crosshair size
-const size = ( size, targetWindow = windows.win ) => {
+// {property, value}
+const rendererProperties = ( options, targetWindow = windows.win ) => {
 
-	targetWindow.webContents.send( 'set_size', size )
-
-}
-
-// Crosshair opacity
-const opacity = ( opacity, targetWindow = windows.win ) => {
-
-	targetWindow.webContents.send( 'set_opacity', opacity )
+	targetWindow.webContents.send( 'set_properties', options )
 
 }
 
@@ -54,13 +47,6 @@ const opacity = ( opacity, targetWindow = windows.win ) => {
 const sight = ( sight, targetWindow = windows.win ) => {
 
 	targetWindow.webContents.send( 'set_sight', sight )
-
-}
-
-// Reticle color
-const color = ( color, targetWindow = windows.win ) => {
-
-	targetWindow.webContents.send( 'set_color', color )
 
 }
 
@@ -85,24 +71,6 @@ const position = ( posX, posY, targetWindow = windows.win ) => {
 
 }
 
-const fillColor = ( color, targetWindow = windows.win ) => {
-
-	targetWindow.webContents.send( 'set_fill_color', color )
-
-}
-
-const strokeColor = ( color, targetWindow = windows.win ) => {
-
-	targetWindow.webContents.send( 'set_stroke_color', color )
-
-}
-
-const strokeWidth = ( width, targetWindow = windows.win ) => {
-
-	targetWindow.webContents.send( 'set_stroke_width', width )
-
-}
-
 const startOnBoot = () => {
 
 	// Start app on boot
@@ -123,16 +91,11 @@ const startOnBoot = () => {
 }
 
 const set = {
-	color,
 	crosshair,
 	custom,
-	opacity,
 	position,
 	sight,
-	size,
-	fillColor,
-	strokeColor,
-	strokeWidth,
+	rendererProperties,
 	startOnBoot,
 }
 
