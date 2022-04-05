@@ -40,6 +40,24 @@
 
 	}
 
+	window.crossover.receive( 'add_class', arg => {
+
+		// Trigger things
+		if ( arg === 'shadow' ) {
+
+			// This is a child window being instantiated
+			background.style.background = randomColor( {
+				luminosiy: 'light',
+				format: 'rgba',
+				alpha: 0.5, // E.g. 'rgba(9, 1, 107, 0.5)',
+			} )
+
+		}
+
+		document.body.classList.add( arg )
+
+	} )
+
 	// Sounds
 	window.crossover.receive( 'preload_sounds', arg => {
 
@@ -87,6 +105,7 @@
 
 	} )
 
+	// Crosshair
 	const setCrosshair = crosshair => {
 
 		// Don't set if same image already set
@@ -133,38 +152,9 @@
 
 	}
 
-	window.crossover.receive( 'add_class', arg => {
-
-		// Trigger things
-		if ( arg === 'shadow' ) {
-
-			// This is a child window
-			background.style.background = randomColor( {
-				luminosiy: 'light',
-				format: 'rgba',
-				alpha: 0.5, // E.g. 'rgba(9, 1, 107, 0.5)',
-			} )
-
-		}
-
-		document.body.classList.add( arg )
-
-	} )
-
 	window.crossover.receive( 'set_crosshair', arg => {
 
 		setCrosshair( arg )
-
-	} )
-
-	window.crossover.receive( 'set_properties', arg => {
-
-		for ( const [ key, value ] of Object.entries( arg ) ) {
-
-			console.log( 'Setting:', key, value )
-			document.documentElement.style.setProperty( key, value )
-
-		}
 
 	} )
 
@@ -182,49 +172,6 @@
 
 	} )
 
-	// // SVG options
-	// const setFillColor = color => {
-
-	// 	document
-	// 		.querySelector( '#crosshair' )
-	// 		.style.setProperty( '--svg-fill-color', `${color}` )
-
-	// }
-
-	// window.crossover.receive( 'set_fill_color', arg => {
-
-	// 	setFillColor( arg )
-
-	// } )
-
-	// const setStrokeColor = color => {
-
-	// 	document
-	// 		.querySelector( '#crosshair' )
-	// 		.style.setProperty( '--svg-stroke-color', `${color}` )
-
-	// }
-
-	// window.crossover.receive( 'set_stroke_color', arg => {
-
-	// 	setStrokeColor( arg )
-
-	// } )
-
-	// const setStrokeWidth = width => {
-
-	// 	document
-	// 		.querySelector( '#crosshair' )
-	// 		.style.setProperty( '--svg-stroke-width', `${width}` )
-
-	// }
-
-	// window.crossover.receive( 'set_stroke_width', arg => {
-
-	// 	setStrokeWidth( arg )
-
-	// } )
-
 	// Lock
 	window.crossover.receive( 'lock_window', lock => {
 
@@ -240,6 +187,7 @@
 
 	} )
 
+	/* Event Listeners */
 	// Close window
 	closeBtn.addEventListener( 'click', () => {
 

@@ -74,7 +74,6 @@
         "electron": "11.5.0",
         "electron-builder": "^22.11.11",
         "electron-builder-squirrel-windows": "^23.0.2",
-        "electron-playwright-helpers": "^1.1.1",
         "eslint": "^8.12.0",
         "eslint-config-xo": "^0.40.0",
         "husky": "^7.0.1",
