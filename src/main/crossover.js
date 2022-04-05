@@ -13,6 +13,7 @@ const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const { checkboxTrue } = require( '../config/utils' )
+const reset = require( './reset' )
 
 let previousPreferences = preferences.preferences
 
@@ -106,7 +107,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+R`,
 			fn() {
 
-				crossover.reset()
+				reset.app()
 
 			},
 		},
@@ -183,65 +184,6 @@ const registerKeyboardShortcuts = () => {
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
-
-	}
-
-}
-
-const reset = skipFullReset => {
-
-	sound.play( 'RESET' )
-
-	// Close extra crosshairs
-	windows.closeAllShadows()
-
-	// Hides chooser and preferences
-	actions.escape()
-
-	windows.center()
-	resetPreferences()
-
-	if ( !skipFullReset ) {
-
-		// todo - circular dependency using:
-		// init()
-		// Using app.relaunch to cheat
-
-		// or, to restart completely
-		app.relaunch()
-		app.exit()
-
-	}
-
-}
-
-const resetPreference = key => {
-
-	try {
-
-		const [ groupId, id ] = key.split( '.' )
-		const group = preferences.defaults[groupId]
-		const defaultValue = group[id]
-
-		log.info( `Setting default value ${defaultValue} for ${key}` )
-		preferences.value( key, defaultValue )
-
-	} catch ( error ) {
-
-		log.warn( error )
-
-	}
-
-}
-
-// Temp until implemented in electron-preferences
-
-const resetPreferences = () => {
-
-	const { defaults } = preferences
-	for ( const [ key, value ] of Object.entries( defaults ) ) {
-
-		preferences.value( key, value )
 
 	}
 
@@ -581,9 +523,6 @@ const crossover = {
 	previousPreferences,
 	quit,
 	registerKeyboardShortcuts,
-	reset,
-	resetPreference,
-	resetPreferences,
 	setTheme,
 	syncSettings,
 	toggleWindowLock,

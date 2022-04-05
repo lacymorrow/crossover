@@ -5,6 +5,7 @@ const crossover = require( './crossover' )
 const preferences = require( './electron-preferences' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
+const reset = require( './reset' )
 const windows = require( './windows' )
 
 const appEvents = () => {
@@ -84,10 +85,10 @@ const events = () => {
 				crossover.openChooserWindow()
 				break
 			case 'resetPreferences':
-				crossover.resetPreferences()
+				reset.preferences()
 				break
 			case 'resetApp':
-				crossover.reset()
+				reset.app()
 				break
 			default:
 				// Key not found
