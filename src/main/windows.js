@@ -321,6 +321,8 @@ const center = options => {
 		...options,
 	}
 
+	console.log( 'center', options.targetWindow )
+
 	// Electron way
 	// MainWindow.hide()
 	// options.targetWindow.center()

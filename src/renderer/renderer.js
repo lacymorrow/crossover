@@ -26,10 +26,10 @@
 		// Set class
 		document.body.classList.add( 'mac' )
 
-	} else if ( window.crossover?.isLinux ) {
+	} else if ( window.crossover?.isWindows ) {
 
 		// Set class
-		document.body.classList.add( 'linux' )
+		document.body.classList.add( 'windows' )
 
 	}
 
@@ -57,10 +57,11 @@
 		if ( arg === 'shadow' ) {
 
 			// This is a child window being instantiated
+			// todo: switch back to opacity within backgroundColor
 			background.style.background = randomColor( {
 				luminosiy: 'light',
 				format: 'rgba',
-				alpha: 0.5, // E.g. 'rgba(9, 1, 107, 0.5)',
+				alpha: 1, // E.g. 'rgba(9, 1, 107, 0.5)',
 			} )
 
 		}

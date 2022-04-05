@@ -277,19 +277,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
-	if ( previousPreferences.app?.theme !== options.app?.theme ) {
-
-		console.log( 'NEW THEME' )
-
-		preferences.value( 'app.appColor', '' )
-		options.app.appColor = ''
-		setTheme( options.app.theme )
-
-	}
-
 	// Properties to apply to renderer
+
 	const properties = {
-		'--app-bg-color': options.app?.appColor,
 		'--crosshair-width': `${options.crosshair?.size}px`,
 		'--crosshair-height': `${options.crosshair?.size}px`,
 		'--crosshair-opacity': ( options.crosshair?.opacity || 100 ) / 100,
@@ -306,6 +296,17 @@ const syncSettings = ( options = preferences.preferences ) => {
 		properties['--svg-fill-color'] = options.crosshair?.fillColor
 		properties['--svg-stroke-color'] = options.crosshair?.strokeColor
 		properties['--svg-stroke-width'] = options.crosshair?.strokeWidth
+
+	}
+
+	if ( previousPreferences.app?.theme !== options.app?.theme ) {
+
+		const THEME_VALUES = [ 'light', 'dark', 'system' ]
+		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
+		const bgColor = theme === 'dark' ? '#FFF' : '#000'
+		nativeTheme.themeSource = theme
+		properties['--app-bg-color'] = bgColor
+		preferences.value( 'app.appColor', bgColor )
 
 	}
 
@@ -516,15 +517,6 @@ const registerEscape = ( action = actions.escape ) => {
 
 }
 
-const setTheme = theme => {
-
-	const THEME_VALUES = [ 'light', 'dark', 'system' ]
-	nativeTheme.themeSource = THEME_VALUES.includes( theme ) ? theme : DEFAULT_THEME
-
-	return nativeTheme.shouldUseDarkColors
-
-}
-
 const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 
 	sound.play( lock ? 'LOCK' : 'UNLOCK' )
@@ -543,7 +535,6 @@ const crossover = {
 	previousPreferences,
 	quit,
 	registerKeyboardShortcuts,
-	setTheme,
 	syncSettings,
 	toggleWindowLock,
 }

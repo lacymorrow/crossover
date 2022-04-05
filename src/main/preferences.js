@@ -59,7 +59,7 @@ const defaults = {
 	},
 }
 
-const preferences = new ElectronPreferences( {
+const preferencesConfig = {
 	// Custom styles
 	css: 'src/renderer/styles/dist/preferences.css',
 	/**
@@ -485,6 +485,26 @@ const preferences = new ElectronPreferences( {
 			} ],
 		},
 	} ],
-} )
+}
+
+const init = () => {
+
+	if ( preferences.instance ) {
+
+		return preferences.instance
+
+	}
+
+	preferences.instance = new ElectronPreferences( preferencesConfig )
+
+	return preferences.instance
+
+}
+
+const preferences = {
+	init,
+	defaults,
+	instance: null,
+}
 
 module.exports = preferences

@@ -1,4 +1,4 @@
-const electron = require( 'electron' )
+const { app: electronApp, ipcMain } = require( 'electron' )
 const actions = require( './actions' )
 const log = require( './log' )
 const electronPreferences = require( './electron-preferences' )
@@ -15,9 +15,6 @@ const app = skipFullReset => {
 	// Hides chooser and preferences
 	actions.escape()
 
-	windows.center()
-	reset.preferences()
-
 	if ( !skipFullReset ) {
 
 		// todo - circular dependency using:
@@ -25,10 +22,10 @@ const app = skipFullReset => {
 		// Using app.relaunch to cheat
 
 		// or, to restart completely
-		electron.app.relaunch()
-		electron.app.exit()
+		// electronApp.relaunch()
+		// electronApp.exit()
 
-		// ipcMain.emit( 'init', { triggeredByReset: true } )
+		ipcMain.emit( 'init' )
 
 	}
 
@@ -53,23 +50,9 @@ const preference = key => {
 
 }
 
-// Temp until implemented in electron-preferences
-const preferences = () => {
-
-	const { defaults } = electronPreferences
-	for ( const [ key, value ] of Object.entries( defaults ) ) {
-
-		console.log( 'default', key, value )
-		electronPreferences.value( key, value )
-
-	}
-
-}
-
 const reset = {
 	app,
 	preference,
-	preferences,
 }
 
 module.exports = reset

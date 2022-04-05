@@ -13,8 +13,8 @@ console.log( 'Dev:', is.development )
 
 const api = {
 	debounce,
-	isLinux: is.linux,
-	isMacOs: is.macos,
+	isMacOs: navigator.userAgent.indexOf( 'Mac' ) !== -1,
+	isWindows: navigator.userAgent.indexOf( 'Win' ) !== -1,
 	play,
 	preload,
 	unhandled,

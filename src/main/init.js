@@ -1,5 +1,4 @@
 const log = require( './log' )
-const preferences = require( './electron-preferences' )
 const set = require( './set' )
 const windows = require( './windows' )
 const register = require( './register' )
@@ -7,13 +6,35 @@ const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
+const preferences = require( './electron-preferences' )
 
-const init = async () => {
+// Temp until implemented in electron-preferences
+const resetPreferences = () => {
 
-	log.info( 'Init' )
+	const { defaults } = preferences
+	console.log( 'def', defaults.hidden, preferences.options.defaults.hidden )
+	for ( const [ key, value ] of Object.entries( defaults ) ) {
+
+		// console.log( 'default', key, value )
+		preferences.value( key, value )
+
+	}
+
+}
+
+const init = async options => {
+
+	if ( options?.triggeredByReset ) {
+
+		resetPreferences()
+		windows.center()
+
+	}
+
+	log.info( 'Init', preferences.value( 'hidden.positionX' ) )
 
 	// Cleanup (if reset)
-	ipcMain.removeAllListeners()
+	// ipcMain.removeAllListeners()
 
 	// Reset some preferences
 	preferences.value( 'hidden.showSettings', false )
@@ -53,14 +74,18 @@ const init = async () => {
 	}, 500 )
 
 	// Spawn chooser window (if resetting it may exist)
-	await windows.createChooser( preferences.value( 'crosshair.crosshair' ) )
+	if ( !windows.chooserWindow ) {
+
+		await windows.createChooser( preferences.value( 'crosshair.crosshair' ) )
+
+	}
 
 	// Window Events after windows are created
 	register.events()
 
-	ipcMain.on( 'init', ( _event, arg ) => {
+	ipcMain.on( 'init', () => {
 
-		init( arg )
+		init( { triggeredByReset: true } )
 
 	} )
 
