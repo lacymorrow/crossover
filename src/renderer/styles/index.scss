@@ -13,7 +13,7 @@ $icon_red: rgba(255, 87, 51, 0.95);
 
 $border_dragging: #569aff;
 
-$default_sight_fill: #ccc;
+$default_reticle_fill: #ccc;
 
 $help_text: #666;
 $help_text_bg: #EEE;
@@ -49,7 +49,8 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--crosshair-width: 100px;
 	--crosshair-height: 100px;
 	--crosshair-opacity: 1;
-	--sight-fill-color: #{$default_sight_fill};
+	--reticle-fill-color: #{$default_reticle_fill};
+	--reticle-scale: 100;
 	--tilt-angle: 0deg;
 	--svg-fill-color: inherit;
 	--svg-stroke-color: inherit;
@@ -261,7 +262,8 @@ button {
 		stroke-width: var(--svg-stroke-width);
 	}
 
-	.sight {
+	.reticle {
+		transform: scale( calc( var(--reticle-scale) / 100 ));
 		position: absolute;
 		z-index: 1;
 		svg {
@@ -269,7 +271,7 @@ button {
 			width: 100%;
 			height: 100%;
 			* {
-				fill: var(--sight-fill-color);
+				fill: var(--reticle-fill-color);
 			}
 		}
 		// Selectively show/hide

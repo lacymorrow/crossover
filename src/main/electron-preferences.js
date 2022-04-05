@@ -32,10 +32,9 @@ const preferences = new ElectronPreferences( {
 			size: 80,
 			opacity: 80,
 			reticle: 'dot',
-			reticleSize: 80,
+			reticleScale: 100,
 			fillColor: 'inherit',
 			strokeColor: 'inherit',
-			strokeWidth: 'inherit',
 		},
 		mouse: {
 			followMouse: [],
@@ -46,6 +45,7 @@ const preferences = new ElectronPreferences( {
 		},
 		app: {
 			theme: DEFAULT_THEME,
+			appColor: 'inherit',
 			updates: [ 'updates' ],
 			sounds: [ 'sounds' ],
 			notify: [ 'notify' ],
@@ -121,7 +121,7 @@ const preferences = new ElectronPreferences( {
 						options: [
 							{ label: 'Dot', value: 'dot' },
 							{ label: 'Cross', value: 'cross' },
-							{ label: 'No sight', value: 'off' },
+							{ label: 'No reticle', value: 'off' },
 						],
 					},
 					{
@@ -129,7 +129,15 @@ const preferences = new ElectronPreferences( {
 						key: 'color',
 						type: 'color',
 						format: 'hex', // Can be hex, hsl or rgb
-						help: 'Center sight color',
+						help: 'Center reticle color',
+					},
+					{
+						label: 'Reticle Scale',
+						key: 'reticleScale',
+						type: 'slider',
+						min: 1,
+						max: 500,
+						help: 'Reticle scale percentage (compared to crosshair)',
 					},
 					// {
 					//  label: 'Reticle size',

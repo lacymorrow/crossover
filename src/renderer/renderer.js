@@ -40,6 +40,17 @@
 
 	}
 
+	window.crossover.receive( 'set_properties', arg => {
+
+		for ( const [ key, value ] of Object.entries( arg ) ) {
+
+			console.log( 'Setting:', key, value )
+			document.documentElement.style.setProperty( key, value )
+
+		}
+
+	} )
+
 	window.crossover.receive( 'add_class', arg => {
 
 		// Trigger things
@@ -159,16 +170,16 @@
 	} )
 
 	// Sight
-	const setSight = sight => {
+	const setReticle = reticle => {
 
-		document.querySelector( '.sight' ).classList.remove( 'dot', 'cross', 'off' )
-		document.querySelector( '.sight' ).classList.add( sight )
+		document.querySelector( '.reticle' ).classList.remove( 'dot', 'cross', 'off' )
+		document.querySelector( '.reticle' ).classList.add( reticle )
 
 	}
 
-	window.crossover.receive( 'set_sight', arg => {
+	window.crossover.receive( 'set_reticle', arg => {
 
-		setSight( arg )
+		setReticle( arg )
 
 	} )
 

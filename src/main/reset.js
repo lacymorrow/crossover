@@ -28,6 +28,8 @@ const app = skipFullReset => {
 		electron.app.relaunch()
 		electron.app.exit()
 
+		// ipcMain.emit( 'init', { triggeredByReset: true } )
+
 	}
 
 }
@@ -57,6 +59,7 @@ const preferences = () => {
 	const { defaults } = electronPreferences
 	for ( const [ key, value ] of Object.entries( defaults ) ) {
 
+		console.log( 'default', key, value )
 		electronPreferences.value( key, value )
 
 	}

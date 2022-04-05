@@ -6,10 +6,14 @@ const register = require( './register' )
 const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
+const { ipcMain } = require( 'electron' )
 
 const init = async () => {
 
 	log.info( 'Init' )
+
+	// Cleanup (if reset)
+	ipcMain.removeAllListeners()
 
 	// Reset some preferences
 	preferences.value( 'hidden.showSettings', false )
@@ -53,6 +57,12 @@ const init = async () => {
 
 	// Window Events after windows are created
 	register.events()
+
+	ipcMain.on( 'init', ( _event, arg ) => {
+
+		init( arg )
+
+	} )
 
 }
 

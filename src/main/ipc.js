@@ -105,14 +105,6 @@ const init = () => {
 	} )
 
 	// Used for testing
-	ipcMain.handle( 'invoke_test', async ( event, arg ) => {
-
-		console.log( 'invoke_test', arg )
-
-		return 'ok'
-
-	} )
-
 	ipcMain.on( 'move_window', arg => {
 
 		windows.moveWindow( arg )
@@ -134,6 +126,11 @@ const init = () => {
 		}
 
 	} )
+
+	// ipcMain.handle( 'invoke_test', async ( event, arg ) => {
+	// 	console.log( 'invoke_test', arg )
+	// 	return 'ok'
+	// } )
 
 }
 

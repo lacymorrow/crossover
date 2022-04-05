@@ -189,32 +189,149 @@ const registerKeyboardShortcuts = () => {
 
 }
 
-const registerSaveWindowBounds = () => {
+// Allows dragging and setting options
+const lockWindow = ( lock, targetWindow = windows.win ) => {
 
-	windows.win.on( 'move', () => {
+	log.info( `Locked: ${lock}` )
 
-		save.position( windows.win.getBounds() )
+	windows.hideChooserWindow()
+	windows.hideSettingsWindow()
+	targetWindow.closable = !lock
+	targetWindow.setFocusable( !lock )
+	targetWindow.setIgnoreMouseEvents( lock )
+	targetWindow.webContents.send( 'lock_window', lock )
 
-	} )
+	if ( lock ) {
 
-}
+		// Don't save bounds when locked
+		if ( targetWindow === windows.win ) {
 
-const registerEscape = ( action = actions.escape ) => {
+			targetWindow.removeAllListeners( 'move' )
 
-	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+		}
 
-		globalShortcut.register( 'Escape', action )
+		/* Actions */
+		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
+		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
+		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
+		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
+
+		iohook.unregisterIOHook()
+
+		if ( followMouse ) {
+
+			iohook.followMouse()
+
+		}
+
+		if ( hideOnKey ) {
+
+			iohook.hideOnKey()
+
+		}
+
+		if ( hideOnMouse !== -1 ) {
+
+			iohook.hideOnMouse()
+
+		}
+
+		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
+
+			iohook.tilt()
+
+		}
+
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
+
+	} else {
+
+		/* Unlock */
+
+		// Unregister
+		iohook.unregisterIOHook()
+
+		// Enable saving bounds
+		if ( targetWindow === windows.win ) {
+
+			registerSaveWindowBounds()
+
+		}
+
+		// Allow dragging to Window on Mac
+		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 	}
 
+	// Bring window to front
+	targetWindow.show()
+
+	dock.setVisible( !lock )
+
+	preferences.value( 'hidden.locked', lock )
+
 }
 
-const setTheme = theme => {
+const syncSettings = ( options = preferences.preferences ) => {
 
-	const THEME_VALUES = [ 'light', 'dark', 'system' ]
-	nativeTheme.themeSource = THEME_VALUES.includes( theme ) ? theme : DEFAULT_THEME
+	log.info( 'Sync options' )
 
-	return nativeTheme.shouldUseDarkColors
+	if ( previousPreferences.app?.theme !== options.app?.theme ) {
+
+		console.log( 'NEW THEME' )
+
+		preferences.value( 'app.appColor', '' )
+		options.app.appColor = ''
+		setTheme( options.app.theme )
+
+	}
+
+	// Properties to apply to renderer
+	const properties = {
+		'--app-bg-color': options.app?.appColor,
+		'--crosshair-width': `${options.crosshair?.size}px`,
+		'--crosshair-height': `${options.crosshair?.size}px`,
+		'--crosshair-opacity': ( options.crosshair?.opacity || 100 ) / 100,
+		'--reticle-fill-color': options.crosshair?.color,
+		'--reticle-scale': options.crosshair?.reticleScale,
+		'--tilt-angle': options.mouse?.tiltAngle,
+		'--svg-fill-color': 'inherit',
+		'--svg-stroke-color': 'inherit',
+		'--svg-stroke-width': 'inherit',
+	}
+
+	if ( !checkboxTrue( options.crosshair?.svgCustomization, 'svgCustomization' ) ) {
+
+		properties['--svg-fill-color'] = options.crosshair?.fillColor
+		properties['--svg-stroke-color'] = options.crosshair?.strokeColor
+		properties['--svg-stroke-width'] = options.crosshair?.strokeWidth
+
+	}
+
+	// Set settings for every window
+	windows.each( win => {
+
+		set.crosshair( options.crosshair?.crosshair, win )
+		set.reticle( options.crosshair?.reticle, win )
+		set.rendererProperties( properties, win )
+
+	} )
+
+	set.startOnBoot()
+
+	// Reset all custom shortcuts
+	const escapeActive = globalShortcut.isRegistered( 'Escape' )
+	globalShortcut.unregisterAll()
+	if ( escapeActive ) {
+
+		keyboard.registerShortcut( 'Escape', actions.escape )
+
+	}
+
+	registerKeyboardShortcuts()
+
+	previousPreferences = options
 
 }
 
@@ -228,10 +345,29 @@ const initShadowWindow = async () => {
 
 	// Sync Preferences
 	shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
-	set.color( preferences.value( 'crosshair.color' ), shadow )
-	set.opacity( preferences.value( 'crosshair.opacity' ), shadow )
-	set.sight( preferences.value( 'crosshair.reticle' ), shadow )
-	set.size( preferences.value( 'crosshair.size' ), shadow )
+	const properties = {
+		'--crosshair-width': `${previousPreferences.crosshair?.size}px`,
+		'--crosshair-height': `${previousPreferences.crosshair?.size}px`,
+		'--crosshair-opacity': ( previousPreferences.crosshair?.opacity || 100 ) / 100,
+		'--reticle-fill-color': previousPreferences.crosshair?.color,
+		'--reticle-scale': previousPreferences.crosshair?.reticleScale,
+		'--tilt-angle': previousPreferences.mouse?.size,
+		'--svg-fill-color': 'inherit',
+		'--svg-stroke-color': 'inherit',
+		'--svg-stroke-width': 'inherit',
+	}
+
+	if ( !checkboxTrue( previousPreferences.crosshair?.svgCustomization, 'svgCustomization' ) ) {
+
+		properties['--svg-fill-color'] = previousPreferences.crosshair?.fillColor
+		properties['--svg-stroke-color'] = previousPreferences.crosshair?.strokeColor
+		properties['--svg-stroke-width'] = previousPreferences.crosshair?.strokeWidth
+
+	}
+
+	set.crosshair( previousPreferences.crosshair?.crosshair, shadow )
+	set.reticle( previousPreferences.crosshair?.reticle, shadow )
+	set.rendererProperties( properties, shadow )
 
 	if ( preferences.value( 'hidden.positionX' ) > -1 ) {
 
@@ -360,148 +496,32 @@ const openSettingsWindow = async () => {
 
 }
 
-const syncSettings = ( options = preferences.preferences ) => {
+const registerSaveWindowBounds = () => {
 
-	log.info( 'Sync options' )
+	windows.win.on( 'move', () => {
 
-	if ( previousPreferences.app?.theme !== options.app?.theme ) {
-
-		console.log( 'NEW THEME' )
-
-		preferences.value( 'app.appColor', '' )
-		options.app.appColor = ''
-		setTheme( options.app.theme )
-
-	}
-
-	// Properties to apply to renderer
-	const properties = {
-		'--app-bg-color': options.app?.appColor,
-		'--crosshair-width': `${options.crosshair?.size}px`,
-		'--crosshair-height': `${options.crosshair?.size}px`,
-		'--crosshair-opacity': ( options.crosshair?.opacity || 100 ) / 100,
-		'--sight-fill-color': options.crosshair?.color,
-		'--tilt-angle': options.crosshair?.size,
-		'--svg-fill-color': 'inherit',
-		'--svg-stroke-color': 'inherit',
-		'--svg-stroke-width': 'inherit',
-	}
-
-	if ( !checkboxTrue( options.crosshair?.svgCustomization, 'svgCustomization' ) ) {
-
-		properties['--svg-fill-color'] = options.crosshair?.fillColor
-		properties['--svg-stroke-color'] = options.crosshair?.strokeColor
-		properties['--svg-stroke-width'] = options.crosshair?.strokeWidth
-
-	}
-
-	// Set settings for every window
-	windows.each( win => {
-
-		set.crosshair( options.crosshair?.crosshair, win )
-		set.sight( options.crosshair?.reticle, win )
-		set.rendererProperties( properties, win )
+		save.position( windows.win.getBounds() )
 
 	} )
 
-	set.startOnBoot()
+}
 
-	// Reset all custom shortcuts
-	const escapeActive = globalShortcut.isRegistered( 'Escape' )
-	globalShortcut.unregisterAll()
-	if ( escapeActive ) {
+const registerEscape = ( action = actions.escape ) => {
 
-		keyboard.registerShortcut( 'Escape', actions.escape )
+	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
+
+		globalShortcut.register( 'Escape', action )
 
 	}
-
-	registerKeyboardShortcuts()
-
-	previousPreferences = options
 
 }
 
-// Allows dragging and setting options
-const lockWindow = ( lock, targetWindow = windows.win ) => {
+const setTheme = theme => {
 
-	log.info( `Locked: ${lock}` )
+	const THEME_VALUES = [ 'light', 'dark', 'system' ]
+	nativeTheme.themeSource = THEME_VALUES.includes( theme ) ? theme : DEFAULT_THEME
 
-	windows.hideChooserWindow()
-	windows.hideSettingsWindow()
-	targetWindow.closable = !lock
-	targetWindow.setFocusable( !lock )
-	targetWindow.setIgnoreMouseEvents( lock )
-	targetWindow.webContents.send( 'lock_window', lock )
-
-	if ( lock ) {
-
-		// Don't save bounds when locked
-		if ( targetWindow === windows.win ) {
-
-			targetWindow.removeAllListeners( 'move' )
-
-		}
-
-		/* Actions */
-		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
-		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
-
-		iohook.unregisterIOHook()
-
-		if ( followMouse ) {
-
-			iohook.followMouse()
-
-		}
-
-		if ( hideOnKey ) {
-
-			iohook.hideOnKey()
-
-		}
-
-		if ( hideOnMouse !== -1 ) {
-
-			iohook.hideOnMouse()
-
-		}
-
-		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
-
-			iohook.tilt()
-
-		}
-
-		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
-
-	} else {
-
-		/* Unlock */
-
-		// Unregister
-		iohook.unregisterIOHook()
-
-		// Enable saving bounds
-		if ( targetWindow === windows.win ) {
-
-			registerSaveWindowBounds()
-
-		}
-
-		// Allow dragging to Window on Mac
-		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
-
-	}
-
-	// Bring window to front
-	targetWindow.show()
-
-	dock.setVisible( !lock )
-
-	preferences.value( 'hidden.locked', lock )
+	return nativeTheme.shouldUseDarkColors
 
 }
 

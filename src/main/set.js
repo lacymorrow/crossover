@@ -44,9 +44,9 @@ const rendererProperties = ( options, targetWindow = windows.win ) => {
 }
 
 // Reticle/sight
-const sight = ( sight, targetWindow = windows.win ) => {
+const reticle = ( reticle, targetWindow = windows.win ) => {
 
-	targetWindow.webContents.send( 'set_sight', sight )
+	targetWindow.webContents.send( 'set_reticle', reticle )
 
 }
 
@@ -94,7 +94,7 @@ const set = {
 	crosshair,
 	custom,
 	position,
-	sight,
+	reticle,
 	rendererProperties,
 	startOnBoot,
 }
