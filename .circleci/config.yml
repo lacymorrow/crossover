@@ -16,6 +16,9 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "ea:9f:b9:27:c8:2b:8c:fb:f8:63:dc:a8:33:a7:55:62"
       - run:
           name: Cut stable
           command: |
@@ -77,15 +80,14 @@ jobs:
       - run:
           name: ls dist
           command: ls dist
-      - run:
-          name: Cut stable
-          command: |
-            git config user.email "me@lacymorrow.com"
-            git config user.name "Lacy CI"
-            git checkout stable || git checkout -b stable
-            git merge ${CIRCLE_BRANCH}
-            git push --set-upstream origin working
-
+      # - run:
+      #     name: Cut stable
+      #     command: |
+      #       git config user.email "me@lacymorrow.com"
+      #       git config user.name "Lacy CI"
+      #       git checkout stable || git checkout -b stable
+      #       git merge ${CIRCLE_BRANCH}
+      #       git push --set-upstream origin stable
       - run:
           name: Create Artifacts
           command: |

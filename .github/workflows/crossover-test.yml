@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - master
+      - release
 
 jobs:
   crossover-tests-mac:
@@ -54,15 +55,15 @@ jobs:
       - name: Check Dependencies
         run: npm run depcheck
 
-      - name: Unpackaged Electron Test 🧪
-        run: npm run test
+      # - name: Unpackaged Electron Test 🧪
+      #   run: npm run test
 
-      - name: Build
-        run: |
-          npm run build:mac
-        env:
-          # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
-          CI: false
+      # - name: Build
+      #   run: |
+      #     npm run build:mac
+      #   env:
+      #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+      #     CI: false
 
       # - name: Package for test execution
       #   run: |
@@ -132,12 +133,12 @@ jobs:
       #     cmd /r dir
       #     npm list --depth=1
 
-      - name: Build
-        run: |
-          npm run build:windows
-        env:
-          # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
-          CI: false
+      # - name: Build
+      #   run: |
+      #     npm run build:windows
+      #   env:
+      #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+      #     CI: false
 
       # - name: Package
       #   run: |
