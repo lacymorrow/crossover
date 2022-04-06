@@ -17,7 +17,7 @@
     },
     "license": "CC-BY-NC-SA-4.0",
     "engines": {
-        "node": "14.19.1 || 14.x"
+        "node": "14.17.4 || 14.x"
     },
     "scripts": {
         "install": "yarn css",

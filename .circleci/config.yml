@@ -129,7 +129,7 @@ jobs:
           command: pwd
       - node/install:
           install-yarn: true
-          node-version: "14.19.1"
+          node-version: "14.17.4"
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
