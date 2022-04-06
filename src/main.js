@@ -4,7 +4,7 @@
 	- Keybind settings don't display on first load
 
 	Todo:
-		-
+		- Add labels or tooltips for buttons
 
 	Todo: when updating electron to 12+:
 		- Test iohook
