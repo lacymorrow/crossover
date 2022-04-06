@@ -23,7 +23,7 @@ jobs:
             git config user.name "Lacy CI"
             git checkout working || git checkout -b working
             git merge ${CIRCLE_BRANCH}
-            git push
+            git push --set-upstream origin working
       - run:
           name: ls
           command: ls
@@ -84,7 +84,7 @@ jobs:
             git config user.name "Lacy CI"
             git checkout stable || git checkout -b stable
             git merge ${CIRCLE_BRANCH}
-            git push
+            git push --set-upstream origin working
 
       - run:
           name: Create Artifacts
