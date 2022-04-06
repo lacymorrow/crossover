@@ -27,6 +27,7 @@ test.afterAll( async () => {
 test( 'Check A11y simple', async () => {
 
 	await checkA11y( mainPage )
+	test.fixme()
 
 } )
 
@@ -40,6 +41,7 @@ test( 'Check A11y AXE', async () => {
 			},
 		},
 	} )
+	test.fixme()
 
 } )
 

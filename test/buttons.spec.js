@@ -19,6 +19,7 @@ test.beforeAll( async () => {
 test( 'Validate dblclick to center', async () => {
 
 	const button = await mainPage.locator( '#crosshair' )
+
 	await button.dblclick()
 	await wait( delays.short )
 
@@ -28,16 +29,16 @@ test( 'Validate dblclick to center', async () => {
 	// Move
 	await electronApp.evaluate( async ( { ipcMain } ) => {
 
-		await ipcMain.emit( 'move_window', { distance: 50, direction: 'right' } )
-		await ipcMain.emit( 'move_window', { distance: 50, direction: 'down' } )
+		await ipcMain.emit( 'move_window', { distance: 100, direction: 'right' } )
+		await ipcMain.emit( 'move_window', { distance: 100, direction: 'down' } )
 
 	} )
 	await wait( delays.short )
 
 	let newBounds = await getBounds( { electronApp, windowName: productName } )
 
-	expect( newBounds.x ).toBe( bounds.x + 50 )
-	expect( newBounds.y ).toBe( bounds.y + 50 )
+	expect( newBounds.x ).toBe( bounds.x + 100 )
+	expect( newBounds.y ).toBe( bounds.y + 100 )
 
 	// Recenter
 	await button.dblclick()

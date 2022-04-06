@@ -63,9 +63,9 @@ test( 'Validate feather icons loaded', async () => {
 	button = mainPage.locator( '.settings-button svg' )
 	expect( await button.count() ).toBe( 1 )
 
-	// Info button has more
+	// Info button has more icons: move, resize, info
 	button = mainPage.locator( '.info-button svg' )
-	expect( await button.count() ).toBe( 2 )
+	expect( await button.count() ).toBe( 3 )
 
 } )
 
