@@ -1,6 +1,6 @@
 const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
 const { is, getWindowBoundsCentered } = require( 'electron-util' )
-const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS, APP_WIDTH } = require( '../config/config' )
+const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
 const actions = require( './actions' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
