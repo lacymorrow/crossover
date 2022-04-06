@@ -45,15 +45,12 @@ jobs:
           name: Snapcraft Login
           # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
           command: echo "$SNAP_TOKEN" | snapcraft login --with -
-      # - run:
-      #     name: Run tests
-      #     command: yarn --skip-integrity-check --network-timeout 300000
       - run:
           name: Run tests
           command: yarn test
       - run:
           name: Build and Publish - windows
-          command: yarn build:windows
+          command: yarn build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish never' )
       # - run:
       #     name: Create Windows EXE
       #     command: yarn sh:copyexe
@@ -62,7 +59,7 @@ jobs:
           command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
       - run:
           name: Build and Publish - snap
-          command: yarn build:snap --publish always
+          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
       - run:
           name: Build and Publish - linux
           command: yarn build:linux
