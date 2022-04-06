@@ -143,7 +143,7 @@ jobs:
           command: echo "$SNAP_TOKEN" | snapcraft login --with -
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
+          pkg-manager: yarn
       # - run:
       #     name: Run tests
       #     command: yarn --skip-integrity-check --network-timeout 300000
