@@ -83,7 +83,7 @@ jobs:
             git config user.email "me@lacymorrow.com"
             git config user.name "Lacy CI"
             git checkout stable || git checkout -b stable
-            git mg ${CIRCLE_BRANCH}
+            git merge ${CIRCLE_BRANCH}
             git push
 
       - run:
