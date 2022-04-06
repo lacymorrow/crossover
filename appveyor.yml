@@ -17,7 +17,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "14.17.4"
+  nodejs_version: "14.19.1"
 
 cache:
   - node_modules -> package.json
@@ -33,5 +33,3 @@ build_script:
   # - cmd: yarn test
   - cmd: yarn build:windows
   - cmd: if %platform%==x64 yarn build:windows
-
-

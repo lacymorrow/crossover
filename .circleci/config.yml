@@ -50,12 +50,12 @@ jobs:
           name: Run tests
           command: yarn test
       - persist_to_workspace:
-            # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-            # taken to be the root directory of the workspace.
-            root: crossover
-            # Must be relative path from root
-            paths:
-              - dist/*
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: crossover
+          # Must be relative path from root
+          paths:
+            - dist/*
 
   build_snap:
     executor: macos-executor
@@ -81,8 +81,8 @@ jobs:
     executor: macos-executor
     steps:
       - attach_workspace:
-            # Must be absolute path or relative path from working_directory
-            at: /tmp/crossover
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
       - run:
           name: Run windows
           command: yarn build:windows
@@ -94,8 +94,8 @@ jobs:
     executor: macos-executor
     steps:
       - attach_workspace:
-            # Must be absolute path or relative path from working_directory
-            at: /tmp/crossover
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
       - run:
           name: Run mac
           command: yarn build:mac
@@ -104,8 +104,8 @@ jobs:
     executor: macos-executor
     steps:
       - attach_workspace:
-            # Must be absolute path or relative path from working_directory
-            at: /tmp/crossover
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
       # - run:
       #     name: Create dist
       #     command: |
@@ -127,6 +127,9 @@ jobs:
       - run:
           name: pwd
           command: pwd
+      - node/install:
+          install-yarn: true
+          node-version: "14.19.1"
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
@@ -177,7 +180,6 @@ jobs:
       - store_artifacts:
           path: /Users/distiller/project/upload
 
-
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
@@ -185,7 +187,7 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   build:
     jobs:
-    - buildall
+      - buildall
 
   # concurrent:
   #   jobs:
