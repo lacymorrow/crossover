@@ -1,0 +1,140 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+orbs:
+  # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
+  # Orbs reduce the amount of configuration required for common tasks.
+  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
+  node: circleci/node@4.7
+
+executors:
+  macos-executor:
+    macos:
+      xcode: 12.5.1
+    working_directory: /tmp
+
+jobs:
+  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
+  prepare:
+    executor: macos-executor
+    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
+    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
+    # docker:
+    #   - image: cimg/node:16.10
+    # Then run your tests!
+    # CircleCI will report the results back to your VCS provider.
+    steps:
+      # Checkout the code as the first step.
+      - checkout
+      # Next, the node orb's install-packages step will install the dependencies from a package.json.
+      # The orb install-packages step will also automatically cache them for faster future runs.
+      - run:
+          name: ls
+          command: ls
+      - run:
+          name: pwd
+          command: pwd
+      - run:
+          name: Brew Clean
+          command: rm '/usr/local/lib/python3.9/site-packages/six.py'
+      - run:
+          name: Install Dependencies
+          command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
+          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: yarn
+      # - run:
+      #     name: Install Node Modules
+      #     command: yarn --skip-integrity-check --network-timeout 300000
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: crossover
+          # Must be relative path from root
+          paths:
+            - dist/*
+
+  build_snap:
+    executor: macos-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
+      - run:
+          name: Run snap
+          command: yarn build:snap
+
+  build_linux:
+    executor: macos-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
+      - run:
+          name: Run snap
+          command: yarn build:linux
+
+  build_windows:
+    executor: macos-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
+      - run:
+          name: Run windows
+          command: yarn build:windows
+      - run:
+          name: Create Windows EXE
+          command: yarn sh:copyexe
+
+  build_mac:
+    executor: macos-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
+      - run:
+          name: Run mac
+          command: yarn build:mac
+
+  cleanup:
+    executor: macos-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/crossover
+      # - run:
+      #     name: Create dist
+      #     command: |
+      #       mkdir -p /tmp/dist
+      #       cp -a dist/. /tmp/dist
+      #     when: on_fail
+      - store_artifacts:
+          path: /tmp/crossover/dist
+
+workflows:
+  # Below is the definition of your workflow.
+  # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
+  # CircleCI will run this workflow on every commit.
+  # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  concurrent:
+    jobs:
+      - prepare
+      - build_snap:
+        requires:
+          - prepare
+      - build_linux:
+        requires:
+          - prepare
+      - build_win:
+        requires:
+          - prepare
+      - build_mac:
+        requires:
+          - prepare
+      - cleanup:
+        requires:
+          - build_snap

@@ -8,119 +8,22 @@ orbs:
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
 
-executors:
-  macos-executor:
-    macos:
-      xcode: 12.5.1
-    working_directory: /tmp
-
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  prepare:
-    executor: macos-executor
-    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
-    # docker:
-    #   - image: cimg/node:16.10
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
-    steps:
-      # Checkout the code as the first step.
-      - checkout
-      # Next, the node orb's install-packages step will install the dependencies from a package.json.
-      # The orb install-packages step will also automatically cache them for faster future runs.
-      - run:
-          name: ls
-          command: ls
-      - run:
-          name: pwd
-          command: pwd
-      - run:
-          name: Brew Clean
-          command: rm '/usr/local/lib/python3.9/site-packages/six.py'
-      - run:
-          name: Install Dependencies
-          command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
-      - node/install-packages:
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: yarn
-      # - run:
-      #     name: Install Node Modules
-      #     command: yarn --skip-integrity-check --network-timeout 300000
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: crossover
-          # Must be relative path from root
-          paths:
-            - dist/*
-
-  build_snap:
-    executor: macos-executor
-    steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
-      - run:
-          name: Run snap
-          command: yarn build:snap
-
-  build_linux:
-    executor: macos-executor
-    steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
-      - run:
-          name: Run snap
-          command: yarn build:linux
-
-  build_windows:
-    executor: macos-executor
-    steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
-      - run:
-          name: Run windows
-          command: yarn build:windows
-      - run:
-          name: Create Windows EXE
-          command: yarn sh:copyexe
-
-  build_mac:
-    executor: macos-executor
-    steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
-      - run:
-          name: Run mac
-          command: yarn build:mac
-
-  cleanup:
-    executor: macos-executor
-    steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/crossover
-      # - run:
-      #     name: Create dist
-      #     command: |
-      #       mkdir -p /tmp/dist
-      #       cp -a dist/. /tmp/dist
-      #     when: on_fail
-      - store_artifacts:
-          path: /tmp/crossover/dist
-
   buildall:
     macos:
       xcode: 12.5.1
     steps:
       # Checkout the code as the first step.
       - checkout
+      - run:
+          name: Cut stable
+          command: |
+            git config user.email "me@lacymorrow.com"
+            git config user.name "Lacy CI"
+            git checkout working || git checkout -b working
+            git mg ${CIRCLE_BRANCH}
+            git push
       - run:
           name: ls
           command: ls
@@ -130,6 +33,7 @@ jobs:
       - node/install:
           install-yarn: true
           node-version: "14.17.4"
+      # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
       # - node/install-packages:
       #     # If you are using yarn, change the line below from "npm" to "yarn"
       #     pkg-manager: yarn
@@ -141,8 +45,7 @@ jobs:
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
       - run:
           name: Install Dependencies
-          command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-          # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
+          command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
       - run:
           name: Snapcraft Login
           # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
@@ -152,31 +55,37 @@ jobs:
       #     command: yarn --skip-integrity-check --network-timeout 300000
       - run:
           name: Run tests
-          command: npm run test
+          command: yarn test
       - run:
-          name: Run windows
-          command: npm run build:windows
+          name: Build and Publish - windows
+          command: yarn build:windows
       # - run:
       #     name: Create Windows EXE
-      #     command: npm run sh:copyexe
+      #     command: yarn sh:copyexe
       - run:
-          name: Run windows single EXE
-          command: npm run build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
+          name: Build and Publish - windows CrossOver.exe
+          command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
       - run:
-          name: Run snap
-          command: npm run build:snap --publish always
+          name: Build and Publish - snap
+          command: yarn build:snap --publish always
       - run:
-          name: Run linux
-          command: npm run build:linux
+          name: Build and Publish - linux
+          command: yarn build:linux
       - run:
-          name: Run mac
-          command: npm run build:mac
+          name: Build and Publish - mac
+          command: yarn build:mac
       - run:
           name: ls dist
           command: ls dist
       - run:
-          name: pwd
-          command: pwd
+          name: Cut stable
+          command: |
+            git config user.email "me@lacymorrow.com"
+            git config user.name "Lacy CI"
+            git checkout stable || git checkout -b stable
+            git mg ${CIRCLE_BRANCH}
+            git push
+
       - run:
           name: Create Artifacts
           command: |
@@ -194,22 +103,3 @@ workflows:
   build:
     jobs:
       - buildall
-
-  # concurrent:
-  #   jobs:
-  #     - prepare
-  #     - build_snap:
-  #       requires:
-  #         - prepare
-  #     - build_linux:
-  #       requires:
-  #         - prepare
-  #     - build_win:
-  #       requires:
-  #         - prepare
-  #     - build_mac:
-  #       requires:
-  #         - prepare
-  #     - cleanup:
-  #       requires:
-  #         - build_snap

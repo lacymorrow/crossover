@@ -44,7 +44,7 @@
 
 		for ( const [ key, value ] of Object.entries( arg ) ) {
 
-			console.log( 'Setting:', key, value )
+			// console.log( 'Setting:', key, value )
 			document.documentElement.style.setProperty( key, value )
 
 		}
