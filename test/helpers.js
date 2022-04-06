@@ -66,7 +66,7 @@ const focusedMinimizedVisible = ( { electronApp, windowName } ) => electronApp.e
 
 	console.log( windowName )
 	const win = BrowserWindow.getAllWindows().find( w => w.title === windowName )
-	win.focus()
+	win?.focus()
 
 	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
 
