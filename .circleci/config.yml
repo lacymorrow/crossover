@@ -130,6 +130,9 @@ jobs:
       - node/install:
           install-yarn: true
           node-version: "14.17.4"
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: yarn
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
@@ -141,9 +144,6 @@ jobs:
           name: Snapcraft Login
           # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
           command: echo "$SNAP_TOKEN" | snapcraft login --with -
-      - node/install-packages:
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: yarn
       # - run:
       #     name: Run tests
       #     command: yarn --skip-integrity-check --network-timeout 300000
@@ -153,12 +153,12 @@ jobs:
       - run:
           name: Run windows
           command: npm run build:windows
-      - run:
-          name: Run windows single EXE
-          command: npm run build:windows:exe || echo 'We error here since latest.yml has already beeen uploaded.'
       # - run:
       #     name: Create Windows EXE
       #     command: npm run sh:copyexe
+      - run:
+          name: Run windows single EXE
+          command: npm run build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
       - run:
           name: Run snap
           command: npm run build:snap --publish always

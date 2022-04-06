@@ -3,6 +3,10 @@
 	- App theme color breaks after reset
 	- Keybind settings don't display on first load
 
+	Todo: when updating electron to 12+:
+		- Test iohook
+		- Test closing the devtools windows, opacity should not go to 100%
+
 	Changed:
 		#20 Custom keybinds
 		#85 turn off updates
@@ -24,10 +28,6 @@
 	Low:
 		Conflicting accelerator on Fedora
 		dont set.position if monitor has been unplugged
-
-	Todo: when updating electron to 12+:
-		- Test iohook
-		- Test closing the devtools windows, opacity should not go to 100%
 
 */
 
