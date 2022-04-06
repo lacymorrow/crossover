@@ -56,7 +56,7 @@ const startApp = async () => {
 	// 	path: 'test/screenshots/start.png',
 	// } )
 
-	await wait( 500 )
+	await wait( delays.short )
 
 	return { electronApp, mainPage, page: mainPage, windows }
 

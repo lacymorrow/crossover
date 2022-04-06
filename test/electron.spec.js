@@ -30,8 +30,10 @@ test.afterEach( async () => wait( delays.short ) )
 
 test( 'Validate windows', async () => {
 
-	const windows = electronApp.windows()
-	const titles = await Promise.all(
+	await wait( delays.long )
+
+	const windows = await electronApp.windows()
+	let titles = await Promise.all(
 		windows.map( async w => {
 
 			const i = await w.title()
@@ -40,17 +42,18 @@ test( 'Validate windows', async () => {
 
 		} ),
 	)
+	titles = titles.filter( Boolean ) // Devtools show as either '' or 'DevTools'
 
-	console.log( 'All windows:', titles )
+	console.log( 'All windows:', titles, titles.length )
 
-	test.fixme()
 	if ( titles.includes( 'DevTools' ) ) {
 
-		expect( windows.length ).toBe( 2 )
+		expect( titles.length ).toBe( 4 )
 
 	} else {
 
-		expect( windows.length ).toBe( 1 )
+		// CrossOver, Crosshairs
+		expect( titles.length ).toBe( 2 )
 
 	}
 
