@@ -1,6 +1,6 @@
 const path = require( 'path' )
 const { checkboxTrue } = require( '../config/utils' )
-const preferences = require( './electron-preferences.js' )
+const preferences = require( './preferences.js' ).init()
 const windows = require( './windows.js' )
 const { __static } = require( './paths' )
 

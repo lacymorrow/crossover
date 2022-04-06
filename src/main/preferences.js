@@ -19,7 +19,7 @@ const getDefaults = () => ( {
 		fillColor: 'inherit',
 		strokeColor: 'inherit',
 	},
-	mouse: {
+	actions: {
 		followMouse: [],
 		hideOnMouse: '-1',
 		tiltEnable: [],
@@ -35,6 +35,7 @@ const getDefaults = () => ( {
 		gpu: [ 'gpu' ],
 		startUnlocked: [ 'startUnlocked' ],
 		boot: [],
+		appSize: 'normal',
 	},
 	keybinds: {
 		reset: 'Control+Shift+Alt+R',
@@ -151,7 +152,7 @@ const preferencesConfig = {
 						key: 'size',
 						type: 'slider',
 						min: 1,
-						max: 125,
+						max: 150,
 					},
 					{
 						label: 'Crosshair Opacity',
@@ -199,7 +200,7 @@ const preferencesConfig = {
 		},
 	},
 	{
-		id: 'mouse',
+		id: 'actions',
 		label: 'Crosshair Actions',
 		icon: 'turtle',
 		form: {
@@ -376,84 +377,96 @@ const preferencesConfig = {
 		form: {
 			groups: [ {
 				label: 'System Settings',
-				fields: [ {
-					label: 'Color Scheme',
-					key: 'theme',
-					type: 'radio',
-					options: [
-						{ label: 'Light Mode', value: 'light' },
-						{ label: 'Dark Mode', value: 'dark' },
-						{ label: 'Match the system theme', value: 'system' },
-					],
-				},
-				{
-					label: 'App Window Color',
-					key: 'appColor',
-					type: 'color',
-					format: 'hex', // Can be hex, hsl or rgb
-					help: 'Background color of the app window when unlocked.',
-				},
-				{
-					label: 'Show On App Start',
-					key: 'startUnlocked',
-					type: 'checkbox',
-					options: [
-						{ label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' },
-					],
-					help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
-				},
-				{
-					label: 'Automatic Updates',
-					key: 'updates',
-					type: 'checkbox',
-					options: [
-						{ label: 'Allow CrossOver to automatically update', value: 'updates' },
-					],
-					help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
-				},
-				{
-					label: 'Notifications',
-					key: 'notify',
-					type: 'checkbox',
-					options: [
-						{ label: 'Allow CrossOver to create system notifications', value: 'notify' },
-					],
-					help: 'CrossOver will notify you about any issues or new updates.',
-				},
-				{
-					label: 'Sounds',
-					key: 'sounds',
-					type: 'checkbox',
-					options: [
-						{ label: 'Allow CrossOver to play audio', value: 'sounds' },
-					],
-					help: 'CrossOver makes a little noise to indicate certain events.',
-				},
-				{
-					label: 'Hardware Acceleration',
-					key: 'gpu',
-					type: 'checkbox',
-					options: [
-						{ label: 'Enable hardware acceleration', value: 'gpu' },
-					],
-					help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
-				},
-				{
-					label: 'Run App On System Start',
-					key: 'boot',
-					type: 'checkbox',
-					options: [
-						{ label: 'Start on system boot', value: 'boot' },
-					],
-					help: 'CrossOver will start when your computer starts.',
-				},
-				{
-					label: 'Reset CrossOver Settings',
-					buttonLabel: 'Reset Settings',
-					key: 'resetApp',
-					type: 'button',
-					help: 'Reset all settings to default and clear any custom keybinds',
-				} ],
+				fields: [
+					{
+						label: 'Color Scheme',
+						key: 'theme',
+						type: 'radio',
+						options: [
+							{ label: 'Light Mode', value: 'light' },
+							{ label: 'Dark Mode', value: 'dark' },
+							{ label: 'Match the system theme', value: 'system' },
+						],
+					},
+					{
+						label: 'App Background Color',
+						key: 'appColor',
+						type: 'color',
+						format: 'hex', // Can be hex, hsl or rgb
+						help: 'Background color of the app window when unlocked.',
+					},
+					{
+						label: 'Show On App Start',
+						key: 'startUnlocked',
+						type: 'checkbox',
+						options: [
+							{ label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' },
+						],
+						help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
+					},
+					{
+						label: 'Automatic Updates',
+						key: 'updates',
+						type: 'checkbox',
+						options: [
+							{ label: 'Allow CrossOver to automatically update', value: 'updates' },
+						],
+						help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
+					},
+					{
+						label: 'Notifications',
+						key: 'notify',
+						type: 'checkbox',
+						options: [
+							{ label: 'Allow CrossOver to create system notifications', value: 'notify' },
+						],
+						help: 'CrossOver will notify you about any issues or new updates.',
+					},
+					{
+						label: 'Sounds',
+						key: 'sounds',
+						type: 'checkbox',
+						options: [
+							{ label: 'Allow CrossOver to play audio', value: 'sounds' },
+						],
+						help: 'CrossOver makes a little noise to indicate certain events.',
+					},
+					{
+						label: 'Hardware Acceleration',
+						key: 'gpu',
+						type: 'checkbox',
+						options: [
+							{ label: 'Enable hardware acceleration', value: 'gpu' },
+						],
+						help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+					},
+					{
+						label: 'Run App On System Start',
+						key: 'boot',
+						type: 'checkbox',
+						options: [
+							{ label: 'Start on system boot', value: 'boot' },
+						],
+						help: 'CrossOver will start when your computer starts.',
+					},
+					{
+						label: 'App Size',
+						key: 'appSize',
+						type: 'radio',
+						options: [
+							{ label: 'Normal', value: 'normal' },
+							{ label: 'Resizable', value: 'resize' },
+							{ label: 'Fullscreen-Sized', value: 'fullscreen' },
+						],
+					},
+					{
+						label: 'Reset CrossOver Settings',
+						buttonLabel: 'Reset Settings',
+						key: 'resetApp',
+						type: 'button',
+						help: 'Reset all settings to default and clear any custom keybinds',
+					},
+				],
 			} ],
 		},
 	},

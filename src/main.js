@@ -1,4 +1,8 @@
 /*
+	BUGS:
+	- App color not working
+	- Keybind settings don't display on first load
+
 	Changed:
 		#20 Custom keybinds
 		#85 turn off updates

@@ -1,4 +1,6 @@
 /* Colors */
+$app_width: 200px;
+$app_height: 124px;
 $theme_bg_dark: rgb(255, 255, 255);
 $theme_bg_light: rgb(0, 0, 0);
 
@@ -46,6 +48,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 
 	// Settings
+	--crosshair-scale: 1;
 	--crosshair-width: 100px;
 	--crosshair-height: 100px;
 	--crosshair-opacity: 1;
@@ -63,16 +66,20 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 html,
 body {
+	width: 100%;
+	height: 100%;
     padding: 0;
     margin: 0;
     background: transparent;
     overflow: hidden;
+    user-select: none;
+	pointer-events: none;
 }
 
 /* Use OS default fonts */
 body {
 
-    color: var(--app-text-color);
+    color: var(--app-text-color, $text_dark);
     font-size: 11px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     text-rendering: optimizeLegibility;
@@ -87,6 +94,7 @@ button {
     border: none;
     outline: none;
     background-color: transparent;
+	pointer-events: auto;
 }
 
 .help-text {
@@ -292,19 +300,22 @@ button {
 
 .crosshair-wrapper {
     // This controls what is draggable
-    margin: 12px auto;
+	transform: scale(var(--crosshair-scale, 1));
     position: relative;
-    height: 100px;
-    width: 150px;
+    height: 100%;
+    width: 100%;
+	min-height: 100px;
+	min-width: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
+	padding: 10px auto;
 }
 
 #crosshairImg {
-    user-select: none;
-    width: 100%;
+	width: 100%;
     height: auto;
+    user-select: none;
 }
 
 // If draggable then app is unlocked

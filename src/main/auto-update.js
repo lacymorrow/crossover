@@ -26,7 +26,7 @@ const update = () => {
 		autoUpdater.on( 'update-available', () => {
 
 			sound.play( 'UPDATE' )
-			windows.win.webContents.send( 'update_available' )
+			windows.win.webContents.send( 'set_info_icon', 'info' )
 
 			if ( is.linux ) {
 

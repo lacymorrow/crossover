@@ -108,12 +108,25 @@
 
 	} )
 
-	// Auto Update info
-	window.crossover.receive( 'update_available', () => {
+	// Auto Update info icon
+	window.crossover.receive( 'set_info_icon', arg => {
 
 		// Change top-left icon
-		infoBtn.querySelector( '.move-icon' ).classList.add( 'd-none' )
-		infoBtn.querySelector( '.info-icon' ).classList.remove( 'd-none' )
+		infoBtn.querySelectorAll( '.feather' ).forEach( elem => {
+
+			elem.classList.add( 'd-none' )
+
+		} )
+
+		// move, info, resize
+		let iconEl = infoBtn.querySelector( `.${arg}-icon` )
+		if ( !iconEl ) {
+
+			iconEl = infoBtn.querySelector( '.move-icon' )
+
+		}
+
+		iconEl.classList.remove( 'd-none' )
 
 	} )
 

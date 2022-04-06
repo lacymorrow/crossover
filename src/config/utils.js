@@ -20,7 +20,7 @@ const debounce = ( func, delay ) => {
 
 }
 
-// checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
+// checkboxTrue( preferences.value( 'actions.followMouse' ), 'followMouse' )
 const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value.includes( key ) )
 
 /* eslint-disable no-prototype-builtins */

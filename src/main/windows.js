@@ -3,12 +3,12 @@ const path = require( 'path' )
 const { app, BrowserWindow, screen } = require( 'electron' )
 
 const { activeWindow, centerWindow, is } = require( 'electron-util' )
-const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS } = require( '../config/config.js' )
+const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, APP_ASPECT_RATIO } = require( '../config/config.js' )
 const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
 const log = require( './log.js' )
 const { __renderer } = require( './paths.js' )
-const preferences = require( './electron-preferences.js' )
+const preferences = require( './preferences.js' ).init()
 const helpers = require( './helpers.js' )
 
 let hidden = false
@@ -105,6 +105,8 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		titleBarStyle: 'customButtonsOnHover',
 		transparent: true,
 		useContentSize: true,
+		minWidth: APP_WIDTH,
+		minHeight: APP_HEIGHT,
 		width: APP_WIDTH,
 		height: APP_HEIGHT,
 		webPreferences: {
@@ -126,8 +128,8 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	const win = new BrowserWindow( options )
 
-	// Remote module
-	// require('@electron/remote/main').enable(win.webContents)
+	// Maintain aspect ratio
+	win.setAspectRatio( APP_ASPECT_RATIO )
 
 	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
 	dock.setVisible( false )

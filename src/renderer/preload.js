@@ -4,11 +4,10 @@ const {
 	ipcRenderer,
 } = require( 'electron' )
 const unhandled = require( 'electron-unhandled' )
-const { is, debugInfo, openNewGitHubIssue } = require( 'electron-util' )
 const { debounce } = require( '../config/utils.js' )
 const { play, preload } = require( './lib/sounds.js' )
 
-console.log( 'Dev:', is.development )
+console.log( 'Dev:', process?.env?.development )
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
@@ -18,8 +17,6 @@ const api = {
 	play,
 	preload,
 	unhandled,
-	debugInfo,
-	openNewGitHubIssue,
 	send( channel, ...args ) {
 
 		// Whitelist channels
@@ -39,7 +36,7 @@ const api = {
 
 	receive( channel, func ) {
 
-		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_properties', 'set_crosshair', 'set_reticle', 'update_available' ] )
+		const validChannels = new Set( [ 'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle' ] )
 
 		if ( validChannels.has( channel ) ) {
 

@@ -1,3 +1,5 @@
+// https://playwright.dev/docs/api/
+// https://jestjs.io/docs/expect
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
 const { startApp, wait, delays, focusedMinimizedVisible } = require( './helpers.js' )

@@ -1,6 +1,6 @@
 const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
 const { is, getWindowBoundsCentered } = require( 'electron-util' )
-const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
+const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS, APP_WIDTH } = require( '../config/config' )
 const actions = require( './actions' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
@@ -198,8 +198,8 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 	windows.hideSettingsWindow()
 	targetWindow.closable = !lock
 	targetWindow.setFocusable( !lock )
-	targetWindow.setIgnoreMouseEvents( lock )
 	targetWindow.webContents.send( 'lock_window', lock )
+	targetWindow.setIgnoreMouseEvents( lock )
 
 	if ( lock ) {
 
@@ -211,10 +211,10 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 		}
 
 		/* Actions */
-		const followMouse = checkboxTrue( preferences.value( 'mouse.followMouse' ), 'followMouse' )
-		const hideOnMouse = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
-		const hideOnKey = preferences.value( 'mouse.hideOnKey' )
-		const tilt = checkboxTrue( preferences.value( 'mouse.tiltEnable' ), 'tiltEnable' )
+		const followMouse = checkboxTrue( preferences.value( 'actions.followMouse' ), 'followMouse' )
+		const hideOnMouse = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+		const hideOnKey = preferences.value( 'actions.hideOnKey' )
+		const tilt = checkboxTrue( preferences.value( 'actions.tiltEnable' ), 'tiltEnable' )
 
 		iohook.unregisterIOHook()
 
@@ -236,7 +236,7 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 		}
 
-		if ( tilt && ( preferences.value( 'mouse.tiltLeft' ) || preferences.value( 'mouse.tiltRight' ) ) ) {
+		if ( tilt && ( preferences.value( 'actions.tiltLeft' ) || preferences.value( 'actions.tiltRight' ) ) ) {
 
 			iohook.tilt()
 
@@ -277,33 +277,42 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	log.info( 'Sync options' )
 
-	// Properties to apply to renderer
+	// Set app size
+	set.appSize( options.app.appSize )
 
+	// increase crosshair size for bigger app sizes
+	// sorry, normal: 1, resize: 2, fullscreen: 3
+	const multiplier = ( options.app.appSize === 'resize' && 2 ) || ( options.app.appSize === 'fullscreen' && 3 ) || 1
+
+	// Properties to apply to renderer
 	const properties = {
-		'--crosshair-width': `${options.crosshair?.size}px`,
-		'--crosshair-height': `${options.crosshair?.size}px`,
-		'--crosshair-opacity': ( options.crosshair?.opacity || 100 ) / 100,
-		'--reticle-fill-color': options.crosshair?.color,
-		'--reticle-scale': options.crosshair?.reticleScale,
-		'--tilt-angle': options.mouse?.tiltAngle,
+		'--app-bg-color': options.app.appColor,
+		'--crosshair-scale': multiplier,
+		'--crosshair-width': `${options.crosshair.size}px`,
+		'--crosshair-height': `${options.crosshair.size}px`,
+		'--crosshair-opacity': ( options.crosshair.opacity || 100 ) / 100,
+		'--reticle-fill-color': options.crosshair.color,
+		'--reticle-scale': options.crosshair.reticleScale,
+		'--tilt-angle': options.actions.tiltAngle,
 		'--svg-fill-color': 'inherit',
 		'--svg-stroke-color': 'inherit',
 		'--svg-stroke-width': 'inherit',
 	}
 
-	if ( !checkboxTrue( options.crosshair?.svgCustomization, 'svgCustomization' ) ) {
+	if ( !checkboxTrue( options.crosshair.svgCustomization, 'svgCustomization' ) ) {
 
-		properties['--svg-fill-color'] = options.crosshair?.fillColor
-		properties['--svg-stroke-color'] = options.crosshair?.strokeColor
-		properties['--svg-stroke-width'] = options.crosshair?.strokeWidth
+		properties['--svg-fill-color'] = options.crosshair.fillColor
+		properties['--svg-stroke-color'] = options.crosshair.strokeColor
+		properties['--svg-stroke-width'] = options.crosshair.strokeWidth
 
 	}
 
-	if ( previousPreferences.app?.theme !== options.app?.theme ) {
+	// If theme changed...
+	if ( nativeTheme.themeSource !== options.app.theme ) {
 
 		const THEME_VALUES = [ 'light', 'dark', 'system' ]
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
-		const bgColor = theme === 'dark' ? '#FFF' : '#000'
+		const bgColor = theme === 'light' ? '#000' : '#FFF' // Dark is default
 		nativeTheme.themeSource = theme
 		properties['--app-bg-color'] = bgColor
 		preferences.value( 'app.appColor', bgColor )
@@ -352,7 +361,7 @@ const initShadowWindow = async () => {
 		'--crosshair-opacity': ( previousPreferences.crosshair?.opacity || 100 ) / 100,
 		'--reticle-fill-color': previousPreferences.crosshair?.color,
 		'--reticle-scale': previousPreferences.crosshair?.reticleScale,
-		'--tilt-angle': previousPreferences.mouse?.size,
+		'--tilt-angle': previousPreferences.actions?.size,
 		'--svg-fill-color': 'inherit',
 		'--svg-stroke-color': 'inherit',
 		'--svg-stroke-width': 'inherit',

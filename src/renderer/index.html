@@ -13,10 +13,6 @@
 		<div id="main" class="main-window container">
 			<div class="background"></div>
 
-			<button class="close-button button" aria-label=""><i data-feather="x-circle"></i></button>
-			<button class="settings-button button"><i data-feather="settings"></i></button>
-			<button class="center-button button"><i data-feather="target"></i></button>
-			<div class="info-button button"><div class="aligner"><i class="move-icon" data-feather="move"></i><i class="info-icon d-none" data-feather="alert-circle"></i></div></div>
 
 			<div class="crosshair-wrapper">
 				<div id="crosshair">
@@ -24,8 +20,8 @@
 					<div class="reticle dot">
 
 						<svg id="cross" viewBox="0 0 100 100">
-						    <rect y="49.5" width="16" height="1" x="42"></rect>
-						    <rect x="49.5" width="1" height="16" y="42"></rect>
+							<rect y="49.5" width="16" height="1" x="42"></rect>
+							<rect x="49.5" width="1" height="16" y="42"></rect>
 						</svg>
 
 						<svg id="dot" viewBox="0 0 100 100">
@@ -34,6 +30,11 @@
 					</div>
 				</div>
 			</div>
+
+			<button class="close-button button" aria-label=""><i data-feather="x-circle"></i></button>
+			<button class="settings-button button"><i data-feather="settings"></i></button>
+			<button class="center-button button"><i data-feather="target"></i></button>
+			<div class="info-button button"><div class="aligner"><i class="move-icon" data-feather="move"></i><i class="info-icon d-none" data-feather="alert-circle"></i><i class="resize-icon d-none" data-feather="arrow-up-right"></i></div></div>
 		</div>
 
 		<script src="./renderer.js"></script>

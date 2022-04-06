@@ -95,7 +95,7 @@ const hideOnKey = async () => {
 	log.info( 'Setting: Keyboard Hide' )
 	await iohook.importIoHook()
 
-	const hideOnKey = preferences.value( 'mouse.hideOnKey' )
+	const hideOnKey = preferences.value( 'actions.hideOnKey' )
 
 	if ( Object.prototype.hasOwnProperty.call( keycode, hideOnKey ) ) {
 
@@ -141,10 +141,10 @@ const tilt = async () => {
 
 	let leftKey
 	let rightKey
-	const tiltAngle = Number.parseInt( preferences.value( 'mouse.tiltAngle' ), 10 )
-	const tiltToggle = checkboxTrue( preferences.value( 'mouse.tiltToggle' ), 'tiltToggle' )
-	const tiltLeft = preferences.value( 'mouse.tiltLeft' )
-	const tiltRight = preferences.value( 'mouse.tiltRight' )
+	const tiltAngle = Number.parseInt( preferences.value( 'actions.tiltAngle' ), 10 )
+	const tiltToggle = checkboxTrue( preferences.value( 'actions.tiltToggle' ), 'tiltToggle' )
+	const tiltLeft = preferences.value( 'actions.tiltLeft' )
+	const tiltRight = preferences.value( 'actions.tiltRight' )
 
 	log.info( 'Setting: Tilt' )
 	await iohook.importIoHook()
