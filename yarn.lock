@@ -2752,8 +2752,9 @@ electron-osx-sign@^0.6.0:
     minimist "^1.2.0"
     plist "^3.0.1"
 
-electron-preferences@../electron-preferences:
+"electron-preferences@https://github.com/lacymorrow/electron-preferences#crossover":
   version "2.6.0"
+  resolved "https://github.com/lacymorrow/electron-preferences#0de84ea7731ad670e2312d5045e5a98765f58369"
   dependencies:
     eslint "^8.10.0"
     eslint-plugin-react "^7.29.3"

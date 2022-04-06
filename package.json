@@ -57,7 +57,7 @@
     "dependencies": {
         "electron-debug": "^3.0.1",
         "electron-log": "^4.4.6",
-        "electron-preferences": "../electron-preferences",
+        "electron-preferences": "https://github.com/lacymorrow/electron-preferences#crossover",
         "electron-reloader": "^1.2.0",
         "electron-unhandled": "^4.0.1",
         "electron-updater": "4.3.1",
