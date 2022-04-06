@@ -1,6 +1,6 @@
 /*
 	BUGS:
-	- App color not working
+	- App theme color breaks after reset
 	- Keybind settings don't display on first load
 
 	Changed:

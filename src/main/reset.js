@@ -1,12 +1,14 @@
-const { ipcMain } = require( 'electron' )
+const { app: electronApp, ipcMain } = require( 'electron' )
 const actions = require( './actions' )
 const log = require( './log' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const Preferences = require( './preferences' )
+const { is } = require( 'electron-util' )
 const preferences = Preferences.init()
 const app = skipFullReset => {
 
+	// Sonic announcement
 	sound.play( 'RESET' )
 
 	// Close extra crosshairs
@@ -23,10 +25,16 @@ const app = skipFullReset => {
 		// init()
 		// Using app.relaunch to cheat
 		// or, to restart completely
-		// electronApp.relaunch()
-		// electronApp.exit()
+		if ( is.development ) {
 
-		ipcMain.emit( 'init' )
+			ipcMain.emit( 'init' )
+
+			return
+
+		}
+
+		electronApp.relaunch()
+		electronApp.exit()
 
 	}
 

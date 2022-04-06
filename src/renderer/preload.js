@@ -7,7 +7,6 @@ const unhandled = require( 'electron-unhandled' )
 const { debounce } = require( '../config/utils.js' )
 const { play, preload } = require( './lib/sounds.js' )
 
-console.log( 'Dev:', process?.env?.development )
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {

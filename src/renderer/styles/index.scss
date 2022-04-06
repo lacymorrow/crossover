@@ -31,7 +31,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 :root {
 	// App theme
 	--app-bg-color-initial: #{$theme_bg_dark};
-	--app-bg-color: #{$theme_bg_dark};
+	--app-bg-color: unset;
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: 0.5;
 

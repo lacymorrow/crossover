@@ -294,9 +294,10 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--reticle-fill-color': options.crosshair.color,
 		'--reticle-scale': options.crosshair.reticleScale,
 		'--tilt-angle': options.actions.tiltAngle,
-		'--svg-fill-color': 'inherit',
-		'--svg-stroke-color': 'inherit',
-		'--svg-stroke-width': 'inherit',
+		'--svg-fill-color': 'unset',
+		'--svg-stroke-color': 'unset',
+		'--svg-stroke-width': 'unset',
+
 	}
 
 	if ( !checkboxTrue( options.crosshair.svgCustomization, 'svgCustomization' ) ) {
@@ -312,10 +313,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 		const THEME_VALUES = [ 'light', 'dark', 'system' ]
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
-		const bgColor = theme === 'light' ? '#000' : '#FFF' // Dark is default
 		nativeTheme.themeSource = theme
-		properties['--app-bg-color'] = bgColor
-		preferences.value( 'app.appColor', bgColor )
+		properties['--app-bg-color'] = 'unset'
+		preferences.value( 'app.appColor', 'unset' )
 
 	}
 
@@ -356,15 +356,18 @@ const initShadowWindow = async () => {
 	// Sync Preferences
 	shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
 	const properties = {
+		// No app-color for shadow windows
+		// No crosshair scaling for shadow windows
+		// No resizing for shadow windows
 		'--crosshair-width': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-height': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-opacity': ( previousPreferences.crosshair?.opacity || 100 ) / 100,
 		'--reticle-fill-color': previousPreferences.crosshair?.color,
 		'--reticle-scale': previousPreferences.crosshair?.reticleScale,
-		'--tilt-angle': previousPreferences.actions?.size,
-		'--svg-fill-color': 'inherit',
-		'--svg-stroke-color': 'inherit',
-		'--svg-stroke-width': 'inherit',
+		'--tilt-angle': previousPreferences.actions?.tiltAngle,
+		'--svg-fill-color': 'unset',
+		'--svg-stroke-color': 'unset',
+		'--svg-stroke-width': 'unset',
 	}
 
 	if ( !checkboxTrue( previousPreferences.crosshair?.svgCustomization, 'svgCustomization' ) ) {

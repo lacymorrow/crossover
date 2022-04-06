@@ -16,8 +16,8 @@ const getDefaults = () => ( {
 		opacity: 80,
 		reticle: 'dot',
 		reticleScale: 100,
-		fillColor: 'inherit',
-		strokeColor: 'inherit',
+		fillColor: 'unset',
+		strokeColor: 'unset',
 	},
 	actions: {
 		followMouse: [],
@@ -28,7 +28,7 @@ const getDefaults = () => ( {
 	},
 	app: {
 		theme: DEFAULT_THEME,
-		appColor: 'inherit',
+		appColor: 'unset',
 		updates: [ 'updates' ],
 		sounds: [ 'sounds' ],
 		notify: [ 'notify' ],

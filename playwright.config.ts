@@ -2,7 +2,7 @@ const path = require('path')
 
 const config = {
 
-	retries: 0,
+	retries: process.env.CI ? 2 : 0,
 
 	testDir: 'test',
 	outputDir: 'test/results',
