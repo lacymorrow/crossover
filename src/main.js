@@ -3,6 +3,9 @@
 	- App theme color breaks after reset
 	- Keybind settings don't display on first load
 
+	Todo:
+		-
+
 	Todo: when updating electron to 12+:
 		- Test iohook
 		- Test closing the devtools windows, opacity should not go to 100%
