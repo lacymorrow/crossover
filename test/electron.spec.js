@@ -113,7 +113,7 @@ test( 'Validate close event', async () => {
 	await electronApp.close()
 	expect( events.join( '|' ) ).toBe( 'context|application' )
 	// Give it some time to fire more events - there should not be any.
-	await wait( 1000 )
+	await wait( delays.medium )
 	expect( events.join( '|' ) ).toBe( 'context|application' )
 
 } )
