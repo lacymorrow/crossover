@@ -75,7 +75,7 @@ const init = async options => {
 
 	ipcMain.once( 'init', () => {
 
-		console.log( 'INIT TRIGGERED' )
+		log.info( 'INIT TRIGGERED' )
 		init( { triggeredByReset: true } )
 
 	} )

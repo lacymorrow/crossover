@@ -297,6 +297,7 @@ const hideChooserWindow = () => {
 	if ( windows.chooserWindow ) {
 
 		windows.chooserWindow.hide()
+		windows.win.focus()
 
 	}
 
@@ -310,6 +311,7 @@ const hideSettingsWindow = () => {
 		preferences.value( 'hidden.showSettings', false )
 		windows.preferencesWindow.close()
 		windows.preferencesWindow = null
+		windows.win.focus()
 
 	}
 

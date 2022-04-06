@@ -88,7 +88,7 @@ test( 'Validate center_window', async () => {
 test( 'Validate open_chooser + close_chooser', async () => {
 
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'open_chooser' ) )
-	await wait( delays.short )
+	await wait( delays.medium )
 
 	let fmv = await focusedMinimizedVisible( { electronApp, windowName: CHOOSER_WINDOW } )
 
@@ -97,7 +97,7 @@ test( 'Validate open_chooser + close_chooser', async () => {
 	expect( fmv.visible ).toBe( true )
 
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'close_chooser' ) )
-	await wait( delays.short )
+	await wait( delays.medium )
 
 	fmv = await focusedMinimizedVisible( { electronApp, windowName: CHOOSER_WINDOW } )
 
@@ -119,7 +119,7 @@ test( 'Validate open_settings + focus', async () => {
 	expect( fmv.visible ).toBe( true )
 
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'focus_window' ) )
-	await wait( delays.short )
+	await wait( delays.medium )
 
 	fmv = await focusedMinimizedVisible( { electronApp, windowName: productName } )
 

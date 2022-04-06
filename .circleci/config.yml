@@ -141,12 +141,9 @@ jobs:
           name: Snapcraft Login
           # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
           command: echo "$SNAP_TOKEN" | snapcraft login --with -
-      - run:
-          name: Yarn Set Timeout
-          command: yarn config set network-timeout 300000 -g
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: yarn
+          pkg-manager: npm
       # - run:
       #     name: Run tests
       #     command: yarn --skip-integrity-check --network-timeout 300000

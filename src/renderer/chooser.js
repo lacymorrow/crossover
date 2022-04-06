@@ -207,7 +207,7 @@
 
 		if ( !loaded ) {
 
-			console.log( 'Fallback' )
+			console.log( 'Fallback if crosshair load fails' )
 			window.crossover.send( 'get_crosshairs' )
 
 		}

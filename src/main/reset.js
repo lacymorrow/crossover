@@ -64,11 +64,10 @@ const preference = key => {
 // Temp until implemented in electron-preferences
 const allPreferences = () => {
 
-	// console.log( defaults.hidden.positionX, Preferences.defaults.hidden.positionX, Preferences.getDefaults().hidden.positionX )
+	// defaults are all different: defaults.hidden.positionX, Preferences.defaults.hidden.positionX, Preferences.getDefaults().hidden.positionX
 
 	for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
 
-		// console.log( 'Set Default', key, value )
 		preferences.value( key, value )
 
 	}
