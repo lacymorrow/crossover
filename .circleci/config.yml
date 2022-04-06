@@ -43,12 +43,12 @@ jobs:
           name: Install Dependencies
           command: HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
           # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
-      # - node/install-packages:
-      #     # If you are using yarn, change the line below from "npm" to "yarn"
-      #     pkg-manager: yarn
-      - run:
-          name: Install Node Modules
-          command: yarn --skip-integrity-check --network-timeout 300000
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: yarn
+      # - run:
+      #     name: Install Node Modules
+      #     command: yarn --skip-integrity-check --network-timeout 300000
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
@@ -144,33 +144,33 @@ jobs:
       - run:
           name: Yarn Set Timeout
           command: yarn config set network-timeout 300000 -g
-      # - node/install-packages:
-      #     # If you are using yarn, change the line below from "npm" to "yarn"
-      #     pkg-manager: yarn
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: yarn
+      # - run:
+      #     name: Run tests
+      #     command: yarn --skip-integrity-check --network-timeout 300000
       - run:
           name: Run tests
-          command: yarn --skip-integrity-check --network-timeout 300000
-      - run:
-          name: Run tests
-          command: yarn test
+          command: npm run test
       - run:
           name: Run windows
-          command: yarn build:windows
+          command: npm run build:windows
       - run:
           name: Run windows single EXE
-          command: yarn build:windows:exe || echo 'We error here since latest.yml has already beeen uploaded.'
+          command: npm run build:windows:exe || echo 'We error here since latest.yml has already beeen uploaded.'
       # - run:
       #     name: Create Windows EXE
-      #     command: yarn sh:copyexe
+      #     command: npm run sh:copyexe
       - run:
           name: Run snap
-          command: yarn build:snap --publish always
+          command: npm run build:snap --publish always
       - run:
           name: Run linux
-          command: yarn build:linux
+          command: npm run build:linux
       - run:
           name: Run mac
-          command: yarn build:mac
+          command: npm run build:mac
       - run:
           name: ls dist
           command: ls dist

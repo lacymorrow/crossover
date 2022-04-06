@@ -73,7 +73,6 @@ body {
     background: transparent;
     overflow: hidden;
     user-select: none;
-	pointer-events: none;
 }
 
 /* Use OS default fonts */
@@ -87,6 +86,8 @@ body {
     &.hidden {
         display: none;
     }
+
+	pointer-events: none; // unset pointer
 }
 
 button {
@@ -94,7 +95,12 @@ button {
     border: none;
     outline: none;
     background-color: transparent;
-	pointer-events: auto;
+	pointer-events: auto; // set pointer
+}
+
+
+#chooser-container {
+	pointer-events: auto; // set pointer
 }
 
 .help-text {
@@ -133,7 +139,6 @@ button {
 
 // Blue "Hover" border
 .container,
-#settings-container,
 #chooser-container {
     user-select: none;
     &.dropping {
@@ -360,9 +365,6 @@ button {
         // Allow center on double-click (Windows; https://github.com/lacymorrow/crossover/issues/32)
         -webkit-app-region: no-drag;
         display: block;
-    }
-    .settings {
-        display: flex;
     }
     &.mac .crosshair-wrapper {
         cursor: crosshair;
