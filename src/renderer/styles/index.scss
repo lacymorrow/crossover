@@ -192,7 +192,7 @@ button {
     z-index: -1;
     display: none;
     background: var(--app-bg-color-initial);
-    background: var(--app-bg-color);
+    background: var(--app-bg-color, #{$theme_bg_dark});
 	opacity: var(--app-bg-opacity);
 }
 

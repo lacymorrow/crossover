@@ -22,7 +22,6 @@
     "scripts": {
         "install": "npm run css",
         "postinstall": "electron-builder install-app-deps",
-        "pretest": "npm run lint",
         "lint": "eslint --fix .",
         "lint:src": "xo --fix src",
         "lint:test": "xo --fix test",

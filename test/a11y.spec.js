@@ -26,13 +26,14 @@ test.afterAll( async () => {
 
 test( 'Check A11y simple', async () => {
 
-	await checkA11y( mainPage )
 	test.fixme()
+	await checkA11y( mainPage )
 
 } )
 
 test( 'Check A11y AXE', async () => {
 
+	test.fixme()
 	await checkA11y( mainPage, null, {
 		axeOptions: {
 			runOnly: {
@@ -41,7 +42,6 @@ test( 'Check A11y AXE', async () => {
 			},
 		},
 	} )
-	test.fixme()
 
 } )
 
