@@ -62,10 +62,11 @@ const startApp = async () => {
 
 }
 
-const focusedMinimizedVisible = ( { electronApp, windowName } ) => electronApp.evaluate( async ( { BrowserWindow }, windowName ) => {
+const focusedMinimizedVisible = async ( { electronApp, windowName } ) => electronApp.evaluate( async ( { BrowserWindow }, windowName ) => {
 
 	console.log( windowName )
-	const win = BrowserWindow.getAllWindows().find( w => w.title === windowName )
+	const windows = await BrowserWindow.getAllWindows()
+	const win = windows.find( w => w.title === windowName )
 	win?.focus()
 
 	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
