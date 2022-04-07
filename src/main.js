@@ -1,11 +1,10 @@
 /*
 	BUGS:
-	- App theme color breaks after reset
 	- Keybind settings don't display on first load
 
 	Todo:
 		- Add labels or tooltips for buttons
-		- electron builder dont bundle unneeded
+		- electron builder dont bundle unneeded files
 
 	Todo: when updating electron to 12+:
 		- Test iohook
