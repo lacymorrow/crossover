@@ -1,5 +1,13 @@
 // https://playwright.dev/docs/api/
 // https://jestjs.io/docs/expect
+
+/*
+	TO TEST:
+	- github files
+	- default asset paths
+	- dialog/menu are receiving icon assets
+*/
+
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
 const { closeApp, startApp, wait, delays, focusedMinimizedVisible } = require( './helpers.js' )

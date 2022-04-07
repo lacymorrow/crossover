@@ -11,7 +11,7 @@ const notification = require( './notification.js' )
 const openAboutWindow = () => {
 
 	showAboutWindow( {
-		icon: path.join( __static, 'Icon.png' ),
+		icon: path.join( __static, 'icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`,
 	} )

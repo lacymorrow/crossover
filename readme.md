@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/Icon.png">
+  <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/icons/icon.png">
 </p>
 
 # CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="40" align="right" />](https://www.patreon.com/bePatron?u=55065733)
