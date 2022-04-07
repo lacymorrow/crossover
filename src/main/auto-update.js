@@ -20,7 +20,6 @@ const update = () => {
 	if ( checkboxTrue( preferences.value( 'app.updates' ), 'updates' ) ) {
 
 		log.info( 'Setting: Automatic Updates' )
-		windows.win.setProgressBar( 50 / 100 || -1 )
 
 		autoUpdater.logger = log
 		autoUpdater.on( 'update-available', () => {
@@ -51,12 +50,13 @@ const update = () => {
 				log.info( message )
 
 				// Dock progress bar
-				windows.win.setProgressBar( progressObject.percent / 100 || -1 )
+				dock.setProgress( progressObject.percent / 100 )
 
 			} )
 
 			autoUpdater.on( 'update-downloaded', () => {
 
+				dock.setProgress( -1 )
 				dock.setBadge( '!' )
 				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
 				// PlaySound( 'DONE' )

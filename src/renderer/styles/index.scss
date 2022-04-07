@@ -38,8 +38,9 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--icon-color: #{$icon_dark};
 	--icon-hover-color: #{$icon_hover_dark};
 
+	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
-		--app-bg-color: #{$theme_bg_light};
+		--app-bg-color-initial: #{$theme_bg_light};
 		--app-text-color: #{$text_light};
 
 		--icon-color: #{$icon_light};
@@ -94,7 +95,13 @@ button {
     border: none;
     outline: none;
     background-color: transparent;
+	pointer-events: auto;
 }
+#crosshair,
+#chooser-container {
+	pointer-events: auto; // set pointer
+}
+
 
 .help-text {
     text-align: center;
@@ -184,8 +191,7 @@ button {
     left: 0;
     z-index: -1;
     display: none;
-    background: var(--app-bg-color-initial);
-    background: var(--app-bg-color, #{$theme_bg_dark});
+    background: var(--app-bg-color, var(--app-bg-color-initial));
 	opacity: var(--app-bg-opacity);
 }
 

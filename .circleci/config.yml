@@ -76,10 +76,9 @@ jobs:
             git config user.email "me@lacymorrow.com"
             git config user.name "Lacy CI"
             git checkout stable || git checkout -b stable
-            git pull --no-commit
-            git commit -m "Merge" || echo "No commit needed."
-            git merge ${CIRCLE_BRANCH} || echo "Not merging"
-            git push --set-upstream origin stable
+            git pull
+            git merge ${CIRCLE_BRANCH} || echo "Not merging to stable"
+            git push --set-upstream origin stable || echo "Not pushing stable"
       - run:
           name: Create Artifacts
           command: |

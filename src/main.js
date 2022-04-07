@@ -57,6 +57,7 @@ const register = require( './main/register.js' )
 const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
 const tray = require( './main/tray.js' )
+const { appId } = require( '../package.json' )
 
 /* App setup */
 console.log( '***************' )
@@ -73,7 +74,7 @@ if ( !app.requestSingleInstanceLock() ) {
 }
 
 // Note: Must match `build.appId` in package.json
-app.setAppUserModelId( 'com.lacymorrow.crossover' )
+app.setAppUserModelId( appId )
 
 // Debug Settings
 debug( {

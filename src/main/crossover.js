@@ -311,11 +311,21 @@ const syncSettings = ( options = preferences.preferences ) => {
 	// If theme changed...
 	if ( nativeTheme.themeSource !== options.app.theme ) {
 
+		log.log( `Theme changed: ${options.app.theme}` )
+
+		// Change app bg
 		const THEME_VALUES = [ 'light', 'dark', 'system' ]
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
 		nativeTheme.themeSource = theme
 		properties['--app-bg-color'] = 'unset'
 		preferences.value( 'app.appColor', 'unset' )
+
+		// Themesource is either light or dark, to prevent triggering this on every sync...
+		if ( options.app.theme === 'system' ) {
+
+			preferences.value( 'app.theme', nativeTheme.themeSource )
+
+		}
 
 	}
 

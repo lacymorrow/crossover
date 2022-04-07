@@ -196,5 +196,6 @@ const menu = {
 	init,
 	preferencesMenuItems,
 	openCustomImageMenuItem,
+	resetMenuItem,
 }
 module.exports = menu
