@@ -87,7 +87,7 @@ body {
         display: none;
     }
 
-	pointer-events: none; // unset pointer
+	// pointer-events: none; // unset pointer
 }
 
 button {
@@ -95,7 +95,7 @@ button {
     border: none;
     outline: none;
     background-color: transparent;
-	pointer-events: auto; // set pointer
+	// pointer-events: auto; // set pointer
 }
 
 #crosshair,
