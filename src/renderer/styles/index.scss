@@ -34,6 +34,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--app-bg-color: unset;
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: 0.5;
+	--app-chooser-bg-color: #{rgba($theme_bg_dark, .9)};
 
 	--icon-color: #{$icon_dark};
 	--icon-hover-color: #{$icon_hover_dark};
@@ -42,6 +43,8 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	@media (prefers-color-scheme: light) {
 		--app-bg-color-initial: #{rgba($theme_bg_light, .6)};
 		--app-text-color: #{$text_light};
+		--app-chooser-bg-color: #{rgba($theme_bg_light, .9)};
+
 
 		--icon-color: #{$icon_light};
 		--icon-hover-color: #{$icon_hover_light};
@@ -352,7 +355,7 @@ label {
     height: 100vh;
     width: 100vw;
     padding: 4px;
-    background: var(--app-bg-color, var(--app-bg-color-initial));
+    background: var(--app-chooser-bg-color);
     border: 3px solid $chooser_border;
 }
 
