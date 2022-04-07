@@ -73,7 +73,6 @@ body {
     margin: 0;
     background: transparent;
     overflow: hidden;
-    user-select: none;
 }
 
 /* Use OS default fonts */
@@ -90,46 +89,9 @@ body {
 
 }
 
-button {
-    cursor: pointer;
-    border: none;
-    outline: none;
-    background-color: transparent;
-	pointer-events: auto;
-}
 #crosshair,
 #chooser-container {
 	pointer-events: auto; // set pointer
-}
-
-
-.help-text {
-    text-align: center;
-    letter-spacing: 1.1px;
-    margin: 20px 0 0 0;
-    align-items: flex-end;
-    font-size: 9px;
-    color: $help_text;
-    text-transform: uppercase;
-    span {
-        font-family: Monaco, 'Courier New', monospace;
-        background: $help_text_bg;
-        border: 1px $help_text_border;
-        padding: 4px;
-    }
-}
-
-.d-none {
-	display: none;
-}
-
-.d-inline-block {
-	display: inline-block;
-}
-
-.d-flex {
-    display: flex;
-    justify-content: space-between;
 }
 
 ::selection {
@@ -137,10 +99,24 @@ button {
     color: inherit;
 }
 
+/* Application Style */
+
+.container {
+    overflow: hidden;
+    position: relative;
+    background: none;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    cursor: none;
+}
+
+
 // Blue "Hover" border
 .container,
 #chooser-container {
     user-select: none;
+    // While dropping file
     &.dropping {
         &.main-window * {
             pointer-events: none;
@@ -157,28 +133,6 @@ button {
             z-index: 9;
         }
     }
-}
-
-
-/* Icon Styles */
-
-.feather {
-    // stroke:whitesmoke;
-    width: 20px;
-    height: 20px;
-}
-
-
-/* Application Style */
-
-.container {
-    overflow: hidden;
-    position: relative;
-    background: none;
-    border-radius: 5px;
-    width: 100%;
-    height: 100%;
-    cursor: none;
 }
 
 .background {
@@ -199,7 +153,21 @@ button {
     background: var(--app-bg-color);
 }
 
+/* Icon Styles */
+
+.feather {
+    // stroke:whitesmoke;
+    width: 20px;
+    height: 20px;
+}
+
 .button {
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    pointer-events: auto;
     user-select: none;
     display: none;
     position: absolute;
@@ -240,6 +208,10 @@ button {
     top: 3px;
     right: 3px;
     left: 30px;
+    cursor: grab;
+    &:active {
+        cursor: grabbing;
+    }
     .feather {
         width: 18px;
         height: 18px;
@@ -251,9 +223,11 @@ button {
         display: flex;
         justify-content: flex-end;
     }
-    .info-icon.feather {
-	    stroke: $icon_red;
-	    fill: white;
+    .info-icon {
+        .feather {
+    	    stroke: $icon_red;
+    	    fill: white;
+        }
     }
 }
 
@@ -300,7 +274,6 @@ button {
 
 }
 
-
 .crosshair-wrapper {
     // This controls what is draggable
 	transform: scale(var(--crosshair-scale, 1));
@@ -328,8 +301,9 @@ button {
         cursor: inherit;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
+        // dont drag app if were dropping a file
         &:not(.dropping) {
-        	.info-button,
+        	.info-icon,
             .crosshair-wrapper,
             .crosshair-wrapper * {
                 // This is the magic to make things draggable
@@ -346,25 +320,14 @@ button {
     .button {
         display: block;
     }
+
     // Show close button on linux/windows
     &.mac .main-window .close-button {
         display: none;
     }
-    .info-button {
-        cursor: grab;
-        &:active {
-            cursor: grabbing;
-        }
-        .info-icon {
-        	cursor: pointer;
-        }
-    }
-    .center-button {
-        // Allow center on double-click (Windows; https://github.com/lacymorrow/crossover/issues/32)
-        -webkit-app-region: no-drag;
-        display: block;
-    }
-    &.mac .crosshair-wrapper {
+
+    // Fancy cursor on mac
+    .crosshair-wrapper {
         cursor: crosshair;
     }
 }
@@ -475,4 +438,17 @@ label {
         	border-width: 3px;
         }
     }
+}
+
+.d-none {
+    display: none;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.d-flex {
+    display: flex;
+    justify-content: space-between;
 }

@@ -18,7 +18,7 @@
     },
     "license": "CC-BY-NC-SA-4.0",
     "engines": {
-        "node": "14.17.4 || 14.x"
+        "node": "14.17.4 || 14 || 16"
     },
     "scripts": {
         "install": "npm run css",
