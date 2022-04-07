@@ -281,12 +281,11 @@ const syncSettings = ( options = preferences.preferences ) => {
 	set.appSize( options.app.appSize )
 
 	// increase crosshair size for bigger app sizes
-	// sorry, normal: 1, resize: 2, fullscreen: 3
+	// sorry for this, normal: 1, resize: 2, fullscreen: 3
 	const multiplier = ( options.app.appSize === 'resize' && 2 ) || ( options.app.appSize === 'fullscreen' && 3 ) || 1
 
-	// Properties to apply to renderer
+	// Properties to apply to renderer every sync
 	const properties = {
-		'--app-bg-color': hexToRgbA( options.app.appColor, 0.6 ),
 		'--crosshair-scale': multiplier,
 		'--crosshair-width': `${options.crosshair.size}px`,
 		'--crosshair-height': `${options.crosshair.size}px`,
@@ -297,9 +296,16 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
+	}
+
+	// App color is set
+	if ( options.app.appColor.charAt( 0 ) === '#' ) {
+
+		properties['--app-bg-color'] = hexToRgbA( options.app.appColor, 0.6 )
 
 	}
 
+	// SVG customizations enabled
 	if ( !checkboxTrue( options.crosshair.svgCustomization, 'svgCustomization' ) ) {
 
 		properties['--svg-fill-color'] = options.crosshair.fillColor

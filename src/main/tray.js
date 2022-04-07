@@ -1,10 +1,10 @@
 const { Menu, Tray } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const path = require( 'path' )
-const { productName } = require( '../../package.json' )
-
 const log = require( './log' )
+const { preferencesMenuItems, openCustomImageMenuItem, resetMenuItem, showAppMenuItem } = require( './menu' )
 const paths = require( './paths' )
+const { productName } = require( '../../package.json' )
 
 // mac needs dark/light versions
 const systemIcon = () => {
@@ -42,9 +42,10 @@ const init = () => {
 
 	tray.instance = new Tray( getIconPath() )
 	const contextMenu = Menu.buildFromTemplate( [
-		// ...preferencesMenuItems,
-		// openCustomImageMenuItem,
-		// resetMenuItem,
+		showAppMenuItem,
+		...preferencesMenuItems,
+		openCustomImageMenuItem,
+		resetMenuItem,
 		{ role: 'quit' },
 	] )
 	tray.instance.setToolTip( `${productName} Control` )

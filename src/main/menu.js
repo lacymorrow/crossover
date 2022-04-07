@@ -12,6 +12,7 @@ const errorHandling = require( './error-handling' )
 const dialog = require( './dialog' )
 const crossover = require( './crossover' )
 const reset = require( './reset' )
+const { productName } = require( '../../package.json' )
 
 /* MENU ITEMS */
 
@@ -53,6 +54,16 @@ const resetMenuItem = {
 
 		// Open dialog
 		reset.app()
+
+	},
+}
+
+const showAppMenuItem = {
+	label: `Show ${productName}`,
+	accelerator: 'Command+O',
+	async click() {
+
+		crossover.lockWindow( false )
 
 	},
 }
@@ -197,5 +208,6 @@ const menu = {
 	preferencesMenuItems,
 	openCustomImageMenuItem,
 	resetMenuItem,
+	showAppMenuItem,
 }
 module.exports = menu

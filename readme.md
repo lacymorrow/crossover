@@ -312,7 +312,7 @@ Start developing in `src/main.js` and `src/renderer.js`. `index.html` contains t
 
 ### Run
 
-_You will need [node.js](https://nodejs.org/) v14.4.X installed. If you have `nvm` installed, run `nvm use` to switch to the correct node version._
+_You will need [node.js](https://nodejs.org/) v14.x.x installed. If you have `nvm` installed, run `nvm install && nvm use` to switch to the correct node version._
 
 ```
 $ yarn && yarn start
