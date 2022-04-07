@@ -503,6 +503,8 @@ const openSettingsWindow = async () => {
 
 		}
 
+		windows.preferencesWindow.focus()
+
 		preferences.value( 'hidden.showSettings', true )
 
 	}

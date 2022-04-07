@@ -50,6 +50,16 @@ test.beforeAll( async () => {
 	mainPage = app.mainPage
 
 } )
+
+test.afterAll( async () => {
+
+	if ( electronApp.windows().length > 0 ) {
+
+		await electronApp.close()
+
+	}
+
+} )
 // End setup
 
 test( 'Validate center_window', async () => {

@@ -15,6 +15,16 @@ test.beforeAll( async () => {
 
 } )
 
+test.afterAll( async () => {
+
+	if ( electronApp.windows().length > 0 ) {
+
+		await electronApp.close()
+
+	}
+
+} )
+
 // End setup
 test( 'Validate dblclick to center', async () => {
 

@@ -16,6 +16,16 @@ test.beforeAll( async () => {
 } )
 
 test.afterEach( async () => wait( delays.short ) )
+
+test.afterAll( async () => {
+
+	if ( electronApp.windows().length > 0 ) {
+
+		await electronApp.close()
+
+	}
+
+} )
 // End setup
 
 // test( 'has working devtools', async t => {

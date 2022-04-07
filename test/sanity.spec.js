@@ -21,7 +21,11 @@ test.afterEach( async () => wait( delays.short ) )
 
 test.afterAll( async () => {
 
-	await electronApp.close()
+	if ( electronApp.windows().length > 0 ) {
+
+		await electronApp.close()
+
+	}
 
 } )
 
