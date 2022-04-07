@@ -6,7 +6,29 @@ const { preferencesMenu, openCustomImageMenu } = require( './menu' )
 const paths = require( './paths' )
 
 // mac needs dark/light versions
-const icon = path.join( paths.__static, 'icon', is.windows ? 'icon.ico' : nativeTheme.shouldUseDarkColors ? 'mac_tray_light.png' : 'mac_tray.png' )
+const systemIcon = () => {
+
+	if ( is.macos ) {
+
+		return nativeTheme.shouldUseDarkColors ? 'mac_tray_light@2x.png' : 'mac_tray@2x.png'
+
+	}
+
+	if ( is.windows ) {
+
+		return 'icon.ico'
+
+	}
+
+	return 'icon.png'
+
+}
+
+const icon = path.join(
+	paths.__static,
+	'icon',
+	systemIcon(),
+)
 
 const init = () => {
 
