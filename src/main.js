@@ -5,6 +5,7 @@
 
 	Todo:
 		- Add labels or tooltips for buttons
+		- electron builder dont bundle unneeded
 
 	Todo: when updating electron to 12+:
 		- Test iohook
@@ -55,6 +56,7 @@ const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
 const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
+const tray = require( './main/tray.js' )
 
 /* App setup */
 console.log( '***************' )
@@ -105,17 +107,26 @@ if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
 const ready = async () => {
 
+	// Things in here are only run once, ever.
+	// If it resets on startup, put it in init() (YOU PROBABLY WANT INIT)
+
 	log.info( 'App ready' )
+
+	/* Create main window */
+
+	await windows.init()
+
+	// Log.info( windows.win.getNativeWindowHandle() )
+	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+	windows.win.setAlwaysOnTop( true, 'screen-saver' )
+
+	/* TRAY */
+	tray.init()
 
 	/* MENU */
 	menu.init()
 
-	await windows.init()
-
-	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	windows.win.setAlwaysOnTop( true, 'screen-saver' )
-	// Log.info( windows.win.getNativeWindowHandle() )
-
+	/* SOUND */
 	sound.preload()
 
 	/* AUTO-UPDATE */

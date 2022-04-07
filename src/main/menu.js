@@ -172,5 +172,7 @@ const init = () => {
 
 const menu = {
 	init,
+	preferencesMenu,
+	openCustomImageMenu,
 }
 module.exports = menu

@@ -24,7 +24,7 @@
         "postinstall": "electron-builder install-app-deps",
         "css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
         "start": "npm run css && electron --trace-warnings .",
-        "watch": "nodemon -L --ignore 'dist/' --watch . --exec 'npm run start'",
+        "watch": "nodemon --ignore 'dist/' --watch . --exec 'npm run start'",
         "lint": "eslint --fix .",
         "lint:src": "eslint --fix src",
         "lint:test": "eslint --fix test",
@@ -143,7 +143,6 @@
             "description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
             "plugs": [
                 "default",
-                "camera",
                 "removable-media"
             ],
             "publish": [
