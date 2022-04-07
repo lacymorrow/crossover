@@ -6,7 +6,6 @@ const windows = require( './windows' )
 const { shell } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const { autoUpdater } = require( 'electron-updater' )
-const dock = require( './dock' )
 const dialog = require( './dialog' )
 const { RELEASES_URL } = require( '../config/config' )
 const notification = require( './notification' )
@@ -50,14 +49,14 @@ const update = () => {
 				log.info( message )
 
 				// Dock progress bar
-				dock.setProgress( progressObject.percent / 100 )
+				windows.setProgress( progressObject.percent / 100 )
 
 			} )
 
 			autoUpdater.on( 'update-downloaded', () => {
 
-				dock.setProgress( -1 )
-				dock.setBadge( '!' )
+				windows.setProgress( -1 )
+				windows.setBadge( '!' )
 				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
 				// PlaySound( 'DONE' )
 

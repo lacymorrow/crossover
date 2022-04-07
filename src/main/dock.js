@@ -1,16 +1,8 @@
 const { app } = require( 'electron' )
 const { is } = require( 'electron-util' )
-const windows = require( './windows' )
 
 // MacOS only, dock badge
 const setBadge = text => app.dock.setBadge( String( text ) )
-
-// -1 to disable
-const setProgress = percentage => {
-
-	windows.win.setProgressBar( percentage || -1 )
-
-}
 
 // Hides the app from the dock and CMD+Tab, necessary for staying on top macOS fullscreen windows
 const setVisible = visible => {
@@ -33,7 +25,7 @@ const setVisible = visible => {
 
 const dock = {
 	setBadge,
-	setProgress,
+
 	setVisible,
 }
 

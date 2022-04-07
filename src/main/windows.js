@@ -463,6 +463,13 @@ const moveWindow = options_ => {
 
 }
 
+// -1 to disable
+const setProgress = percentage => {
+
+	windows.win.setProgressBar( percentage || -1 )
+
+}
+
 const unregister = () => {
 
 	if ( windows.win ) {
@@ -491,6 +498,7 @@ const windows = {
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
+	setProgress,
 	shadowWindows: new Set(),
 	showHideWindow,
 	showWindow,

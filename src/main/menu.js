@@ -18,19 +18,20 @@ const { productName } = require( '../../package.json' )
 
 const preferencesMenuItems = [
 	{
-		label: 'Crosshairs…',
-		accelerator: 'CommandOrControl+.',
-		click() {
-
-			crossover.openChooserWindow()
-
-		},
-	}, {
 		label: 'Preferences…',
 		accelerator: 'CommandOrControl+,',
 		click() {
 
 			crossover.openSettingsWindow()
+
+		},
+	},
+	{
+		label: 'Choose Crosshair…',
+		accelerator: 'CommandOrControl+.',
+		click() {
+
+			crossover.openChooserWindow()
 
 		},
 	},

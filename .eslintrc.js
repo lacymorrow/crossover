@@ -4,8 +4,9 @@ module.exports = {
 		node: true,
 	},
 	extends: [
-		'xo',
+		// 'prettier',
 		'eslint:recommended',
+		'xo',
 		// 'plugin:@typescript-eslint/recommended',
 	],
 	ignorePatterns: [ '**/vendor/*' ],

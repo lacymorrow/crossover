@@ -1,6 +1,7 @@
 const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
 const { is, getWindowBoundsCentered } = require( 'electron-util' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
+const { checkboxTrue, hexToRgbA } = require( '../utils' )
 const actions = require( './actions' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
@@ -10,7 +11,6 @@ const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
-const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
 const preferences = Preferences.init()
@@ -428,7 +428,7 @@ const openChooserWindow = async () => {
 
 	// Create shortcut to close chooser
 	// TODO: circular dep - when using keyboard
-	registerEscape()
+	keyboard.registerEscape()
 
 	// Modal placement is different per OS
 	if ( is.macos ) {
@@ -466,8 +466,7 @@ const openSettingsWindow = async () => {
 	windows.hideChooserWindow()
 
 	// Create shortcut to close window
-	// TODO: circular dep - when using keyboard
-	registerEscape()
+	keyboard.registerEscape()
 
 	windows.preferencesWindow = preferences.show()
 
@@ -534,16 +533,6 @@ const registerSaveWindowBounds = () => {
 		save.position( windows.win.getBounds() )
 
 	} )
-
-}
-
-const registerEscape = ( action = actions.escape ) => {
-
-	if ( !globalShortcut.isRegistered( 'Escape' ) ) {
-
-		globalShortcut.register( 'Escape', action )
-
-	}
 
 }
 
