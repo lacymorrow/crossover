@@ -2,7 +2,7 @@ const path = require( 'path' )
 const { expect, test } = require( '@playwright/test' )
 const jimp = require( 'jimp' )
 const { productName } = require( '../package.json' )
-const { startApp, wait, delays } = require( './helpers.js' )
+const { closeApp, startApp, wait, delays } = require( './helpers.js' )
 
 let electronApp
 let mainPage
@@ -17,15 +17,7 @@ test.beforeAll( async () => {
 
 test.afterEach( async () => wait( delays.short ) )
 
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 // End setup
 
 // test( 'has working devtools', async t => {

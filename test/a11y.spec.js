@@ -1,32 +1,21 @@
 const { injectAxe, checkA11y } = require( 'axe-playwright' )
 const { test } = require( '@playwright/test' )
-const { startApp, wait, delays } = require( './helpers.js' )
+const { closeApp, startApp, wait, delays } = require( './helpers.js' )
 
 // Breakpoint: await mainPage.pause()
 
-let electronApp
 let mainPage
 
 test.beforeAll( async () => {
 
 	const app = await startApp()
-	electronApp = app.electronApp
 	mainPage = app.mainPage
 	await injectAxe( mainPage )
 
 } )
 
 test.afterEach( async () => wait( delays.short ) )
-
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 
 test( 'Check A11y simple', async () => {
 

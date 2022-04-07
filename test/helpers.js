@@ -75,7 +75,7 @@ const closeApp = async () => {
 
 	} catch ( error ) {
 
-		console.error( error )
+		console.error( 'App was already closed:', error )
 
 	}
 

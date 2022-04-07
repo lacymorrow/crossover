@@ -2,7 +2,7 @@
 // https://jestjs.io/docs/expect
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
-const { startApp, wait, delays, focusedMinimizedVisible } = require( './helpers.js' )
+const { closeApp, startApp, wait, delays, focusedMinimizedVisible } = require( './helpers.js' )
 // Breakpoint: await mainPage.pause()
 
 let electronApp
@@ -18,15 +18,7 @@ test.beforeAll( async () => {
 
 test.afterEach( async () => wait( delays.short ) )
 
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 
 test( 'Validate app launches: launch.png', async () => {
 

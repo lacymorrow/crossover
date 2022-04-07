@@ -1,6 +1,6 @@
 const { expect, test } = require( '@playwright/test' )
 const { productName } = require( '../package.json' )
-const { startApp, wait, delays } = require( './helpers.js' )
+const { closeApp, startApp, wait, delays } = require( './helpers.js' )
 
 // Breakpoint: await mainPage.pause()
 
@@ -17,15 +17,7 @@ test.beforeAll( async () => {
 
 test.afterEach( async () => wait( delays.short ) )
 
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 
 // Test( 'Validate Fixtures', async ({browser, browserName, page}) => {
 // 	const mainWindow = await electronApp.evaluate( async ( app ) => {

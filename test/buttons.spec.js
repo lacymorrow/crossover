@@ -1,5 +1,5 @@
 const { expect, test } = require( '@playwright/test' )
-const { startApp, visualMouse, wait, delays, focusedMinimizedVisible, CHOOSER_WINDOW, SETTINGS_WINDOW, getBounds } = require( './helpers.js' )
+const { closeApp, startApp, visualMouse, wait, delays, focusedMinimizedVisible, CHOOSER_WINDOW, SETTINGS_WINDOW, getBounds } = require( './helpers.js' )
 const { productName } = require( '../package.json' )
 
 let electronApp
@@ -15,15 +15,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 
 // End setup
 test( 'Validate dblclick to center', async () => {
