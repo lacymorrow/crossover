@@ -11,7 +11,53 @@ const {
 const errorHandling = require( './error-handling' )
 const dialog = require( './dialog' )
 const crossover = require( './crossover' )
+const reset = require( './reset' )
 
+/* MENU ITEMS */
+
+const preferencesMenuItems = [
+	{
+		label: 'Crosshairs…',
+		accelerator: 'CommandOrControl+.',
+		click() {
+
+			crossover.openChooserWindow()
+
+		},
+	}, {
+		label: 'Preferences…',
+		accelerator: 'CommandOrControl+,',
+		click() {
+
+			crossover.openSettingsWindow()
+
+		},
+	},
+]
+
+const openCustomImageMenuItem = {
+	label: 'Custom Image…',
+	accelerator: 'Command+O',
+	async click() {
+
+		// Open dialog
+		dialog.openCustomImageDialog()
+
+	},
+}
+
+const resetMenuItem = {
+	label: 'Reset CrossOver',
+	accelerator: 'Command+O',
+	async click() {
+
+		// Open dialog
+		reset.app()
+
+	},
+}
+
+/* SUBMENUS */
 const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Learn more about CrossOver',
@@ -40,6 +86,7 @@ const helpSubmenu = [
 
 		},
 	},
+	resetMenuItem,
 	aboutMenuItem( {
 		icon: path.join( __dirname, 'static', 'Icon.png' ),
 		text: 'Created by Lacy Morrow',
@@ -86,44 +133,19 @@ const debugSubmenu = [ {
 	},
 } ]
 
-const preferencesMenu = [
-	{
-		label: 'Crosshairs…',
-		accelerator: 'CommandOrControl+.',
-		click() {
-
-			crossover.openChooserWindow()
-
-		},
-	}, {
-		label: 'Preferences…',
-		accelerator: 'CommandOrControl+,',
-		click() {
-
-			crossover.openSettingsWindow()
-
-		},
-	},
-]
-
-const openCustomImageMenu = {
-	label: 'Custom Image…',
-	accelerator: 'Command+O',
-	async click() {
-
-		// Open dialog
-		dialog.openCustomImageDialog()
-
-	},
-}
-
+/* TEMPLATES */
 const macosTemplate = [
 	appMenu( [
-		...preferencesMenu,
-		openCustomImageMenu,
+		...preferencesMenuItems,
 	] ),
 	{
 		role: 'fileMenu',
+		submenu: [
+			openCustomImageMenuItem,
+			{
+				type: 'separator',
+			},
+		],
 	},
 	{
 		role: 'windowMenu',
@@ -138,8 +160,8 @@ const macosTemplate = [
 const otherTemplate = [ {
 	role: 'fileMenu',
 	submenu: [
-		...preferencesMenu,
-		openCustomImageMenu,
+		...preferencesMenuItems,
+		openCustomImageMenuItem,
 		{
 			type: 'separator',
 		},
@@ -172,7 +194,7 @@ const init = () => {
 
 const menu = {
 	init,
-	preferencesMenu,
-	openCustomImageMenu,
+	preferencesMenuItems,
+	openCustomImageMenuItem,
 }
 module.exports = menu

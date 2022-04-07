@@ -2,7 +2,7 @@ const { Menu, nativeTheme, Tray } = require( 'electron' )
 const { is } = require( 'electron-util' )
 const path = require( 'path' )
 const { productName } = require( '../../package.json' )
-const { preferencesMenu, openCustomImageMenu } = require( './menu' )
+const { preferencesMenuItems, openCustomImageMenuItem } = require( './menu' )
 const paths = require( './paths' )
 
 // mac needs dark/light versions
@@ -40,9 +40,9 @@ const init = () => {
 
 	tray.instance = new Tray( icon )
 	const contextMenu = Menu.buildFromTemplate( [
-		...preferencesMenu,
-		openCustomImageMenu,
-		{ role: 'separator' },
+		...preferencesMenuItems,
+		openCustomImageMenuItem,
+
 		{ role: 'quit' },
 	] )
 	tray.instance.setToolTip( productName )
