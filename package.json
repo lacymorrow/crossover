@@ -36,7 +36,7 @@
         "check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
         "check:circular": "madge --circular .",
         "depcheck": "npm run check; npm run check:deps; npm run check:circular",
-        "release": "np --branch release",
+        "release": "np --branch release && npm run build:release",
         "release:snap": "snapcraft upload --release=CrossOver*.snap",
         "pack": "rm -f *.tgz && electron-builder --dir",
         "sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
