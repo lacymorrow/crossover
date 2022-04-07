@@ -303,7 +303,7 @@ body {
         border-bottom-left-radius: 0;
         // dont drag app if were dropping a file
         &:not(.dropping) {
-        	.info-icon,
+        	.info-button:not(.clickable),
             .crosshair-wrapper,
             .crosshair-wrapper * {
                 // This is the magic to make things draggable
