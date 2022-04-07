@@ -6,14 +6,12 @@ const { startApp, wait, delays } = require( './helpers.js' )
 
 let electronApp
 let mainPage
-let windows
 
 test.beforeAll( async () => {
 
 	const app = await startApp()
 	electronApp = app.electronApp
 	mainPage = app.mainPage
-	windows = app.windows
 
 } )
 
@@ -55,7 +53,6 @@ test( 'Test get mainWindow', async () => {
 
 test( 'Test playwright input', async () => {
 
-	expect( windows[0] ).toBe( mainPage )
 	expect( await electronApp.windows()[0] ).toBe( mainPage )
 
 } )

@@ -36,7 +36,7 @@ const config = {
 	use: {
 		browserName: 'chromium',
 		coverageName: 'electron',
-		SlowMo: 100,
+		// slowMo: 100,
 		headless: false,
 		ignoreHTTPSErrors: true,
 		screenshot: 'on',

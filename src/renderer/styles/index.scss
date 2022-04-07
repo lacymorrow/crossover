@@ -1,8 +1,8 @@
 /* Colors */
 $app_width: 200px;
 $app_height: 124px;
-$theme_bg_dark: rgb(255, 255, 255);
-$theme_bg_light: rgb(0, 0, 0);
+$theme_bg_dark: #FFF;
+$theme_bg_light: #000;
 
 $text_dark: #555;
 $text_light: #EFEFEF;
@@ -30,7 +30,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 :root {
 	// App theme
-	--app-bg-color-initial: #{$theme_bg_dark};
+	--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
 	--app-bg-color: unset;
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: 0.5;
@@ -40,7 +40,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
-		--app-bg-color-initial: #{$theme_bg_light};
+		--app-bg-color-initial: #{rgba($theme_bg_light, .6)};
 		--app-text-color: #{$text_light};
 
 		--icon-color: #{$icon_light};
@@ -192,7 +192,6 @@ button {
     z-index: -1;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
-	opacity: var(--app-bg-opacity);
 }
 
 // Child window background
@@ -390,7 +389,7 @@ label {
     height: 100vh;
     width: 100vw;
     padding: 4px;
-    background: white;
+    background: var(--app-bg-color, var(--app-bg-color-initial));
     border: 3px solid $chooser_border;
 }
 
@@ -466,6 +465,7 @@ label {
         border: 1px dashed $chooser_highlight;
         border-radius: 3px;
         transition: border-color .2s ease-in;
+		background-color: rgba(#FFF, .5);
         &.current,
         &:hover {
             border-color: $chooser_highlight_hover;

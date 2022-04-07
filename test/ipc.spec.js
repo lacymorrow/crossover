@@ -37,7 +37,7 @@
 // 	- quit
 
 const { expect, test } = require( '@playwright/test' )
-const { startApp, wait, focusedMinimizedVisible, getBounds, delays, CHOOSER_WINDOW, SETTINGS_WINDOW } = require( './helpers.js' )
+const { startApp, closeApp, wait, focusedMinimizedVisible, getBounds, delays, CHOOSER_WINDOW, SETTINGS_WINDOW } = require( './helpers.js' )
 const { productName } = require( '../package.json' )
 
 let electronApp
@@ -51,15 +51,7 @@ test.beforeAll( async () => {
 
 } )
 
-test.afterAll( async () => {
-
-	if ( electronApp.windows().length > 0 ) {
-
-		await electronApp.close()
-
-	}
-
-} )
+test.afterAll( closeApp )
 // End setup
 
 test( 'Validate center_window', async () => {

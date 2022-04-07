@@ -10,7 +10,7 @@ const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
-const { checkboxTrue } = require( '../config/utils' )
+const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
 const preferences = Preferences.init()
@@ -275,7 +275,7 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 const syncSettings = ( options = preferences.preferences ) => {
 
-	log.info( 'Sync options' )
+	log.info( 'Sync options', options.app.appColor )
 
 	// Set app size
 	set.appSize( options.app.appSize )
@@ -286,7 +286,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	// Properties to apply to renderer
 	const properties = {
-		'--app-bg-color': options.app.appColor,
+		'--app-bg-color': hexToRgbA( options.app.appColor, 0.6 ),
 		'--crosshair-scale': multiplier,
 		'--crosshair-width': `${options.crosshair.size}px`,
 		'--crosshair-height': `${options.crosshair.size}px`,

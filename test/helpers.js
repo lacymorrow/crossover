@@ -1,5 +1,7 @@
 const { _electron: electron } = require( 'playwright' )
 
+let electronApp
+
 const CHOOSER_WINDOW = 'Crosshairs'
 const SETTINGS_WINDOW = 'Preferences'
 
@@ -14,6 +16,7 @@ const wait = ms => new Promise( r => setTimeout( r, ms ) )
 
 const startApp = async () => {
 
+	// Todo: test on packaged build
 	// // Find the latest build in the out directory
 	// const latestBuild = findLatestBuild()
 	// // Parse the directory and find paths and other info
@@ -27,12 +30,11 @@ const startApp = async () => {
 
 	process.env.CI = 'e2e'
 
-	const electronApp = await electron.launch( { args: [ '.' ] } )
+	electronApp = await electron.launch( { args: [ '.' ] } )
 
 	electronApp.on( 'window', async page => {
 
-		const filename = page.url()?.split( '/' ).pop()
-		console.log( `Window opened: ${filename}` )
+		// console.log( `Window opened: ${page.url()}` )
 
 		// Capture errors
 		page.on( 'pageerror', error => {
@@ -41,16 +43,19 @@ const startApp = async () => {
 
 		} )
 		// Capture console messages
-		page.on( 'console', message => {
+		page.on( 'console', _message => {
 
-			console.warn( message )
+			if ( process.env.NODE_ENV === 'development' ) {
+
+				console.warn( _message )
+
+			}
 
 		} )
 
 	} )
 
 	const mainPage = await electronApp.firstWindow()
-	const windows = await electronApp.windows()
 
 	// Await mainPage.screenshot( {
 	// 	path: 'test/screenshots/start.png',
@@ -58,7 +63,21 @@ const startApp = async () => {
 
 	await wait( delays.short )
 
-	return { electronApp, mainPage, page: mainPage, windows }
+	return { electronApp, mainPage, page: mainPage }
+
+}
+
+const closeApp = async () => {
+
+	try {
+
+		await electronApp.close()
+
+	} catch ( error ) {
+
+		console.error( error )
+
+	}
 
 }
 
@@ -159,4 +178,14 @@ const visualMouse = async mainPage => {
 
 }
 
-module.exports = { CHOOSER_WINDOW, SETTINGS_WINDOW, delays, focusedMinimizedVisible, getBounds, startApp, visualMouse, wait }
+module.exports = {
+	CHOOSER_WINDOW,
+	SETTINGS_WINDOW,
+	closeApp,
+	delays,
+	focusedMinimizedVisible,
+	getBounds,
+	startApp,
+	visualMouse,
+	wait,
+}
