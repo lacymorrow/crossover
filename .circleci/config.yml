@@ -94,5 +94,10 @@ workflows:
   # CircleCI will run this workflow on every commit.
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   build:
+    when: # Only test on select branches (not stable)
+      or: # One must be true to trigger
+        - equal: [dev, << pipeline.git.branch >>]
+        - equal: [master, << pipeline.git.branch >>]
+        - equal: [release, << pipeline.git.branch >>]
     jobs:
       - buildall
