@@ -2,7 +2,6 @@ const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
 const { is, getWindowBoundsCentered } = require( 'electron-util' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
 const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
-const actions = require( './actions' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
@@ -25,7 +24,7 @@ const centerWindow = options => {
 
 	windows.center( options )
 
-	options.targetWindow.show()
+	options.targetWindow.showInactive()
 
 	// Save game
 	if ( options.targetWindow === windows.win ) {
@@ -194,8 +193,15 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 	log.info( `Locked: ${lock}` )
 
-	windows.hideChooserWindow()
+	/* Actions */
+	const followMouse = checkboxTrue( preferences.value( 'actions.followMouse' ), 'followMouse' )
+	const hideOnMouse = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+	const hideOnKey = preferences.value( 'actions.hideOnKey' )
+	const tilt = checkboxTrue( preferences.value( 'actions.tiltEnable' ), 'tiltEnable' )
+
+	/* DO STUFF */
 	windows.hideSettingsWindow()
+	windows.hideChooserWindow( { focus: true } )
 	targetWindow.closable = !lock
 	targetWindow.setFocusable( !lock )
 	targetWindow.webContents.send( 'lock_window', lock )
@@ -209,12 +215,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 			targetWindow.removeAllListeners( 'move' )
 
 		}
-
-		/* Actions */
-		const followMouse = checkboxTrue( preferences.value( 'actions.followMouse' ), 'followMouse' )
-		const hideOnMouse = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
-		const hideOnKey = preferences.value( 'actions.hideOnKey' )
-		const tilt = checkboxTrue( preferences.value( 'actions.tiltEnable' ), 'tiltEnable' )
 
 		iohook.unregisterIOHook()
 
@@ -249,6 +249,13 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 		/* Unlock */
 
+		// If followMouse, reset position
+		if ( followMouse ) {
+
+			crossover.resetPosition()
+
+		}
+
 		// Unregister
 		iohook.unregisterIOHook()
 
@@ -273,20 +280,28 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 }
 
+const resetPosition = () => {
+
+	console.log( 'Reset Position' )
+	// App centered by default - set position if exists
+	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' && preferences.value( 'hidden.positionY' ) ) {
+
+		// Todo: do not set invalid bounds
+		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
+
+	}
+
+}
+
 const syncSettings = ( options = preferences.preferences ) => {
 
-	log.info( 'Sync options', options.app.appColor )
+	log.info( 'Sync options' )
 
 	// Set app size
 	set.appSize( options.app.appSize )
 
-	// increase crosshair size for bigger app sizes
-	// sorry for this, normal: 1, resize: 2, fullscreen: 3
-	const multiplier = ( options.app.appSize === 'resize' && 2 ) || ( options.app.appSize === 'fullscreen' && 3 ) || 1
-
 	// Properties to apply to renderer every sync
 	const properties = {
-		'--crosshair-scale': multiplier,
 		'--crosshair-width': `${options.crosshair.size}px`,
 		'--crosshair-height': `${options.crosshair.size}px`,
 		'--crosshair-opacity': ( options.crosshair.opacity || 100 ) / 100,
@@ -351,7 +366,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 	globalShortcut.unregisterAll()
 	if ( escapeActive ) {
 
-		keyboard.registerShortcut( 'Escape', actions.escape )
+		keyboard.registerShortcut( 'Escape', keyboard.escapeAction )
 
 	}
 
@@ -424,8 +439,6 @@ const openChooserWindow = async () => {
 
 	await windows.createChooser()
 
-	windows.chooserWindow.show()
-
 	// Create shortcut to close chooser
 	// TODO: circular dep - when using keyboard
 	keyboard.registerEscape()
@@ -458,8 +471,14 @@ const openSettingsWindow = async () => {
 
 	if ( preferences.value( 'hidden.showSettings' ) ) {
 
-		// Hide if already visible
-		return actions.escape()
+		// center and bring to front
+		const bounds = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
+		windows.preferencesWindow.setBounds( { x: bounds.x, y: bounds.y } )
+
+		return windows.preferencesWindow.focus()
+
+		// or if we want to close
+		// return keyboard.escapeAction()
 
 	}
 
@@ -554,6 +573,7 @@ const crossover = {
 	previousPreferences,
 	quit,
 	registerKeyboardShortcuts,
+	resetPosition,
 	syncSettings,
 	toggleWindowLock,
 }

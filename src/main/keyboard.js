@@ -3,8 +3,8 @@ const windows = require( './windows' )
 
 const escapeAction = () => {
 
-	windows.hideChooserWindow()
 	windows.hideSettingsWindow()
+	windows.hideChooserWindow( { focus: true } )
 
 	keyboard.unregisterShortcut( 'Escape' )
 

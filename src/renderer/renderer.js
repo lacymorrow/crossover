@@ -94,13 +94,13 @@
 
 		}
 
-		const notif = new window.Notification( arg.title, {
+		const notification = new window.Notification( arg.title, {
 			body: arg.body,
-			silent: arg.silent, // We'll play our own sound
+			// silent: arg.silent, // We'll play our own sound
 		} )
 
 		// If the user clicks in the Notifications Center, show the app
-		notif.addEventListener( 'click', () => {
+		notification.addEventListener( 'click', () => {
 
 			window.crossover.send( 'focusWindow' )
 
@@ -111,14 +111,14 @@
 	// Auto Update info icon
 	window.crossover.receive( 'set_info_icon', arg => {
 
-		// Change top-left icon
+		// Hide all icons
 		infoBtn.querySelectorAll( '.feather' ).forEach( elem => {
 
 			elem.classList.add( 'd-none' )
 
 		} )
 
-		// move, info, resize
+		// Pick one icon: move, info, resize
 		let iconEl = infoBtn.querySelector( `.${arg}-icon` )
 		if ( !iconEl ) {
 
@@ -126,7 +126,12 @@
 
 		}
 
+		// Show
 		iconEl.classList.remove( 'd-none' )
+
+		// Windows needs -webkit-app-region: no-drag to be resizable
+		infoBtn.classList.remove( 'info', 'move', 'resize' )
+		infoBtn.classList.add( arg )
 
 	} )
 

@@ -133,7 +133,7 @@ body {
             left: 5px;
             border: 4px dashed $border_dragging;
             pointer-events: none;
-            z-index: 9;
+            z-index: 30;
         }
     }
 }
@@ -146,7 +146,7 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: -1;
+    z-index: -10;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
 }
@@ -174,7 +174,7 @@ body {
     user-select: none;
     display: none;
     position: absolute;
-    z-index: 2;
+    z-index: 20;
     .feather {
         stroke: var(--icon-color);
     }
@@ -184,37 +184,42 @@ body {
 }
 
 .close-button {
-    display: block;
-    top: 3px;
-    right: -1px;
-    user-select: inherit;
+    display: block; // display in chooser
+    top: 0;
+    right: 0;
+	padding: 4px 4px 2px 4px;
 }
 
 .main-window .close-button {
     display: none;
     right: auto;
-    left: 1px;
+    left: 0;
 }
 
 .settings-button {
-    bottom: 1px;
-    right: 1px;
+    bottom: 0;
+    right: 0;
+	padding: 4px 4px 2px 4px;
 }
 
 .center-button {
-    bottom: 1px;
-    left: 1px;
+    bottom: 0;
+    left: 0;
+	padding: 4px 4px 2px 4px;
     // filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
 }
 
 .info-button {
-    top: 3px;
-    right: 3px;
-    left: 30px;
-    cursor: grab;
-    &:active {
-        cursor: grabbing;
-    }
+    top: 0;
+    right: 0;
+	padding: 2px 2px 2px 4px;
+	&.move,
+	&.resize {
+		cursor: move;
+		&:active {
+			cursor: crosshair;
+		}
+	}
     .feather {
         width: 18px;
         height: 18px;
@@ -222,16 +227,26 @@ body {
     &:hover .feather {
     	stroke: var(--icon-color);
     }
-    .aligner {
-        display: flex;
-        justify-content: flex-end;
-    }
     .info-icon {
         .feather {
     	    stroke: $icon_red;
     	    fill: white;
         }
     }
+}
+
+
+#titlebar {
+	position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+	z-index: 10;
+    cursor: move;
+    &:active {
+        cursor: crosshair;
+    }
+	height: 18px;
 }
 
 #crosshair {
@@ -253,7 +268,7 @@ body {
 	.reticle {
 		transform: scale( calc( var(--reticle-scale) / 100 ));
 		position: absolute;
-		z-index: 1;
+		z-index: 10;
 		svg {
 			display: none;
 			width: 100%;
@@ -280,6 +295,7 @@ body {
 .crosshair-wrapper {
     // This controls what is draggable
 	transform: scale(var(--crosshair-scale, 1));
+	// transform: scale(calc( calc(100%/125) * 100));
     position: relative;
     height: 100%;
     width: 100%;
@@ -306,7 +322,8 @@ body {
         border-bottom-left-radius: 0;
         // dont drag app if were dropping a file
         &:not(.dropping) {
-        	.info-button:not(.clickable),
+			#titlebar,
+        	.info-button.move, // icon-move
             .crosshair-wrapper,
             .crosshair-wrapper * {
                 // This is the magic to make things draggable
@@ -329,10 +346,6 @@ body {
         display: none;
     }
 
-    // Fancy cursor on mac
-    .crosshair-wrapper {
-        cursor: crosshair;
-    }
 }
 
 

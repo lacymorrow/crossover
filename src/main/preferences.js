@@ -25,6 +25,9 @@ const getDefaults = () => ( {
 		tiltEnable: [],
 		tiltToggle: [],
 		tiltAngle: 25,
+		hideOnKey: '',
+		tiltLeft: '',
+		tiltRight: '',
 	},
 	app: {
 		theme: DEFAULT_THEME,
@@ -116,6 +119,20 @@ const preferencesConfig = {
 						dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
 					},
 					{
+						label: 'Crosshair Size',
+						key: 'size',
+						type: 'slider',
+						min: 1,
+						max: 100,
+					},
+					{
+						label: 'Crosshair Opacity',
+						key: 'opacity',
+						type: 'slider',
+						min: 1,
+						max: 100,
+					},
+					{
 						label: 'Reticle',
 						key: 'reticle',
 						type: 'radio',
@@ -139,27 +156,6 @@ const preferencesConfig = {
 						min: 1,
 						max: 500,
 						help: 'Reticle scale percentage (compared to crosshair)',
-					},
-					// {
-					//  label: 'Reticle size',
-					//  key: 'reticleSize',
-					//  type: 'slider',
-					//  min: 1,
-					//  max: 50
-					// },
-					{
-						label: 'Crosshair Size',
-						key: 'size',
-						type: 'slider',
-						min: 1,
-						max: 150,
-					},
-					{
-						label: 'Crosshair Opacity',
-						key: 'opacity',
-						type: 'slider',
-						min: 1,
-						max: 100,
 					},
 					{
 						heading: 'SVG Customization Options',
@@ -379,6 +375,16 @@ const preferencesConfig = {
 				label: 'System Settings',
 				fields: [
 					{
+						label: 'App Size',
+						key: 'appSize',
+						type: 'radio',
+						options: [
+							{ label: 'Normal', value: 'normal' },
+							{ label: 'Resizable', value: 'resize' },
+							{ label: 'Fullscreen-Sized', value: 'fullscreen' },
+						],
+					},
+					{
 						label: 'Color Scheme',
 						key: 'theme',
 						type: 'radio',
@@ -396,15 +402,6 @@ const preferencesConfig = {
 						help: 'Background color of the app window when unlocked.',
 					},
 					{
-						label: 'Show On App Start',
-						key: 'startUnlocked',
-						type: 'checkbox',
-						options: [
-							{ label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' },
-						],
-						help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
-					},
-					{
 						label: 'Automatic Updates',
 						key: 'updates',
 						type: 'checkbox',
@@ -412,6 +409,15 @@ const preferencesConfig = {
 							{ label: 'Allow CrossOver to automatically update', value: 'updates' },
 						],
 						help: 'CrossOver will make a network connection to GitHub.com. No personal data is sent.',
+					},
+					{
+						label: 'Show Crosshair Windows on App Start',
+						key: 'startUnlocked',
+						type: 'checkbox',
+						options: [
+							{ label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' },
+						],
+						help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
 					},
 					{
 						label: 'Notifications',
@@ -448,16 +454,6 @@ const preferencesConfig = {
 							{ label: 'Start on system boot', value: 'boot' },
 						],
 						help: 'CrossOver will start when your computer starts.',
-					},
-					{
-						label: 'App Size',
-						key: 'appSize',
-						type: 'radio',
-						options: [
-							{ label: 'Normal', value: 'normal' },
-							{ label: 'Resizable', value: 'resize' },
-							{ label: 'Fullscreen-Sized', value: 'fullscreen' },
-						],
 					},
 					{
 						label: 'Reset CrossOver Settings',

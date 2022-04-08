@@ -48,9 +48,10 @@ const followMouse = async () => {
 	// Register
 	iohook.hook.on( 'mousemove', event => {
 
+		// Can't set fractional values
 		windows.win.setBounds( {
-			x: event.x - ( APP_WIDTH / 2 ),
-			y: event.y - ( APP_HEIGHT / 2 ),
+			x: event.x - Math.round( APP_WIDTH / 2 ),
+			y: event.y - Math.round( APP_HEIGHT / 2 ),
 		} )
 
 	} )
@@ -62,7 +63,7 @@ const hideOnMouse = async () => {
 	log.info( 'Setting: Mouse Hide' )
 	await iohook.importIoHook()
 
-	const mouseButton = Number.parseInt( preferences.value( 'mouse.hideOnMouse' ), 10 )
+	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 
 	// Register
 	iohook.hook.on( 'mousedown', event => {

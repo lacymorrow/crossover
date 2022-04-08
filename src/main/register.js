@@ -104,7 +104,6 @@ const events = () => {
 		windows.showHideWindow()
 		await windows.createChooser()
 		events()
-		windows.win.show()
 
 	} )
 
@@ -113,7 +112,7 @@ const events = () => {
 
 		windows.chooserWindow.on( 'blur', () => {
 
-			windows.hideChooserWindow()
+			windows.hideChooserWindow( { focus: true } )
 
 		} )
 

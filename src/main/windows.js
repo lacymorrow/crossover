@@ -11,8 +11,6 @@ const { __renderer } = require( './paths.js' )
 const preferences = require( './preferences.js' ).init()
 const helpers = require( './helpers.js' )
 
-let hidden = false
-
 // Will return current window if exists
 const init = async options => {
 
@@ -162,6 +160,12 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	} else {
 
+		win.on( 'resized', () => {
+
+			windows.onResized()
+
+		} )
+
 		win.on( 'closed', () => {
 
 			// Dereference the window
@@ -263,6 +267,8 @@ const createChooser = async currentCrosshair => {
 		current: currentCrosshair,
 	} )
 
+	windows.chooserWindow.show()
+
 	return windows.chooserWindow
 
 }
@@ -292,12 +298,16 @@ const closeAllShadows = () => {
 }
 
 // Switch window type when hiding chooser
-const hideChooserWindow = () => {
+const hideChooserWindow = ( { focus } = {} ) => {
 
 	if ( windows.chooserWindow ) {
 
 		windows.chooserWindow.hide()
-		windows.win.focus()
+		if ( focus ) {
+
+			windows.win.focus()
+
+		}
 
 	}
 
@@ -341,8 +351,8 @@ const center = options => {
 
 const showWindow = () => {
 
-	each( win => win.show() )
-	hidden = false
+	each( win => win.showInactive() )
+	windows.hidden = false
 
 }
 
@@ -350,14 +360,14 @@ const hideWindow = () => {
 
 	each( win => win.hide() )
 
-	hidden = true
+	windows.hidden = true
 
 }
 
 const showHideWindow = () => {
 
 	// Hide all crosshair windows in place
-	if ( hidden ) {
+	if ( windows.hidden ) {
 
 		showWindow()
 
@@ -367,7 +377,7 @@ const showHideWindow = () => {
 
 	}
 
-	hidden = !hidden
+	windows.hidden = !windows.hidden
 
 }
 
@@ -463,6 +473,18 @@ const moveWindow = options_ => {
 
 }
 
+const onResized = () => {
+
+	const { height } = windows.win.getBounds()
+	const scale = Math.floor( height / 100 )
+
+	log.log( `Setting scale: ${scale}` )
+
+	// todo: we're cheating because importing set here causes circular import
+	windows.win.webContents.send( 'set_properties', { '--crosshair-scale': scale } )
+
+}
+
 // -1 to disable
 const setProgress = percentage => {
 
@@ -492,12 +514,13 @@ const windows = {
 	closeAllShadows,
 	createChooser,
 	getActiveWindow,
-	hidden,
+	hidden: false,
 	hideChooserWindow,
 	hideSettingsWindow,
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
+	onResized,
 	setProgress,
 	shadowWindows: new Set(),
 	showHideWindow,

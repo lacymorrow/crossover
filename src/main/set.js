@@ -42,44 +42,30 @@ const appSize = size => {
 			windows.win.setMinimumSize( APP_WIDTH_MEDIUM, APP_HEIGHT_MEDIUM )
 			windows.win.setResizable( true )
 			windows.win.webContents.send( 'set_info_icon', 'resize' )
-			windows.center()
 
-			return
+		} else {
+
+			// Not resizable
+			windows.win.setMinimumSize( APP_WIDTH, APP_HEIGHT )
+			windows.win.setResizable( false )
+			windows.win.webContents.send( 'set_info_icon', 'move' )
+
+			// Set fullscreen
+			if ( size === 'fullscreen' ) {
+
+				const { width, height } = screen.getDisplayNearestPoint( windows.win.getBounds() ).workAreaSize
+				windows.win.setSize( width, height, true )
+
+			} else {
+
+				// Set normal
+				windows.win.setSize( APP_WIDTH, APP_HEIGHT, true )
+
+			}
 
 		}
 
-		windows.win.setMinimumSize( APP_WIDTH, APP_HEIGHT )
-		windows.win.setResizable( false )
-		windows.win.webContents.send( 'set_info_icon', 'move' )
-
-		// Set fullscreen
-		if ( size === 'fullscreen' ) {
-
-			const { width, height } = screen.getDisplayNearestPoint( windows.win.getBounds() ).workAreaSize
-
-			windows.win.setSize( width, height, true )
-			windows.center()
-
-			return
-
-		}
-
-		// TODO: Reset crosshair size if overflows window, not sure why this doesn't work
-		// if ( Number.parseInt( preferences.value( 'crosshair.size' ), 10 ) > 110 ) {
-
-		// 	console.log( Number.parseInt( preferences.value( 'crosshair.size' ), 10 ) )
-		// 	// Todo: this doesn't set the value in the preference window (which is still open)
-
-		// 	set.rendererProperties( {
-		// 		'--crosshair-width': `${100}px`,
-		// 		'--crosshair-height': `${100}px`,
-		// 	} )
-		// 	preferences.value( 'crosshair.size', 100 )
-
-		// }
-
-		// Set normal
-		windows.win.setSize( APP_WIDTH, APP_HEIGHT, true )
+		windows.onResized()
 		windows.center()
 
 	}

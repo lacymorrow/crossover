@@ -1,10 +1,10 @@
 const { app: electronApp, ipcMain } = require( 'electron' )
-const actions = require( './actions' )
 const log = require( './log' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const Preferences = require( './preferences' )
 const { is } = require( 'electron-util' )
+const keyboard = require( './keyboard' )
 const preferences = Preferences.init()
 const app = skipFullReset => {
 
@@ -15,7 +15,7 @@ const app = skipFullReset => {
 	windows.closeAllShadows()
 
 	// Hides chooser and preferences
-	actions.escape()
+	keyboard.escapeAction()
 
 	reset.allPreferences()
 

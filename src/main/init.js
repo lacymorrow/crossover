@@ -1,5 +1,4 @@
 const log = require( './log' )
-const set = require( './set' )
 const windows = require( './windows' )
 const register = require( './register' )
 const ipc = require( './ipc' )
@@ -43,13 +42,7 @@ const init = async options => {
 	// Sync Settings
 	crossover.syncSettings()
 
-	// App centered by default - set position if exists
-	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' ) {
-
-		// Todo: do not set invalid bounds
-		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
-
-	}
+	crossover.resetPosition()
 
 	// Set lock state, timeout makes it pretty
 	setTimeout( () => {

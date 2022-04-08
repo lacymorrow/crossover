@@ -1,13 +1,16 @@
 /*
 	BUGS:
 	- Keybind settings don't display on first load
-	- Resize doesn't work in top right info-icon windows
 	- Preferences window opens out of screen bound
 	- size: fullscreen windows open offscreen
-	- sync settings brings crosshair in front of settings
-	- tilt left/right default binds
 	- restore position after unlocking after followmouse
-	- windows file chooser doesn't work for file types
+	- iohook hide on mouse broken (fix)
+	- followmouse broken (fix)
+
+	- sync settings brings crosshair in front of settings (fix)
+	- tilt left/right default binds (fix)
+	- Resize doesn't work in top right info-icon windows (fixed)
+	- windows file chooser doesn't work for file types (fixed)
 
 	Todo:
 		- Add labels or tooltips for buttons
