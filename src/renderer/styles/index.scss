@@ -34,7 +34,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--app-bg-color: unset;
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: 0.5;
-	--app-chooser-bg-color: #{rgba($theme_bg_dark, .9)};
+	--app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
 
 	--icon-color: #{$icon_dark};
 	--icon-hover-color: #{$icon_hover_dark};
@@ -42,8 +42,8 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
 		--app-bg-color-initial: #{rgba($theme_bg_light, .6)};
-		--app-text-color: #{$text_light};
-		--app-chooser-bg-color: #{rgba($theme_bg_light, .9)};
+		// --app-text-color: #{$text_light};
+		// --app-chooser-bg-color: #{rgba($theme_bg_light, 1)};
 
 
 		--icon-color: #{$icon_light};

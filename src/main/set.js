@@ -105,7 +105,7 @@ const crosshair = ( src, targetWindow = windows.win ) => {
 const custom = src => {
 
 	// Is it a file and does it have a supported extension?
-	if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ) ) ) {
+	if ( fs.lstatSync( src ).isFile() && SUPPORTED_IMAGE_FILE_TYPES.includes( path.extname( src ).replace( '.', '' ) ) ) {
 
 		crosshair( src )
 
