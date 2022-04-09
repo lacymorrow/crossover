@@ -9,9 +9,11 @@ const preferences = require( './preferences' ).init()
 
 const init = async options => {
 
+	log.info( 'Init', options )
+
 	// Cleanup (if reset)
 	// TODO explicitly remove channels
-	// ipcMain.removeAllListeners()
+	ipcMain.removeAllListeners()
 
 	// Todo see if this conditional is needed to prevent multiple ipc
 	if ( options?.triggeredByReset ) {
@@ -26,7 +28,6 @@ const init = async options => {
 
 	}
 
-	log.info( 'Init' )
 
 	// Reset some preferences for app startup
 	preferences.value( 'hidden.showSettings', false )

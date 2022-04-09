@@ -88,7 +88,7 @@ const keyboardShortcuts = () => {
 			action: 'reset',
 			keybind: `${accelerator}+R`,
 			fn() {
-
+				console.log('KEYBOARD RESET')
 				reset.app()
 
 			},

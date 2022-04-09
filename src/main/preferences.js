@@ -67,9 +67,9 @@ const preferencesConfig = {
 	// Custom styles
 	config: {
 		css: 'src/renderer/styles/dist/preferences.css',
-		dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 		debounce: 20,
 	},
+	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
 	defaults: getDefaults(),
 	browserWindowOverrides: {

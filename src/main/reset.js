@@ -20,21 +20,24 @@ const app = skipFullReset => {
 	reset.allPreferences()
 
 	if ( !skipFullReset ) {
+		keyboard.unregisterShortcuts()
 
 		// todo - circular dependency using:
 		// init()
 		// Using app.relaunch to cheat
 		// or, to restart completely
-		if ( is.development ) {
+		ipcMain.emit( 'init' )
+		return
 
-			ipcMain.emit( 'init' )
+		if ( !is.development ) {
+
+			electronApp.relaunch()
+			electronApp.exit()
 
 			return
 
 		}
 
-		electronApp.relaunch()
-		electronApp.exit()
 
 	}
 
