@@ -13,7 +13,7 @@ const init = async options => {
 
 	// Cleanup (if reset)
 	// TODO explicitly remove channels
-	ipcMain.removeAllListeners()
+	// ipcMain.removeAllListeners()
 
 	// Todo see if this conditional is needed to prevent multiple ipc
 	if ( options?.triggeredByReset ) {
@@ -55,6 +55,13 @@ const init = async options => {
 		// Show or hide window
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
+		ipcMain.once( 'init', () => {
+
+			log.info( 'INIT TRIGGERED' )
+			init( { triggeredByReset: true } )
+
+		} )
+
 	}, 500 )
 
 	// Spawn chooser window (if resetting it may exist)
@@ -66,13 +73,6 @@ const init = async options => {
 
 	// Window Events after windows are created
 	register.events()
-
-	ipcMain.once( 'init', () => {
-
-		log.info( 'INIT TRIGGERED' )
-		init( { triggeredByReset: true } )
-
-	} )
 
 }
 

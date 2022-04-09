@@ -66,9 +66,9 @@ const getDefaults = () => ( {
 const preferencesConfig = {
 	// Custom styles
 	config: {
-		css: 'src/renderer/styles/dist/preferences.css',
 		debounce: 20,
 	},
+	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
 	defaults: getDefaults(),
