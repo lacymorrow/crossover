@@ -1,5 +1,6 @@
 /*
 	BUGS:
+	- Windows: dragging image onto webkit-app-region: drag doesn't work
 	- Keybind settings don't display on first load ?
 
 	- size: fullscreen windows open offscreen (fix)
