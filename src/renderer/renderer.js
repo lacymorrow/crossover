@@ -57,7 +57,6 @@
 		if ( arg === 'shadow' ) {
 
 			// This is a child window being instantiated
-			// todo: switch back to opacity within backgroundColor
 			background.style.background = randomColor( {
 				luminosiy: 'light',
 				format: 'rgba',

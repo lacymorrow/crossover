@@ -13,19 +13,18 @@ const { checkboxTrue } = require( '../config/utils' )
 const appSize = size => {
 
 	// Detect if setting changed and app needs updating
-	const bounds = windows.win.getBounds()
-
+	let bounds = windows.win.getBounds()
 	let currentMode = 'normal'
 	if ( windows.win.isResizable() ) {
 
-		// resize
+		// current mode resize
 		currentMode = 'resize'
 
 	}
 
 	if ( !windows.win.isResizable() && bounds.width !== APP_WIDTH ) {
 
-		// fullscreen
+		// current mode fullscreen
 		currentMode = 'fullscreen'
 
 	}
@@ -38,8 +37,9 @@ const appSize = size => {
 		// Set resize
 		if ( size === 'resize' ) {
 
-			windows.win.setSize( APP_WIDTH_MEDIUM, APP_HEIGHT_MEDIUM, true )
-			windows.win.setMinimumSize( APP_WIDTH_MEDIUM, APP_HEIGHT_MEDIUM )
+			bounds = { ...bounds, width: APP_WIDTH_MEDIUM, height: APP_HEIGHT_MEDIUM }
+
+			windows.win.setMinimumSize( bounds.width, bounds.height )
 			windows.win.setResizable( true )
 			windows.win.webContents.send( 'set_info_icon', 'resize' )
 
@@ -54,18 +54,23 @@ const appSize = size => {
 			if ( size === 'fullscreen' ) {
 
 				const { width, height } = screen.getDisplayNearestPoint( windows.win.getBounds() ).workAreaSize
-				windows.win.setSize( width, height, true )
+				bounds = { ...bounds, width, height }
 
 			} else {
 
 				// Set normal
-				windows.win.setSize( APP_WIDTH, APP_HEIGHT, true )
+				bounds = { ...bounds, width: APP_WIDTH, height: APP_HEIGHT }
 
 			}
 
 		}
 
-		windows.onResized()
+		// Scale crosshair
+		windows.onWillResize( null, bounds )
+
+		// Resize
+		windows.win.setSize( bounds.width, bounds.height, true )
+
 		windows.center()
 
 	}
@@ -110,7 +115,7 @@ const position = ( posX, posY, targetWindow = windows.win ) => {
 
 	const bounds = { x: posX, y: posY }
 
-	targetWindow.setBounds( bounds )
+	windows.safeSetBounds( targetWindow,	 bounds )
 
 	if ( targetWindow === windows.win ) {
 

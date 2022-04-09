@@ -269,7 +269,6 @@ const resetPosition = () => {
 	// App centered by default - set position if exists
 	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' && preferences.value( 'hidden.positionY' ) ) {
 
-		// Todo: do not set invalid bounds
 		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
 
 	}
@@ -319,7 +318,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 		log.log( `Theme changed: ${options.app.theme}` )
 
 		// Change app bg
-		const THEME_VALUES = [ 'light', 'dark', 'system' ]
+		const THEME_VALUES = [
+			'light', 'dark', 'system',
+		]
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
 		nativeTheme.themeSource = theme
 		properties['--app-bg-color'] = 'unset'
@@ -432,43 +433,40 @@ const openChooserWindow = async () => {
 	windows.chooserWindow.show()
 
 	// Create shortcut to close chooser
-	// TODO: circular dep - when using keyboard
 	keyboard.registerEscape()
 
-	// Modal placement is different per OS
-	// if ( is.macos ) {
-
-	// 	const bounds = windows.win.getBounds()
-	// 	windows.chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
-
-	// } else {
-
-	// 	// Windows
-
-	const bounds = getWindowBoundsCentered( { window: windows.chooserWindow, useFullBounds: true } )
+	// Open window 1px past the bottom of the app, offset 50% to the right
+	// Mac opens above app because it's a child window
 	const mainBounds = windows.win.getBounds()
-	windows.chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
-
-	// }
+	const newBounds = { x: mainBounds.x + ( mainBounds.width / 2 ), y: mainBounds.y + mainBounds.height + 1 }
+	windows.safeSetBounds( windows.chooserWindow, newBounds )
 
 }
 
 const openSettingsWindow = async () => {
 
 	// Don't do anything if locked
-	if ( preferences.value( 'hidden.locked' ) ) { //  || preferences.value( 'hidden.showSettings' )
+	if ( preferences.value( 'hidden.locked' ) ) {
 
 		return
 
 	}
 
-	if ( preferences.value( 'hidden.showSettings' ) ) {
+	// If already open...
+	if ( preferences.value( 'hidden.showSettings' ) && windows.preferencesWindow ) {
+
+		// window already centered, we close it
+		const bounds = windows.preferencesWindow.getBounds()
+		const centered = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
+		if ( centered.x === bounds.x && centered.y === bounds.y ) {
+
+			// we want to close
+			return keyboard.escapeAction()
+
+		}
 
 		// center and bring to front
-		return windows.center( { targetWindow: window.preferencesWindow, focus: true } )
-
-		// or if we want to close
-		// return keyboard.escapeAction()
+		return windows.center( { targetWindow: windows.preferencesWindow, focus: true } )
 
 	}
 
@@ -512,22 +510,9 @@ const openSettingsWindow = async () => {
 		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 		windows.preferencesWindow.setAlwaysOnTop( true, 'modal-panel' )
 
-		// Modal placement is different per OS
-		// if ( preferences.value( 'app.appSize' ) === 'normal' ) {
-		// }
-		// if ( is.macos ) {
-
-		// 	const bounds = windows.win.getBounds()
-		// 	windows.preferencesWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
-
-		// } else {
-
-		// 	// Windows
-		// 	const bounds = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
-		// 	const mainBounds = windows.win.getBounds()
-		// 	windows.preferencesWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
-
-		// }
+		const mainBounds = windows.win.getBounds()
+		const newBounds = { x: mainBounds.x + mainBounds.width + 1, y: mainBounds.y + mainBounds.height + 1 }
+		windows.safeSetBounds( windows.preferencesWindow, newBounds )
 
 		windows.preferencesWindow.focus()
 

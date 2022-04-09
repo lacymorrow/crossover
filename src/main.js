@@ -4,6 +4,7 @@
 	- Preferences window opens out of screen bound
 	- size: fullscreen windows open offscreen
 
+	- followmouse didnt work without another hook running
 	- shadow window opaque (fix)
 	- debounce shorter (fix)
 	- restore position after unlocking after followmouse (fix)

@@ -1,5 +1,3 @@
-
-const { APP_HEIGHT, APP_WIDTH } = require( '../config/config.js' )
 const keycode = require( '../config/keycode.js' )
 const { checkboxTrue } = require( '../config/utils.js' )
 const preferences = require( './preferences' ).init()
@@ -38,8 +36,10 @@ const unregisterIOHook = () => {
 
 const followMouse = async () => {
 
+	const { width, height } = windows.win.getBounds()
+
 	// Prevent saving bounds
-	windows.win.removeAllListeners( 'move' )
+	// windows.win.removeAllListeners( 'move' )
 
 	log.info( 'Setting: Mouse Follow' )
 	await iohook.importIoHook()
@@ -50,11 +50,14 @@ const followMouse = async () => {
 
 		// Can't set fractional values
 		windows.win.setBounds( {
-			x: event.x - Math.round( APP_WIDTH / 2 ),
-			y: event.y - Math.round( APP_HEIGHT / 2 ),
+			x: event.x - Math.round( width / 2 ),
+			y: event.y - Math.round( height / 2 ),
 		} )
 
 	} )
+
+	// Start hook
+	iohook.hook.start()
 
 }
 

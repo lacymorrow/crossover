@@ -48,7 +48,9 @@ const openReportCrashDialog = async crash => {
 		message: crash.error.message,
 		detail: crash.error.stack,
 		type: 'error',
-		buttons: [ 'Ignore', 'Report', 'Exit' ],
+		buttons: [
+			'Ignore', 'Report', 'Exit',
+		],
 	} )
 		.then( result => {
 

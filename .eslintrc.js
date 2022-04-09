@@ -13,9 +13,7 @@ module.exports = {
 	root: true,
 	parser: '@babel/eslint-parser',
 	// parser: '@typescript-eslint/parser',
-	plugins: [
-		// '@typescript-eslint',
-	],
+	plugins: [], // '@typescript-eslint',
 	parserOptions: {
 		ecmaVersion: 13,
 		// SourceType: "module",
@@ -25,6 +23,13 @@ module.exports = {
 		requireConfigFile: false,
 	},
 	rules: {
+		'array-bracket-newline': [
+			'error',
+			{
+				multiline: true,
+				minItems: 3,
+			},
+		],
 		'array-bracket-spacing': [
 			'error',
 			'always',
@@ -59,13 +64,17 @@ module.exports = {
 			2,
 			'never',
 		],
-		'sort-imports': [ 'error', {
-			ignoreCase: false,
-			ignoreDeclarationSort: false,
-			ignoreMemberSort: false,
-			memberSyntaxSortOrder: [ 'none', 'all', 'multiple', 'single' ],
-			allowSeparatedGroups: false,
-		} ],
+		'sort-imports': [
+			'error', {
+				ignoreCase: false,
+				ignoreDeclarationSort: false,
+				ignoreMemberSort: false,
+				memberSyntaxSortOrder: [
+					'none', 'all', 'multiple', 'single',
+				],
+				allowSeparatedGroups: false,
+			},
+		],
 		'space-in-parens': [
 			'error',
 			'always',

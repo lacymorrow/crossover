@@ -159,11 +159,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	} else {
 
-		win.on( 'resized', () => {
-
-			windows.onResized()
-
-		} )
+		win.on( 'will-resize', windows.onWillResize )
 
 		win.on( 'closed', () => {
 
@@ -331,6 +327,7 @@ const center = options => {
 
 	options = {
 		display: screen.getDisplayNearestPoint( screen.getCursorScreenPoint() ),
+		focus: false,
 		targetWindow: getActiveWindow(),
 		...options,
 	}
@@ -479,15 +476,52 @@ const moveWindow = options_ => {
 
 }
 
-const onResized = () => {
+const onWillResize = ( event, newBounds ) => {
 
-	const { height } = windows.win.getBounds()
+	// App width/height MUST BE EVEN for followMouse to work
+	const { height } = newBounds
 	const scale = Math.floor( height / 100 )
 
 	log.log( `Setting scale: ${scale}` )
 
 	// todo: we're cheating because importing set here causes circular import
 	windows.win.webContents.send( 'set_properties', { '--crosshair-scale': scale } )
+
+}
+
+// Prevent opening windows off-screen; Must pass width/height to set safely
+const safeSetBounds = ( win, bounds ) => {
+
+	let currentBounds
+	if ( !( bounds.width && bounds.height ) ) {
+
+		currentBounds = win.getBounds()
+
+	}
+
+	// Prevent fractional pixel valuess
+	bounds = {
+		...currentBounds,
+		...bounds,
+		...( bounds.x && { x: Math.round( bounds.x ) } ),
+		...( bounds.y && { y: Math.round( bounds.y ) } ),
+	}
+
+	// Prevent windows opening offscreen
+	const screenArea = screen.getDisplayNearestPoint( bounds ).workArea
+	if ( bounds.x + bounds.width > screenArea.width ) {
+
+		bounds.x = screenArea.width - bounds.width
+
+	}
+
+	if ( bounds.y + bounds.height > screenArea.height ) {
+
+		bounds.y = screenArea.height - bounds.height
+
+	}
+
+	win.setBounds( bounds )
 
 }
 
@@ -527,7 +561,8 @@ const windows = {
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
-	onResized,
+	onWillResize,
+	safeSetBounds,
 	setProgress,
 	shadowWindows: new Set(),
 	showHideWindow,

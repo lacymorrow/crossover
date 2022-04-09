@@ -116,51 +116,51 @@ const helpSubmenu = [
 	} ),
 ]
 
-const debugSubmenu = [ {
-	label: 'Show Preferences File',
-	async click() {
+const debugSubmenu = [
+	{
+		label: 'Show Preferences File',
+		async click() {
 
-		await shell.openPath( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			await shell.openPath( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
 
+		},
 	},
-},
-{
-	label: 'Show App Data',
-	async click() {
+	{
+		label: 'Show App Data',
+		async click() {
 
-		await shell.openPath( app.getPath( 'userData' ) )
+			await shell.openPath( app.getPath( 'userData' ) )
 
+		},
 	},
-},
-{
-	type: 'separator',
-},
-{
-	label: 'Delete Preferences',
-	click() {
-
-		shell.trashItem( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
-		app.relaunch()
-		app.quit()
-
+	{
+		type: 'separator',
 	},
-},
-{
-	label: 'Delete App Data',
-	click() {
+	{
+		label: 'Delete Preferences',
+		click() {
 
-		shell.trashItem( app.getPath( 'userData' ) )
-		app.relaunch()
-		app.quit()
+			shell.trashItem( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			app.relaunch()
+			app.quit()
 
+		},
 	},
-} ]
+	{
+		label: 'Delete App Data',
+		click() {
+
+			shell.trashItem( app.getPath( 'userData' ) )
+			app.relaunch()
+			app.quit()
+
+		},
+	},
+]
 
 /* TEMPLATES */
 const macosTemplate = [
-	appMenu( [
-		...preferencesMenuItems,
-	] ),
+	appMenu( [ ...preferencesMenuItems ] ),
 	{
 		role: 'fileMenu',
 		submenu: [
@@ -181,24 +181,26 @@ const macosTemplate = [
 ]
 
 // Linux and Windows
-const otherTemplate = [ {
-	role: 'fileMenu',
-	submenu: [
-		...preferencesMenuItems,
-		openCustomImageMenuItem,
-		{
-			type: 'separator',
-		},
-		closeWindowMenuItem,
-		{
-			role: 'quit',
-		},
-	],
-},
-{
-	role: 'help',
-	submenu: helpSubmenu,
-} ]
+const otherTemplate = [
+	{
+		role: 'fileMenu',
+		submenu: [
+			...preferencesMenuItems,
+			openCustomImageMenuItem,
+			{
+				type: 'separator',
+			},
+			closeWindowMenuItem,
+			{
+				role: 'quit',
+			},
+		],
+	},
+	{
+		role: 'help',
+		submenu: helpSubmenu,
+	},
+]
 
 const init = () => {
 
