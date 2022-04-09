@@ -52,7 +52,7 @@
         "build:mw": "electron-builder -wm --arm64 --ia32 --x64",
         "build:deb": "electron-builder --linux deb",
         "build:snap": "electron-builder --linux snap",
-        "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap --publish always && yarn sh:copyexe",
+        "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
         "build:release:windows": "yarn build:windows && yarn sh:copyexe"
     },
     "dependencies": {

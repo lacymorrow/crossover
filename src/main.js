@@ -1,9 +1,8 @@
 /*
 	BUGS:
 	- Keybind settings don't display on first load ?
-	- Preferences window opens out of screen bound
-	- size: fullscreen windows open offscreen
 
+	- size: fullscreen windows open offscreen (fix)
 	- followmouse didnt work without another hook running
 	- shadow window opaque (fix)
 	- debounce shorter (fix)
