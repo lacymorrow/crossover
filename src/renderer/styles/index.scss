@@ -119,9 +119,10 @@ body {
 // Blue "Hover" border
 .container,
 #chooser-container {
-    user-select: none;
+    // user-select: none;
     // While dropping file
     &.dropping {
+
         &.main-window * {
             pointer-events: none;
         }
@@ -243,10 +244,6 @@ body {
     right: 0;
     left: 0;
 	z-index: 10;
-    cursor: move;
-    &:active {
-        cursor: crosshair;
-    }
 	height: 18px;
 }
 
@@ -325,10 +322,14 @@ body {
         &:not(.dropping) {
 			#titlebar,
         	.info-button.move, // icon-move
-            .crosshair-wrapper,
-            .crosshair-wrapper * {
+            #crosshair,
+            #crosshair * {
                 // This is the magic to make things draggable
                 -webkit-app-region: drag;
+                cursor: move;
+                &:active {
+                    cursor: crosshair;
+                }
             }
         }
     }
