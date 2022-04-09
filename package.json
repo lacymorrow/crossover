@@ -21,11 +21,11 @@
         "node": "14.17.4 || 14 || 16"
     },
     "scripts": {
-        "install": "npm run css",
+        "install": "yarn css",
         "postinstall": "electron-builder install-app-deps",
         "css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
-        "start": "npm run css && electron --trace-warnings .",
-        "watch": "nodemon -e js,ts,scss --ignore 'dist/' --watch . --exec 'npm run start'",
+        "start": "yarn css && electron --trace-warnings .",
+        "watch": "nodemon -e js,ts,scss --ignore 'dist/' --watch . --exec 'yarn start'",
         "lint": "eslint --fix .",
         "lint:src": "eslint --fix src",
         "lint:test": "eslint --fix test",
@@ -35,8 +35,8 @@
         "test:debug:console": "PWDEBUG=console CI=1 playwright test",
         "check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
         "check:circular": "madge --circular .",
-        "depcheck": "npm run check; npm run check:deps; npm run check:circular",
-        "release": "np --branch release && npm run build:release",
+        "depcheck": "yarn check; yarn check:deps; yarn check:circular",
+        "release": "np --branch release && yarn build:release",
         "release:snap": "snapcraft upload --release=CrossOver*.snap",
         "pack": "rm -f *.tgz && electron-builder --dir",
         "sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
@@ -52,8 +52,8 @@
         "build:mw": "electron-builder -wm --arm64 --ia32 --x64",
         "build:deb": "electron-builder --linux deb",
         "build:snap": "electron-builder --linux snap",
-        "build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
-        "build:release:windows": "npm run build:windows && npm run sh:copyexe"
+        "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap --publish always && yarn sh:copyexe",
+        "build:release:windows": "yarn build:windows && yarn sh:copyexe"
     },
     "dependencies": {
         "electron-debug": "^3.0.1",
