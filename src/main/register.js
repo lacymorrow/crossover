@@ -20,19 +20,26 @@ const appEvents = () => {
 	// Opening 2nd instance focuses app
 	app.on( 'second-instance', async () => {
 
+		// If locked, unlock, else create shadow window
 		if ( windows.win ) {
 
-			crossover.initShadowWindow()
+			if ( preferences.value( 'hidden.locked' ) ) {
 
-			if ( windows.win.isMinimized() ) {
+				crossover.toggleWindowLock( false )
 
-				windows.win.restore()
+			} else {
+
+				crossover.initShadowWindow()
+
+				if ( windows.win.isMinimized() ) {
+
+					windows.win.restore()
+
+				}
+
+				windows.win.show()
 
 			}
-
-			windows.win.show()
-
-			crossover.toggleWindowLock( false )
 
 		} else {
 
@@ -76,7 +83,7 @@ const events = () => {
 
 	} )
 
-	// Sync preferences to renderer
+	// Sync preference buttons to renderer
 	preferences.on( 'click', key => {
 
 		switch ( key ) {

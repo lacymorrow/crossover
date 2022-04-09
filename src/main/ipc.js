@@ -88,7 +88,7 @@ const init = () => {
 
 		log.info( 'Center window' )
 		sound.play( 'CENTER' )
-		crossover.centerWindow()
+		windows.center()
 
 	} )
 

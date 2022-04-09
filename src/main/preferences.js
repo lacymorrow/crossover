@@ -65,11 +65,11 @@ const getDefaults = () => ( {
 
 const preferencesConfig = {
 	// Custom styles
-	css: 'src/renderer/styles/dist/preferences.css',
-	/**
-     * Where should preferences be saved?
-     */
-	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+	config: {
+		css: 'src/renderer/styles/dist/preferences.css',
+		dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+		debounce: 20,
+	},
 	debug: is.development && !is.linux,
 	defaults: getDefaults(),
 	browserWindowOverrides: {

@@ -4,12 +4,14 @@ const {
 	ipcRenderer,
 } = require( 'electron' )
 const unhandled = require( 'electron-unhandled' )
+const config = require( '../config/config.js' )
 const { debounce } = require( '../config/utils.js' )
 const { play, preload } = require( './lib/sounds.js' )
 
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
+	config,
 	debounce,
 	isMacOs: navigator.userAgent.indexOf( 'Mac' ) !== -1,
 	isWindows: navigator.userAgent.indexOf( 'Win' ) !== -1,

@@ -14,7 +14,7 @@ const crosshair = value => {
 }
 
 // Save position
-const position = debounce( bounds => {
+const position = bounds => {
 
 	if ( !bounds ) {
 
@@ -34,8 +34,10 @@ const position = debounce( bounds => {
 	preferences.value( 'hidden.positionX', x )
 	preferences.value( 'hidden.positionY', y )
 
-}, 500 )
+}
 
-const save = { crosshair, position }
+const positionDebounced = debounce( bounds => position( bounds ), 500 )
+
+const save = { crosshair, position: positionDebounced }
 
 module.exports = save

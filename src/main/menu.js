@@ -13,8 +13,19 @@ const dialog = require( './dialog' )
 const crossover = require( './crossover' )
 const reset = require( './reset' )
 const { productName } = require( '../../package.json' )
+const windows = require( './windows' )
 
 /* MENU ITEMS */
+const closeWindowMenuItem = {
+	label: 'Custom Image…',
+	accelerator: 'CommandOrControl+W',
+	async click() {
+
+		// Open dialog
+		windows.closeWindow()
+
+	},
+}
 
 const preferencesMenuItems = [
 	{
@@ -39,7 +50,7 @@ const preferencesMenuItems = [
 
 const openCustomImageMenuItem = {
 	label: 'Custom Image…',
-	accelerator: 'Command+O',
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -50,7 +61,7 @@ const openCustomImageMenuItem = {
 
 const resetMenuItem = {
 	label: 'Reset CrossOver',
-	accelerator: 'Command+O',
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -61,7 +72,7 @@ const resetMenuItem = {
 
 const showAppMenuItem = {
 	label: `Show ${productName}`,
-	accelerator: 'Command+O',
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		crossover.lockWindow( false )
@@ -157,6 +168,7 @@ const macosTemplate = [
 			{
 				type: 'separator',
 			},
+			closeWindowMenuItem,
 		],
 	},
 	{
@@ -177,6 +189,7 @@ const otherTemplate = [ {
 		{
 			type: 'separator',
 		},
+		closeWindowMenuItem,
 		{
 			role: 'quit',
 		},
@@ -206,6 +219,7 @@ const init = () => {
 
 const menu = {
 	init,
+	closeWindowMenuItem,
 	preferencesMenuItems,
 	openCustomImageMenuItem,
 	resetMenuItem,

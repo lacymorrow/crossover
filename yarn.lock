@@ -2755,7 +2755,7 @@ electron-osx-sign@^0.6.0:
 
 "electron-preferences@https://github.com/lacymorrow/electron-preferences#crossover":
   version "2.6.0"
-  resolved "https://github.com/lacymorrow/electron-preferences#0de84ea7731ad670e2312d5045e5a98765f58369"
+  resolved "https://github.com/lacymorrow/electron-preferences#c26c0d0227462b5be36fc456f701966cbf985b23"
   dependencies:
     eslint "^8.10.0"
     eslint-plugin-react "^7.29.3"

@@ -2,13 +2,14 @@
 const DEFAULT_THEME = 'dark'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
 const RELEASES_URL = 'https://github.com/lacymorrow/crossover/releases/latest'
+const APP_ASPECT_RATIO = 16 / 10
 // 16/10: 125x200 16/9: 126x224
 const APP_HEIGHT = 130
 const APP_WIDTH = 208
 // 16/10: 220x352 16/9: 224x356
 const APP_HEIGHT_MEDIUM = 225
 const APP_WIDTH_MEDIUM = 360
-const APP_ASPECT_RATIO = 16 / 10
+const APP_BACKGROUND_OPACITY = 0.6
 const MAX_SHADOW_WINDOWS = 20
 const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
@@ -20,8 +21,9 @@ const FILE_FILTERS = [
 	{ name: 'All Files', extensions: [ '*' ] },
 ]
 
-module.exports = {
+const config = {
 	APP_ASPECT_RATIO,
+	APP_BACKGROUND_OPACITY,
 	APP_HEIGHT,
 	APP_WIDTH,
 	APP_HEIGHT_MEDIUM,
@@ -36,3 +38,5 @@ module.exports = {
 
 	SUPPORTED_IMAGE_FILE_TYPES,
 }
+
+module.exports = config

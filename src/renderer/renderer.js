@@ -61,7 +61,7 @@
 			background.style.background = randomColor( {
 				luminosiy: 'light',
 				format: 'rgba',
-				alpha: 1, // E.g. 'rgba(9, 1, 107, 0.5)',
+				alpha: window.crossover.config.APP_BACKGROUND_OPACITY || 0.9, // E.g. 'rgba(9, 1, 107, 0.5)',
 			} )
 
 		}

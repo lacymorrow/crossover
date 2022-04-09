@@ -1,6 +1,5 @@
 const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
-const { is, getWindowBoundsCentered } = require( 'electron-util' )
-const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, APP_HEIGHT, SETTINGS_WINDOW_DEVTOOLS } = require( '../config/config' )
+const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, SETTINGS_WINDOW_DEVTOOLS, APP_BACKGROUND_OPACITY } = require( '../config/config' )
 const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
@@ -12,28 +11,12 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
+const { getWindowBoundsCentered } = require( 'electron-util' )
 const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
 
 const quit = () => app.quit()
-
-const centerWindow = options => {
-
-	options = { targetWindow: windows.getActiveWindow(), ...options }
-
-	windows.center( options )
-
-	options.targetWindow.showInactive()
-
-	// Save game
-	if ( options.targetWindow === windows.win ) {
-
-		save.position( windows.win.getBounds() )
-
-	}
-
-}
 
 const changeCrosshair = src => windows.each( win => set.crosshair( src, win ) )
 
@@ -308,6 +291,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--reticle-fill-color': options.crosshair.color,
 		'--reticle-scale': options.crosshair.reticleScale,
 		'--tilt-angle': options.actions.tiltAngle,
+		'--app-bg-color': 'unset',
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
@@ -316,7 +300,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 	// App color is set
 	if ( options.app.appColor.charAt( 0 ) === '#' ) {
 
-		properties['--app-bg-color'] = hexToRgbA( options.app.appColor, 0.6 )
+		properties['--app-bg-color'] = hexToRgbA( options.app.appColor, APP_BACKGROUND_OPACITY )
 
 	}
 
@@ -386,6 +370,7 @@ const initShadowWindow = async () => {
 
 	// Sync Preferences
 	shadow.webContents.send( 'set_crosshair', preferences.value( 'crosshair.crosshair' ) )
+
 	const properties = {
 		// No app-color for shadow windows
 		// No crosshair scaling for shadow windows
@@ -437,26 +422,34 @@ const openChooserWindow = async () => {
 
 	windows.hideSettingsWindow()
 
-	await windows.createChooser()
+	// await windows.createChooser()
+	if ( !windows.chooserWindow ) {
+
+		await windows.createChooser()
+
+	}
+
+	windows.chooserWindow.show()
 
 	// Create shortcut to close chooser
 	// TODO: circular dep - when using keyboard
 	keyboard.registerEscape()
 
 	// Modal placement is different per OS
-	if ( is.macos ) {
+	// if ( is.macos ) {
 
-		const bounds = windows.win.getBounds()
-		windows.chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
+	// 	const bounds = windows.win.getBounds()
+	// 	windows.chooserWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
-	} else {
+	// } else {
 
-		// Windows
-		const bounds = getWindowBoundsCentered( { window: windows.chooserWindow, useFullBounds: true } )
-		const mainBounds = windows.win.getBounds()
-		windows.chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+	// 	// Windows
 
-	}
+	const bounds = getWindowBoundsCentered( { window: windows.chooserWindow, useFullBounds: true } )
+	const mainBounds = windows.win.getBounds()
+	windows.chooserWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+
+	// }
 
 }
 
@@ -472,10 +465,7 @@ const openSettingsWindow = async () => {
 	if ( preferences.value( 'hidden.showSettings' ) ) {
 
 		// center and bring to front
-		const bounds = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
-		windows.preferencesWindow.setBounds( { x: bounds.x, y: bounds.y } )
-
-		return windows.preferencesWindow.focus()
+		return windows.center( { targetWindow: window.preferencesWindow, focus: true } )
 
 		// or if we want to close
 		// return keyboard.escapeAction()
@@ -523,19 +513,21 @@ const openSettingsWindow = async () => {
 		windows.preferencesWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 		// Modal placement is different per OS
-		if ( is.macos ) {
+		// if ( preferences.value( 'app.appSize' ) === 'normal' ) {
+		// }
+		// if ( is.macos ) {
 
-			const bounds = windows.win.getBounds()
-			windows.preferencesWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
+		// 	const bounds = windows.win.getBounds()
+		// 	windows.preferencesWindow.setBounds( { y: bounds.y + APP_HEIGHT } )
 
-		} else {
+		// } else {
 
-			// Windows
-			const bounds = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
-			const mainBounds = windows.win.getBounds()
-			windows.preferencesWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
+		// 	// Windows
+		// 	const bounds = getWindowBoundsCentered( { window: windows.preferencesWindow, useFullBounds: true } )
+		// 	const mainBounds = windows.win.getBounds()
+		// 	windows.preferencesWindow.setBounds( { x: bounds.x, y: mainBounds.y + mainBounds.height + 1 } )
 
-		}
+		// }
 
 		windows.preferencesWindow.focus()
 
@@ -564,7 +556,6 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 }
 
 const crossover = {
-	centerWindow,
 	changeCrosshair,
 	initShadowWindow,
 	lockWindow,

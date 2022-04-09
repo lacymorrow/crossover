@@ -1,12 +1,14 @@
 /*
 	BUGS:
-	- Keybind settings don't display on first load
+	- Keybind settings don't display on first load ?
 	- Preferences window opens out of screen bound
 	- size: fullscreen windows open offscreen
-	- restore position after unlocking after followmouse
-	- iohook hide on mouse broken (fix)
-	- followmouse broken (fix)
 
+	- shadow window opaque (fix)
+	- debounce shorter (fix)
+	- restore position after unlocking after followmouse (fix)
+	- followmouse broken (fix)
+	- iohook hide on mouse broken (fix)
 	- sync settings brings crosshair in front of settings (fix)
 	- tilt left/right default binds (fix)
 	- Resize doesn't work in top right info-icon windows (fixed)

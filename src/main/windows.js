@@ -141,9 +141,6 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	if ( isShadowWindow ) {
 
-		// Add to set
-		windows.shadowWindows.add( win )
-
 		// Duplicate shadow windows
 		win.once( 'ready-to-show', () => {
 
@@ -157,6 +154,8 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 			windows.shadowWindows.delete( win )
 
 		} )
+		// Add to set
+		windows.shadowWindows.add( win )
 
 	} else {
 
@@ -231,9 +230,8 @@ const createShadow = async () => {
 
 		// Create
 		const shadow = await create( { isShadowWindow: true } ).load()
-		windows.shadowWindows.add( shadow )
 
-		log.info( `Created shadow window: ${shadow.webContents.id}` )
+		log.info( `Created shadow window: ${shadow.webContents.id}`, windows.shadowWindows )
 
 		return shadow
 
@@ -246,8 +244,6 @@ const createShadow = async () => {
 const createChooser = async currentCrosshair => {
 
 	if ( windows.chooserWindow ) {
-
-		windows.chooserWindow.show()
 
 		return windows.chooserWindow
 
@@ -266,8 +262,6 @@ const createChooser = async currentCrosshair => {
 		crosshairs: await helpers.getCrosshairImages(),
 		current: currentCrosshair,
 	} )
-
-	windows.chooserWindow.show()
 
 	return windows.chooserWindow
 
@@ -294,6 +288,12 @@ const closeAllShadows = () => {
 		currentWindow.close()
 
 	}
+
+}
+
+const closeWindow = ( targetWindow = windows.getActiveWindow() ) => {
+
+	targetWindow.close()
 
 }
 
@@ -346,6 +346,12 @@ const center = options => {
 		animated: true,
 		useFullBounds: true,
 	} )
+
+	if ( options.focus ) {
+
+		options.targetWindow.focus()
+
+	}
 
 }
 
@@ -512,6 +518,7 @@ const windows = {
 	createShadow,
 	closeShadow,
 	closeAllShadows,
+	closeWindow,
 	createChooser,
 	getActiveWindow,
 	hidden: false,
