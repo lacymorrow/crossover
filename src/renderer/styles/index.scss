@@ -127,6 +127,7 @@ body {
 // Blue "Hover" border
 .container,
 #chooser-container {
+    // user-select: none;
     // While dropping file
     &.dropping {
 
@@ -259,21 +260,6 @@ body {
     }
 }
 
-.crosshair-wrapper {
-    // This controls what is draggable
-	transform: scale(var(--crosshair-scale, 1));
-	// transform: scale(calc( calc(100%/125) * 100));
-    position: relative;
-    height: 100%;
-    width: 100%;
-	min-height: 100px;
-	min-width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-	padding: 10px auto;
-}
-
 #crosshair {
     // Default width
     width: var(--crosshair-width);
@@ -317,6 +303,20 @@ body {
 
 }
 
+.crosshair-wrapper {
+    // This controls what is draggable
+	transform: scale(var(--crosshair-scale, 1));
+	// transform: scale(calc( calc(100%/125) * 100));
+    position: relative;
+    height: 100%;
+    width: 100%;
+	min-height: 100px;
+	min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	padding: 10px auto;
+}
 
 #crosshairImg {
 	width: 100%;
@@ -328,13 +328,15 @@ body {
 .draggable {
 
     .container {
-		-webkit-app-region: no-drag;
         cursor: inherit;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
         // dont drag app if were dropping a file
         &:not(.dropping) {
-			.background:hover {
+			#titlebar,
+        	.info-button.move, // icon-move
+            #crosshair,
+            #crosshair * {
                 // This is the magic to make things draggable
                 -webkit-app-region: drag;
                 cursor: move;
@@ -346,7 +348,7 @@ body {
     }
 
     .background {
-		display: block;
+        display: block;
     }
 
     // Show buttons (except close) when unlocked
@@ -359,18 +361,18 @@ body {
 		display: none;
 	}
 
-    // &.mac {
-	// 	// Whole window draggable on mac, Windows bugs out when dragging
-	// 	.container:not(.dropping) .crosshair-wrapper {
-	// 		// This is the magic to make things draggable
-	// 		-webkit-app-region: drag;
-	// 		cursor: move;
-	// 		&:active {
-	// 			cursor: crosshair;
-	// 		}
-	// 	}
+    &.mac {
+		// Whole window draggable on mac, Windows bugs out when dragging
+		.container:not(.dropping) .crosshair-wrapper {
+			// This is the magic to make things draggable
+			-webkit-app-region: drag;
+			cursor: move;
+			&:active {
+				cursor: crosshair;
+			}
+		}
 
-	// }
+	}
 
 }
 
