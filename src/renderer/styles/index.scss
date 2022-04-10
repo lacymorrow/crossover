@@ -127,7 +127,6 @@ body {
 // Blue "Hover" border
 .container,
 #chooser-container {
-    // user-select: none;
     // While dropping file
     &.dropping {
 
@@ -350,7 +349,7 @@ body {
     }
 
     .background {
-        display: block;
+		display: block;
 		// This is the magic to make things draggable
 		-webkit-app-region: drag;
 		cursor: move;
@@ -358,6 +357,10 @@ body {
 			cursor: crosshair;
 		}
     }
+
+		.crosshair-wrapper {
+			-webkit-app-region: no-drag;
+		}
 
     // Show buttons (except close) when unlocked
     .button {
