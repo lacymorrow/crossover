@@ -290,7 +290,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--reticle-scale': options.crosshair.reticleScale,
 		'--tilt-angle': options.actions.tiltAngle,
 		'--app-bg-color': 'unset',
-		'--app-color': 'unset',
+		'--app-highlight-color': 'unset',
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
@@ -300,7 +300,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
 
-		properties['--app-color'] = options.app.appHighlightColor
+		properties['--app-highlight-color'] = options.app.appHighlightColor
 
 	}
 
@@ -331,7 +331,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
 		nativeTheme.themeSource = theme
 		properties['--app-bg-color'] = 'unset'
+		properties['--app-highlight-color'] = 'unset'
 		preferences.value( 'app.appBgColor', 'unset' )
+		preferences.value( 'app.appHighlightColor', 'unset' )
 
 		// Themesource is either light or dark, to prevent triggering this on every sync...
 		if ( options.app.theme === 'system' ) {
