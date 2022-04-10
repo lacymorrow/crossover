@@ -59,7 +59,7 @@ const setIcon = () => {
 
 	const icon = getIconPath()
 	tray.setImage( icon )
-	log.log( `Setting tray icon: ${icon}` )
+	log.info( `Setting tray icon: ${icon}` )
 
 }
 

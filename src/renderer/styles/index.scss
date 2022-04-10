@@ -17,6 +17,7 @@ $icon_hover_light: rgba(179, 112, 223, 0.9);
 $icon_dark: $app_highlight;
 $icon_hover_dark: rgba(150, 32, 157, 0.9);
 $icon_red: rgba(255, 87, 51, 0.95);
+$icon_shadow: rgba(0, 0, 0, .5)
 
 $border_dragging: #569aff;
 $border_dragging: $app_highlight;
@@ -38,22 +39,21 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	// App theme
 	--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
 	--app-bg-color: unset;
+	--app-highlight-color-initial: #{$icon_dark};
+	--app-highlight-color: unset;
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: #{$app_background_opacity};
 	--app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
 
-	--icon-color: #{$icon_dark};
-	--icon-hover-color: #{$icon_hover_dark};
+	--app-icon-hover-color: #{$icon_hover_dark};
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
 		--app-bg-color-initial: #{rgba($theme_bg_light, $app_background_opacity)};
+		--app-highlight-color-initial: #{$icon_light};
+		--app-icon-hover-color: #{$icon_hover_light};
 		// --app-text-color: #{$text_light};
 		// --app-chooser-bg-color: #{rgba($theme_bg_light, 1)};
-
-
-		--icon-color: #{$icon_light};
-		--icon-hover-color: #{$icon_hover_light};
 	}
 
 
@@ -156,20 +156,30 @@ body {
     z-index: -10;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
-	border: 1px solid var(--icon-color);
-}
-
-// Child window background
-.shadow .background {
-    background: var(--app-bg-color);
+	border: 1px solid var(--app-highlight-color, var(--app-highlight-color-initial));
 }
 
 /* Icon Styles */
-
 .feather {
-    // stroke:whitesmoke;
+	// stroke:whitesmoke;
     width: 20px;
     height: 20px;
+	transition: all .15s ease-in-out;
+	stroke: var(--app-highlight-color, var(--app-highlight-color-initial));
+    &:hover {
+        stroke: var(--app-icon-hover-color);
+    }
+	// transform: scale( var(--crosshair-scale, 1) )
+}
+
+// Child window background
+.shadow {
+	.background {
+		background: var(--app-bg-color);
+	}
+	.feather {
+		stroke: var(--app-highlight-color-initial);
+	}
 }
 
 .button {
@@ -183,13 +193,6 @@ body {
     display: none;
     position: absolute;
     z-index: 20;
-    .feather {
-		transition: all .15s ease-in-out;
-        stroke: var(--icon-color);
-    }
-    &:hover .feather {
-        stroke: var(--icon-hover-color);
-    }
 }
 
 .close-button {
@@ -234,7 +237,7 @@ body {
         height: 18px;
     }
     &:hover .feather {
-    	stroke: var(--icon-color);
+    	stroke: var(--app-highlight-color);
     }
     .info-icon {
         .feather {

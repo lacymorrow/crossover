@@ -482,7 +482,7 @@ const onWillResize = ( event, newBounds ) => {
 	const { height } = newBounds
 	const scale = Math.floor( height / 100 )
 
-	log.log( `Setting scale: ${scale}` )
+	log.info( `Setting scale: ${scale}` )
 
 	// todo: we're cheating because importing set here causes circular import
 	windows.win.webContents.send( 'set_properties', { '--crosshair-scale': scale } )

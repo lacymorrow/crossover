@@ -290,15 +290,23 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--reticle-scale': options.crosshair.reticleScale,
 		'--tilt-angle': options.actions.tiltAngle,
 		'--app-bg-color': 'unset',
+		'--app-color': 'unset',
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
 	}
 
 	// App color is set
-	if ( options.app.appColor.charAt( 0 ) === '#' ) {
 
-		properties['--app-bg-color'] = hexToRgbA( options.app.appColor, APP_BACKGROUND_OPACITY )
+	if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
+
+		properties['--app-color'] = options.app.appHighlightColor
+
+	}
+
+	if ( options.app.appBgColor.charAt( 0 ) === '#' ) {
+
+		properties['--app-bg-color'] = hexToRgbA( options.app.appBgColor, APP_BACKGROUND_OPACITY )
 
 	}
 
@@ -314,7 +322,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 	// If theme changed...
 	if ( nativeTheme.themeSource !== options.app.theme ) {
 
-		log.log( `Theme changed: ${options.app.theme}` )
+		log.info( `Theme changed: ${options.app.theme}` )
 
 		// Change app bg
 		const THEME_VALUES = [
@@ -323,7 +331,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 		const theme = THEME_VALUES.includes( options.app.theme ) ? options.app.theme : DEFAULT_THEME
 		nativeTheme.themeSource = theme
 		properties['--app-bg-color'] = 'unset'
-		preferences.value( 'app.appColor', 'unset' )
+		preferences.value( 'app.appBgColor', 'unset' )
 
 		// Themesource is either light or dark, to prevent triggering this on every sync...
 		if ( options.app.theme === 'system' ) {

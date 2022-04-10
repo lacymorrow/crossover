@@ -11,7 +11,7 @@ const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_F
 const getDefaults = () => ( {
 	crosshair: {
 		crosshair: '../static/crosshairs/Actual/leupold-dot.png',
-		color: '#FFF83B',
+		color: '#442ac6',
 		size: 80,
 		opacity: 80,
 		reticle: 'dot',
@@ -31,7 +31,8 @@ const getDefaults = () => ( {
 	},
 	app: {
 		theme: DEFAULT_THEME,
-		appColor: 'unset',
+		appBgColor: 'unset',
+		appHighlightColor: 'unset',
 		updates: [ 'updates' ],
 		sounds: [ 'sounds' ],
 		notify: [ 'notify' ],
@@ -66,7 +67,7 @@ const getDefaults = () => ( {
 const preferencesConfig = {
 	// Custom styles
 	config: {
-		debounce: 20,
+		debounce: 200,
 	},
 	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
@@ -74,6 +75,8 @@ const preferencesConfig = {
 	defaults: getDefaults(),
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
+		width: 600,
+		height: 400,
 		webPreferences: {
 			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
 		},
@@ -406,10 +409,17 @@ const preferencesConfig = {
 							},
 							{
 								label: 'App Background Color',
-								key: 'appColor',
+								key: 'appBgColor',
 								type: 'color',
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Background color of the app window when unlocked.',
+							},
+							{
+								label: 'App Icon Color',
+								key: 'appHighlightColor',
+								type: 'color',
+								format: 'hex', // Can be hex, hsl or rgb
+								help: 'Icon color of the app buttons when unlocked.',
 							},
 							{
 								label: 'Automatic Updates',
