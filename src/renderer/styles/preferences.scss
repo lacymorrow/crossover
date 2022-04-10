@@ -1,3 +1,23 @@
+$pref_highlight_color_dark: #3aa0d7;
+$pref_highlight_color_light: #3aa0d7;
+
+
+:root {
+	--pref-highlight-color: #{$pref_highlight_color_dark};
+	--pref-highlight-color-hover: #{darken($pref_highlight_color_dark, 20%)};
+
+	// ANY LIGHT/DARK MODE SETTINGS ^v
+	@media (prefers-color-scheme: light) {
+		--pref-highlight-color: #{$pref_highlight_color_light};
+		--pref-highlight-color-hover: #{darken($pref_highlight_color_light, 20%)};
+
+	}
+}
+
+body * {
+	transition: all 0.2s ease-in-out;
+}
+
 // Space between groups
 .group {
 	margin-bottom: 40px;
@@ -33,6 +53,9 @@
 }
 
 a {
-	color: orange;
+	color: var(--pref-highlight-color, orange);
+	&:hover {
+		color: var(--pref-highlight-color-hover, maroon);
+	}
 }
 

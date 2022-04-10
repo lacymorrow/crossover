@@ -4,20 +4,20 @@ $app_height: 124px;
 $app_background_opacity: 0.6;
 
 /* Colors */
-$app_highlight: #442ac6;
+$app_highlight: #331da4;
 $theme_bg_dark: #FFF;
 $theme_bg_light: #000;
 
 $text_dark: #555;
 $text_light: #EFEFEF;
 
-$icon_light: rgb(58, 160, 215);
+$icon_light: #3aa0d7;
 $icon_hover_light: rgba(179, 112, 223, 0.9);
 // $icon_dark: #456072;
 $icon_dark: $app_highlight;
 $icon_hover_dark: rgba(150, 32, 157, 0.9);
 $icon_red: rgba(255, 87, 51, 0.95);
-$icon_shadow: rgba(0, 0, 0, .5)
+$icon_shadow: rgba(10, 10, 10, .7);
 
 $border_dragging: #569aff;
 $border_dragging: $app_highlight;
@@ -39,13 +39,15 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	// App theme
 	--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
 	--app-bg-color: unset;
+
 	--app-highlight-color-initial: #{$icon_dark};
 	--app-highlight-color: unset;
+	--app-icon-hover-color: #{$icon_hover_dark};
+
 	--app-text-color: #{$text_dark};
 	--app-bg-opacity: #{$app_background_opacity};
 	--app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
 
-	--app-icon-hover-color: #{$icon_hover_dark};
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
@@ -224,21 +226,22 @@ body {
 .info-button {
     top: 0;
     right: 0;
-	padding: 2px 2px 2px 4px;
+	padding: 1px 1px 2px 4px;
+	.feather {
+		width: 18px;
+		height: 18px;
+	}
+
 	&.move,
 	&.resize {
 		cursor: move;
 		&:active {
 			cursor: crosshair;
 		}
+		.feather {
+			stroke: var(--app-highlight-color-initial);
+		}
 	}
-    .feather {
-        width: 18px;
-        height: 18px;
-    }
-    &:hover .feather {
-    	stroke: var(--app-highlight-color);
-    }
     .info-icon {
         .feather {
     	    stroke: $icon_red;
