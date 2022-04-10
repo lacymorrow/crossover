@@ -8,9 +8,11 @@ $theme_bg_light: #000;
 $text_dark: #555;
 $text_light: #EFEFEF;
 
-$icon_light: rgba(255, 255, 255, 0.5);
+$icon_light: rgb(58, 160, 215);
+// $icon_light: rgba(255, 255, 255, 0.5);
 $icon_hover_light: rgba(150, 150, 150, 0.5);
-$icon_dark: rgba(0, 0, 0, 0.5);
+$icon_dark: #2b5972;
+$icon_dark: #456072;
 $icon_hover_dark: rgba(0, 0, 0, 0.3);
 $icon_red: rgba(255, 87, 51, 0.95);
 
@@ -151,6 +153,7 @@ body {
     z-index: -10;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
+	border: 1px solid var(--icon-color);
 }
 
 // Child window background
@@ -178,6 +181,7 @@ body {
     position: absolute;
     z-index: 20;
     .feather {
+		transition: all .15s ease-in-out;
         stroke: var(--icon-color);
     }
     &:hover .feather {
@@ -244,7 +248,7 @@ body {
     right: 0;
     left: 0;
 	z-index: 10;
-	height: 18px;
+	height: 25px;
 }
 
 #crosshair {
@@ -343,10 +347,22 @@ body {
         display: block;
     }
 
-    // Show close button on linux/windows
-    &.mac .main-window .close-button {
-        display: none;
-    }
+    &.mac {
+		// Whole window draggable on mac, Windows bugs out when dragging
+		.container:not(.dropping) .crosshair-wrapper {
+			// This is the magic to make things draggable
+			-webkit-app-region: drag;
+			cursor: move;
+			&:active {
+				cursor: crosshair;
+			}
+		}
+
+		// Show close button on linux/windows
+		.main-window .close-button {
+			display: none;
+		}
+	}
 
 }
 

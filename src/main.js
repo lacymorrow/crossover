@@ -1,5 +1,7 @@
 /*
 	BUGS:
+	- current crosshair border doesn't work 1st time
+	- Windows: Flashes when hiding/showing on hidemouse/hidekey
 	- Windows: dragging image onto webkit-app-region: drag doesn't work
 	- Keybind settings don't display on first load ?
 

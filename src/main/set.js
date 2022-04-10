@@ -32,7 +32,7 @@ const appSize = size => {
 	// Should update
 	if ( size !== currentMode ) {
 
-		console.log( 'setting new mode' )
+		log.info( `Changing to new app size: ${size}` )
 
 		// Set resize
 		if ( size === 'resize' ) {

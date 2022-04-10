@@ -88,7 +88,7 @@ const keyboardShortcuts = () => {
 			action: 'reset',
 			keybind: `${accelerator}+R`,
 			fn() {
-				console.log('KEYBOARD RESET')
+
 				reset.app()
 
 			},
@@ -265,7 +265,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 const resetPosition = () => {
 
-	console.log( 'Reset Position' )
 	// App centered by default - set position if exists
 	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' && preferences.value( 'hidden.positionY' ) ) {
 

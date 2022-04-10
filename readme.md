@@ -427,3 +427,8 @@ If you would like to see specific features or improvements added to CrossOver, c
 ## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or another channel.
 
 <a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
+
+#### Tip Crypto
+
+- **BTC:** `3Bdu2sTAmXyZzqeRQxCt6P22zHtTLg4mQE`
+- **ETH:** `0x5be1074a5148F8D723dE1F2Dd326e1B15c82553D`
