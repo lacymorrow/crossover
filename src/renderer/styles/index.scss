@@ -337,18 +337,24 @@ body {
         	.info-button.move, // icon-move
             #crosshair,
             #crosshair * {
-                // This is the magic to make things draggable
-                -webkit-app-region: drag;
-                cursor: move;
-                &:active {
-                    cursor: crosshair;
-                }
+            //     // This is the magic to make things draggable
+            //     -webkit-app-region: drag;
+            //     cursor: move;
+            //     &:active {
+            //         cursor: crosshair;
+            //     }
             }
         }
     }
 
     .background {
         display: block;
+		// This is the magic to make things draggable
+		-webkit-app-region: drag;
+		cursor: move;
+		&:active {
+			cursor: crosshair;
+		}
     }
 
     // Show buttons (except close) when unlocked
@@ -356,22 +362,23 @@ body {
         display: block;
     }
 
-    &.mac {
-		// Whole window draggable on mac, Windows bugs out when dragging
-		.container:not(.dropping) .crosshair-wrapper {
-			// This is the magic to make things draggable
-			-webkit-app-region: drag;
-			cursor: move;
-			&:active {
-				cursor: crosshair;
-			}
-		}
-
-		// Show close button on linux/windows
-		.main-window .close-button {
-			display: none;
-		}
+	// Show close button on linux/windows
+	&.mac .main-window .close-button {
+		display: none;
 	}
+
+    // &.mac {
+	// 	// Whole window draggable on mac, Windows bugs out when dragging
+	// 	.container:not(.dropping) .crosshair-wrapper {
+	// 		// This is the magic to make things draggable
+	// 		-webkit-app-region: drag;
+	// 		cursor: move;
+	// 		&:active {
+	// 			cursor: crosshair;
+	// 		}
+	// 	}
+
+	// }
 
 }
 
