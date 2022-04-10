@@ -30,7 +30,8 @@ const startApp = async () => {
 
 	process.env.CI = 'e2e'
 
-	electronApp = await electron.launch( { args: [ '.' ] } )
+	electronApp = await electron.launch( { args: [ '.', '--reset' ] } )
+	await wait( 5000 )
 
 	electronApp.on( 'window', async page => {
 
