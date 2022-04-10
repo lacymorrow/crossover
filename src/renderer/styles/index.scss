@@ -334,33 +334,20 @@ body {
         border-bottom-left-radius: 0;
         // dont drag app if were dropping a file
         &:not(.dropping) {
-			#titlebar,
-        	.info-button.move, // icon-move
-            #crosshair,
-            #crosshair * {
-            //     // This is the magic to make things draggable
-            //     -webkit-app-region: drag;
-            //     cursor: move;
-            //     &:active {
-            //         cursor: crosshair;
-            //     }
+			.background:hover {
+                // This is the magic to make things draggable
+                -webkit-app-region: drag;
+                cursor: move;
+                &:active {
+                    cursor: crosshair;
+                }
             }
         }
     }
 
     .background {
 		display: block;
-		// This is the magic to make things draggable
-		-webkit-app-region: drag;
-		cursor: move;
-		&:active {
-			cursor: crosshair;
-		}
     }
-
-		.crosshair-wrapper {
-			-webkit-app-region: no-drag;
-		}
 
     // Show buttons (except close) when unlocked
     .button {
