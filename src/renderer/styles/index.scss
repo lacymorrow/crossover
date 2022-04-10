@@ -74,6 +74,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 * {
     box-sizing: border-box;
+    user-select: none;
 }
 
 html,
@@ -159,6 +160,15 @@ body {
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
 	border: 1px solid var(--app-highlight-color, var(--app-highlight-color-initial));
+}
+
+#titlebar {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    height: 20px;
 }
 
 /* Icon Styles */
@@ -248,16 +258,6 @@ body {
     	    fill: white;
         }
     }
-}
-
-
-#titlebar {
-	position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-	z-index: 10;
-	height: 25px;
 }
 
 #crosshair {
