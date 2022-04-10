@@ -428,7 +428,7 @@ If you would like to see specific features or improvements added to CrossOver, c
 
 ## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or through another channel:
 
-#### Tip Crypto
+### Tip Crypto
 
 - **BTC:** `3Bdu2sTAmXyZzqeRQxCt6P22zHtTLg4mQE`
 - **ETH:** `0x5be1074a5148F8D723dE1F2Dd326e1B15c82553D`
