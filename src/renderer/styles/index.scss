@@ -178,7 +178,7 @@ body {
 		background: var(--app-bg-color);
 	}
 	.feather {
-		stroke: var(--app-highlight-color-initial);
+		stroke: $icon_shadow;
 	}
 }
 
