@@ -67,7 +67,7 @@ const getDefaults = () => ( {
 const preferencesConfig = {
 	// Custom styles
 	config: {
-		debounce: 200,
+		debounce: 20,
 	},
 	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
@@ -75,8 +75,8 @@ const preferencesConfig = {
 	defaults: getDefaults(),
 	browserWindowOverrides: {
 		title: 'CrossOver Preferences',
-		width: 600,
-		height: 400,
+		// width: 600,
+		// height: 400,
 		webPreferences: {
 			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
 		},
