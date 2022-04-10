@@ -419,16 +419,18 @@ Created by [Lacy Morrow](http://lacymorrow.com)
 
 # Support this project
 
-### This project is developed, built, and maintained by one person. I've put hundreds of hours into this and I love being able to give it away for free.
+> **TL,DR: If you enjoy this project, and are financially able, why not donate $3?**
+
+### This project is entirely developed, built, and maintained by one person. I've put hundreds of hours into this and I love being able to give it away for free.
 
 Problem is, downloads don't pay the bills.
 If you would like to see specific features or improvements added to CrossOver, consider donating on [OpenCollective](https://opencollective.com/crossover)
 
-## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or another channel.
-
-<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
+## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or through another channel:
 
 #### Tip Crypto
 
 - **BTC:** `3Bdu2sTAmXyZzqeRQxCt6P22zHtTLg4mQE`
 - **ETH:** `0x5be1074a5148F8D723dE1F2Dd326e1B15c82553D`
+
+<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
