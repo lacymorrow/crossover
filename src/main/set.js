@@ -39,15 +39,15 @@ const appSize = size => {
 
 			bounds = { ...bounds, width: APP_WIDTH_MEDIUM, height: APP_HEIGHT_MEDIUM }
 
-			windows.win.setMinimumSize( bounds.width, bounds.height )
 			windows.win.setResizable( true )
+			windows.win.setMinimumSize( bounds.width, bounds.height )
 			windows.win.webContents.send( 'set_info_icon', 'resize' )
 
 		} else {
 
 			// Not resizable
-			windows.win.setMinimumSize( APP_WIDTH, APP_HEIGHT )
 			windows.win.setResizable( false )
+			windows.win.setMinimumSize( APP_WIDTH, APP_HEIGHT )
 			windows.win.webContents.send( 'set_info_icon', 'move' )
 
 			// Set fullscreen

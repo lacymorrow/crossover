@@ -480,7 +480,7 @@ const onWillResize = ( event, newBounds ) => {
 
 	// App width/height MUST BE EVEN for followMouse to work
 	const { height } = newBounds
-	const scale = Math.floor( height / 100 )
+	const scale = Math.ceil( height / 100 )
 
 	log.info( `Setting scale: ${scale}` )
 
