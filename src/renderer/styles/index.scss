@@ -260,6 +260,21 @@ body {
     }
 }
 
+.crosshair-wrapper {
+    // This controls what is draggable
+	transform: scale(var(--crosshair-scale, 1));
+	// transform: scale(calc( calc(100%/125) * 100));
+    position: relative;
+    height: 100%;
+    width: 100%;
+	min-height: 100px;
+	min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	padding: 10px auto;
+}
+
 #crosshair {
     // Default width
     width: var(--crosshair-width);
@@ -303,20 +318,6 @@ body {
 
 }
 
-.crosshair-wrapper {
-    // This controls what is draggable
-	transform: scale(var(--crosshair-scale, 1));
-	// transform: scale(calc( calc(100%/125) * 100));
-    position: relative;
-    height: 100%;
-    width: 100%;
-	min-height: 100px;
-	min-width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-	padding: 10px auto;
-}
 
 #crosshairImg {
 	width: 100%;
@@ -328,6 +329,7 @@ body {
 .draggable {
 
     .container {
+		-webkit-app-region: no-drag;
         cursor: inherit;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
