@@ -1,7 +1,6 @@
 {
     "name": "crossoverapp",
     "productName": "CrossOver",
-	"publisherName": "Fly5",
     "appId": "com.lacymorrow.crossover",
     "version": "3.0.0",
     "description": "A Crosshair Overlay for any screen",
