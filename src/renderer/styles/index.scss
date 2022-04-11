@@ -249,7 +249,7 @@ body {
 			cursor: crosshair;
 		}
 		.feather {
-			stroke: var(--app-highlight-color-initial);
+			stroke: var(--app-highlight-color, var(--app-highlight-color-initial));
 		}
 	}
     .info-icon {
