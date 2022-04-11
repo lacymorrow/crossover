@@ -100,8 +100,11 @@ Or download from the Snap Store
 - Cross-platform: Windows, MacOS, and Linux support
 - Support for multiple monitors
 - Choose between center **Dot** or **Crosshair**
+- Create duplicate crosshairs to mark more than one spot
 - Customize crosshair size, color, and opacity
-- Persistant settings remembers your choices automatically
+- Customize SVG properties
+- Light/Dark mode and custom app colors
+- Persistent settings remember your choices automatically
 - Automatically updates in the background to keep your features fresh _(Mac and Windows only)_
 
 <sup>* </sup> Escape from Tarkov will not work with CrossOver ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))
