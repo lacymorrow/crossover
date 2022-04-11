@@ -914,6 +914,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@nodert-win10-au/windows.applicationmodel@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@nodert-win10-au/windows.applicationmodel/-/windows.applicationmodel-0.4.4.tgz#8bc2043270dd89dcd00c0ac8a5221c7cc75d8904"
+  integrity sha512-/46SHT3E5s29p9Fh+BEAJIuzX1vLnGTKSfeGHcUKrPzJneP7OY05NTRH1PHRfRRCgE7YfbIeQqRpbJ0dyvliqw==
+  dependencies:
+    nan latest
+
 "@playwright/test@^1.20.1":
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.20.2.tgz#0da1f24bf12d5a7249fa771a5344b76170f62653"
@@ -2840,6 +2847,13 @@ electron-util@^0.17.0:
   dependencies:
     electron-is-dev "^1.1.0"
     new-github-issue-url "^0.2.1"
+
+electron-winstore-auto-launch@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/electron-winstore-auto-launch/-/electron-winstore-auto-launch-2.0.6.tgz#5875475a4988db1b59928d1f0b7982bc7067ee4b"
+  integrity sha512-piE1U0+YCRzftD5YZjFFS5QfuksNGD6lpUMmtsHjd417grnttjRDK+ve6wTyyiGZfIQG3yEvYAEA5hUfGD42Sg==
+  optionalDependencies:
+    "@nodert-win10-au/windows.applicationmodel" "^0.4.4"
 
 electron@11.5.0:
   version "11.5.0"
@@ -5040,6 +5054,11 @@ mute-stream@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
+
+nan@latest:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
+  integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
 
 nanoid@^3.3.1:
   version "3.3.2"

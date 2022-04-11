@@ -1,9 +1,8 @@
-const { app: electronApp, ipcMain } = require( 'electron' )
+const { ipcMain } = require( 'electron' )
 const log = require( './log' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const Preferences = require( './preferences' )
-const { is } = require( 'electron-util' )
 const keyboard = require( './keyboard' )
 const preferences = Preferences.init()
 const app = skipFullReset => {
@@ -20,6 +19,7 @@ const app = skipFullReset => {
 	reset.allPreferences()
 
 	if ( !skipFullReset ) {
+
 		keyboard.unregisterShortcuts()
 
 		// todo - circular dependency using:
@@ -27,17 +27,15 @@ const app = skipFullReset => {
 		// Using app.relaunch to cheat
 		// or, to restart completely
 		ipcMain.emit( 'init' )
-		return
 
-		if ( !is.development ) {
+		// if ( !is.development ) {
 
-			electronApp.relaunch()
-			electronApp.exit()
+		// 	electronApp.relaunch()
+		// 	electronApp.exit()
 
-			return
+		// 	return
 
-		}
-
+		// }
 
 	}
 

@@ -6,3 +6,5 @@ win:
         - ia32
 appx:
   artifactName: ${productName}.${ext}
+  backgroundColor: #5500ff
+  publisherDisplayName: Fly5

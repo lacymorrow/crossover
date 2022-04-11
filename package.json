@@ -63,6 +63,7 @@
         "electron-unhandled": "^4.0.1",
         "electron-updater": "4.3.1",
         "electron-util": "^0.17.0",
+        "electron-winstore-auto-launch": "^2.0.6",
         "iohook": "^0.9.3",
         "nodemon": "^2.0.15"
     },
