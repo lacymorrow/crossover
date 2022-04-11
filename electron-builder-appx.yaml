@@ -5,6 +5,13 @@ win:
         - x64
         - ia32
 appx:
+  applicationId: crossoverapp
   artifactName: ${productName}.${ext}
   backgroundColor: #5500ff
+  displayName: crossoverapp
+  identityName: 2886Fly5.crossoverapp
+  publisher: CN=C53C0091-1EEB-40B4-8537-082E06A4D328
   publisherDisplayName: Fly5
+  showNameOnTiles: true
+
+
