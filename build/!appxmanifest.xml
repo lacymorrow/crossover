@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap uap3">
+  ...
+  <Applications>
+    <Application Id="CrossOver" Executable="app\CrossOver.exe" EntryPoint="Windows.FullTrustApplication">
+      ...
+      <Extensions>
+        <desktop:Extension
+          Category="windows.startupTask"
+          Executable="app\CrossOver.exe"
+          EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="CrossOverStartup" Enabled="true" DisplayName="CrossOver" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>
