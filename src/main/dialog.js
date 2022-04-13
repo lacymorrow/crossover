@@ -7,6 +7,19 @@ const { debugInfo, is, showAboutWindow } = require( 'electron-util' )
 const { __static, FILE_FILTERS, HOMEPAGE_URL } = require( '../config/config.js' )
 const set = require( './set.js' )
 const notification = require( './notification.js' )
+const preferences = require( './preferences.js' ).init()
+
+const validButtonIndex = result => {
+
+	if ( typeof result === 'object' && typeof result.response === 'number' ) {
+
+		return result.response
+
+	}
+
+	return result
+
+}
 
 const openAboutWindow = () => {
 
@@ -27,11 +40,19 @@ const openAlertDialog = async message => {
 		buttons: [
 			'Turn off alerts', 'Open in browser…', 'Dismiss',
 		],
-	} ).then( buttonIndex => {
+	} ).then( result => {
+
+		const buttonIndex = validButtonIndex( result )
 
 		if ( buttonIndex === 0 ) {
 
-			shell.openExternal( HOMEPAGE_URL )
+			return preferences.value( 'app.alerts', [] )
+
+		}
+
+		if ( buttonIndex === 1 ) {
+
+			return shell.openExternal( HOMEPAGE_URL )
 
 		}
 
@@ -75,7 +96,9 @@ const openReportCrashDialog = async crash => {
 	} )
 		.then( result => {
 
-			if ( result.response === 1 ) {
+			const buttonIndex = validButtonIndex( result )
+
+			if ( buttonIndex === 1 ) {
 
 				crash.submitIssue( 'https://github.com/lacymorrow/crossover/issues/new', {
 					title: `Error report for ${crash.versions.app}`,
@@ -86,7 +109,7 @@ const openReportCrashDialog = async crash => {
 
 			}
 
-			if ( result.response === 2 ) {
+			if ( buttonIndex === 2 ) {
 
 				app.quit()
 
@@ -103,8 +126,9 @@ const openUpdateDialog = async action => {
 		title: 'CrossOver Update Available',
 		message: '',
 		buttons: [ 'Update', 'Ignore' ],
-	} ).then( buttonIndex => {
+	} ).then( result => {
 
+		const buttonIndex = validButtonIndex( result )
 		if ( buttonIndex === 0 && typeof action === 'function' ) {
 
 			action()
@@ -117,6 +141,7 @@ const openUpdateDialog = async action => {
 
 const dialog = {
 	openAboutWindow,
+	openAlertDialog,
 	openCustomImageDialog,
 	openReportCrashDialog,
 	openUpdateDialog,

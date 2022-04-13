@@ -5,7 +5,6 @@ const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
-const alert = require( './alert' )
 const preferences = require( './preferences' ).init()
 
 const init = async options => {
@@ -73,9 +72,6 @@ const init = async options => {
 
 	// Window Events after windows are created
 	register.events()
-
-	// Alert from developer
-	alert.init()
 
 }
 

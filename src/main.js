@@ -158,6 +158,9 @@ const ready = async () => {
 	/* Press Play >>> */
 	init()
 
+	// Alert from developer
+	// alert.init()
+
 	console.timeEnd( 'init' )
 
 }
@@ -168,7 +171,7 @@ module.exports = async () => {
 
 	await app.whenReady()
 
-	// Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+	// Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
 	setTimeout( ready, 400 )
 
 }

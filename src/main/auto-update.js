@@ -58,30 +58,40 @@ const update = () => {
 
 	// Comment this before publishing your first version.
 	// It's commented out as it throws an error if there are no published versions.
-	if ( checkboxTrue( preferences.value( 'app.updates' ), 'updates' ) ) {
 
-		log.info( 'Setting: Automatic Updates' )
+	// We trycatch here because appx throws errors
+	try {
 
-		autoUpdater.logger = log
-		autoUpdater.on( 'update-available', autoUpdate.onUpdateAvailable )
+		if ( checkboxTrue( preferences.value( 'app.updates' ), 'updates' ) ) {
 
-		if ( is.linux ) {
+			log.info( 'Setting: Automatic Updates' )
 
-			return
+			autoUpdater.logger = log
+			autoUpdater.on( 'update-available', autoUpdate.onUpdateAvailable )
+
+			if ( is.linux ) {
+
+				return
+
+			}
+
+			autoUpdater.on( 'download-progress', autoUpdate.onDownloadProgress )
+
+			autoUpdater.on( 'update-downloaded', autoUpdate.onUpdateDownloaded )
+
+			setInterval( () => {
+
+				autoUpdater.checkForUpdates()
+
+			}, FOUR_HOURS )
+
+			autoUpdater.checkForUpdatesAndNotify()
 
 		}
 
-		autoUpdater.on( 'download-progress', autoUpdate.onDownloadProgress )
+	} catch ( error ) {
 
-		autoUpdater.on( 'update-downloaded', autoUpdate.onUpdateDownloaded )
-
-		setInterval( () => {
-
-			autoUpdater.checkForUpdates()
-
-		}, FOUR_HOURS )
-
-		autoUpdater.checkForUpdatesAndNotify()
+		log.error( error )
 
 	}
 
