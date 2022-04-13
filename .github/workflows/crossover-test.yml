@@ -58,16 +58,16 @@ jobs:
       - name: Unpackaged Test 🧪
         run: npm run test
 
-      - name: Build
-        run: |
-          npm run build:mac
-        env:
-          # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
-          CI: false
+      # - name: Build
+      #   run: |
+      #     npm run build:mac
+      #   env:
+      #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+      #     CI: false
 
-      - name: Package App
-        run: |
-          npm run pack
+      # - name: Package App
+      #   run: |
+      #     npm run pack
       # # Check Binary Sizes
       # - name: Build Succeeded
       #   run: |
