@@ -450,6 +450,13 @@ const preferencesConfig = {
 								help: 'CrossOver makes a little noise to indicate certain events.',
 							},
 							{
+								label: 'Developer Information',
+								key: 'alerts',
+								type: 'checkbox',
+								options: [ { label: 'Receive information from the developer', value: 'alerts' } ],
+								help: 'You may receive a notification regarding bugs or updates from the developer.',
+							},
+							{
 								label: 'Hardware Acceleration',
 								key: 'gpu',
 								type: 'checkbox',

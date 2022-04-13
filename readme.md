@@ -80,7 +80,7 @@ Or download from the Snap Store
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset app settings
 
-[See usage...](#usage)
+[See usage…](#usage)
 
 <p align="center">
 	<br />
@@ -165,7 +165,7 @@ _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-
 
 # Usage
 
-> ❌ marks the spot...
+> ❌ marks the spot…
 
 **Position:** Click and drag the crosshair to anywhere on any screen. Double-click the bullseye to center the app.
 

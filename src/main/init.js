@@ -5,6 +5,7 @@ const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
+const alert = require( './alert' )
 const preferences = require( './preferences' ).init()
 
 const init = async options => {
@@ -27,7 +28,6 @@ const init = async options => {
 		ipc.init()
 
 	}
-
 
 	// Reset some preferences for app startup
 	preferences.value( 'hidden.showSettings', false )
@@ -62,7 +62,7 @@ const init = async options => {
 
 		} )
 
-	}, 500 )
+	}, 400 )
 
 	// Spawn chooser window (if resetting it may exist)
 	if ( !windows.chooserWindow ) {
@@ -73,6 +73,9 @@ const init = async options => {
 
 	// Window Events after windows are created
 	register.events()
+
+	// Alert from developer
+	alert.init()
 
 }
 

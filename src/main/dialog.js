@@ -1,10 +1,10 @@
 /* eslint no-useless-concat: 0 */
 const path = require( 'path' )
-const { app, dialog: electronDialog } = require( 'electron' )
+const { app, dialog: electronDialog, shell } = require( 'electron' )
 const log = require( 'electron-log' )
 const { debugInfo, is, showAboutWindow } = require( 'electron-util' )
 
-const { __static, FILE_FILTERS } = require( '../config/config.js' )
+const { __static, FILE_FILTERS, HOMEPAGE_URL } = require( '../config/config.js' )
 const set = require( './set.js' )
 const notification = require( './notification.js' )
 
@@ -14,6 +14,27 @@ const openAboutWindow = () => {
 		icon: path.join( __static, 'icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`,
+	} )
+
+}
+
+const openAlertDialog = async message => {
+
+	await electronDialog.showMessageBox( {
+		type: 'info',
+		title: 'CrossOver: Developer Update',
+		message,
+		buttons: [
+			'Turn off alerts', 'Open in browser…', 'Dismiss',
+		],
+	} ).then( buttonIndex => {
+
+		if ( buttonIndex === 0 ) {
+
+			shell.openExternal( HOMEPAGE_URL )
+
+		}
+
 	} )
 
 }

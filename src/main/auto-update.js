@@ -11,7 +11,48 @@ const { RELEASES_URL } = require( '../config/config' )
 const notification = require( './notification' )
 const dock = require( './dock' )
 
+const FOUR_HOURS = 1000 * 60 * 60 * 4
+
 const install = () => autoUpdater.quitAndInstall()
+
+const onDownloadProgress = progressObject => {
+
+	let message = 'Download speed: ' + progressObject.bytesPerSecond
+	message = message + ' - Downloaded ' + progressObject.percent + '%'
+	message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
+	log.info( message )
+
+	// Dock progress bar
+	windows.setProgress( progressObject.percent / 100 )
+
+}
+
+const onUpdateAvailable = () => {
+
+	sound.play( 'UPDATE' )
+	windows.win.webContents.send( 'set_info_icon', 'info' )
+
+	if ( is.linux ) {
+
+		dialog.openUpdateDialog( () => {
+
+			// AutoUpdater.downloadUpdate()
+			shell.openExternal( RELEASES_URL )
+
+		} )
+
+	}
+
+}
+
+const onUpdateDownloaded = () => {
+
+	windows.setProgress( -1 )
+	dock.setBadge( '!' )
+	notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
+	// sound.play( 'DONE' ) // uncomment if we make notification silent
+
+}
 
 const update = () => {
 
@@ -22,60 +63,35 @@ const update = () => {
 		log.info( 'Setting: Automatic Updates' )
 
 		autoUpdater.logger = log
-		autoUpdater.on( 'update-available', () => {
+		autoUpdater.on( 'update-available', autoUpdate.onUpdateAvailable )
 
-			sound.play( 'UPDATE' )
-			windows.win.webContents.send( 'set_info_icon', 'info' )
+		if ( is.linux ) {
 
-			if ( is.linux ) {
-
-				dialog.openUpdateDialog( () => {
-
-					// AutoUpdater.downloadUpdate()
-					shell.openExternal( RELEASES_URL )
-
-				} )
-
-			}
-
-		} )
-
-		if ( !is.linux ) {
-
-			autoUpdater.on( 'download-progress', progressObject => {
-
-				let message = 'Download speed: ' + progressObject.bytesPerSecond
-				message = message + ' - Downloaded ' + progressObject.percent + '%'
-				message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
-				log.info( message )
-
-				// Dock progress bar
-				windows.setProgress( progressObject.percent / 100 )
-
-			} )
-
-			autoUpdater.on( 'update-downloaded', () => {
-
-				windows.setProgress( -1 )
-				dock.setBadge( '!' )
-				notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
-				// PlaySound( 'DONE' )
-
-			} )
-			const FOUR_HOURS = 1000 * 60 * 60 * 4
-			setInterval( () => {
-
-				autoUpdater.checkForUpdates()
-
-			}, FOUR_HOURS )
-
-			autoUpdater.checkForUpdatesAndNotify()
+			return
 
 		}
+
+		autoUpdater.on( 'download-progress', autoUpdate.onDownloadProgress )
+
+		autoUpdater.on( 'update-downloaded', autoUpdate.onUpdateDownloaded )
+
+		setInterval( () => {
+
+			autoUpdater.checkForUpdates()
+
+		}, FOUR_HOURS )
+
+		autoUpdater.checkForUpdatesAndNotify()
 
 	}
 
 }
 
-const autoUpdate = { install, update }
+const autoUpdate = {
+	install,
+	onDownloadProgress,
+	onUpdateAvailable,
+	onUpdateDownloaded,
+	update,
+}
 module.exports = autoUpdate

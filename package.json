@@ -55,8 +55,8 @@
         "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
         "build:release:snap": "electron-builder --linux snap && yarn snap:release",
         "build:release:windows": "yarn build:windows && yarn sh:copyexe",
-		"snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
-		"snap:release": "snapcraft upload --release=stable dist/*.snap"
+        "snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
+        "snap:release": "snapcraft upload --release=stable dist/*.snap"
     },
     "dependencies": {
         "electron-debug": "^3.0.1",
@@ -68,6 +68,7 @@
         "electron-util": "^0.17.0",
         "electron-winstore-auto-launch": "^2.0.6",
         "iohook": "^0.9.3",
+        "node-fetch": "^3.2.3",
         "nodemon": "^2.0.15"
     },
     "devDependencies": {
