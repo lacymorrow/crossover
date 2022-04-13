@@ -35,7 +35,7 @@
         "test:debug:console": "PWDEBUG=console CI=1 playwright test",
         "check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
         "check:circular": "madge --circular .",
-        "depcheck": "yarn check:deps; yarn check:circular",
+        "depcheck": "yarn check:deps && yarn check:circular",
         "release": "np --branch release && yarn build:release",
         "release:snap": "snapcraft upload --release=CrossOver*.snap",
         "pack": "rm -f *.tgz && electron-builder --dir",
