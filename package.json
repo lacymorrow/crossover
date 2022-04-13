@@ -1,5 +1,5 @@
 {
-    "name": "crossoverapp",
+    "name": "crossover",
     "productName": "CrossOver",
     "appId": "com.lacymorrow.crossover",
     "version": "3.0.0",
@@ -53,7 +53,10 @@
         "build:deb": "electron-builder --linux deb",
         "build:snap": "electron-builder --linux snap",
         "build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
-        "build:release:windows": "yarn build:windows && yarn sh:copyexe"
+        "build:release:snap": "electron-builder --linux snap && yarn snap:release",
+        "build:release:windows": "yarn build:windows && yarn sh:copyexe",
+        "snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
+        "snap:release": "snapcraft upload --release=stable dist/*.snap"
     },
     "dependencies": {
         "electron-debug": "^3.0.1",
@@ -64,8 +67,7 @@
         "electron-updater": "4.3.1",
         "electron-util": "^0.17.0",
         "electron-winstore-auto-launch": "^2.0.6",
-        "iohook": "^0.9.3",
-        "nodemon": "^2.0.15"
+        "iohook": "^0.9.3"
     },
     "devDependencies": {
         "@babel/core": "^7.17.8",
@@ -82,6 +84,7 @@
         "husky": "^7.0.1",
         "jimp": "^0.16.1",
         "madge": "^5.0.1",
+        "nodemon": "^2.0.15",
         "np": "^7.2.0",
         "playwright": "^1.20.1",
         "sass": "^1.26.5"

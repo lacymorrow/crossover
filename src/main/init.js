@@ -28,7 +28,6 @@ const init = async options => {
 
 	}
 
-
 	// Reset some preferences for app startup
 	preferences.value( 'hidden.showSettings', false )
 	preferences.value( 'hidden.tilted', false )
@@ -62,7 +61,7 @@ const init = async options => {
 
 		} )
 
-	}, 500 )
+	}, 400 )
 
 	// Spawn chooser window (if resetting it may exist)
 	if ( !windows.chooserWindow ) {

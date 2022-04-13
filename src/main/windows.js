@@ -476,11 +476,18 @@ const moveWindow = options_ => {
 
 }
 
-const onWillResize = ( event, newBounds ) => {
+const onWillResize = ( _event, newBounds ) => {
+
+	if ( !newBounds ) {
+
+		return
+
+	}
 
 	// App width/height MUST BE EVEN for followMouse to work
 	const { height } = newBounds
-	const scale = Math.ceil( height / 100 )
+	let scale = Math.round( height / 100 )
+	scale = scale > 0 ? scale : 1
 
 	log.info( `Setting scale: ${scale}` )
 

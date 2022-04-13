@@ -80,7 +80,7 @@ Or download from the Snap Store
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd> to lock in place
 - <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>R</kbd> to reset app settings
 
-[See usage...](#usage)
+[See usage…](#usage)
 
 <p align="center">
 	<br />
@@ -100,8 +100,11 @@ Or download from the Snap Store
 - Cross-platform: Windows, MacOS, and Linux support
 - Support for multiple monitors
 - Choose between center **Dot** or **Crosshair**
+- Create duplicate crosshairs to mark more than one spot
 - Customize crosshair size, color, and opacity
-- Persistant settings remembers your choices automatically
+- Customize SVG properties
+- Light/Dark mode and custom app colors
+- Persistent settings remember your choices automatically
 - Automatically updates in the background to keep your features fresh _(Mac and Windows only)_
 
 <sup>* </sup> Escape from Tarkov will not work with CrossOver ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))
@@ -162,7 +165,7 @@ _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-
 
 # Usage
 
-> ❌ marks the spot...
+> ❌ marks the spot…
 
 **Position:** Click and drag the crosshair to anywhere on any screen. Double-click the bullseye to center the app.
 
