@@ -63,7 +63,6 @@ const { checkboxTrue } = require( './config/utils.js' )
 const errorHandling = require( './main/error-handling.js' )
 const log = require( './main/log.js' )
 const preferences = require( './main/preferences.js' ).init()
-const windows = require( './main/windows.js' )
 const sound = require( './main/sound.js' )
 const autoUpdate = require( './main/auto-update.js' )
 const menu = require( './main/menu.js' )
@@ -73,50 +72,54 @@ const reset = require( './main/reset.js' )
 const tray = require( './main/tray.js' )
 const { appId } = require( '../package.json' )
 
-/* App setup */
-console.log( '***************' )
-log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
+const start = async () => {
 
-// Handle errors early
-errorHandling.init()
+	// Handle errors early
+	await errorHandling.init()
 
-// Prevent multiple instances of the app
-if ( !app.requestSingleInstanceLock() ) {
+	/* App setup */
+	console.log( '***************' )
+	log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
 
-	app.quit()
+	// Prevent multiple instances of the app
+	if ( !app.requestSingleInstanceLock() ) {
 
-}
+		app.quit()
 
-// Note: Must match `build.appId` in package.json
-app.setAppUserModelId( appId )
+	}
 
-// Debug Settings
-debug( {
-	showDevTools: is.development && !is.linux,
-	devToolsMode: 'undocked',
-} )
+	// Note: Must match `build.appId` in package.json
+	app.setAppUserModelId( appId )
 
-// Electron reloader is janky sometimes
-// try {
-//  require( 'electron-reloader' )( module )
-// } catch {}
+	// Debug Settings
+	debug( {
+		showDevTools: is.development && !is.linux,
+		devToolsMode: 'undocked',
+	} )
 
-//
-// Const contextMenu = require('electron-context-menu')
-// contextMenu()
+	// Electron reloader is janky sometimes
+	// try {
+	//  require( 'electron-reloader' )( module )
+	// } catch {}
 
-// Fix for Linux transparency issues
-if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+	//
+	// Const contextMenu = require('electron-context-menu')
+	// contextMenu()
 
-	// Disable hardware acceleration
-	log.info( 'Setting: Disable GPU' )
-	app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-	app.commandLine.appendSwitch( 'disable-gpu' )
-	app.disableHardwareAcceleration()
+	// Fix for Linux transparency issues
+	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
-} else {
+		// Disable hardware acceleration
+		log.info( 'Setting: Disable GPU' )
+		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+		app.commandLine.appendSwitch( 'disable-gpu' )
+		app.disableHardwareAcceleration()
 
-	log.info( 'Setting: Enable GPU' )
+	} else {
+
+		log.info( 'Setting: Enable GPU' )
+
+	}
 
 }
 
@@ -127,13 +130,18 @@ const ready = async () => {
 
 	log.info( 'App ready' )
 
-	/* Create main window */
+	// Allow command-line reset
+	if ( process.env.CROSSOVER_RESET ) {
 
-	await windows.init()
+		log.info( 'Command-line reset triggered' )
+		reset.app( true )
 
-	// Log.info( windows.win.getNativeWindowHandle() )
-	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	windows.win.setAlwaysOnTop( true, 'screen-saver' )
+		return
+
+	}
+
+	/* Press Play >>> */
+	await init()
 
 	/* TRAY */
 	tray.init()
@@ -147,17 +155,6 @@ const ready = async () => {
 	/* AUTO-UPDATE */
 	autoUpdate.update()
 
-	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET ) {
-
-		log.info( 'Command-line reset triggered' )
-		reset.app( true )
-
-	}
-
-	/* Press Play >>> */
-	init()
-
 	// Alert from developer
 	// alert.init()
 
@@ -167,9 +164,16 @@ const ready = async () => {
 
 module.exports = async () => {
 
+	// Error handling, debug, appId, and command-line flags
+	await start()
+
+	// app.on(...)
 	register.appEvents()
 
+	// wait for app.on('ready')
 	await app.whenReady()
+
+	console.timeLog( 'init' )
 
 	// Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
 	setTimeout( ready, 400 )

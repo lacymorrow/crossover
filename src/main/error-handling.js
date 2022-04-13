@@ -17,11 +17,14 @@ const reportBody = error => `
 
 	${debugInfo()}`
 
-const init = () => {
+const init = async () => {
 
-	// Catch unhandled errors
-	unhandled( {
-		// ShowDialog: true, // default: only in production
+	// unhandledRejection : This will catch any thrown errors, or non fatal errors you have successfully handled via throw.
+	// uncaughtException : This only catches fatal errors or errors that would crash your node instance
+
+	// Report unhandled errors
+	await unhandled( {
+		showDialog: true, // default: only in production
 		logger: log.warn,
 		reportButton( error ) {
 

@@ -18,49 +18,9 @@ const init = () => {
 
 	} )
 
-	ipcMain.on( 'reset_preferences', ( _event, _arg ) => {
+	ipcMain.on( 'error', ( event, arg ) => {
 
-		log.info( 'RESET' )
-		reset.allPreferences()
-
-	} )
-
-	ipcMain.on( 'open_chooser', _ => {
-
-		crossover.openChooserWindow()
-
-	} )
-
-	ipcMain.on( 'open_settings', _ => {
-
-		crossover.openSettingsWindow()
-
-	} )
-
-	ipcMain.on( 'close_chooser', _ => {
-
-		windows.hideChooserWindow()
-
-	} )
-
-	ipcMain.on( 'close_window', event => {
-
-		// Close a shadow window
-		windows.closeShadow( event.sender.id )
-
-	} )
-
-	ipcMain.on( 'focus_window', async _ => {
-
-		await windows.init()
-		windows.win.focus()
-
-	} )
-
-	ipcMain.on( 'save_custom_image', ( event, arg ) => {
-
-		log.info( `Setting custom image: ${arg}` )
-		set.custom( arg )
+		log.error( arg )
 
 	} )
 
@@ -78,9 +38,16 @@ const init = () => {
 
 	} )
 
-	ipcMain.on( 'save_crosshair', ( event, arg ) => {
+	ipcMain.on( 'close_chooser', _ => {
 
-		crossover.changeCrosshair( arg )
+		windows.hideChooserWindow()
+
+	} )
+
+	ipcMain.on( 'close_window', event => {
+
+		// Close a shadow window
+		windows.closeShadow( event.sender.id )
 
 	} )
 
@@ -92,9 +59,48 @@ const init = () => {
 
 	} )
 
+	ipcMain.on( 'focus_window', async _ => {
+
+		await windows.init()
+		windows.win.focus()
+
+	} )
+
+	ipcMain.on( 'open_chooser', _ => {
+
+		crossover.openChooserWindow()
+
+	} )
+
+	ipcMain.on( 'open_settings', _ => {
+
+		crossover.openSettingsWindow()
+
+	} )
+
+	ipcMain.on( 'save_custom_image', ( event, arg ) => {
+
+		log.info( `Setting custom image: ${arg}` )
+		set.custom( arg )
+
+	} )
+
+	ipcMain.on( 'save_crosshair', ( event, arg ) => {
+
+		crossover.changeCrosshair( arg )
+
+	} )
+
 	ipcMain.on( 'update_and_restart', () => {
 
 		autoUpdate.install()
+
+	} )
+
+	ipcMain.on( 'reset_preferences', ( _event, _arg ) => {
+
+		log.info( 'RESET' )
+		reset.allPreferences()
 
 	} )
 

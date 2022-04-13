@@ -4,17 +4,6 @@ const path = require( 'path' )
 
 const __static = path.resolve( 'src', 'static' )
 
-test.beforeAll( async () => {
-
-	// const app = await startApp()
-	// mainPage = app.mainPage
-	// await injectAxe( mainPage )
-
-} )
-
-// test.afterEach( async () => wait( delays.short ) )
-// test.afterAll( closeApp )
-
 test( 'Check logo', async () => {
 
 	const file = fs.existsSync( path.join( __static, 'icons', 'icon.png' ) )
@@ -40,18 +29,3 @@ test( 'Check demo images', async () => {
 	expect( file, 'An image in the github readme' ).toBe( true )
 
 } )
-
-// Test( 'Report A11y Violations', async () => {
-// 	const violations = await getViolations(mainPage, null, {
-// 	  axeOptions: {
-// 	    runOnly: {
-// 	      type: 'tag',
-// 	      values: ['wcag2a'],
-// 	    },
-// 	  },
-// 	})
-
-// 	reportViolations(violations, new YourAwesomeCsvReporter('accessibility-report.csv'))
-
-// 	expect(violations.length).toBe(0)
-// } )
