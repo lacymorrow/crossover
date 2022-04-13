@@ -1,3 +1,5 @@
+# IF YOU ARE RECEIVING AN ERROR, PLEASE MANUALLY UPDATE CROSSOVER TO THE LATEST VERSION. MY BAD
+
 <p align="center">
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/icons/icon.png">
 </p>
