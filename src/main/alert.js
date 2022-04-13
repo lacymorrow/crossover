@@ -15,9 +15,9 @@ const init = async () => {
 
 	if ( message ) {
 
-		console.log( `Creating noti: ${message}` )
+		console.log( `Creating noti: ${message.body}`, message.body )
 
-		notification( { title: 'CrossOver: Developer Update', body: message } )
+		notification( { title: 'CrossOver: Developer Update', body: message.body } )
 
 	}
 
