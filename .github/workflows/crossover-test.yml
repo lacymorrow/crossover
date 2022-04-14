@@ -55,8 +55,8 @@ jobs:
       - name: Check Dependencies
         run: npm run depcheck
 
-      # - name: Unpackaged Electron Test 🧪
-      #   run: npm run test
+      - name: Unpackaged Test 🧪
+        run: npm run test
 
       # - name: Build
       #   run: |
@@ -65,9 +65,9 @@ jobs:
       #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
       #     CI: false
 
-      # - name: Package for test execution
+      # - name: Package App
       #   run: |
-      #     npm exec -c "electron-builder --publish \"never\""
+      #     npm run pack
       # # Check Binary Sizes
       # - name: Build Succeeded
       #   run: |
@@ -77,12 +77,12 @@ jobs:
       # # - name: E2E Test for Electron 🧪
       # #   run: npm run test
 
-      # - name: Upload Test Results 🗃
-      #   if: always()
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: playwright-output
-      #     path: test-output/**
+      - name: Upload Test Results 🗃
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/*
 
   crossover-tests-windows:
     runs-on: windows-latest
@@ -101,7 +101,7 @@ jobs:
       - name: Get Node Version
         run: |
           Set-PSDebug -Trace 1
-          $filePath = "D:\a\lacymorrow\crossover\.nvmrc"
+          $filePath = ".nvmrc"
           Get-Content $filePath -Raw
           $content = Get-Content $filePath -Raw
           echo "::set-output name=nodeversion::$content"
@@ -128,10 +128,15 @@ jobs:
           npm --version
           yarn --version
           npm install
-      # - name: Verify Dependencies
-      #   run: |
-      #     cmd /r dir
-      #     npm list --depth=1
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check Dependencies
+        run: npm run depcheck
+
+      - name: Unpackaged Test 🧪
+        run: npm run test
 
       # - name: Build
       #   run: |

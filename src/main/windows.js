@@ -174,6 +174,18 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	}
 
+	win.on( 'unresponsive', event => {
+
+		log.error( `Window crashed: ${event.sender}` )
+
+	} )
+
+	win.webContents.on( 'did-fail-load', event => {
+
+		log.error( `Window failed load: ${event?.sender}` )
+
+	} )
+
 	return { ...windows, win }
 
 }

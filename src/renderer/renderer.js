@@ -4,6 +4,14 @@
 
 ( () => {
 
+	// Renderer error handling
+	window.addEventListener( 'error', event => {
+
+		console.log( 'Error', event )
+		window.crossover.send( 'error', `Renderer - ${event.message} @ ${event.filename}:${event.lineno}` )
+
+	} )
+
 	// DOM elements
 	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )

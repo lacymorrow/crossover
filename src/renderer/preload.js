@@ -22,7 +22,7 @@ const api = {
 
 		// Whitelist channels
 		const validChannels = new Set( [
-			'center_window', 'close_window', 'focus_window', 'save_custom_image', 'open_chooser', 'open_settings', 'quit',
+			'center_window', 'close_window', 'error', 'focus_window', 'log', 'save_custom_image', 'open_chooser', 'open_settings', 'quit',
 		] )
 
 		if ( validChannels.has( channel ) ) {

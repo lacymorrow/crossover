@@ -2,7 +2,7 @@
     "name": "crossover",
     "productName": "CrossOver",
     "appId": "com.lacymorrow.crossover",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "A Crosshair Overlay for any screen",
     "copyright": "Copyright © Lacy Morrow",
     "repository": "lacymorrow/crossover",
@@ -35,7 +35,7 @@
         "test:debug:console": "PWDEBUG=console CI=1 playwright test",
         "check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
         "check:circular": "madge --circular .",
-        "depcheck": "yarn check; yarn check:deps; yarn check:circular",
+        "depcheck": "yarn check:deps && yarn check:circular",
         "release": "np --branch release && yarn build:release",
         "release:snap": "snapcraft upload --release=CrossOver*.snap",
         "pack": "rm -f *.tgz && electron-builder --dir",
@@ -46,6 +46,7 @@
         "build:mac": "electron-builder --macos --arm64 --x64",
         "build:linux": "electron-builder --linux --ia32 --x64",
         "build:windows": "electron-builder --win --ia32 --x64",
+        "build:windows:store": "electron-builder --win appx",
         "build:windows:appx": "electron-builder -c electron-builder-appx.yaml --win",
         "build:windows:exe": "electron-builder -c electron-builder-windows.yaml --win",
         "build:wl": "electron-builder -wl --ia32 --x64",
@@ -67,6 +68,7 @@
         "electron-updater": "4.3.1",
         "electron-util": "^0.17.0",
         "electron-winstore-auto-launch": "^2.0.6",
+        "got": "^12.0.3",
         "iohook": "^0.9.3"
     },
     "devDependencies": {
@@ -171,7 +173,17 @@
         "nsis": {
             "unicode": false,
             "artifactName": "${productName}-${version}.${ext}"
-        }
+        },
+		"appx": {
+			"applicationId": "CrossOverCrosshairOverlay",
+			"artifactName": "${productName}.${ext}",
+			"backgroundColor": "#5500ff",
+			"displayName": "CrossOver: Crosshair Overlay",
+			"identityName": "2886Fly5.CrossOverCrosshairOverlay",
+			"publisher": "CN=C53C0091-1EEB-40B4-8537-082E06A4D328",
+			"publisherDisplayName": "Fly5",
+			"showNameOnTiles": true
+		}
     },
     "husky": {
         "hooks": {
