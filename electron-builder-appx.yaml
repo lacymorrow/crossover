@@ -13,4 +13,3 @@ appx:
   publisher: CN=C53C0091-1EEB-40B4-8537-082E06A4D328
   publisherDisplayName: Fly5
   showNameOnTiles: true
-  verifyUpdateCodeSignature: false
