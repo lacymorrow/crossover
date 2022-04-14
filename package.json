@@ -65,7 +65,7 @@
         "electron-preferences": "https://github.com/lacymorrow/electron-preferences#crossover",
         "electron-reloader": "^1.2.0",
         "electron-unhandled": "^4.0.1",
-        "electron-updater": "4.3.1",
+        "electron-updater": "5.0.1",
         "electron-util": "^0.17.0",
         "electron-winstore-auto-launch": "^2.0.6",
         "got": "^12.0.3",
@@ -74,13 +74,13 @@
     "devDependencies": {
         "@babel/core": "^7.17.8",
         "@babel/eslint-parser": "^7.17.0",
-        "@playwright/test": "^1.20.1",
+        "@playwright/test": "^1.21.0",
         "axe-playwright": "^1.1.11",
         "bindings": "^1.5.0",
         "depcheck": "^1.4.3",
         "electron": "11.5.0",
-        "electron-builder": "^22.11.11",
-        "electron-builder-squirrel-windows": "^23.0.2",
+        "electron-builder": "^23.0.3",
+        "electron-builder-squirrel-windows": "^23.0.6",
         "eslint": "^8.12.0",
         "eslint-config-xo": "^0.40.0",
         "husky": "^7.0.1",
@@ -88,7 +88,7 @@
         "madge": "^5.0.1",
         "nodemon": "^2.0.15",
         "np": "^7.2.0",
-        "playwright": "^1.20.1",
+        "playwright": "^1.21.0",
         "sass": "^1.26.5"
     },
     "iohook": {
@@ -160,7 +160,7 @@
         },
         "win": {
             "target": [
-				"appx",
+                "appx",
                 "nsis",
                 "portable"
             ],
@@ -175,16 +175,16 @@
             "unicode": false,
             "artifactName": "${productName}-${version}.${ext}"
         },
-		"appx": {
-			"applicationId": "CrossOverCrosshairOverlay",
-			"artifactName": "${productName}.${ext}",
-			"backgroundColor": "#5500ff",
-			"displayName": "CrossOver: Crosshair Overlay",
-			"identityName": "2886Fly5.CrossOverCrosshairOverlay",
-			"publisher": "CN=C53C0091-1EEB-40B4-8537-082E06A4D328",
-			"publisherDisplayName": "Fly5",
-			"showNameOnTiles": true
-		}
+        "appx": {
+            "applicationId": "CrossOverCrosshairOverlay",
+            "artifactName": "${productName}.${ext}",
+            "backgroundColor": "#5500ff",
+            "displayName": "CrossOver: Crosshair Overlay",
+            "identityName": "2886Fly5.CrossOverCrosshairOverlay",
+            "publisher": "CN=C53C0091-1EEB-40B4-8537-082E06A4D328",
+            "publisherDisplayName": "Fly5",
+            "showNameOnTiles": true
+        }
     },
     "husky": {
         "hooks": {
