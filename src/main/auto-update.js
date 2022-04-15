@@ -40,7 +40,7 @@ const onUpdateAvailable = () => {
 	try {
 
 		sound.play( 'UPDATE' )
-		windows.win.webContents.send( 'set_info_icon', 'info' )
+		windows.win?.webContents.send( 'set_info_icon', 'info' )
 
 		if ( is.linux ) {
 

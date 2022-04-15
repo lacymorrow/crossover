@@ -140,6 +140,9 @@ const ready = async () => {
 
 	}
 
+	/* SOUND */
+	sound.preload()
+
 	/* Press Play >>> */
 	await init()
 
@@ -148,9 +151,6 @@ const ready = async () => {
 
 	/* MENU */
 	menu.init()
-
-	/* SOUND */
-	sound.preload()
 
 	/* AUTO-UPDATE */
 	autoUpdate.update()
