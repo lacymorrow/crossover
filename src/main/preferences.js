@@ -5,6 +5,17 @@ const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config.js' )
 
+const browserWindowOverrides = {
+	alwaysOnTop: true,
+	title: 'CrossOver Preferences',
+	// width: 600,
+	// height: 400,
+	webPreferences: {
+		devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
+	},
+
+}
+
 /**
  * Default values.
  */
@@ -66,6 +77,7 @@ const getDefaults = () => ( {
 } )
 
 const preferencesConfig = {
+	browserWindowOverrides,
 	// Custom styles
 	config: {
 		debounce: 20,
@@ -74,15 +86,7 @@ const preferencesConfig = {
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
 	defaults: getDefaults(),
-	browserWindowOverrides: {
-		title: 'CrossOver Preferences',
-		// width: 600,
-		// height: 400,
-		webPreferences: {
-			devTools: is.development && SETTINGS_WINDOW_DEVTOOLS,
-		},
 
-	},
 	/**
      * The preferences window is divided into sections. Each section has a label, an icon, and one or
      * more fields associated with it. Each section should also be given a unique ID.

@@ -225,9 +225,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 		}
 
-		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-		targetWindow.setAlwaysOnTop( true, 'screen-saver' )
-
 	} else {
 
 		/* Unlock */
@@ -248,9 +245,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 			registerSaveWindowBounds()
 
 		}
-
-		// Allow dragging to Window on Mac
-		targetWindow.setAlwaysOnTop( true, 'modal-panel' )
 
 	}
 
@@ -516,13 +510,13 @@ const openSettingsWindow = async () => {
 
 		} )
 
-		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-		windows.preferencesWindow.setAlwaysOnTop( true, 'modal-panel' )
-
 		const mainBounds = windows.win.getBounds()
 		const newBounds = { x: mainBounds.x + mainBounds.width + 1, y: mainBounds.y + mainBounds.height + 1 }
 		windows.safeSetBounds( windows.preferencesWindow, newBounds )
 
+		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
+		windows.preferencesWindow.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
+		windows.preferencesWindow.setAlwaysOnTop( true, 'screen-saver' )
 		windows.preferencesWindow.focus()
 
 		preferences.value( 'hidden.showSettings', true )
