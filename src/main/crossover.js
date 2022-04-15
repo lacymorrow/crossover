@@ -366,6 +366,14 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 const initShadowWindow = async () => {
 
+	log.info( 'Trying to create shadow window...' )
+
+	if ( preferences.value( 'hidden.locked' ) ) {
+
+		return
+
+	}
+
 	// Create
 	const shadow = await windows.createShadow()
 
