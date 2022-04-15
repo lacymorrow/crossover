@@ -24,7 +24,7 @@ const init = async () => {
 
 	// Report unhandled errors
 	await unhandled( {
-		showDialog: true, // default: only in production
+		showDialog: false, // default: only in production
 		logger: log.warn,
 		reportButton( error ) {
 
@@ -37,7 +37,7 @@ const init = async () => {
 		},
 	} )
 
-	// Log.catchErrors( {
+	// log.catchErrors( {
 	// 	showDialog: true,
 	// 	onError(error, versions, submitIssue) {
 	// 		openReportCrashDialog({error, versions, submitIssue})

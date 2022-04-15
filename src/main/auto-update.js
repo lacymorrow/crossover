@@ -109,7 +109,7 @@ const update = () => {
 
 			}, FOUR_HOURS )
 
-			autoUpdater.checkForUpdates()
+			autoUpdater.checkForUpdatesAndNotify()
 
 		}
 
