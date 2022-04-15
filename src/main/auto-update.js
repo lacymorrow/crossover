@@ -17,29 +17,45 @@ const install = () => autoUpdater.quitAndInstall()
 
 const onDownloadProgress = progressObject => {
 
-	let message = 'Download speed: ' + progressObject.bytesPerSecond
-	message = message + ' - Downloaded ' + progressObject.percent + '%'
-	message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
-	log.info( message )
+	try {
 
-	// Dock progress bar
-	windows.setProgress( progressObject.percent / 100 )
+		let message = 'Download speed: ' + progressObject.bytesPerSecond
+		message = message + ' - Downloaded ' + progressObject.percent + '%'
+		message = message + ' (' + progressObject.transferred + '/' + progressObject.total + ')'
+		log.info( message )
+
+		// Dock progress bar
+		windows.setProgress( progressObject.percent / 100 )
+
+	} catch ( error ) {
+
+		log.error( error )
+
+	}
 
 }
 
 const onUpdateAvailable = () => {
 
-	sound.play( 'UPDATE' )
-	windows.win.webContents.send( 'set_info_icon', 'info' )
+	try {
 
-	if ( is.linux ) {
+		sound.play( 'UPDATE' )
+		windows.win.webContents.send( 'set_info_icon', 'info' )
 
-		dialog.openUpdateDialog( () => {
+		if ( is.linux ) {
 
-			// AutoUpdater.downloadUpdate()
-			shell.openExternal( RELEASES_URL )
+			dialog.openUpdateDialog( () => {
 
-		} )
+				// AutoUpdater.downloadUpdate()
+				shell.openExternal( RELEASES_URL )
+
+			} )
+
+		}
+
+	} catch ( error ) {
+
+		log.error( error )
 
 	}
 
@@ -47,10 +63,18 @@ const onUpdateAvailable = () => {
 
 const onUpdateDownloaded = () => {
 
-	windows.setProgress( -1 )
-	dock.setBadge( '!' )
-	notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
-	// sound.play( 'DONE' ) // uncomment if we make notification silent
+	try {
+
+		windows.setProgress( -1 )
+		dock.setBadge( '!' )
+		notification( { title: 'CrossOver has been Updated', body: 'Relaunch to take effect' } )
+		// sound.play( 'DONE' ) // uncomment if we make notification silent
+
+	} catch ( error ) {
+
+		log.error( error )
+
+	}
 
 }
 
@@ -85,7 +109,7 @@ const update = () => {
 
 			}, FOUR_HOURS )
 
-			autoUpdater.checkForUpdatesAndNotify()
+			autoUpdater.checkForUpdates()
 
 		}
 
