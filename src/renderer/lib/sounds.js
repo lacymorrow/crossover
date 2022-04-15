@@ -49,6 +49,7 @@ const sounds = {
 
 function preload( basepath = '' ) {
 
+	let audio
 	for ( const name in sounds ) {
 
 		if ( !cache[name] ) {
@@ -56,7 +57,7 @@ function preload( basepath = '' ) {
 			cache[name] = new window.Audio()
 
 			const sound = sounds[name]
-			const audio = cache[name]
+			audio = cache[name]
 			audio.volume = sound.volume
 			audio.src = 'file://' + basepath + sound.url
 
@@ -64,14 +65,16 @@ function preload( basepath = '' ) {
 
 	}
 
+	return audio
+
 }
 
 function play( name ) {
 
-	const audio = cache[name]
+	let audio = cache[name]
 	if ( !audio ) {
 
-		preload()
+		audio = preload()
 
 	}
 
