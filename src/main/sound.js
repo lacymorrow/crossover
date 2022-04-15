@@ -6,7 +6,7 @@ const { __static } = require( './paths' )
 
 const preload = () => {
 
-	windows.win.webContents.send( 'preload_sounds', path.join( __static, 'sounds' ) + path.sep )
+	windows.win?.webContents.send( 'preload_sounds', path.join( __static, 'sounds' ) + path.sep )
 
 }
 
@@ -14,7 +14,7 @@ const play = sound => {
 
 	if ( checkboxTrue( preferences.value( 'app.sounds' ), 'sounds' ) ) {
 
-		windows.win.webContents.send( 'play_sound', sound )
+		windows.win?.webContents.send( 'play_sound', sound )
 
 	}
 
