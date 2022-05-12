@@ -234,7 +234,7 @@ const preferencesConfig = {
 									{ label: 'Press right mouse-button', value: '1' },
 									{ label: 'Hold right mouse-button', value: '2' },
 								],
-								help: 'Keeps CrossOver centered on the mouse cursor. ',
+								help: 'Change crosshair size when ADS-ing',
 							},
 							{
 								label: 'Crosshair ADS Size',
