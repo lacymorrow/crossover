@@ -226,13 +226,13 @@ const preferencesConfig = {
 								help: 'Keeps CrossOver centered on the mouse cursor. ',
 							},
 							{
-								label: 'Toggle Resize on ADS',
+								label: 'Toggle crosshair resize on ADS',
 								key: 'resizeOnADS',
 								type: 'radio',
 								options: [
-									{ label: 'Never', value: '0' },
-									{ label: 'Press right mouse-button', value: '1' },
-									{ label: 'Hold right mouse-button', value: '2' },
+									{ label: 'Never', value: 'off' },
+									{ label: 'Press right mouse-button', value: 'press' },
+									{ label: 'Hold right mouse-button', value: 'hold' },
 								],
 								help: 'Change crosshair size when ADS-ing',
 							},
