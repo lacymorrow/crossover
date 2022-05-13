@@ -181,7 +181,7 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 	const hideOnMouse = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 	const hideOnKey = preferences.value( 'actions.hideOnKey' )
 	const tilt = checkboxTrue( preferences.value( 'actions.tiltEnable' ), 'tiltEnable' )
-	const resizeOnADS = Number.parseInt( preferences.value( 'actions.resizeOnADS' ), 10 )
+	const resizeOnADS = preferences.value( 'actions.resizeOnADS' )
 
 	/* DO STUFF */
 	windows.hideSettingsWindow()
@@ -226,7 +226,7 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 		}
 		
-		if ( resizeOnADS !== 0) {
+		if ( resizeOnADS !== "off") {
 
 			iohook.resizeOnADS()
 

@@ -32,7 +32,7 @@ const getDefaults = () => ( {
 	},
 	actions: {
 		followMouse: [],
-		resizeOnADS: '0',
+		resizeOnADS: 'off',
 		ADSSize: 50,
 		hideOnMouse: '-1',
 		tiltEnable: [],
@@ -75,7 +75,7 @@ const getDefaults = () => ( {
 		positionX: null,
 		positionY: null,
 		tilted: false,
-		ADSed: false
+		ADSed: true
 	},
 } )
 

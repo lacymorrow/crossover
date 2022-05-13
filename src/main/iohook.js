@@ -258,14 +258,15 @@ const tilt = async () => {
 
 const resizeOnADS = async () => {
 	
-	const ADSSize = Number.parseInt( preferences.value( 'actions.ADSSize' ) )
+	const ADSSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 )
 	const resizeOnADSOption = preferences.value( 'actions.resizeOnADS' ) 
-	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ) )
+	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
 	log.info( 'Setting: Resize on ADS' )
 	await iohook.importIoHook()
 
 	if (resizeOnADSOption === "press") {
+		
 		iohook.hook.on( 'mousedown', event => {
 
 			if ( event.button === 2 ) {
@@ -293,6 +294,7 @@ const resizeOnADS = async () => {
 			}
 
 		} )
+
 	}
 	else if (resizeOnADSOption === "hold") {
 		
