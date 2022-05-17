@@ -20,6 +20,7 @@
 	Todo:
 		- Add labels or tooltips for buttons
 		- electron builder dont bundle unneeded files
+		- click tray show menu; dblclick show app
 
 	Todo: when updating electron to 12+:
 		- Test iohook
