@@ -21,6 +21,7 @@
 		- Add labels or tooltips for buttons
 		- electron builder dont bundle unneeded files
 		- click tray show menu; dblclick show app
+		- SECURITY: remove unsafe-eval; turn off remote module
 
 	Todo: when updating electron to 12+:
 		- Test iohook
@@ -141,9 +142,6 @@ const ready = async () => {
 
 	}
 
-	/* SOUND */
-	sound.preload()
-
 	/* Press Play >>> */
 	await init()
 
@@ -152,6 +150,9 @@ const ready = async () => {
 
 	/* MENU */
 	menu.init()
+
+	/* SOUND */
+	sound.preload()
 
 	/* AUTO-UPDATE */
 	autoUpdate.update()

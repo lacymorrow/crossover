@@ -80,13 +80,13 @@
 	// Sounds
 	window.crossover.receive( 'preload_sounds', arg => {
 
-		window.crossover.preload( arg )
+		window.crossover.preloadSounds( arg )
 
 	} )
 
 	window.crossover.receive( 'play_sound', arg => {
 
-		window.crossover.play( arg )
+		window.crossover.playSound( arg )
 
 	} )
 

@@ -49,6 +49,12 @@ const sounds = {
 
 function preload( basepath = '' ) {
 
+	if ( !basepath ) {
+
+		console.warn( 'Basepath not provided, sounds may not work properly.' )
+
+	}
+
 	let audio
 	for ( const name in sounds ) {
 

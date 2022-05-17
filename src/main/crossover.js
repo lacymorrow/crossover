@@ -56,6 +56,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+C`,
 			fn() {
 
+				sound.play( 'CENTER' )
 				windows.center()
 
 			},
@@ -184,7 +185,7 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 	/* DO STUFF */
 	windows.hideSettingsWindow()
-	windows.hideChooserWindow( { focus: true } )
+	windows.hideChooserWindow()
 	targetWindow.closable = !lock
 	targetWindow.setFocusable( !lock )
 	targetWindow.webContents.send( 'lock_window', lock )

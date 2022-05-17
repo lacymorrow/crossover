@@ -20,6 +20,8 @@ const appEvents = () => {
 	// Opening 2nd instance focuses app
 	app.on( 'second-instance', async () => {
 
+		console.warn( 'Creating second app instance' )
+
 		// If locked, unlock, else create shadow window
 		if ( windows.win ) {
 
