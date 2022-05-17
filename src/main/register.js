@@ -72,6 +72,21 @@ const appEvents = () => {
 
 	app.on( 'window-all-closed', app.quit )
 
+	// Security workaround for https://github.com/lacymorrow/crossover/security/dependabot/7
+	// Affects electron < 13.6.6
+	app.on( 'web-contents-created', ( event, webContents ) => {
+
+		webContents.on( 'select-bluetooth-device', ( event, devices, callback ) => {
+
+			// Prevent default behavior
+			event.preventDefault()
+			// Cancel the request
+			callback( '' )
+
+		} )
+
+	} )
+
 }
 
 const events = () => {
