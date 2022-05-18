@@ -249,9 +249,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 	}
 
-	// Bring window to front
-	targetWindow.show()
-
 	dock.setVisible( !lock )
 
 	preferences.value( 'hidden.locked', lock )

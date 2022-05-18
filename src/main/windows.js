@@ -16,8 +16,6 @@ const init = async options => {
 
 	if ( windows.win ) {
 
-		windows.win.show()
-
 		return windows.win
 
 	}
@@ -97,6 +95,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		hasShadow: false,
 		maximizable: false,
 		minimizable: false,
+		movable: true,
 		resizable: false,
 		show: false,
 		skipTaskbar: false,
@@ -109,6 +108,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		height: APP_HEIGHT,
 		webPreferences: {
 			contextIsolation: true,
+			sandbox: false, // todo: enable
 			enableRemoteModule: true,
 			nativeWindowOpen: true,
 			nodeIntegration: false,
@@ -139,17 +139,19 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	win.setAlwaysOnTop( true, 'screen-saver' )
 
-	// If we wanted a dock, we can use it now: https://github.com/electron/electron/pull/11599
-	// dock.setDockVisible( true )
+	win.once( 'ready-to-show', () => {
+
+		log.info( 'Event: Ready to show' )
+
+		win.show()
+		// If we wanted a dock, we can use it now: https://github.com/electron/electron/pull/11599
+		// dock.setDockVisible( true )
+
+	} )
 
 	if ( isShadowWindow ) {
 
 		// Duplicate shadow windows
-		win.once( 'ready-to-show', () => {
-
-			win.show()
-
-		} )
 
 		win.on( 'closed', () => {
 
@@ -213,9 +215,10 @@ const createChild = async ( parent, windowName ) => {
 		width: 600,
 		height: 400,
 		webPreferences: {
-			nodeIntegration: false, // Is default value after Electron v5
 			contextIsolation: true, // Protect against prototype pollution
 			enableRemoteModule: true, // Turn off remote
+			nodeIntegration: false, // Is default value after Electron v5
+			sandbox: false, // todo: enable
 			preload: path.join( __renderer, `preload-${windowName}.js` ),
 		},
 	}

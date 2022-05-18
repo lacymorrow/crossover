@@ -25,7 +25,6 @@ const setVisible = visible => {
 
 const dock = {
 	setBadge,
-
 	setVisible,
 }
 

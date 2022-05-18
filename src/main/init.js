@@ -43,8 +43,6 @@ const init = async options => {
 
 	await windows.init()
 	// Log.info( windows.win.getNativeWindowHandle() )
-	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	windows.win.setAlwaysOnTop( true, 'screen-saver' )
 
 	// Sync Settings
 	crossover.syncSettings()

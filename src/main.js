@@ -83,6 +83,9 @@ const start = async () => {
 	console.log( '***************' )
 	log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
 
+	// Enable sandbox globally
+	// app.enableSandbox()
+
 	// Prevent multiple instances of the app
 	if ( !app.requestSingleInstanceLock() ) {
 
