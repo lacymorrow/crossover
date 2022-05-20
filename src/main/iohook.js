@@ -254,6 +254,84 @@ const tilt = async () => {
 
 }
 
+
+
+const resizeOnADS = async () => {
+	
+	const ADSSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 )
+	const resizeOnADSOption = preferences.value( 'actions.resizeOnADS' ) 
+	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
+
+	log.info( 'Setting: Resize on ADS' )
+	await iohook.importIoHook()
+
+	if (resizeOnADSOption === "press") {
+		
+		iohook.hook.on( 'mousedown', event => {
+
+			if ( event.button === 2 ) {
+
+				const ADSed = preferences.value( 'hidden.ADSed' )
+
+				if ( ADSed ) {
+
+					set.rendererProperties( {
+						'--crosshair-width': `${ADSSize}px`,
+						'--crosshair-height': `${ADSSize}px`
+					}, windows.win )
+
+				} else {
+
+					set.rendererProperties( {
+						'--crosshair-width': `${oldCrosshairSize}px`,
+						'--crosshair-height': `${oldCrosshairSize}px`
+					}, windows.win )
+
+				}
+
+				preferences.value( 'hidden.ADSed', !ADSed )
+	
+			}
+
+		} )
+
+	}
+	else if (resizeOnADSOption === "hold") {
+		
+		iohook.hook.on( 'mousedown', event => {
+
+			if ( event.button === 2 ) {
+
+				set.rendererProperties( {
+					'--crosshair-width': `${ADSSize}px`,
+					'--crosshair-height': `${ADSSize}px`
+				}, windows.win )
+	
+			}
+
+		} )
+
+		iohook.hook.on( 'mouseup', event => {
+
+			if ( event.button === 2 ) {
+
+				set.rendererProperties( {
+					'--crosshair-width': `${oldCrosshairSize}px`,
+					'--crosshair-height': `${oldCrosshairSize}px`
+				}, windows.win )
+	
+			}
+	
+		} )
+
+	}
+
+	if (resizeOnADS) {
+		iohook.hook.start()
+	}
+	
+}
+
 const iohook = {
 	hook: null,
 	importIoHook,
@@ -262,6 +340,7 @@ const iohook = {
 	hideOnKey,
 	hideOnMouse,
 	tilt,
+	resizeOnADS,
 }
 
 module.exports = iohook

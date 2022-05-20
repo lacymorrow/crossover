@@ -32,6 +32,8 @@ const getDefaults = () => ( {
 	},
 	actions: {
 		followMouse: [],
+		resizeOnADS: 'off',
+		ADSSize: 50,
 		hideOnMouse: '-1',
 		tiltEnable: [],
 		tiltToggle: [],
@@ -73,6 +75,7 @@ const getDefaults = () => ( {
 		positionX: null,
 		positionY: null,
 		tilted: false,
+		ADSed: true
 	},
 } )
 
@@ -221,6 +224,24 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' } ],
 								help: 'Keeps CrossOver centered on the mouse cursor. ',
+							},
+							{
+								label: 'Toggle crosshair resize on ADS',
+								key: 'resizeOnADS',
+								type: 'radio',
+								options: [
+									{ label: 'Never', value: 'off' },
+									{ label: 'Press right mouse-button', value: 'press' },
+									{ label: 'Hold right mouse-button', value: 'hold' },
+								],
+								help: 'Change crosshair size when ADS-ing',
+							},
+							{
+								label: 'Crosshair ADS Size',
+								key: 'ADSSize',
+								type: 'slider',
+								min: 1,
+								max: 100
 							},
 							{
 								label: 'Hide Crosshair on Mouse Button',
