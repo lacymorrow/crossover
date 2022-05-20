@@ -75,7 +75,7 @@ const getDefaults = () => ( {
 		positionX: null,
 		positionY: null,
 		tilted: false,
-		ADSed: true
+		ADSed: true,
 	},
 } )
 
@@ -226,12 +226,12 @@ const preferencesConfig = {
 								help: 'Keeps CrossOver centered on the mouse cursor. ',
 							},
 							{
-								label: 'Toggle crosshair resize on ADS',
+								label: 'Resize crosshair on ADS',
 								key: 'resizeOnADS',
 								type: 'radio',
 								options: [
 									{ label: 'Never', value: 'off' },
-									{ label: 'Press right mouse-button', value: 'press' },
+									{ label: 'Toggle right mouse-button', value: 'toggle' },
 									{ label: 'Hold right mouse-button', value: 'hold' },
 								],
 								help: 'Change crosshair size when ADS-ing',
@@ -241,7 +241,7 @@ const preferencesConfig = {
 								key: 'ADSSize',
 								type: 'slider',
 								min: 1,
-								max: 100
+								max: 100,
 							},
 							{
 								label: 'Hide Crosshair on Mouse Button',

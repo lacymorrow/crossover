@@ -226,8 +226,8 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 			iohook.tilt()
 
 		}
-		
-		if ( resizeOnADS !== "off") {
+
+		if ( resizeOnADS !== 'off' ) {
 
 			iohook.resizeOnADS()
 
