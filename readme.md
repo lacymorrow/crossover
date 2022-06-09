@@ -279,6 +279,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ❌    | Metro Exodus Gold Edition         | Doesn't work under any circumstances                                               |
 | ✅    | Overwatch                         | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | Phasmophobia                      | Runs in `Windowed` and `Fullscreen` modes                                          |
+| ✅    | Planetside 2                      | Runs in `Windowed` and `Windowed Fullscreen` modes                                          |
 | ❌    | Rainbow 6: Seige                  | Vulkan-based                                                                       |
 | ✅    | Roblox                            | Runs in `Fullscreen` mode _(Windows)_ and `Windowed Fullscreen` mode _(MacOS)_     |
 | ✅    | Rocket League                     | Runs in `Windowed` mode                                                            |
