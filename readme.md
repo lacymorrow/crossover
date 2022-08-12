@@ -134,6 +134,7 @@ _macOS 10.10+, Linux, and Windows 7+ are supported._
 
 ##### _Because this app is Free and Open-Source, we cannot afford to sign our code. This means Chrome may warn about an untrusted download, this is normal. Click the arrow icon -> `Keep` to finish downloading. Windows Defender and Mac Gatekeeper will prevent you from running the app the first time._
 
+
 ##### Windows
 
 [**Download**](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe) the `.exe` file. _**(CrossOver-Setup-x.x.x.exe)**_
@@ -143,12 +144,24 @@ _macOS 10.10+, Linux, and Windows 7+ are supported._
 - Click `More Info`
 - Click `Run Anyway`
 
+
+##### Mac
+
 [**Download**](https://github.com/lacymorrow/crossover/releases/latest) the `.dmg` file. _**(CrossOver-x.x.x.dmg)**_
 
 > "CrossOver" cannot be opened because the developer cannot be verified.
 
 - Locate the `CrossOver` app
 - Hold Control while you click the app icon, then choose Open from the shortcut menu
+
+> "CrossOver is damaged and can't be opened..."
+
+M1 Mac security fix: (_thanks [Yoyopizzacat, #207](https://github.com/lacymorrow/crossover/issues/207#issuecomment-1212708790)_)
+
+- Make sure CrossOver is in your `/Applications` folder
+- Open your terminal and type `sudo xattr -r -d com.apple.quarantine /Applications/CrossOver.app`
+- Type in your password and now you can use CrossOver!
+
 
 ##### Linux
 
