@@ -1,5 +1,3 @@
-# IF YOU ARE RECEIVING AN ERROR, PLEASE MANUALLY [UPDATE CROSSOVER TO THE LATEST VERSION](https://github.com/lacymorrow/crossover/releases/latest). (I'm really sorry 😬 )
-
 <p align="center">
   <img width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/icons/icon.png">
 </p>
@@ -307,19 +305,26 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 #### Operating Systems
 
-| Works | OS                  | Notes                                                                                                     |
-| ----- | ------------------- | --------------------------------------------------------------------------------------------------------- |
-| ✅    | MacOS arm64 _(M1)_  | Current reports state M1 Macs now with CrossOver [#93](https://github.com/lacymorrow/crossover/issues/93) |
-| ✅    | MacOS x64 _(Intel)_ | Tested on Catalina 10.15.1                                                                                |
-| ✅    | Windows 10 ia32     |
-| ✅    | Windows 10 x64      | Custom cursors do not show in draggable taskbar area                                                      |
-| ✅    | Windows 8           |                                                       |
-| ❓    | Windows 7           | Does not work in Windows 7 Home; Works in Windows 7 Pro [#63](https://github.com/lacymorrow/crossover/issues/63)|
-| ❓    | Arch                | Tested in v2021.01.01                                                                                     |
-| ✅    | Elementary OS       | Tested in v5.1                                                                                            |
-| ✅    | Fedora              | Tested in v33 (Shortcut conflicts with desktop switching)                                                 |
-| ✅    | Mint                | Tested in v20.1                                                                                           |
-| ✅    | Ubuntu              | Tested in v20.04.1                                                                                        |
+| Works | OS                      | Notes                                                                                                     |
+| ----- | -------------------     | --------------------------------------------------------------------------------------------------------- |
+| ✅    | MacOS arm64 _(M1, M2)_  | You may need to run a command to un-quarantine the download, see below |
+| ✅    | MacOS x64 _(Intel)_     | Tested on Catalina 10.15.1                                                                                |
+| ✅    | Windows 10 ia32         |
+| ✅    | Windows 10 x64          | Custom cursors do not show in draggable taskbar area                                                      |
+| ✅    | Windows 8               |                                                       |
+| ❓    | Windows 7               | Does not work in Windows 7 Home; Works in Windows 7 Pro [#63](https://github.com/lacymorrow/crossover/issues/63)|
+| ❓    | Arch                    | Tested in v2021.01.01                                                                                     |
+| ✅    | Elementary OS           | Tested in v5.1                                                                                            |
+| ✅    | Fedora                  | Tested in v33 (Shortcut conflicts with desktop switching)                                                 |
+| ✅    | Mint                    | Tested in v20.1                                                                                           |
+| ✅    | Ubuntu                  | Tested in v20.04.1                                                                                        |
+
+###### Newer MacOS' may quarantine the `CrossOver.app` package. To un-quarantine:
+
+- Move `CrossOver.app` to your `Applications` folder
+- Open terminal and type: sudo xattr -r -d com.apple.quarantine /Applications/CrossOver.app
+
+> via [@Yoyopizzacat](https://github.com/lacymorrow/crossover/issues/207#issuecomment-1212708790)
 
 ---
 
