@@ -534,13 +534,13 @@ const safeSetBounds = ( win, bounds ) => {
 
 	// Prevent windows opening offscreen
 	const screenArea = screen.getDisplayNearestPoint( bounds ).workArea
-	if ( bounds.x + bounds.width > screenArea.width ) {
+	if ( bounds.x + bounds.width > screenArea.width + screenArea.x ) {
 
 		bounds.x = screenArea.width - bounds.width
 
 	}
 
-	if ( bounds.y + bounds.height > screenArea.height ) {
+	if ( bounds.y + bounds.height > screenArea.height + screenArea.y ) {
 
 		bounds.y = screenArea.height - bounds.height
 
