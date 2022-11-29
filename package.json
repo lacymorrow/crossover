@@ -7,12 +7,24 @@
     "copyright": "Copyright © Lacy Morrow",
     "repository": "lacymorrow/crossover",
     "homepage": "https://lacymorrow.github.io/crossover",
+    "company": "Fly5",
     "author": {
         "name": "Lacy Morrow",
         "email": "me@lacymorrow.com",
         "url": "https://lacymorrow.com"
     },
-    "company": "Fly5",
+    "funding": [
+      {
+        "type" : "patreon",
+        "url" : "https://patreon.com/lacymorrow"
+      },
+      {
+        "type" : "individual",
+        "url" : "http://lacymorrow.com/donate"
+      },
+      "https://opencollective.com/crossover",
+      "https://www.buymeacoffee.com/lm"
+    ],
     "bugs": {
         "url": "https://github.com/lacymorrow/crossover/issues"
     },
