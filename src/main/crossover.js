@@ -7,6 +7,7 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const save = require( './save' )
 const set = require( './set' )
+const tray = require( './tray' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
@@ -15,6 +16,20 @@ const { getWindowBoundsCentered } = require( 'electron-util' )
 const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
+
+//  Remove tray in Linux to fully quit
+app.on( 'before-quit', _ => {
+
+	tray.destroy()
+
+} )
+
+//  Remove tray in Linux to fully quit
+app.on( 'before-quit', _ => {
+
+	tray.instance && tray.instance.destroy()
+
+} )
 
 const quit = () => app.quit()
 

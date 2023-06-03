@@ -107,7 +107,6 @@ const start = async () => {
 	//  require( 'electron-reloader' )( module )
 	// } catch {}
 
-	//
 	// Const contextMenu = require('electron-context-menu')
 	// contextMenu()
 
