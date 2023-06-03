@@ -190,8 +190,18 @@ module.exports = async () => {
 	// app.on(...)
 	register.appEvents()
 
+	// Quit app when all windows are closed; Fix for Linux tray
+	app.on( 'before-quit', _ => {
+
+		// https://electronjs.org/docs/api/app#event-before-quit
+		// https://electronjs.org/docs/api/tray#traydestroy
+		tray.instance?.destroy()
+
+	} )
+
 	// wait for app.on('ready')
 	await app.whenReady()
+	//  Remove tray in Linux to fully quit
 
 	console.timeLog( 'init' )
 

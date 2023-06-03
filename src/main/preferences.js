@@ -105,7 +105,7 @@ const preferencesConfig = {
 						label: 'Welcome to CrossOver',
 						fields: [
 							{
-								content: '<p>Use <code>CTRL+ALT+SHIFT+X</code> to lock CrossOver in place and hide the background window.</p>',
+								content: '<p><b>Use <code>CTRL+ALT+SHIFT+X</code> to lock CrossOver in place and hide the background window.</b></p>',
 								type: 'message',
 							},
 						],
@@ -134,6 +134,16 @@ const preferencesConfig = {
 								dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
 							},
 							{
+								label: 'Reticle',
+								key: 'reticle',
+								type: 'radio',
+								options: [
+									{ label: 'Dot', value: 'dot' },
+									{ label: 'Cross', value: 'cross' },
+									{ label: 'No reticle', value: 'off' },
+								],
+							},
+							{
 								label: 'Crosshair Size',
 								key: 'size',
 								type: 'slider',
@@ -148,14 +158,12 @@ const preferencesConfig = {
 								max: 100,
 							},
 							{
-								label: 'Reticle',
-								key: 'reticle',
-								type: 'radio',
-								options: [
-									{ label: 'Dot', value: 'dot' },
-									{ label: 'Cross', value: 'cross' },
-									{ label: 'No reticle', value: 'off' },
-								],
+								label: 'Reticle Scale',
+								key: 'reticleScale',
+								type: 'slider',
+								min: 1,
+								max: 500,
+								help: 'Reticle scale percentage (compared to crosshair)',
 							},
 							{
 								label: 'Reticle Color',
@@ -163,14 +171,6 @@ const preferencesConfig = {
 								type: 'color',
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Center reticle color',
-							},
-							{
-								label: 'Reticle Scale',
-								key: 'reticleScale',
-								type: 'slider',
-								min: 1,
-								max: 500,
-								help: 'Reticle scale percentage (compared to crosshair)',
 							},
 							{
 								heading: 'SVG Customization Options',
@@ -211,7 +211,7 @@ const preferencesConfig = {
 		},
 		{
 			id: 'actions',
-			label: 'Crosshair Actions',
+			label: 'Mouse Actions',
 			icon: 'turtle',
 			form: {
 				groups: [
