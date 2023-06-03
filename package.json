@@ -36,7 +36,7 @@
 		"install": "yarn css",
 		"postinstall": "electron-builder install-app-deps",
 		"css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
-		"start": "yarn css && electron --trace-warnings .",
+		"start": "yarn css && electron --no-sandbox --trace-warnings .",
 		"watch": "nodemon -e js,ts,scss --ignore 'dist/' --watch . --exec 'npm run start'",
 		"lint": "eslint --fix .",
 		"lint:src": "eslint --fix src",

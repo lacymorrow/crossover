@@ -111,7 +111,23 @@ const start = async () => {
 	// Const contextMenu = require('electron-context-menu')
 	// contextMenu()
 
+	/* LINUX FIXES */
+
 	// Fix for Linux transparency issues
+	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+
+		// Disable hardware acceleration
+		log.info( 'Setting: Disable GPU' )
+		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+		app.commandLine.appendSwitch( 'disable-gpu' )
+		app.disableHardwareAcceleration()
+
+	} else {
+
+		log.info( 'Setting: Enable GPU' )
+
+	}
+
 	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
 		// Disable hardware acceleration
