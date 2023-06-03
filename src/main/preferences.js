@@ -43,7 +43,7 @@ const getDefaults = () => ( {
 		tiltRight: '',
 	},
 	app: {
-		theme: DEFAULT_THEME,
+		theme: DEFAULT_THEME || 'system',
 		appBgColor: 'unset',
 		appHighlightColor: 'unset',
 		alerts: [ 'alerts' ],
@@ -488,6 +488,13 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Enable hardware acceleration', value: 'gpu' } ],
 								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
+							},
+							{
+								label: 'Render GPU using browser',
+								key: 'gpu',
+								type: 'checkbox',
+								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpu' } ],
+								help: 'This can avoid issues with , which can help avoid the issues with transparency .',
 							},
 							{
 								label: 'Run App On System Start',

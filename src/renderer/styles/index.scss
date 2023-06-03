@@ -6,17 +6,17 @@ $app_background_opacity: 0.6;
 
 /* Colors */
 $app_highlight: #392a84;
-$theme_bg_dark: #FFF;
-$theme_bg_light: #000;
+$theme_bg_light: #FFF;
+$theme_bg_dark: #000;
 
-$text_dark: #555;
-$text_light: #EFEFEF;
+$text_light: #555;
+$text_dark: #EFEFEF;
 
-$icon_light: #3aa0d7;
-$icon_hover_light: rgba(179, 112, 223, 0.9);
+$icon_dark: #3aa0d7;
+$icon_hover_dark: rgba(179, 112, 223, 0.9);
 // $icon_dark: #456072;
-$icon_dark: $app_highlight;
-$icon_hover_dark: rgba(150, 32, 157, 0.9);
+$icon_light: $app_highlight;
+$icon_hover_light: rgba(150, 32, 157, 0.9);
 $icon_red: rgba(255, 87, 51, 0.95);
 $icon_shadow: rgba(10, 10, 10, .7);
 
@@ -38,25 +38,25 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 :root {
 	// App theme
-	--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
+	--app-bg-color-initial: #{rgba($theme_bg_light, .6)};
 	--app-bg-color: unset;
 
-	--app-highlight-color-initial: #{$icon_dark};
+	--app-highlight-color-initial: #{$icon_light};
 	--app-highlight-color: unset;
-	--app-icon-hover-color: #{$icon_hover_dark};
+	--app-icon-hover-color: #{$icon_hover_light};
 
-	--app-text-color: #{$text_dark};
+	--app-text-color: #{$text_light};
 	--app-bg-opacity: #{$app_background_opacity};
-	--app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
+	--app-chooser-bg-color: #{rgba($theme_bg_light, 1)};
 
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
-	@media (prefers-color-scheme: light) {
-		--app-bg-color-initial: #{rgba($theme_bg_light, $app_background_opacity)};
-		--app-highlight-color-initial: #{$icon_light};
-		--app-icon-hover-color: #{$icon_hover_light};
-		// --app-text-color: #{$text_light};
-		// --app-chooser-bg-color: #{rgba($theme_bg_light, 1)};
+	@media (prefers-color-scheme: dark) {
+		--app-bg-color-initial: #{rgba($theme_bg_dark, $app_background_opacity)};
+		--app-highlight-color-initial: #{$icon_dark};
+		--app-icon-hover-color: #{$icon_hover_dark};
+		// --app-text-color: #{$text_dark};
+		// --app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
 	}
 
 
