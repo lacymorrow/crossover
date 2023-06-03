@@ -20,14 +20,9 @@ let previousPreferences = preferences.preferences
 //  Remove tray in Linux to fully quit
 app.on( 'before-quit', _ => {
 
-	tray.destroy()
-
-} )
-
-//  Remove tray in Linux to fully quit
-app.on( 'before-quit', _ => {
-
-	tray.instance && tray.instance.destroy()
+	// https://electronjs.org/docs/api/app#event-before-quit
+	// https://electronjs.org/docs/api/tray#traydestroy
+	tray.instance?.destroy()
 
 } )
 
