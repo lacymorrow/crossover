@@ -17,7 +17,7 @@ const windows = require( './windows' )
 
 /* MENU ITEMS */
 const closeWindowMenuItem = {
-	label: 'Custom Image…',
+	label: 'Custom Image...',
 	accelerator: 'CommandOrControl+W',
 	async click() {
 
@@ -29,7 +29,7 @@ const closeWindowMenuItem = {
 
 const preferencesMenuItems = [
 	{
-		label: 'Preferences…',
+		label: 'Preferences...',
 		accelerator: 'CommandOrControl+,',
 		click() {
 
@@ -38,7 +38,7 @@ const preferencesMenuItems = [
 		},
 	},
 	{
-		label: 'Choose Crosshair…',
+		label: 'Choose Crosshair...',
 		accelerator: 'CommandOrControl+.',
 		click() {
 
@@ -49,7 +49,7 @@ const preferencesMenuItems = [
 ]
 
 const openCustomImageMenuItem = {
-	label: 'Custom Image…',
+	label: 'Custom Image...',
 	accelerator: 'CommandOrControl+O',
 	async click() {
 
@@ -98,7 +98,7 @@ const helpSubmenu = [
 		type: 'separator',
 	},
 	{
-		label: 'Report an Issue…',
+		label: 'Report an Issue...',
 		click() {
 
 			openNewGitHubIssue( {

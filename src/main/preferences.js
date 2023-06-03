@@ -43,7 +43,7 @@ const getDefaults = () => ( {
 		tiltRight: '',
 	},
 	app: {
-		theme: DEFAULT_THEME,
+		theme: DEFAULT_THEME || 'system',
 		appBgColor: 'unset',
 		appHighlightColor: 'unset',
 		alerts: [ 'alerts' ],

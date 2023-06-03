@@ -12,7 +12,7 @@ const importIoHook = async () => {
 
 	if ( !iohook.hook ) {
 
-		log.info( 'Loading IOHook…' )
+		log.info( 'Loading IOHook...' )
 		iohook.hook = await require( 'iohook' )
 
 	}
