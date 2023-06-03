@@ -490,6 +490,13 @@ const preferencesConfig = {
 								help: 'If you are having issues with FPS, try disabling hardware acceleration. You must restart CrossOver for this to take effect.',
 							},
 							{
+								label: 'Render GPU using browser',
+								key: 'gpuprocess',
+								type: 'checkbox',
+								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpuprocess' } ],
+								help: 'This can help avoid issues with transparency.',
+							},
+							{
 								label: 'Run App On System Start',
 								key: 'boot',
 								type: 'checkbox',
