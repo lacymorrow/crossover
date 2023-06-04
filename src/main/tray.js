@@ -42,10 +42,9 @@ const init = () => {
 
 	tray.instance = new Tray( getIconPath() )
 
-	console.log( preferencesMenuItems )
 	const contextMenu = Menu.buildFromTemplate( [
 		showAppMenuItem,
-		preferencesMenuItems,
+		...preferencesMenuItems,
 		openCustomImageMenuItem,
 		resetMenuItem,
 		{ role: 'quit' },

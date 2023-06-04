@@ -11,6 +11,7 @@ const { play: playSound, preload: preloadSounds } = require( './lib/sounds.js' )
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
+	test: 'test',
 	config,
 	debounce,
 	isMacOs: navigator.userAgent.indexOf( 'Mac' ) !== -1,

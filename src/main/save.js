@@ -1,3 +1,4 @@
+const { DEBOUNCE_DELAY } = require( '../config/config' )
 const { debounce } = require( '../config/utils' )
 const log = require( './log' )
 const preferences = require( './preferences' ).init()
@@ -36,7 +37,7 @@ const position = bounds => {
 
 }
 
-const positionDebounced = debounce( bounds => position( bounds ), 500 )
+const positionDebounced = debounce( bounds => position( bounds ), DEBOUNCE_DELAY || 150 )
 
 const save = { crosshair, position: positionDebounced }
 

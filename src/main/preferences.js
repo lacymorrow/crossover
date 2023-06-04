@@ -3,7 +3,7 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config.js' )
+const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES, DEBOUNCE_DELAY } = require( '../config/config.js' )
 
 const browserWindowOverrides = {
 	alwaysOnTop: true,
@@ -83,8 +83,8 @@ const preferencesConfig = {
 	browserWindowOverrides,
 	// Custom styles
 	config: {
-		debounce: 10,
 	},
+	debounce: DEBOUNCE_DELAY,
 	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
@@ -105,7 +105,7 @@ const preferencesConfig = {
 						label: 'Welcome to CrossOver',
 						fields: [
 							{
-								content: '<p><b>Use <code>CTRL+ALT+SHIFT+X</code> to lock CrossOver in place and hide the background window.</b></p>',
+								content: '<p>Use <code>CTRL+ALT+SHIFT+X</code> to lock CrossOver in place and hide the background window.</p>',
 								type: 'message',
 							},
 						],
@@ -134,16 +134,6 @@ const preferencesConfig = {
 								dontAddToRecent: true, // (windows) Do not add the item being opened to the recent documents list.
 							},
 							{
-								label: 'Reticle',
-								key: 'reticle',
-								type: 'radio',
-								options: [
-									{ label: 'Dot', value: 'dot' },
-									{ label: 'Cross', value: 'cross' },
-									{ label: 'No reticle', value: 'off' },
-								],
-							},
-							{
 								label: 'Crosshair Size',
 								key: 'size',
 								type: 'slider',
@@ -158,12 +148,14 @@ const preferencesConfig = {
 								max: 100,
 							},
 							{
-								label: 'Reticle Scale',
-								key: 'reticleScale',
-								type: 'slider',
-								min: 1,
-								max: 500,
-								help: 'Reticle scale percentage (compared to crosshair)',
+								label: 'Reticle',
+								key: 'reticle',
+								type: 'radio',
+								options: [
+									{ label: 'Dot', value: 'dot' },
+									{ label: 'Cross', value: 'cross' },
+									{ label: 'No reticle', value: 'off' },
+								],
 							},
 							{
 								label: 'Reticle Color',
@@ -171,6 +163,14 @@ const preferencesConfig = {
 								type: 'color',
 								format: 'hex', // Can be hex, hsl or rgb
 								help: 'Center reticle color',
+							},
+							{
+								label: 'Reticle Scale',
+								key: 'reticleScale',
+								type: 'slider',
+								min: 1,
+								max: 500,
+								help: 'Reticle scale percentage (compared to crosshair)',
 							},
 							{
 								heading: 'SVG Customization Options',
@@ -211,7 +211,7 @@ const preferencesConfig = {
 		},
 		{
 			id: 'actions',
-			label: 'Mouse Actions',
+			label: 'Crosshair Actions',
 			icon: 'turtle',
 			form: {
 				groups: [
@@ -502,6 +502,15 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Start on system boot', value: 'boot' } ],
 								help: 'CrossOver will start when your computer starts.',
+							},
+							{
+								label: 'DANGER ZONE',
+								fields: [
+									{
+										content: '<p>This will completely remove any customizations made to the settings and reset them to d</p>',
+										type: 'message',
+									},
+								],
 							},
 							{
 								label: 'Reset CrossOver Settings',
