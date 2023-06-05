@@ -95,9 +95,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     text-rendering: optimizeLegibility;
     font-feature-settings: 'liga', 'clig', 'kern';
-    &.hidden {
-        display: none;
-    }
 
 }
 
@@ -495,4 +492,9 @@ label {
 .d-flex {
     display: flex;
     justify-content: space-between;
+}
+
+.hidden {
+	display: none;
+	pointer-events: none;
 }

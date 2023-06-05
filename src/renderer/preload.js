@@ -41,7 +41,7 @@ const api = {
 	receive( channel, func ) {
 
 		const validChannels = new Set( [
-			'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle',
+			'add_class', 'remove_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle',
 		] )
 
 		if ( validChannels.has( channel ) ) {

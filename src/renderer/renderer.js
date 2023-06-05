@@ -60,6 +60,7 @@
 
 	} )
 
+	// Add/Remove classes
 	window.crossover.receive( 'add_class', arg => {
 
 		// Trigger things
@@ -75,6 +76,12 @@
 		}
 
 		document.body.classList.add( arg )
+
+	} )
+
+	window.crossover.receive( 'remove_class', arg => {
+
+		document.body.classList.remove( arg )
 
 	} )
 
