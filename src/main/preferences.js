@@ -391,14 +391,14 @@ const preferencesConfig = {
 								help: 'Move the crosshair right 1 pixel.',
 								modifierRequired: true,
 							},
-						// Currently we don't allow changing the Reset shortcut
-						// {
-						//  label: 'Reset All Settings',
-						//  key: 'reset',
-						//  type: 'accelerator',
-						//  help: 'Reset all settings to default and center the crosshair.'
-						// modifierRequired: true,
-						// },
+							// Allowing users to change the Reset shortcut may end poorly
+							{
+								label: 'Reset All Settings',
+								key: 'reset',
+								type: 'accelerator',
+								help: 'Reset all settings to default and center the crosshair.',
+								modifierRequired: true,
+							},
 						],
 					},
 				],
