@@ -18,6 +18,9 @@ const MAX_SHADOW_WINDOWS = 14
 const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
 
+// Debounce delay in ms
+const DEBOUNCE_DELAY = 2000
+
 const SUPPORTED_IMAGE_FILE_TYPES = [
 	'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'jfi', 'jif', 'png', 'svg', 'webp',
 ]
@@ -34,6 +37,7 @@ const config = {
 	APP_WIDTH,
 	APP_HEIGHT_MEDIUM,
 	APP_WIDTH_MEDIUM,
+	DEBOUNCE_DELAY,
 	DEFAULT_THEME,
 	FILE_FILTERS,
 	ALERT_URL,

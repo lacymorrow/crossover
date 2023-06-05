@@ -3,7 +3,7 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config.js' )
+const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES, DEBOUNCE_DELAY } = require( '../config/config.js' )
 
 const browserWindowOverrides = {
 	alwaysOnTop: true,
@@ -83,8 +83,8 @@ const preferencesConfig = {
 	browserWindowOverrides,
 	// Custom styles
 	config: {
-		debounce: 20,
 	},
+	debounce: DEBOUNCE_DELAY,
 	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
@@ -502,6 +502,15 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Start on system boot', value: 'boot' } ],
 								help: 'CrossOver will start when your computer starts.',
+							},
+							{
+								label: 'DANGER ZONE',
+								fields: [
+									{
+										content: '<p>This will completely remove any customizations made to the settings and reset them to d</p>',
+										type: 'message',
+									},
+								],
 							},
 							{
 								label: 'Reset CrossOver Settings',

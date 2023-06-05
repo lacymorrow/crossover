@@ -73,7 +73,7 @@ const hideOnMouse = async () => {
 
 		if ( event.button === mouseButton ) {
 
-			windows.hideWindow()
+			set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
 
 		}
 
@@ -83,7 +83,7 @@ const hideOnMouse = async () => {
 
 		if ( event.button === mouseButton ) {
 
-			windows.showWindow()
+			set.rendererProperties( { '--crosshair-opacity': '100' }, windows.win )
 
 		}
 

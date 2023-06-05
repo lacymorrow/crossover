@@ -167,6 +167,8 @@ M1 Mac security fix: (_thanks [Yoyopizzacat, #207](https://github.com/lacymorrow
 
 _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download._
 
+_Certain lightweight desktop environments may require a compositor to allow CrossOver to work correctly ([#230](https://github.com/lacymorrow/crossover/issues/230))._
+
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
 <p align="center">
@@ -393,6 +395,7 @@ Once in-game, pressing space should put the crosshair over the screen, even in f
 
 Check your desktop environment. CrossOver may not work on KDE, try GNOME if you experience issues.
 
+CrossOver behaves weirdly if your desktop is missing a compositor ([#230](https://github.com/lacymorrow/crossover/issues/230)). Try installing one to see if that resolves the issue.
 
 ## Debugging
 
