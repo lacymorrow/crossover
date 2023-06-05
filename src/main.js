@@ -111,33 +111,33 @@ const start = async () => {
 	// contextMenu()
 
 	/* LINUX FIXES */
+	// More flags: https://www.electronjs.org/docs/latest/api/command-line-switches/
 
-	// Fix for Linux transparency issues
-	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+	// Disable hardware acceleration
+	if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+
+		log.info( 'Setting: Enable GPU' )
+
+	} else {
 
 		// Disable hardware acceleration
 		log.info( 'Setting: Disable GPU' )
 		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
 		app.commandLine.appendSwitch( 'disable-gpu' )
 		app.disableHardwareAcceleration()
-
-	} else {
-
-		log.info( 'Setting: Enable GPU' )
 
 	}
 
-	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+	// Fix for Linux transparency issues: wayland on linux/sway
+	// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
+	// https://github.com/microsoft/vscode/issues/146464
+	// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
+	if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
 
-		// Disable hardware acceleration
-		log.info( 'Setting: Disable GPU' )
-		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-		app.commandLine.appendSwitch( 'disable-gpu' )
-		app.disableHardwareAcceleration()
+		log.info( 'Setting: Sharling GPU process and browser' )
 
-	} else {
-
-		log.info( 'Setting: Enable GPU' )
+		app.commandLine.appendSwitch( 'in-process-gpu' )
+		app.commandLine.appendSwitch( 'use-gl=desktop' )
 
 	}
 

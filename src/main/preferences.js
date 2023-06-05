@@ -491,10 +491,10 @@ const preferencesConfig = {
 							},
 							{
 								label: 'Render GPU using browser',
-								key: 'gpu',
+								key: 'gpuprocess',
 								type: 'checkbox',
-								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpu' } ],
-								help: 'This can avoid issues with , which can help avoid the issues with transparency .',
+								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpuprocess' } ],
+								help: 'This can help avoid issues with transparency.',
 							},
 							{
 								label: 'Run App On System Start',
