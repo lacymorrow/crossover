@@ -40,6 +40,7 @@ async function load( win = this.win || windows.win ) {
 // windows.each( win => console.log(win)) or each(windows, win => console.log(win))
 async function each( w, fn, ...args ) {
 
+	// If no window passed, throw away args
 	if ( typeof w === 'function' ) {
 
 		args.unshift( fn )
@@ -497,6 +498,16 @@ const moveWindow = options_ => {
 
 }
 
+const nextWindow = () => {
+
+	const targetWindow = windows.getActiveWindow()
+	const windowsList = windows.getAllWindows()
+	const index = windowsList.indexOf( targetWindow )
+	const nextWindow = windowsList[( index + 1 ) % windowsList.length]
+	nextWindow.focus()
+
+}
+
 const onWillResize = ( _event, newBounds ) => {
 
 	if ( !newBounds ) {
@@ -589,6 +600,7 @@ const windows = {
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
+	nextWindow,
 	onWillResize,
 	safeSetBounds,
 	setProgress,
