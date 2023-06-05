@@ -372,15 +372,20 @@ const center = options => {
 
 const showWindow = () => {
 
-	each( win => win.showInactive() )
+	// Todo: showInactive() can be used in later versions of Electron
+	// each( win => win.showInactive() )
+
+	windows.win.webContents.send( 'remove_class', 'hidden' )
 	windows.hidden = false
 
 }
 
 const hideWindow = () => {
 
-	each( win => win.hide() )
+	// Previously:
+	// each( win => win.hide() )
 
+	windows.win.webContents.send( 'add_class', 'hidden' )
 	windows.hidden = true
 
 }
@@ -397,8 +402,6 @@ const showHideWindow = () => {
 		hideWindow()
 
 	}
-
-	windows.hidden = !windows.hidden
 
 }
 
