@@ -18,7 +18,6 @@ const windows = require( './windows' )
 /* MENU ITEMS */
 const closeWindowMenuItem = {
 	label: 'Custom Image...',
-	accelerator: 'CommandOrControl+W',
 	async click() {
 
 		// Open dialog
@@ -39,7 +38,6 @@ const preferencesMenuItems = [
 	},
 	{
 		label: 'Choose Crosshair...',
-		accelerator: 'CommandOrControl+.',
 		click() {
 
 			crossover.openChooserWindow()
@@ -50,7 +48,6 @@ const preferencesMenuItems = [
 
 const openCustomImageMenuItem = {
 	label: 'Custom Image...',
-	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -61,7 +58,6 @@ const openCustomImageMenuItem = {
 
 const resetMenuItem = {
 	label: 'Reset CrossOver',
-	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -72,7 +68,6 @@ const resetMenuItem = {
 
 const showAppMenuItem = {
 	label: `Show ${productName}`,
-	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		crossover.lockWindow( false )

@@ -115,18 +115,18 @@ const events = () => {
 
 		switch ( key ) {
 
-			case 'chooseCrosshair':
-				crossover.openChooserWindow()
-				break
-			case 'resetPreferences':
-				reset.allPreferences()
-				break
-			case 'resetApp':
-				reset.app()
-				break
-			default:
-				// Key not found
-				break
+		case 'chooseCrosshair':
+			crossover.openChooserWindow()
+			break
+		case 'resetPreferences':
+			reset.allPreferences()
+			break
+		case 'resetApp':
+			reset.app()
+			break
+		default:
+			// Key not found
+			break
 
 		}
 
