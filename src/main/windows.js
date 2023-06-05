@@ -503,8 +503,8 @@ const nextWindow = () => {
 	const targetWindow = windows.getActiveWindow()
 	const windowsList = windows.getAllWindows()
 	const index = windowsList.indexOf( targetWindow )
-	const nextWindow = windowsList[( index + 1 ) % windowsList.length]
-	nextWindow.focus()
+	const nextWin = windowsList[( index + 1 ) % windowsList.length]
+	nextWin.focus()
 
 }
 

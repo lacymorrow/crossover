@@ -73,16 +73,16 @@ const keyboardShortcuts = () => {
 			},
 		},
 
-		// Focus next window
-		{
-			action: 'nextWindow',
-			keybind: `${accelerator}+N`,
-			fn() {
+		// // Focus next window
+		// {
+		// 	action: 'nextWindow',
+		// 	keybind: `${accelerator}+N`,
+		// 	fn() {
 
-				windows.nextWindow()
+		// 		windows.nextWindow()
 
-			},
-		},
+		// 	},
+		// },
 
 		// Move CrossOver to next monitor
 		{
