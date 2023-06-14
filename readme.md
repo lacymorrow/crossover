@@ -397,6 +397,31 @@ Check your desktop environment. CrossOver may not work on KDE, try GNOME if you 
 
 CrossOver behaves weirdly if your desktop is missing a compositor ([#230](https://github.com/lacymorrow/crossover/issues/230)). Try installing one to see if that resolves the issue.
 
+### Hidden by fullscreen apps on Linux
+
+Some compositors, such as KDE Plasma's KWin, can't keep a window (CrossOver) over a full-screen window, so in such cases another compositor needs to be run that has this option.
+
+GNOME's Mutter is one of those compositors that can do this.
+
+In Lutris, for example, this can be automated with shell scripts that will run when the game is launched and quit.
+
+Lutris->Right click on game's banner->Configure->System options:
+
+`Pre-launch script`: /path/to/x.sh
+
+```shell
+#!/bin/bash
+mutter --replace # or: gnome-shell --replace
+```
+
+`Post-launch script`: /path/to/x.sh
+
+```shell
+#!/bin/bash
+kwin_x11 --replace
+plasmashell --replace
+```
+
 ## Debugging
 
 You can run CrossOver from the command line to see debug output. Open a terminal and navigate to the CrossOver app, run `./CrossOver` to see output:
