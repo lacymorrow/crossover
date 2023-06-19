@@ -34,17 +34,13 @@ jobs:
       #     pkg-manager: yarn
       - run:
           name: Install Node modules
-          command: npm i
+          command: npm i  --openssl-fips=''
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
       - run:
           name: Install Dependencies
           command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-      - run:
-          name: Snapcraft Login
-          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
-          command: echo "$SNAP_TOKEN" | snapcraft login --with -
       - run:
           name: Run tests
           command: yarn test
@@ -57,6 +53,10 @@ jobs:
       - run:
           name: Build and Publish - windows CrossOver.exe
           command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
+      - run:
+          name: Snapcraft Login
+          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+          command: echo "$SNAP_TOKEN" | snapcraft login --with -
       - run:
           name: Build and Publish - snap
           command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
