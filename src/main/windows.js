@@ -134,7 +134,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
-	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
+	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true, skipTransformProcessType: true } )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	win.setAlwaysOnTop( true, 'screen-saver' )
@@ -397,8 +397,6 @@ const showHideWindow = () => {
 		hideWindow()
 
 	}
-
-	windows.hidden = !windows.hidden
 
 }
 
