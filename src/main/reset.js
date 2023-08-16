@@ -65,7 +65,7 @@ const preference = key => {
 // Temp until implemented in electron-preferences
 const allPreferences = () => {
 
-	// defaults are all different: defaults.hidden.positionX, Preferences.defaults.hidden.positionX, Preferences.getDefaults().hidden.positionX
+	// defaults are all different: defaults.crosshair.positionX, Preferences.defaults.crosshair.positionX, Preferences.getDefaults().crosshair.positionX
 
 	for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
 

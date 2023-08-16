@@ -6,6 +6,7 @@ const APP_HEIGHT = 130
 const APP_WIDTH = 208
 // 16/10: 220x352 16/9: 224x356
 
+const DEFAULT_DEBOUNCE = 200
 const DEFAULT_THEME = 'light'
 const ALERT_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/master/CROSSOVER_ALERT'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
@@ -34,6 +35,7 @@ const config = {
 	APP_WIDTH,
 	APP_HEIGHT_MEDIUM,
 	APP_WIDTH_MEDIUM,
+	DEFAULT_DEBOUNCE,
 	DEFAULT_THEME,
 	FILE_FILTERS,
 	ALERT_URL,

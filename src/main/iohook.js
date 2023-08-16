@@ -99,11 +99,11 @@ const hideOnKey = async () => {
 	log.info( 'Setting: Keyboard Hide' )
 	await iohook.importIoHook()
 
-	const hideOnKey = preferences.value( 'actions.hideOnKey' )
+	const isEnabled = preferences.value( 'actions.hideOnKey' )
 
-	if ( Object.prototype.hasOwnProperty.call( keycode, hideOnKey ) ) {
+	if ( Object.prototype.hasOwnProperty.call( keycode, isEnabled ) ) {
 
-		const key = keycode[hideOnKey]
+		const key = keycode[isEnabled]
 
 		// Register
 		iohook.hook.registerShortcut(

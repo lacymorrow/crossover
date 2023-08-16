@@ -134,7 +134,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
-	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true, skipTransformProcessType: true } )
+	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	win.setAlwaysOnTop( true, 'screen-saver' )
@@ -398,6 +398,8 @@ const showHideWindow = () => {
 
 	}
 
+	windows.hidden = !windows.hidden
+
 }
 
 const moveToNextDisplay = options => {
@@ -448,7 +450,7 @@ const moveWindow = options_ => {
 				options.targetWindow.setBounds( { y: newBound } )
 				if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionY', newBound )
+					preferences.value( 'crosshair.positionY', newBound )
 
 				}
 
@@ -458,7 +460,7 @@ const moveWindow = options_ => {
 				options.targetWindow.setBounds( { y: newBound } )
 				if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionY', newBound )
+					preferences.value( 'crosshair.positionY', newBound )
 
 				}
 
@@ -468,7 +470,7 @@ const moveWindow = options_ => {
 				options.targetWindow.setBounds( { x: newBound } )
 				if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionX', newBound )
+					preferences.value( 'crosshair.positionX', newBound )
 
 				}
 
@@ -478,7 +480,7 @@ const moveWindow = options_ => {
 				options.targetWindow.setBounds( { x: newBound } )
 				if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionX', newBound )
+					preferences.value( 'crosshair.positionX', newBound )
 
 				}
 
