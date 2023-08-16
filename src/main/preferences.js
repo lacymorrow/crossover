@@ -1,5 +1,5 @@
 // Via https://github.com/tkambler/electron-preferences
-const { app, screen } = require( 'electron' )
+const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
@@ -68,14 +68,18 @@ const getDefaults = () => ( {
 		moveDown: 'Control+Shift+Alt+Down',
 		moveLeft: 'Control+Shift+Alt+Left',
 		moveRight: 'Control+Shift+Alt+Right',
+		nextWindow: 'Control+Shift+Alt+O',
 		about: 'Control+Shift+Alt+A',
+		quit: 'Control+Shift+Alt+Q',
+
 	},
 	hidden: {
 		frame: false,
 		locked: false,
 		showSettings: false,
 		tilted: false,
-		ADSed: true,
+		ADSed: false,
+		ADShidden: false,
 	},
 } )
 
@@ -256,7 +260,7 @@ const preferencesConfig = {
 								max: 100,
 							},
 							{
-								label: 'Hide Crosshair on Mouse Button',
+								label: 'Hide Crosshair on ADS',
 								key: 'hideOnMouse',
 								type: 'radio',
 								options: [
@@ -268,6 +272,13 @@ const preferencesConfig = {
 									{ label: 'Forward mouse-button', value: '5' },
 								],
 								help: 'Hides the crosshair when the specified mouse button is held.',
+							},
+							{
+								label: 'Toggle/Hold ADS',
+								key: 'hideOnMouseToggle',
+								type: 'checkbox',
+								options: [ { label: 'On ADS, toggle hiding/showing the Crosshair (vs hold)', value: 'hideOnMouseToggle' } ],
+								help: 'Toggle hiding/showing the Crosshair when ADS-ing, vs holding to hide the Crosshair while ADS-ing.',
 							},
 						],
 					},
@@ -366,6 +377,13 @@ const preferencesConfig = {
 								key: 'duplicate',
 								type: 'accelerator',
 								help: 'Create a duplicate "shadow" crosshair. Settings are not saved for shadow crosshairs.',
+								modifierRequired: true,
+							},
+							{
+								label: 'Focus Next Crosshair',
+								key: 'changeDisplay',
+								type: 'accelerator',
+								help: 'Center CrossOver on the next connected display.',
 								modifierRequired: true,
 							},
 							{

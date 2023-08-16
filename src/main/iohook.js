@@ -25,6 +25,21 @@ const unregisterIOHook = () => {
 
 	if ( iohook.hook ) {
 
+		// reset any changes to the crosshair
+		const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+		const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
+
+		set.rendererProperties( { '--crosshair-opacity': opacity.toString(),
+			'--crosshair-width': `${oldCrosshairSize}px`,
+			'--crosshair-height': `${oldCrosshairSize}px`,
+			'--tilt-angle': '0deg',
+		}, windows.win )
+
+		// reset any changes to the prefs
+		preferences.value( 'hidden.tilted', false )
+		preferences.value( 'hidden.ADShidden', false )
+		preferences.value( 'hidden.ADSed', false )
+
 		iohook.hook.unregisterAllShortcuts()
 		iohook.hook.removeAllListeners( 'mousedown' )
 		iohook.hook.removeAllListeners( 'mouseup' )
@@ -63,31 +78,61 @@ const followMouse = async () => {
 
 const hideOnMouse = async () => {
 
-	log.info( 'Setting: Mouse Hide' )
+	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' )
+
+	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? ' toggle' : 'hold' ) )
 	await iohook.importIoHook()
 
-	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+	if ( hideOnMouseToggle ) {
 
-	// Register
-	iohook.hook.on( 'mousedown', event => {
+		iohook.hook.on( 'mousedown', event => {
 
-		if ( event.button === mouseButton ) {
+			const hidden = preferences.value( 'hidden.ADShidden' )
 
-			set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+			if ( event.button === mouseButton ) {
 
-		}
+				if ( hidden ) {
 
-	} )
+					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
 
-	iohook.hook.on( 'mouseup', event => {
+				} else {
 
-		if ( event.button === mouseButton ) {
+					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
 
-			set.rendererProperties( { '--crosshair-opacity': '100' }, windows.win )
+				}
 
-		}
+				preferences.value( 'hidden.ADShidden', !hidden )
 
-	} )
+			}
+
+		} )
+
+	} else {
+
+		// Register
+		iohook.hook.on( 'mousedown', event => {
+
+			if ( event.button === mouseButton ) {
+
+				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+
+			}
+
+		} )
+
+		iohook.hook.on( 'mouseup', event => {
+
+			if ( event.button === mouseButton ) {
+
+				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+
+			}
+
+		} )
+
+	}
 
 	// Register and start hook
 	iohook.hook.start()
@@ -96,10 +141,10 @@ const hideOnMouse = async () => {
 
 const hideOnKey = async () => {
 
-	log.info( 'Setting: Keyboard Hide' )
-	await iohook.importIoHook()
-
 	const isEnabled = preferences.value( 'actions.hideOnKey' )
+
+	log.info( 'Setting: Keyboard Hold/Toggle' )
+	await iohook.importIoHook()
 
 	if ( Object.prototype.hasOwnProperty.call( keycode, isEnabled ) ) {
 
@@ -260,7 +305,7 @@ const resizeOnADS = async () => {
 	const resizeOnADSOption = preferences.value( 'actions.resizeOnADS' )
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
-	log.info( 'Setting: Resize on ADS' )
+	log.info( 'Setting: Resize on ADS ' + ( resizeOnADSOption === 'toggle' ? ' toggle' : 'hold' ) )
 	await iohook.importIoHook()
 
 	if ( resizeOnADSOption === 'toggle' ) {

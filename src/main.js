@@ -134,7 +134,7 @@ const start = async () => {
 	// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
 	if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
 
-		log.info( 'Setting: Sharling GPU process and browser' )
+		log.info( 'Setting: Sharing GPU process and browser' )
 
 		app.commandLine.appendSwitch( 'in-process-gpu' )
 		app.commandLine.appendSwitch( 'use-gl=desktop' )

@@ -83,25 +83,24 @@ const keyboardShortcuts = () => {
 
 			},
 		},
-
-		// // Focus next window
-		// {
-		// 	action: 'nextWindow',
-		// 	keybind: `${accelerator}+N`,
-		// 	fn() {
-
-		// 		windows.nextWindow()
-
-		// 	},
-		// },
-
 		// Quit CrossOver
 		{
 			action: 'quit',
 			keybind: `${accelerator}+Q`,
 			fn() {
 
-				quit()
+				crossover.quit()
+
+			},
+		},
+
+		// Focus next window
+		{
+			action: 'nextWindow',
+			keybind: `${accelerator}+O`,
+			fn() {
+
+				windows.nextWindow()
 
 			},
 		},
@@ -185,7 +184,7 @@ const registerKeyboardShortcuts = () => {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
-			log.info( 'ERROR', shortcut )
+			log.info( 'ERROR - you likely forgot to add a default keybind for this shortcut: ', shortcut )
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
