@@ -138,7 +138,8 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	win.setAlwaysOnTop( true, 'screen-saver' )
+	win.setAlwaysOnTop( true, 'screen-saver', 1 )
+	win.setFullScreenable( false )
 
 	win.once( 'ready-to-show', () => {
 
@@ -449,48 +450,48 @@ const moveWindow = options_ => {
 		const bounds = options.targetWindow.getBounds()
 		switch ( options.direction ) {
 
-			case 'up':
-				newBound = bounds.y - options.distance
-				options.targetWindow.setBounds( { y: newBound } )
-				if ( shouldSaveSettings ) {
+		case 'up':
+			newBound = bounds.y - options.distance
+			options.targetWindow.setBounds( { y: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionY', newBound )
+				preferences.value( 'hidden.positionY', newBound )
 
-				}
+			}
 
-				break
-			case 'down':
-				newBound = bounds.y + options.distance
-				options.targetWindow.setBounds( { y: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'down':
+			newBound = bounds.y + options.distance
+			options.targetWindow.setBounds( { y: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionY', newBound )
+				preferences.value( 'hidden.positionY', newBound )
 
-				}
+			}
 
-				break
-			case 'left':
-				newBound = bounds.x - options.distance
-				options.targetWindow.setBounds( { x: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'left':
+			newBound = bounds.x - options.distance
+			options.targetWindow.setBounds( { x: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionX', newBound )
+				preferences.value( 'hidden.positionX', newBound )
 
-				}
+			}
 
-				break
-			case 'right':
-				newBound = bounds.x + options.distance
-				options.targetWindow.setBounds( { x: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'right':
+			newBound = bounds.x + options.distance
+			options.targetWindow.setBounds( { x: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'hidden.positionX', newBound )
+				preferences.value( 'hidden.positionX', newBound )
 
-				}
+			}
 
-				break
-			default:
-				break
+			break
+		default:
+			break
 
 		}
 
