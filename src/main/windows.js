@@ -40,6 +40,7 @@ async function load( win = this.win || windows.win ) {
 // windows.each( win => console.log(win)) or each(windows, win => console.log(win))
 async function each( w, fn, ...args ) {
 
+	// If no window passed, throw away args
 	if ( typeof w === 'function' ) {
 
 		args.unshift( fn )
@@ -137,7 +138,8 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	win.setAlwaysOnTop( true, 'screen-saver' )
+	win.setAlwaysOnTop( true, 'screen-saver', 1 )
+	win.setFullScreenable( false )
 
 	win.once( 'ready-to-show', () => {
 
@@ -372,15 +374,20 @@ const center = options => {
 
 const showWindow = () => {
 
-	each( win => win.showInactive() )
+	// Todo: showInactive() can be used in later versions of Electron
+	// each( win => win.showInactive() )
+
+	windows.win.webContents.send( 'remove_class', 'hidden' )
 	windows.hidden = false
 
 }
 
 const hideWindow = () => {
 
-	each( win => win.hide() )
+	// Previously:
+	// each( win => win.hide() )
 
+	windows.win.webContents.send( 'add_class', 'hidden' )
 	windows.hidden = true
 
 }
@@ -397,8 +404,6 @@ const showHideWindow = () => {
 		hideWindow()
 
 	}
-
-	windows.hidden = !windows.hidden
 
 }
 
@@ -445,52 +450,62 @@ const moveWindow = options_ => {
 		const bounds = options.targetWindow.getBounds()
 		switch ( options.direction ) {
 
-			case 'up':
-				newBound = bounds.y - options.distance
-				options.targetWindow.setBounds( { y: newBound } )
-				if ( shouldSaveSettings ) {
+		case 'up':
+			newBound = bounds.y - options.distance
+			options.targetWindow.setBounds( { y: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'crosshair.positionY', newBound )
+				preferences.value( 'crosshair.positionY', newBound )
 
-				}
+			}
 
-				break
-			case 'down':
-				newBound = bounds.y + options.distance
-				options.targetWindow.setBounds( { y: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'down':
+			newBound = bounds.y + options.distance
+			options.targetWindow.setBounds( { y: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'crosshair.positionY', newBound )
+				preferences.value( 'crosshair.positionY', newBound )
 
-				}
+			}
 
-				break
-			case 'left':
-				newBound = bounds.x - options.distance
-				options.targetWindow.setBounds( { x: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'left':
+			newBound = bounds.x - options.distance
+			options.targetWindow.setBounds( { x: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'crosshair.positionX', newBound )
+				preferences.value( 'crosshair.positionX', newBound )
 
-				}
+			}
 
-				break
-			case 'right':
-				newBound = bounds.x + options.distance
-				options.targetWindow.setBounds( { x: newBound } )
-				if ( shouldSaveSettings ) {
+			break
+		case 'right':
+			newBound = bounds.x + options.distance
+			options.targetWindow.setBounds( { x: newBound } )
+			if ( shouldSaveSettings ) {
 
-					preferences.value( 'crosshair.positionX', newBound )
+				preferences.value( 'crosshair.positionX', newBound )
 
-				}
+			}
 
-				break
-			default:
-				break
+			break
+		default:
+			break
 
 		}
 
 	}
+
+}
+
+const nextWindow = () => {
+
+	const targetWindow = windows.getActiveWindow()
+	const windowsList = windows.getAllWindows()
+	const index = windowsList.indexOf( targetWindow )
+	const nextWin = windowsList[( index + 1 ) % windowsList.length]
+	nextWin.focus()
 
 }
 
@@ -586,6 +601,7 @@ const windows = {
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
+	nextWindow,
 	onWillResize,
 	safeSetBounds,
 	setProgress,

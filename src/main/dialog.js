@@ -38,7 +38,7 @@ const openAlertDialog = async message => {
 		title: 'CrossOver: Developer Update',
 		message,
 		buttons: [
-			'Turn off alerts', 'Open in browser…', 'Dismiss',
+			'Turn off alerts', 'Open in browser...', 'Dismiss',
 		],
 	} ).then( result => {
 

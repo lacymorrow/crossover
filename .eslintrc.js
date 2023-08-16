@@ -22,6 +22,13 @@ module.exports = {
 		},
 		requireConfigFile: false,
 	},
+	settings: {
+		react: {
+			pragma: 'React',
+			fragment: 'Fragment',
+			version: 'detect',
+		},
+	},
 	rules: {
 		'array-bracket-newline': [
 			'error',
@@ -35,6 +42,7 @@ module.exports = {
 			'always',
 		],
 		'capitalized-comments': 0,
+		indent: [ 'error', 'tab' ],
 		'padded-blocks': [
 			'error',
 			{

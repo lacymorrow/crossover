@@ -38,6 +38,7 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 :root {
 	// App theme
+	--app-bg-color-initial: #{rgba($theme_bg_light, $app_background_opacity)};
 	--app-bg-color-initial: #{rgba($theme_bg_light, .6)};
 	--app-bg-color: unset;
 
@@ -52,11 +53,9 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: dark) {
-		--app-bg-color-initial: #{rgba($theme_bg_dark, $app_background_opacity)};
-		--app-highlight-color-initial: #{$icon_dark};
-		--app-icon-hover-color: #{$icon_hover_dark};
-		// --app-text-color: #{$text_dark};
-		// --app-chooser-bg-color: #{rgba($theme_bg_dark, 1)};
+			--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
+			--app-highlight-color-initial: #{$icon_dark};
+			--app-icon-hover-color: #{$icon_hover_dark};
 	}
 
 
@@ -96,9 +95,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     text-rendering: optimizeLegibility;
     font-feature-settings: 'liga', 'clig', 'kern';
-    &.hidden {
-        display: none;
-    }
 
 }
 
@@ -496,4 +492,9 @@ label {
 .d-flex {
     display: flex;
     justify-content: space-between;
+}
+
+.hidden {
+	display: none;
+	pointer-events: none;
 }

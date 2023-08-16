@@ -1,6 +1,9 @@
 /* eslint-disable no-bitwise */
+
+const { DEBOUNCE_DELAY } = require( './config' )
+
 /* Utilities */
-const debounce = ( func, delay ) => {
+const debounce = ( func, delay = DEBOUNCE_DELAY ) => {
 
 	let debounceTimer
 

@@ -1,9 +1,8 @@
 /* global feather, inlineSVG, randomColor */
 
-// Todo: better error handling for img onError
-
 ( () => {
 
+	// Todo: better error handling for img onError
 	// Renderer error handling
 	window.addEventListener( 'error', event => {
 
@@ -11,6 +10,8 @@
 		window.crossover.send( 'error', `Renderer - ${event.message} @ ${event.filename}:${event.lineno}` )
 
 	} )
+
+	console.log( window.crossover.test )
 
 	// DOM elements
 	const background = document.querySelector( '.background' )
@@ -59,6 +60,7 @@
 
 	} )
 
+	// Add/Remove classes
 	window.crossover.receive( 'add_class', arg => {
 
 		// Trigger things
@@ -74,6 +76,12 @@
 		}
 
 		document.body.classList.add( arg )
+
+	} )
+
+	window.crossover.receive( 'remove_class', arg => {
+
+		document.body.classList.remove( arg )
 
 	} )
 
@@ -253,7 +261,7 @@
 
 		window.crossover.send( 'open_chooser', crosshairImg.src )
 
-	}, 300 )
+	}, window.crossover.config.DEBOUNCE_DELAY )
 
 	centerBtn.addEventListener( 'click', () => {
 
