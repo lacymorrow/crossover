@@ -1,3 +1,5 @@
+const config = require( '../config/config' )
+
 const { debounce } = require( '../config/utils' )
 const log = require( './log' )
 const preferences = require( './preferences' ).init()
@@ -31,12 +33,12 @@ const position = bounds => {
 	}
 
 	log.info( `Save position: ${x}, ${y}` )
-	preferences.value( 'hidden.positionX', x )
-	preferences.value( 'hidden.positionY', y )
+	preferences.value( 'crosshair.positionX', x )
+	preferences.value( 'crosshair.positionY', y )
 
 }
 
-const positionDebounced = debounce( bounds => position( bounds ), 500 )
+const positionDebounced = debounce( bounds => position( bounds ), config.DEFAULT_DEBOUNCE || 200 )
 
 const save = { crosshair, position: positionDebounced }
 

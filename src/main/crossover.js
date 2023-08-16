@@ -7,7 +7,6 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const save = require( './save' )
 const set = require( './set' )
-const tray = require( './tray' )
 const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
@@ -16,15 +15,6 @@ const { getWindowBoundsCentered } = require( 'electron-util' )
 const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
-
-//  Remove tray in Linux to fully quit
-app.on( 'before-quit', _ => {
-
-	// https://electronjs.org/docs/api/app#event-before-quit
-	// https://electronjs.org/docs/api/tray#traydestroy
-	tray.instance?.destroy()
-
-} )
 
 const quit = () => app.quit()
 
@@ -72,6 +62,17 @@ const keyboardShortcuts = () => {
 			},
 		},
 
+		// Move CrossOver to next monitor
+		{
+			action: 'changeDisplay',
+			keybind: `${accelerator}+M`,
+			fn() {
+
+				windows.moveToNextDisplay()
+
+			},
+		},
+
 		// Hide CrossOver
 		{
 			action: 'hide',
@@ -82,14 +83,24 @@ const keyboardShortcuts = () => {
 
 			},
 		},
-
-		// Move CrossOver to next monitor
+		// Quit CrossOver
 		{
-			action: 'changeDisplay',
-			keybind: `${accelerator}+M`,
+			action: 'quit',
+			keybind: `${accelerator}+Q`,
 			fn() {
 
-				windows.moveToNextDisplay()
+				crossover.quit()
+
+			},
+		},
+
+		// Focus next window
+		{
+			action: 'nextWindow',
+			keybind: `${accelerator}+O`,
+			fn() {
+
+				windows.nextWindow()
 
 			},
 		},
@@ -173,7 +184,7 @@ const registerKeyboardShortcuts = () => {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
-			log.info( 'ERROR', shortcut )
+			log.info( 'ERROR - you likely forgot to add a default keybind for this shortcut: ', shortcut )
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
@@ -275,9 +286,9 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 const resetPosition = () => {
 
 	// App centered by default - set position if exists
-	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' && preferences.value( 'hidden.positionY' ) ) {
+	if ( preferences.value( 'crosshair.positionX' ) !== null && typeof preferences.value( 'crosshair.positionX' ) !== 'undefined' && preferences.value( 'crosshair.positionY' ) ) {
 
-		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
+		set.position( preferences.value( 'crosshair.positionX' ), preferences.value( 'crosshair.positionY' ) )
 
 	}
 
@@ -425,10 +436,10 @@ const initShadowWindow = async () => {
 	set.reticle( previousPreferences.crosshair?.reticle, shadow )
 	set.rendererProperties( properties, shadow )
 
-	if ( preferences.value( 'hidden.positionX' ) > -1 ) {
+	if ( preferences.value( 'crosshair.positionX' ) > -1 ) {
 
 		// Offset position slightly
-		set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
+		set.position( preferences.value( 'crosshair.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'crosshair.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 	}
 

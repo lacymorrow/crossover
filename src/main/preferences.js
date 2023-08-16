@@ -3,7 +3,7 @@ const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
-const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES } = require( '../config/config.js' )
+const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES, DEBOUNCE_DELAY } = require( '../config/config.js' )
 
 const browserWindowOverrides = {
 	alwaysOnTop: true,
@@ -25,6 +25,8 @@ const getDefaults = () => ( {
 		color: '#442ac6',
 		size: 80,
 		opacity: 80,
+		positionX: null,
+		positionY: null,
 		reticle: 'dot',
 		reticleScale: 100,
 		fillColor: 'unset',
@@ -66,16 +68,18 @@ const getDefaults = () => ( {
 		moveDown: 'Control+Shift+Alt+Down',
 		moveLeft: 'Control+Shift+Alt+Left',
 		moveRight: 'Control+Shift+Alt+Right',
+		nextWindow: 'Control+Shift+Alt+O',
 		about: 'Control+Shift+Alt+A',
+		quit: 'Control+Shift+Alt+Q',
+
 	},
 	hidden: {
 		frame: false,
 		locked: false,
 		showSettings: false,
-		positionX: null,
-		positionY: null,
 		tilted: false,
-		ADSed: true,
+		ADSed: false,
+		ADShidden: false,
 	},
 } )
 
@@ -83,8 +87,8 @@ const preferencesConfig = {
 	browserWindowOverrides,
 	// Custom styles
 	config: {
-		debounce: 20,
 	},
+	debounce: DEBOUNCE_DELAY,
 	css: 'src/renderer/styles/dist/preferences.css',
 	dataStore: path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
 	debug: is.development && !is.linux,
@@ -204,6 +208,18 @@ const preferencesConfig = {
 								max: 20,
 								help: 'SVG stroke width.',
 							},
+							{
+								label: 'Crosshair Position X',
+								key: 'positionX',
+								type: 'number',
+								help: 'Horizontal position of the crosshair (in pixels)',
+							},
+							{
+								label: 'Crosshair Position Y',
+								key: 'positionY',
+								type: 'number',
+								help: 'Vertical position of the crosshair (in pixels)',
+							},
 						],
 					},
 				],
@@ -244,7 +260,7 @@ const preferencesConfig = {
 								max: 100,
 							},
 							{
-								label: 'Hide Crosshair on Mouse Button',
+								label: 'Hide Crosshair on ADS',
 								key: 'hideOnMouse',
 								type: 'radio',
 								options: [
@@ -256,6 +272,13 @@ const preferencesConfig = {
 									{ label: 'Forward mouse-button', value: '5' },
 								],
 								help: 'Hides the crosshair when the specified mouse button is held.',
+							},
+							{
+								label: 'Toggle/Hold ADS',
+								key: 'hideOnMouseToggle',
+								type: 'checkbox',
+								options: [ { label: 'On ADS, toggle hiding/showing the Crosshair (vs hold)', value: 'hideOnMouseToggle' } ],
+								help: 'Toggle hiding/showing the Crosshair when ADS-ing, vs holding to hide the Crosshair while ADS-ing.',
 							},
 						],
 					},
@@ -357,6 +380,13 @@ const preferencesConfig = {
 								modifierRequired: true,
 							},
 							{
+								label: 'Focus Next Crosshair',
+								key: 'changeDisplay',
+								type: 'accelerator',
+								help: 'Center CrossOver on the next connected display.',
+								modifierRequired: true,
+							},
+							{
 								label: 'Change Display',
 								key: 'changeDisplay',
 								type: 'accelerator',
@@ -391,14 +421,14 @@ const preferencesConfig = {
 								help: 'Move the crosshair right 1 pixel.',
 								modifierRequired: true,
 							},
-						// Currently we don't allow changing the Reset shortcut
-						// {
-						//  label: 'Reset All Settings',
-						//  key: 'reset',
-						//  type: 'accelerator',
-						//  help: 'Reset all settings to default and center the crosshair.'
-						// modifierRequired: true,
-						// },
+							// Allowing users to change the Reset shortcut may end poorly
+							{
+								label: 'Reset All Settings',
+								key: 'reset',
+								type: 'accelerator',
+								help: 'Reset all settings to default and center the crosshair.',
+								modifierRequired: true,
+							},
 						],
 					},
 				],
@@ -491,10 +521,10 @@ const preferencesConfig = {
 							},
 							{
 								label: 'Render GPU using browser',
-								key: 'gpu',
+								key: 'gpuprocess',
 								type: 'checkbox',
-								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpu' } ],
-								help: 'This can avoid issues with , which can help avoid the issues with transparency .',
+								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpuprocess' } ],
+								help: 'This can help avoid issues with transparency.',
 							},
 							{
 								label: 'Run App On System Start',
@@ -502,6 +532,15 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Start on system boot', value: 'boot' } ],
 								help: 'CrossOver will start when your computer starts.',
+							},
+							{
+								label: 'DANGER ZONE',
+								fields: [
+									{
+										content: '<p>This will completely remove any customizations made to the settings and reset them to d</p>',
+										type: 'message',
+									},
+								],
 							},
 							{
 								label: 'Reset CrossOver Settings',
