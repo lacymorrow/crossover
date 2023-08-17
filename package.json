@@ -30,7 +30,7 @@
 	},
 	"license": "CC-BY-NC-SA-4.0",
 	"engines": {
-		"node": "12 || 14 || 16 || 18"
+		"node": "16"
 	},
 	"scripts": {
 		"install": "yarn css",
