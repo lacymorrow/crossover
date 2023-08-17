@@ -279,15 +279,16 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Call of Duty Black Ops Cold War   | Runs in `Windowed`, `Windowed Fullscreen`, `Multi-Monitor` modes                   |
 | ✅    | Call of Duty: Warzone             | Runs in `Windowed` mode                                                            |
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
-| ✅    | CS:GO / Counter-Strike: Global Offensive | Runs in `Windowed` mode; May work in `Windowed Fullscreen` and `Fullscreen` modes with AHK script            |
+| ✅    | CS:GO / Counter-Strike: Global Offensive | Runs in `Windowed` mode; May work in `Windowed Fullscreen` and `Fullscreen` modes with AHK script |
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
 | ✅    | Empyrion: Galactic Survival       | Runs in `Windowed` mode                                                            |
-| ❌    | Escape from Tarkov                | Users report the game will no longer start with CrossOver running ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))                                 |
+| ❌    | Escape from Tarkov                | Users report the game will no longer start with CrossOver running ([#47](https://github.com/lacymorrow/crossover/issues/47#issuecomment-987762466))                                                      |
 | ✅    | FiveM                             | Runs in `Fullscreen` mode                                                          |
 | ✅    | Fortnite                          | Runs in `Windowed Fullscreen` mode                                                 |
-| ✅    | Killing Floor                     | Runs in `Windowed` mode                                                 |
+| ✅    | GTFO                              | Works in `Fullscreen window`, `Maximized window`, `Windowed mode` (Doesn't work in `Exclusive Fullscreen` window) |
+| ✅    | Killing Floor                     | Runs in `Windowed` mode                                                            |
 | ✅    | League of Legends                 | Runs in `Borderless` and `Windowed` modes                                          |
 | ✅    | Left 4 Dead 2                     | Runs in `Borderless` and `Windowed` modes                                          |
 | ✅    | Halo: The Master Chief Collection | Runs in `Borderless` and `Windowed` modes                                          |
@@ -296,7 +297,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Phasmophobia                      | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Planetside 2                      | Runs in `Windowed` and `Windowed Fullscreen` modes                                 |
 | ❌    | Rainbow 6: Seige                  | Vulkan-based                                                                       |
-| ❌    | RedM                              | Does not work.                                                                    |
+| ❌    | RedM                              | Does not work.                                                                     |
 | ✅    | Roblox                            | Runs in `Fullscreen` mode _(Windows)_ and `Windowed Fullscreen` mode _(MacOS)_     |
 | ✅    | Rocket League                     | Runs in `Windowed` mode                                                            |
 | ✅    | Rust                              | Runs in `Windowed Fullscreen` mode                                                 |
