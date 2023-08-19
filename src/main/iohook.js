@@ -29,6 +29,7 @@ const unregisterIOHook = () => {
 		const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 		const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
+		// if smaller/tilted; move to actual size
 		set.rendererProperties( { '--crosshair-opacity': opacity.toString(),
 			'--crosshair-width': `${oldCrosshairSize}px`,
 			'--crosshair-height': `${oldCrosshairSize}px`,
@@ -84,6 +85,8 @@ const hideOnMouse = async () => {
 
 	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? ' toggle' : 'hold' ) )
 	await iohook.importIoHook()
+
+	log( opacity )
 
 	if ( hideOnMouseToggle ) {
 

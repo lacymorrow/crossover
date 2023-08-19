@@ -109,6 +109,8 @@ const hexToRgbA = ( hex, alpha ) => {
 
 }
 
+// How long it the string? via https://stackoverflow.com/a/39771387
+const padLeadingZeros = ( value:number ) => (
 /* eslint-enable */
 
 module.exports = {
