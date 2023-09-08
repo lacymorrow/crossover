@@ -4,7 +4,7 @@
 
 # CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="40" align="right" />](https://www.patreon.com/bePatron?u=55065733)
 
-> 🎯 Adjustable Crosshair Overlay for any screen
+> 🎯 Adjustable Crosshair Overlay for any screen, except now with no electron!
 
 ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
 
@@ -15,8 +15,8 @@
 ##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 ###### Mac: <kbd>Control</kbd>-<kbd>Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 
-CrossOver allows you to place a customizable crosshair overlay above any application window.
-Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
+CrossOver allows you to place a customizable crosshair overlay above any application window. Except now, we have removed Electron for optimization purposes!
+Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen. Now improved due to lack of electron!
 
 <p align="center">
   <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>

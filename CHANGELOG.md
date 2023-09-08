@@ -1,3 +1,7 @@
+### 2023-09-08
+- Removed Electron
+- Updated changelog
+
 ### 2022-04-13
 - Add developer alert
 - Handle errors better
