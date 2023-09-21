@@ -1,9 +1,9 @@
-// Via https://github.com/tkambler/electron-preferences
 const { app } = require( 'electron' )
 const path = require( 'path' )
 const { debugInfo, is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES, DEBOUNCE_DELAY } = require( '../config/config.js' )
+/* Via https://github.com/tkambler/electron-preferences */
 
 const browserWindowOverrides = {
 	alwaysOnTop: true,
@@ -97,6 +97,7 @@ const preferencesConfig = {
 	/**
      * The preferences window is divided into sections. Each section has a label, an icon, and one or
      * more fields associated with it. Each section should also be given a unique ID.
+	 SEE: 'main/register.tsx'
      */
 	sections: [
 		{
