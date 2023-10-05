@@ -37,7 +37,6 @@ Improve your aim and gain a competitive advantage with a permanent colored cross
 
 # Documentation
 
-- [CrossOver](#crossover)
 - [Download](#download)
 - [Quick Start](#quick-start)
 - [Features](#features)
