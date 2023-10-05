@@ -8,9 +8,21 @@
 
 ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
 
-### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
-##### [All Downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest/)
+#### Get it on the Windows App Store and Linux Snap Store
 
+<div>
+<a href="ms-windows-store://pdp/?ProductId=9MTD5ZLN7NL1&mode=mini" style="">
+   <img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Download CrossOver for Windows" style="height:60px;" />
+</a>
+<a href="https://snapcraft.io/crossover">
+   <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Download CrossOver for Windows" />
+</a>
+</div>
+
+### [Download CrossOver for Windows](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe)
+
+
+##### [All Downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest/)
 
 ##### To Use CrossOver: <kbd>Control</kbd>-<kbd>Alt</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
 ###### Mac: <kbd>Control</kbd>-<kbd>Option</kbd>-<kbd>Shift</kbd>-<kbd>X</kbd>
