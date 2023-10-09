@@ -384,7 +384,7 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 ### [Hidden by fullscreen apps](https://github.com/lacymorrow/crossover/issues/1)
 
-Currently CrossOver only works with windowed applications, use `Windowed Fullscreen` mode if your game or application supports it. _Windows_ -
+**Currently CrossOver only works with windowed applications**, use `Windowed Fullscreen` mode if your game or application supports it. (_Windows_)
 
 Fullscreen for MacOS may have better results.
 
