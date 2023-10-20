@@ -6,7 +6,7 @@
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
-![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
+![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![Maintainability](https://api.codeclimate.com/v1/badges/2f447345bdeff3565392/maintainability)](https://codeclimate.com/github/lacymorrow/crossover/maintainability) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
 
 #### Get it on the Windows App Store and Linux Snap Store
 
