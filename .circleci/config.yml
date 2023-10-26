@@ -13,6 +13,8 @@ jobs:
     executor: node/default # use the default executor defined within the orb
     steps:
       - checkout
+      - run:
+          command: ls
       - node/install-packages:
           pkg-manager: yarn
       - run:
