@@ -9,8 +9,22 @@ orbs:
   node: circleci/node@5.1.0
 
 jobs:
+  build: # this can be any name you choose
+    executor: node/default # use the default executor defined within the orb
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          command: yarn build:rpm
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths: .
+
+
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  buildall:
+  build-all:
     macos:
       xcode: 12.5.1
     steps:
@@ -104,4 +118,4 @@ workflows:
         - equal: [master, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - buildall
+      - build
