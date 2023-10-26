@@ -63,6 +63,7 @@
 		"build:wl": "electron-builder -wl --ia32 --x64",
 		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
 		"build:deb": "electron-builder --linux deb",
+		"build:rpm": "electron-builder --linux rpm",
 		"build:snap": "electron-builder --linux snap",
 		"build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
 		"build:release:snap": "electron-builder --linux snap && yarn snap:release",
@@ -127,6 +128,11 @@
 		"artifactName": "${productName}-${version}-${arch}.${ext}",
 		"copyright": "Copyright © Lacy Morrow",
 		"publish": "github",
+		"rpm": {
+			"fpm": [
+				"--iteration=1.0.0"
+			]
+		},
 		"mac": {
 			"category": "public.app-category.utilities",
 			"darkModeSupport": true
@@ -151,10 +157,8 @@
 				"AppImage",
 				"apk",
 				"deb",
-				"rpm",
 				"freebsd",
-				"pacman",
-				"rpm"
+				"pacman"
 			],
 			"category": "Game;Shooter"
 		},
