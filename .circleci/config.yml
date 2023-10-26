@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: ls
+          command: pwd
       - node/install-packages:
           pkg-manager: yarn
       - run:
@@ -27,7 +27,7 @@ jobs:
           command: yarn build:rpm
           name: Build app
       - store_artifacts:
-          path: dist/CrossOver*
+          path: /users/distiller/project/dist/CrossOver*
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-all:
