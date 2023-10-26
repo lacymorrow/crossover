@@ -372,6 +372,26 @@ $ yarn build
 
 > Or `yarn build:all`
 
+#### Build issues
+
+```
+gyp: name 'openssl_fips' is not defined while evaluating condition 'openssl_fips != ""' in binding.gyp while trying to load binding.gyp
+```
+
+See https://stackoverflow.com/questions/69882740/how-to-rebuild-epoll-package-in-electron.
+
+Using Node@16 worked.
+
+```
+/Users/lacymorrow/repo/crossover/node_modules/app-builder-bin/mac/app-builder_arm64 process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1 failedTask=build stackTrace=Error: /Users/lacymorrow/repo/crossover/node_modules/app-builder-bin/mac/app-builder_arm64 process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+```
+
+To build rpm, executable rpmbuild is required, please install: `brew install rpm`
+
+
+
 ### Publish
 
 ```
