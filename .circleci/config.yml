@@ -60,6 +60,9 @@ jobs:
           name: Build and Publish - mac
           command: yarn build:mac
       - run:
+          name: Build and Publish - linux:rpm
+          command: yarn build:rpm
+      - run:
           name: ls dist
           command: ls dist
       - run:
@@ -72,13 +75,7 @@ jobs:
             git pull
             git merge ${CIRCLE_BRANCH} || echo "Not merging to stable"
             git push --set-upstream origin stable || echo "Not pushing stable"
-      - run:
-          name: Snapcraft Login
-          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
-          command: echo "$SNAP_TOKEN" | snapcraft login --with -
-      - run:
-          name: Build and Publish - snap
-          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
+
       - run:
           name: Create Artifacts
           command: |
@@ -87,6 +84,13 @@ jobs:
             cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
       - store_artifacts:
           path: /Users/distiller/project/upload 
+    #   - run:
+    #       name: Snapcraft Login
+    #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+    #       command: snapcraft login
+      - run:
+          name: Build and Publish - snap
+          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
 
 workflows:
   # Below is the definition of your workflow.
