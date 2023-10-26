@@ -54,13 +54,6 @@ jobs:
           name: Build and Publish - windows CrossOver.exe
           command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
       - run:
-          name: Snapcraft Login
-          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
-          command: echo "$SNAP_TOKEN" | snapcraft login --with -
-      - run:
-          name: Build and Publish - snap
-          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
-      - run:
           name: Build and Publish - linux
           command: yarn build:linux
       - run:
@@ -79,6 +72,13 @@ jobs:
             git pull
             git merge ${CIRCLE_BRANCH} || echo "Not merging to stable"
             git push --set-upstream origin stable || echo "Not pushing stable"
+      - run:
+          name: Snapcraft Login
+          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+          command: echo "$SNAP_TOKEN" | snapcraft login --with -
+      - run:
+          name: Build and Publish - snap
+          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
       - run:
           name: Create Artifacts
           command: |
