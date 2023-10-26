@@ -78,9 +78,6 @@ jobs:
           name: Build and Publish - mac
           command: yarn build:mac
       - run:
-          name: Build and Publish - linux:rpm
-          command: yarn build:rpm
-      - run:
           name: ls dist
           command: ls dist
       - run:
