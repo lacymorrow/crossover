@@ -9,7 +9,7 @@ orbs:
   node: circleci/node@5.1.0
 
 jobs:
-  build: # this can be any name you choose
+  build-rpm: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
     steps:
       - checkout
@@ -123,4 +123,5 @@ workflows:
         - equal: [master, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - build
+      - build-rpm
+      - build-all
