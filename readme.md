@@ -291,6 +291,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Call of Duty: Warzone             | Runs in `Windowed` mode                                                            |
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
 | ✅    | CS:GO / Counter-Strike: Global Offensive | Runs in `Windowed` mode; May work in `Windowed Fullscreen` and `Fullscreen` modes with AHK script |
+| ✅    | CS 2 / Counter-Strike: 2          | Runs in `Windowed` mode; Doesn't work in `Fullscreen` modes with/without AHK script |
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
