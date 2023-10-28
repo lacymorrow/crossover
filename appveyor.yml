@@ -25,8 +25,7 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn config set network-timeout 600000 -g
-  - yarn
+  - npm i  --openssl-fips=''
 
 build_script:
   - cmd: node --version

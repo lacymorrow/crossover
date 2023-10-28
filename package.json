@@ -91,7 +91,7 @@
 		"axe-playwright": "^1.1.11",
 		"bindings": "^1.5.0",
 		"depcheck": "^1.4.3",
-		"electron": "22.3.25",
+		"electron": "11.5.0",
 		"electron-builder": "^23.0.3",
 		"electron-builder-squirrel-windows": "^23.0.6",
 		"eslint": "^8.42.0",
