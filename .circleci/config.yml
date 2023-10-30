@@ -26,7 +26,7 @@ jobs:
           command: sudo apt-get install rpm
           name: Install Dependencies
       - run:
-          command: yarn build:rpm
+          command: npm run build:rpm
           name: Build app
       - run:
           name: Create Artifacts
