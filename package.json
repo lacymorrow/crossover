@@ -2,7 +2,7 @@
 	"name": "crossover",
 	"productName": "CrossOver",
 	"appId": "com.lacymorrow.crossover",
-	"version": "3.1.5",
+	"version": "3.2.0",
 	"description": "A Crosshair Overlay for any screen",
 	"copyright": "Copyright © Lacy Morrow",
 	"repository": "lacymorrow/crossover",
