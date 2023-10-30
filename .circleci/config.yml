@@ -57,12 +57,12 @@ jobs:
           install-yarn: true
           node-version: "16.20.0"
       # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
-      - node/install-packages:
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
-      # - run:
-      #     name: Install Node modules
-      #     command: npm i  --openssl-fips=''
+      # - node/install-packages:
+      #     # If you are using yarn, change the line below from "npm" to "yarn"
+      #     pkg-manager: yarn
+      - run:
+          name: Install Node modules
+          command: npm i  --openssl-fips=''
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
