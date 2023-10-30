@@ -291,6 +291,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Call of Duty: Warzone             | Runs in `Windowed` mode                                                            |
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
 | ✅    | CS:GO / Counter-Strike: Global Offensive | Runs in `Windowed` mode; May work in `Windowed Fullscreen` and `Fullscreen` modes with AHK script |
+| ✅    | CS 2 / Counter-Strike: 2          | Runs in `Windowed` mode; Doesn't work in `Fullscreen` modes with/without AHK script |
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
@@ -374,6 +375,14 @@ $ yarn build
 
 #### Build issues
 
+
+```
+i386 architecture deprecated in MacOS
+```
+
+Newer versions of OSX cannot build for 32-bit apps, use CircleCI to build those.
+
+
 ```
 gyp: name 'openssl_fips' is not defined while evaluating condition 'openssl_fips != ""' in binding.gyp while trying to load binding.gyp
 ```
@@ -390,6 +399,24 @@ Exit code:
 
 To build rpm, executable rpmbuild is required, please install: `brew install rpm`
 
+
+#### Continuous Integration (CI)
+
+We use [CircleCI](https://circleci.com/gh/lacymorrow/crossover) and [Appveyor](https://ci.appveyor.com/project/lacymorrow/crossover) to build and test CrossOver on every commit. Circle builds for Mac and Linux, Appveyor builds for Windows.
+
+CircleCI builds are published to the [Snap Store](https://snapcraft.io/crossover) and GitHub Releases while Appveyor builds are published to the [Windows App Store](https://apps.microsoft.com/detail/9MTD5ZLN7NL1).
+
+CircleCI needs the following environment variables:
+
+- `GH_TOKEN` aka a Personal Access Token
+
+- `SNAP_TOKEN` aka a Snapcraft API token, generated with **snapcraft v6 (NOT v7+)** using `snapcraft login` and `snapcraft export-login token.txt`
+
+To install `snapcraft` on a Mac:
+
+- You'll need Multipass: `brew install multipass --cask`
+
+- Then install snapcraft: `brew install snapcraft`
 
 
 ### Publish
