@@ -26,7 +26,7 @@ jobs:
           command: sudo apt-get install rpm
           name: Install Dependencies
       - run:
-          command: npm run build:rpm
+          command: npm run build:rpm  --openssl-fips=""
           name: Build app
       - run:
           name: Create Artifacts
@@ -62,7 +62,7 @@ jobs:
       #     pkg-manager: yarn
       - run:
           name: Install Node modules
-          command: npm i  --openssl-fips='' --openssl-fips=""
+          command: npm i  --openssl-fips=''
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
