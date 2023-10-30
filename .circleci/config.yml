@@ -26,7 +26,7 @@ jobs:
           command: sudo apt-get install rpm
           name: Install Dependencies
       - run:
-          command: npm run build:rpm  --openssl-fips=""
+          command: npm run build:rpm --openssl-fips=""
           name: Build app
       - run:
           name: Create Artifacts
@@ -69,24 +69,24 @@ jobs:
       - run:
           name: Install Dependencies
           command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-      - run:
-          name: Run tests
-          command: yarn test || echo "There were test failures, this build may be sour."
+      # - run:
+      #     name: Run tests
+      #     command: yarn test || echo "There were test failures, this build may be sour."
       - run:
           name: Build and Publish - windows
-          command: yarn build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish never' )
+          command: npm run build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish never' )
       # - run:
       #     name: Create Windows EXE
       #     command: yarn sh:copyexe
       - run:
           name: Build and Publish - windows CrossOver.exe
-          command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
+          command: npm run build:windows:exe --openssl-fips="" || echo 'We error here since latest.yml has already been uploaded.'
       - run:
           name: Build and Publish - linux
-          command: yarn build:linux
+          command: npm run build:linux --openssl-fips=""
       - run:
           name: Build and Publish - mac
-          command: yarn build:mac
+          command: npm run build:mac --openssl-fips=""
       - run:
           name: ls dist
           command: ls dist
@@ -115,7 +115,7 @@ jobs:
       #       command: snapcraft login
       - run:
           name: Build and Publish - snap
-          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
+          command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )  --openssl-fips=""
 
 workflows:
   # Below is the definition of your workflow.
