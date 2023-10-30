@@ -87,7 +87,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.17.8",
 		"@babel/eslint-parser": "^7.17.0",
-		"@playwright/test": "^1.21.0",
+		"@playwright/test": "^1.39.0",
 		"axe-playwright": "^1.1.11",
 		"bindings": "^1.5.0",
 		"depcheck": "^1.4.3",
