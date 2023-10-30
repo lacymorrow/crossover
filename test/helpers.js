@@ -129,6 +129,7 @@ function visualMouseCode() {
         puppeteer-mouse-pointer.button-3 {
           transition: none;
           border-radius: 4px;
+          border-color: rgba(255,255,0,0.9);
         }
         puppeteer-mouse-pointer.button-4 {
           transition: none;

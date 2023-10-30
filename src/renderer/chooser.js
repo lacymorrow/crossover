@@ -113,9 +113,15 @@
 		let label = window.crossover.path.dirname( files[0] )
 		label = window.crossover.path.parse( label ).name
 
+		console.log( `Create group: ${label}` )
+
 		for ( const element of files ) {
 
+			console.log( `Create group: ${element}` )
+
 			if ( typeof element === 'string' ) {
+
+				console.log( `group: ${element}`, current, group )
 
 				const img = createImage( element, current )
 				group.append( img )
@@ -127,6 +133,8 @@
 		// Text replacement on first group'
 		title.textContent = ( label === 'Actual' ) ? 'Real Crosshairs' : label
 		title.classList.add( 'group-label' )
+
+		console.log( chooserElement )
 
 		chooserElement.append( title )
 		chooserElement.append( group )
