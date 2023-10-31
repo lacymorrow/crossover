@@ -23,15 +23,9 @@ Donations will ensure the following:
 
 
 **To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. See error
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
 
 **Versions (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
+ - OS: [e.g. Windows 10]
  - CrossOver Version [e.g. 3.2.0]
