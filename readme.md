@@ -8,6 +8,16 @@
 
 ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![Maintainability](https://api.codeclimate.com/v1/badges/2f447345bdeff3565392/maintainability)](https://codeclimate.com/github/lacymorrow/crossover/maintainability) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
 
+[![forthebadge](http://forthebadge.com/images/badges/built-by-developers.svg)](http://forthebadge.com)&nbsp;&nbsp;&nbsp;&nbsp;[![forthebadge](http://forthebadge.com/images/badges/for-developers.svg)](http://forthebadge.com)<br />
+
+<div>
+<a href="https://gitHub.com/lacymorrow/crossover/stargazers/"><img src="https://img.shields.io/github/stars/lacymorrow/crossover.svg?style=social&amp;label=Star&amp;maxAge=2592000" alt="GitHub stars" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/network/"><img src="https://img.shields.io/github/forks/lacymorrow/crossover.svg?style=social&amp;label=Forks&amp;maxAge=2592000" alt="GitHub forks" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/watchers/"><img src="https://img.shields.io/github/watchers/lacymorrow/crossover.svg?style=social&amp;label=Watching&amp;maxAge=2592000" alt="GitHub watchers" style="max-width: 100%;"></a>
+</div>
+<br />
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/lm)
+
+
 #### Get it on the Windows App Store and Linux Snap Store
 
 <div>
