@@ -48,7 +48,7 @@
 		"check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
 		"check:circular": "madge --circular .",
 		"depcheck": "yarn check:deps && yarn check:circular",
-		"release": "np --no-tests --branch release && yarn build:release",
+		"release": "np --no-tests --branch release",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",
 		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
