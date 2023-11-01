@@ -9,7 +9,7 @@ orbs:
   node: circleci/node@5.1.0
 
 jobs:
-  build-linux: # this can be any name you choose
+  # build-linux: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
     steps:
       - checkout
@@ -77,6 +77,9 @@ jobs:
       #     name: Run tests
       #     command: yarn test || echo "There were test failures, this build may be sour."
       - run:
+          name: Build and Publish - linux
+          command: npm run build:linux --openssl-fips=""
+      - run:
           name: Build and Publish - windows
           command: npm run build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish-never' ) --openssl-fips=""
       # - run:
@@ -91,9 +94,6 @@ jobs:
       #       name: Snapcraft Login
       #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
       #       command: snapcraft login
-      # - run:
-      #     name: Build and Publish - linux
-      #     command: npm run build:linux --openssl-fips=""
       # - run:
       #     name: Build and Publish - snap
       #     command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
@@ -135,5 +135,5 @@ workflows:
         - equal: [master, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - build-linux
+      # - build-linux
       - build-all
