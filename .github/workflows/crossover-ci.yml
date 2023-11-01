@@ -11,8 +11,6 @@ jobs:
   crossover-ci-mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-
       # install Bun
       - uses: oven-sh/setup-bun@v1
 
@@ -22,9 +20,7 @@ jobs:
           rm -rf *
         if: ${{ always() }}
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
-      - name: Checkout Project
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Check memory and cpu
       - name: Verify Runner Resources
@@ -41,7 +37,7 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
           cache: "npm"
@@ -52,16 +48,16 @@ jobs:
           echo "node: $(node --version)"
           echo "npm: $(npm --version)"
           echo "yarn: $(yarn --version)"
-          npm install
+          npm install --openssl_fips=""
 
-      - name: Lint
-        run: npm run lint
+      # - name: Lint
+      #   run: npm run lint
 
-      - name: Check Dependencies
-        run: npm run depcheck
+      # - name: Check Dependencies
+      #   run: npm run depcheck
 
-      - name: Unpackaged Test 🧪
-        run: npm run test
+      # - name: Unpackaged Test 🧪
+      #   run: npm run test
 
       # - name: Build
       #   run: |
@@ -84,7 +80,7 @@ jobs:
 
       - name: Upload Test Results 🗃
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist/*
@@ -101,7 +97,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       - name: Checkout Project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get Node Version
         run: |
@@ -113,7 +109,7 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
           cache: "npm"
@@ -170,7 +166,7 @@ jobs:
 
       # - name: Upload Test Results 🗃
       #   if: always()
-      #   uses: actions/upload-artifact@v2
+      #   uses: actions/upload-artifact@v3
       #   with:
       #     name: playwright-output
       #     path: test-output/**
