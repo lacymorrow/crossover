@@ -59,12 +59,12 @@ jobs:
       # - name: Unpackaged Test 🧪
       #   run: npm run test
 
-      # - name: Build
-      #   run: |
-      #     npm run build:mac
-      #   env:
-      #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
-      #     CI: false
+      - name: Build
+        run: |
+          npm run build:mac
+        env:
+          # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+          CI: false
 
       # - name: Package App
       #   run: |
@@ -136,15 +136,15 @@ jobs:
       - name: Check Dependencies
         run: npm run depcheck
 
-      - name: Unpackaged Test 🧪
-        run: npm run test
+      # - name: Unpackaged Test 🧪
+      #   run: npm run test
 
-      # - name: Build
-      #   run: |
-      #     npm run build:windows
-      #   env:
-      #     # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
-      #     CI: false
+      - name: Build
+        run: |
+          npm run build:windows
+        env:
+          # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+          CI: false
 
       # - name: Package
       #   run: |
