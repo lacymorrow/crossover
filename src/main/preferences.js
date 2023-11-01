@@ -236,7 +236,7 @@ const preferencesConfig = {
 						label: 'CrossOver Actions (beta)',
 						fields: [
 							{
-								content: '<p>CrossOver Actions do not work on Apple Silicon.</p>',
+								content: '<p><b>Note:</b> CrossOver Actions do not work on Apple Silicon.</p>',
 								type: 'message',
 							},
 						],
