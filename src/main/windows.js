@@ -110,7 +110,7 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		webPreferences: {
 			contextIsolation: true,
 			sandbox: false, // todo: enable
-			enableRemoteModule: true,
+			enableRemoteModule: false,
 			nativeWindowOpen: true,
 			nodeIntegration: false,
 			preload: path.join( __renderer, 'preload.js' ),
@@ -218,7 +218,7 @@ const createChild = async ( parent, windowName ) => {
 		height: 400,
 		webPreferences: {
 			contextIsolation: true, // Protect against prototype pollution
-			enableRemoteModule: true, // Turn off remote
+			enableRemoteModule: false, // Turn off remote
 			nodeIntegration: false, // Is default value after Electron v5
 			sandbox: false, // todo: enable
 			preload: path.join( __renderer, `preload-${windowName}.js` ),

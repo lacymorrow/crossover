@@ -1,5 +1,5 @@
 const { app } = require( 'electron' )
-const { is } = require( 'electron-util' )
+const { is } = require( './util' )
 
 // MacOS only, dock badge
 const setBadge = text => app?.dock?.setBadge( String( text ) )

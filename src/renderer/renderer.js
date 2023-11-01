@@ -11,8 +11,6 @@
 
 	} )
 
-	console.log( window.crossover.test )
-
 	// DOM elements
 	const background = document.querySelector( '.background' )
 	const closeBtn = document.querySelector( '.close-button' )

@@ -1,5 +1,5 @@
 const { app } = require( 'electron' )
-const { is } = require( 'electron-util' )
+const { is } = require( './util' )
 const EXIT_CODES = require( '../config/exit-codes' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()

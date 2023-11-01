@@ -86,7 +86,7 @@ const hideOnMouse = async () => {
 	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? ' toggle' : 'hold' ) )
 	await iohook.importIoHook()
 
-	log( opacity )
+	log.info( opacity )
 
 	if ( hideOnMouseToggle ) {
 

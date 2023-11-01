@@ -1,5 +1,5 @@
 const { Menu, Tray } = require( 'electron' )
-const { is } = require( 'electron-util' )
+const { is } = require( './util' )
 const path = require( 'path' )
 const log = require( './log' )
 const { preferencesMenuItems, openCustomImageMenuItem, resetMenuItem, showAppMenuItem } = require( './menu' )

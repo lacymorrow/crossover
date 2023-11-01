@@ -11,7 +11,7 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
-const { getWindowBoundsCentered } = require( 'electron-util' )
+const { getWindowBoundsCentered } = require( './util' )
 const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
@@ -529,10 +529,11 @@ const openSettingsWindow = async () => {
 		} )
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
-		windows.preferencesWindow.webContents.on( 'new-window', ( event, url ) => {
+		windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
 
-			event.preventDefault()
-			shell.openExternal( url )
+			shell.openExternal( details.url )
+
+			return { action: 'deny' }
 
 		} )
 

@@ -206,6 +206,6 @@ module.exports = async () => {
 	console.timeLog( 'init' )
 
 	// Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
-	setTimeout( ready, 400 )
+	setTimeout( ready, 500 )
 
 }
