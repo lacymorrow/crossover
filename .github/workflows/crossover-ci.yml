@@ -11,9 +11,6 @@ jobs:
   crossover-ci-mac:
     runs-on: macos-latest
     steps:
-      # install Bun
-      - uses: oven-sh/setup-bun@v1
-
       # Make sure build is clean and no files from a previous run are re-used.
       - name: Cleanup files before run
         run: |
@@ -27,9 +24,7 @@ jobs:
         run: |
           sysctl -n machdep.cpu.brand_string
           vm_stat | perl -ne '/page size of (\d+)/ and $size=$1; /Pages\s+([^:]+)[^\d]+(\d+)/ and printf("%-16s % 16.2f Mi\n", "$1:", $2 * $size / 1048576);'
-      # - name: Install Tools
-      #   run: |
-      #     brew install jq
+
       - name: Get Node Version
         run: |
           cat .nvmrc
@@ -50,18 +45,18 @@ jobs:
           echo "yarn: $(yarn --version)"
           npm install --openssl_fips=""
 
-      # - name: Lint
-      #   run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-      # - name: Check Dependencies
-      #   run: npm run depcheck
+      - name: Check Dependencies
+        run: npm run depcheck
 
       # - name: Unpackaged Test 🧪
       #   run: npm run test
 
       - name: Build
         run: |
-          npm run build:mac
+          npm run build:mac --openssl_fips=""
         env:
           # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
           CI: false
@@ -130,12 +125,6 @@ jobs:
           yarn --version
           npm install
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Check Dependencies
-        run: npm run depcheck
-
       # - name: Unpackaged Test 🧪
       #   run: npm run test
 
@@ -144,6 +133,7 @@ jobs:
           npm run build:windows
         env:
           # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
+          # We use circle as ci
           CI: false
 
       # - name: Package
