@@ -106,7 +106,6 @@ jobs:
       - run:
           name: Cut stable branch
           command: |
-            rm yarn.lock
             git config user.email "me@lacymorrow.com"
             git config user.name "Lacy CI"
             git checkout stable || git checkout -b stable
