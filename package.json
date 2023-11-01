@@ -154,7 +154,8 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman"
+				"pacman",
+				"rpm"
 			],
 			"category": "Game;Shooter"
 		},
