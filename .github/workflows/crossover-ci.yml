@@ -32,8 +32,7 @@ jobs:
       #     brew install jq
       - name: Get Node Version
         run: |
-          cat .nvmrc
-          echo "::set-output name=nodeversion::$(cat .nvmrc)"
+          echo "nodeversion=$(cat .nvmrc)" >> $GITHUB_OUTPUT
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
@@ -105,7 +104,7 @@ jobs:
           $filePath = ".nvmrc"
           Get-Content $filePath -Raw
           $content = Get-Content $filePath -Raw
-          echo "::set-output name=nodeversion::$content"
+          echo "nodeversion=$content" >> $GITHUB_OUTPUT
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
