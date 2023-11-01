@@ -9,7 +9,7 @@ orbs:
   node: circleci/node@5.1.0
 
 jobs:
-  build-rpm: # this can be any name you choose
+  build-linux: # this can be any name you choose
     executor: node/default # use the default executor defined within the orb
     steps:
       - checkout
@@ -26,8 +26,12 @@ jobs:
           command: sudo apt-get install rpm
           name: Install Dependencies
       - run:
-          command: npm run build:rpm --openssl-fips=""
+          command: npm run build:linux --openssl-fips=""
           name: Build app
+      - run:
+          name: Build and Publish - snap
+          command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
+
       - run:
           name: Create Artifacts
           command: |
@@ -81,9 +85,18 @@ jobs:
       - run:
           name: Build and Publish - windows CrossOver.exe
           command: npm run build:windows:exe --openssl-fips="" || echo 'We error here since latest.yml has already been uploaded.'
-      - run:
-          name: Build and Publish - linux
-          command: npm run build:linux --openssl-fips=""
+      # Snapcraft > 6 uses a different login method that requires an ENV variable: SNAPCRAFT_STORE_CREDENTIALS
+      # See https://snapcraft.io/docs/snapcraft-authentication
+      #   - run:
+      #       name: Snapcraft Login
+      #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+      #       command: snapcraft login
+      # - run:
+      #     name: Build and Publish - linux
+      #     command: npm run build:linux --openssl-fips=""
+      # - run:
+      #     name: Build and Publish - snap
+      #     command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
       - run:
           name: Build and Publish - mac
           command: npm run build:mac --openssl-fips=""
@@ -109,13 +122,6 @@ jobs:
             cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
       - store_artifacts:
           path: /Users/distiller/project/upload
-      #   - run:
-      #       name: Snapcraft Login
-      #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
-      #       command: snapcraft login
-      - run:
-          name: Build and Publish - snap
-          command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
 
 workflows:
   # Below is the definition of your workflow.
@@ -129,5 +135,5 @@ workflows:
         - equal: [master, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - build-rpm
+      - build-linux
       - build-all
