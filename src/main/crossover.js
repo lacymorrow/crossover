@@ -529,13 +529,29 @@ const openSettingsWindow = async () => {
 		} )
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
-		windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
+		// Todo: remove this check when updating to electron 12, this is to allow 11/12 compatibility
+		if ( windows.preferencesWindow.webContents.setWindowOpenHandler ) {
 
-			shell.openExternal( details.url )
+			// Electron 12+
+			windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
 
-			return { action: 'deny' }
+				shell.openExternal( details.url )
 
-		} )
+				return { action: 'deny' }
+
+			} )
+
+		} else {
+
+			// Electron 11
+			windows.preferencesWindow.webContents.on( 'new-window', ( event, url ) => {
+
+				event.preventDefault()
+				shell.openExternal( url )
+
+			} )
+
+		}
 
 		// Track window state
 		windows.preferencesWindow.on( 'closed', () => {
