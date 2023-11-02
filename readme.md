@@ -394,6 +394,11 @@ $ yarn build
 CI builds do not seem to work correctly for Mac. Try using a real Mac to build.
 
 
+**Test closing via the traffic lights on Mac**
+
+Calling `process.exit()` before the app is done "quitting" will cause the app to crash on Mac.
+
+
 ```
 i386 architecture deprecated in MacOS
 ```

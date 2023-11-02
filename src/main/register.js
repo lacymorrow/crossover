@@ -1,6 +1,5 @@
 const { app } = require( 'electron' )
 const { is } = require( './util' )
-const EXIT_CODES = require( '../config/exit-codes' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
 const iohook = require( './iohook' )
@@ -53,14 +52,6 @@ const appEvents = () => {
 
 	} )
 
-	app.on( 'will-quit', () => {
-
-		// Unregister all shortcuts.
-		iohook.unregisterIOHook()
-		keyboard.unregisterShortcuts()
-
-	} )
-
 	// Sending a `SIGINT` (e.g: Ctrl-C) to an Electron app that registers
 	// a `beforeunload` window event handler results in a disconnected white
 	// browser window in GNU/Linux and macOS.
@@ -70,7 +61,15 @@ const appEvents = () => {
 	app.on( 'before-quit', () => {
 
 		app.releaseSingleInstanceLock()
-		process.exit( EXIT_CODES.SUCCESS )
+
+	} )
+
+	app.on( 'will-quit', () => {
+
+		// Unregister all shortcuts.
+		iohook.unregisterIOHook()
+		keyboard.unregisterShortcuts()
+		// process.exit( EXIT_CODES.SUCCESS )
 
 	} )
 

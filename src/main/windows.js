@@ -11,6 +11,8 @@ const { __renderer } = require( './paths.js' )
 const preferences = require( './preferences.js' ).init()
 const helpers = require( './helpers.js' )
 
+console.log( '***************' )
+
 // Will return current window if exists
 const init = async options => {
 
