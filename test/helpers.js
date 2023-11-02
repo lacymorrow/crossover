@@ -35,8 +35,6 @@ const startApp = async () => {
 
 	electronApp.on( 'window', async page => {
 
-		// console.log( `Window opened: ${page.url()}` )
-
 		// Capture errors
 		page.on( 'pageerror', error => {
 

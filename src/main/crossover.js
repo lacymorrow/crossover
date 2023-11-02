@@ -11,7 +11,7 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
-const { getWindowBoundsCentered } = require( 'electron-util' )
+const { getWindowBoundsCentered } = require( './util' )
 const preferences = Preferences.init()
 
 let previousPreferences = preferences.preferences
@@ -529,12 +529,29 @@ const openSettingsWindow = async () => {
 		} )
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
-		windows.preferencesWindow.webContents.on( 'new-window', ( event, url ) => {
+		// Todo: remove this check when updating to electron 12, this is to allow 11/12 compatibility
+		if ( windows.preferencesWindow.webContents.setWindowOpenHandler ) {
 
-			event.preventDefault()
-			shell.openExternal( url )
+			// Electron 12+
+			windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
 
-		} )
+				shell.openExternal( details.url )
+
+				return { action: 'deny' }
+
+			} )
+
+		} else {
+
+			// Electron 11
+			windows.preferencesWindow.webContents.on( 'new-window', ( event, url ) => {
+
+				event.preventDefault()
+				shell.openExternal( url )
+
+			} )
+
+		}
 
 		// Track window state
 		windows.preferencesWindow.on( 'closed', () => {

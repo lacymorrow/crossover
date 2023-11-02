@@ -385,6 +385,19 @@ $ yarn build
 
 #### Build issues
 
+**Test CI builds on Mac and PC before releasing**
+
+```
+'CrossOver' is damaged and can't be opened.
+```
+
+CI builds do not seem to work correctly for Mac. Try using a real Mac to build.
+
+
+**Test closing via the traffic lights on Mac**
+
+Calling `process.exit()` before the app is done "quitting" will cause the app to crash on Mac.
+
 
 ```
 i386 architecture deprecated in MacOS
@@ -412,7 +425,7 @@ To build rpm, executable rpmbuild is required, please install: `brew install rpm
 
 #### Continuous Integration (CI)
 
-We use [CircleCI](https://circleci.com/gh/lacymorrow/crossover) and [Appveyor](https://ci.appveyor.com/project/lacymorrow/crossover) to build and test CrossOver on every commit. Circle builds for Mac and Linux, Appveyor builds for Windows.
+We use [GitHub Actions](https://github.com/lacymorrow/crossover/actions), [CircleCI](https://circleci.com/gh/lacymorrow/crossover) and [Appveyor](https://ci.appveyor.com/project/lacymorrow/crossover) to build and test CrossOver on every commit. Circle and GitHub build for all targets, Appveyor builds for Windows.
 
 CircleCI builds are published to the [Snap Store](https://snapcraft.io/crossover) and GitHub Releases while Appveyor builds are published to the [Windows App Store](https://apps.microsoft.com/detail/9MTD5ZLN7NL1).
 
@@ -420,7 +433,10 @@ CircleCI needs the following environment variables:
 
 - `GH_TOKEN` aka a Personal Access Token
 
-- `SNAP_TOKEN` aka a Snapcraft API token, generated with **snapcraft v6 (NOT v7+)** using `snapcraft login` and `snapcraft export-login token.txt`
+**[As of v7](https://snapcraft.io/docs/snapcraft-authentication), use the `SNAPCRAFT_STORE_CREDENTIALS` environment variable instead of the following**
+
+- ~~`SNAP_TOKEN` aka a Snapcraft API token, generated with **snapcraft v6 (NOT v7+)** using `snapcraft login` and `snapcraft export-login token.txt`~~
+
 
 To install `snapcraft` on a Mac:
 

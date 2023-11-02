@@ -13,7 +13,18 @@ const importIoHook = async () => {
 	if ( !iohook.hook ) {
 
 		log.info( 'Loading IOHook...' )
-		iohook.hook = await require( 'iohook' )
+		try {
+
+			iohook.hook = await require( 'iohook' )
+
+		} catch ( error ) {
+
+			console.warn( 'IOHook failed to load, you may be using an unsupported architecture (Apple M)' )
+			console.warn( error )
+
+			iohook.hook = null
+
+		}
 
 	}
 
@@ -59,21 +70,26 @@ const followMouse = async () => {
 
 	log.info( 'Setting: Mouse Follow' )
 	await iohook.importIoHook()
-	iohook.hook.removeAllListeners( 'mousemove' )
 
-	// Register
-	iohook.hook.on( 'mousemove', event => {
+	if ( iohook.hook ) {
 
-		// Can't set fractional values
-		windows.win.setBounds( {
-			x: event.x - Math.round( width / 2 ),
-			y: event.y - Math.round( height / 2 ),
+		iohook.hook.removeAllListeners( 'mousemove' )
+
+		// Register
+		iohook.hook.on( 'mousemove', event => {
+
+			// Can't set fractional values
+			windows.win.setBounds( {
+				x: event.x - Math.round( width / 2 ),
+				y: event.y - Math.round( height / 2 ),
+			} )
+
 		} )
 
-	} )
+		// Start hook
+		iohook.hook.start()
 
-	// Start hook
-	iohook.hook.start()
+	}
 
 }
 
@@ -86,7 +102,7 @@ const hideOnMouse = async () => {
 	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? ' toggle' : 'hold' ) )
 	await iohook.importIoHook()
 
-	log( opacity )
+	log.info( opacity )
 
 	if ( hideOnMouseToggle ) {
 
@@ -112,7 +128,7 @@ const hideOnMouse = async () => {
 
 		} )
 
-	} else {
+	} else if ( iohook.hook ) {
 
 		// Register
 		iohook.hook.on( 'mousedown', event => {
@@ -137,8 +153,12 @@ const hideOnMouse = async () => {
 
 	}
 
-	// Register and start hook
-	iohook.hook.start()
+	if ( iohook.hook ) {
+
+		// Register and start hook
+		iohook.hook.start()
+
+	}
 
 }
 

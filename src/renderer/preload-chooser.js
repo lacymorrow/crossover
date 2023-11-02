@@ -5,10 +5,9 @@ const {
 	contextBridge,
 	ipcRenderer,
 } = require( 'electron' )
-const { is } = require( 'electron-util' )
 
 contextBridge.exposeInMainWorld( 'crossover', {
-	isMacOs: is.macos,
+	isMacOs: process.platform === 'darwin',
 	path,
 	send( channel, data ) {
 

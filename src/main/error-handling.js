@@ -1,6 +1,6 @@
 const log = require( 'electron-log' )
 const unhandled = require( 'electron-unhandled' )
-const { debugInfo, openNewGitHubIssue } = require( 'electron-util' )
+const { debugInfo, openNewGitHubIssue } = require( './util' )
 
 // Const { openReportCrashDialog } = require( './dialog.js' )
 

@@ -4,7 +4,7 @@ const log = require( './log' )
 const save = require( './save' )
 const windows = require( './windows' )
 const { SUPPORTED_IMAGE_FILE_TYPES, APP_WIDTH, APP_HEIGHT, APP_WIDTH_MEDIUM, APP_HEIGHT_MEDIUM } = require( '../config/config' )
-const { is } = require( 'electron-util' )
+const { is } = require( './util' )
 const { app, screen } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 
