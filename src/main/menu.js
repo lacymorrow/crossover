@@ -6,7 +6,7 @@ const {
 	openNewGitHubIssue,
 	is,
 	appMenu,
-} = require( 'electron-util' )
+} = require( './util' )
 
 const errorHandling = require( './error-handling' )
 const dialog = require( './dialog' )

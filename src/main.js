@@ -58,10 +58,10 @@ console.time( 'init' )
 const process = require( 'process' )
 
 const { app } = require( 'electron' )
-const { is } = require( 'electron-util' )
 const debug = require( 'electron-debug' )
 const { checkboxTrue } = require( './config/utils.js' )
 
+const { is } = require( './main/util' )
 const errorHandling = require( './main/error-handling.js' )
 const log = require( './main/log.js' )
 const preferences = require( './main/preferences.js' ).init()

@@ -2,7 +2,7 @@ const path = require( 'path' )
 
 const { app, BrowserWindow, screen } = require( 'electron' )
 
-const { activeWindow, centerWindow, is } = require( 'electron-util' )
+const { activeWindow, centerWindow, is } = require( './util' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, APP_ASPECT_RATIO } = require( '../config/config.js' )
 const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
@@ -10,8 +10,6 @@ const log = require( './log.js' )
 const { __renderer } = require( './paths.js' )
 const preferences = require( './preferences.js' ).init()
 const helpers = require( './helpers.js' )
-
-console.log( '***************' )
 
 // Will return current window if exists
 const init = async options => {

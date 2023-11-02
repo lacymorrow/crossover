@@ -2,7 +2,7 @@ const { api, BrowserWindow, os } = require( 'electron' )
 const isDev = require( 'electron-is-dev' )
 const { productName } = require( '../../package.json' )
 
-const activeWindow = BrowserWindow.getFocusedWindow()
+const activeWindow = () => BrowserWindow.getFocusedWindow()
 
 const debugInfo = () => `
 ${api.app.getName()} ${api.app.getVersion()}
