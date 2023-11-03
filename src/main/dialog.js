@@ -2,11 +2,12 @@
 const path = require( 'path' )
 const { app, dialog: electronDialog, shell } = require( 'electron' )
 const log = require( 'electron-log' )
-const { debugInfo, is, showAboutWindow } = require( 'electron-util' )
+const { debugInfo, is, showAboutWindow } = require( './util' )
 
-const { __static, FILE_FILTERS, HOMEPAGE_URL } = require( '../config/config.js' )
+const { FILE_FILTERS, HOMEPAGE_URL } = require( '../config/config.js' )
 const set = require( './set.js' )
 const notification = require( './notification.js' )
+const { __static } = require( './paths.js' )
 const preferences = require( './preferences.js' ).init()
 
 const validButtonIndex = result => {
@@ -24,7 +25,7 @@ const validButtonIndex = result => {
 const openAboutWindow = () => {
 
 	showAboutWindow( {
-		icon: path.join( __static, 'icon.png' ),
+		icon: path.join( __static, 'icons', 'icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`,
 	} )

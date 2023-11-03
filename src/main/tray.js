@@ -1,5 +1,5 @@
 const { Menu, Tray } = require( 'electron' )
-const { is } = require( './util' )
+const { is, aboutMenuItem } = require( './util' )
 const path = require( 'path' )
 const log = require( './log' )
 const { preferencesMenuItems, openCustomImageMenuItem, resetMenuItem, showAppMenuItem } = require( './menu' )
@@ -43,6 +43,7 @@ const init = () => {
 	tray.instance = new Tray( getIconPath() )
 
 	const contextMenu = Menu.buildFromTemplate( [
+		aboutMenuItem(),
 		showAppMenuItem,
 		...preferencesMenuItems,
 		openCustomImageMenuItem,

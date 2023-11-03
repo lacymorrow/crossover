@@ -1,4 +1,4 @@
-const { app, BrowserWindow, os, screen, shell } = require( 'electron' )
+const { api, BrowserWindow, os } = require( 'electron' )
 const isDev = require( 'electron-is-dev' )
 const { productName } = require( '../../package.json' )
 
@@ -7,10 +7,10 @@ const { electronVersion } = process.versions.electron || '0.0.0'
 const activeWindow = () => BrowserWindow.getFocusedWindow()
 
 const debugInfo = () => `
-${app.getName()} ${app.getVersion()}
+${api.app.getName()} ${api.app.getVersion()}
 Electron ${electronVersion}
 ${process.platform} ${os.release()}
-Locale: ${app.getLocale()}
+Locale: ${api.app.getLocale()}
 `.trim()
 
 const is = {
@@ -31,7 +31,7 @@ const getWindowBoundsCentered = options => {
 		...options,
 	}
 
-	const currentDisplay = screen.getDisplayNearestPoint( screen.getCursorScreenPoint() )
+	const currentDisplay = api.screen.getDisplayNearestPoint( api.screen.getCursorScreenPoint() )
 	const [ width, height ] = options.window.getSize()
 	const windowSize = options.size || { width, height }
 	const screenSize = options.useFullBounds
@@ -123,7 +123,7 @@ const newGithubIssueUrl = ( options = {} ) => {
 const openNewGitHubIssue = options => {
 
 	const url = newGithubIssueUrl( options )
-	shell.openExternal( url )
+	api.shell.openExternal( url )
 
 }
 
@@ -146,7 +146,7 @@ const openUrlMenuItem = ( options = {} ) => {
 
 		}
 
-		shell.openExternal( url )
+		api.shell.openExternal( url )
 
 	}
 
@@ -186,8 +186,8 @@ const showAboutWindow = ( options = {} ) => {
 	// TODO: The defaults are standardized here, instead of being set in
 	// Electron when https://github.com/electron/electron/issues/23851 is fixed.
 
-	const appName = app.getName()
-	const appVersion = app.getVersion()
+	const appName = api.app.getName()
+	const appVersion = api.app.getVersion()
 
 	const aboutPanelOptions = {
 		applicationName: appName,
@@ -218,8 +218,8 @@ const showAboutWindow = ( options = {} ) => {
 
 	}
 
-	app.setAboutPanelOptions( aboutPanelOptions )
-	app.showAboutPanel()
+	api.app.setAboutPanelOptions( aboutPanelOptions )
+	api.app.showAboutPanel()
 
 }
 

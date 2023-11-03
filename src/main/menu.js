@@ -106,7 +106,7 @@ const helpSubmenu = [
 	},
 	resetMenuItem,
 	aboutMenuItem( {
-		icon: path.join( __dirname, 'static', 'icon.png' ),
+		icon: path.join( __dirname, 'static', 'icons', 'icon.png' ),
 		text: 'Created by Lacy Morrow',
 	} ),
 ]
