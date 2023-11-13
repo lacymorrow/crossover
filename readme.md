@@ -2,7 +2,7 @@
   <img style="width:200px; height:200px;" width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/icons/icon.png">
 </p>
 
-# CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="40"  style="height:40px;" align="right" />](https://www.patreon.com/bePatron?u=55065733)
+# CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="40"  style="height:40px;" align="right" />](https://www.patreon.com/bePatron?u=55065733) [<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="40"  style="height:40px;" align="right" />](https://www.buymeacoffee.com/lm)
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
@@ -11,10 +11,6 @@
 <div>
 <a href="https://gitHub.com/lacymorrow/crossover/stargazers/"><img src="https://img.shields.io/github/stars/lacymorrow/crossover.svg?style=social&amp;label=Star&amp;maxAge=2592000" alt="GitHub stars" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/network/"><img src="https://img.shields.io/github/forks/lacymorrow/crossover.svg?style=social&amp;label=Forks&amp;maxAge=2592000" alt="GitHub forks" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/watchers/"><img src="https://img.shields.io/github/watchers/lacymorrow/crossover.svg?style=social&amp;label=Watching&amp;maxAge=2592000" alt="GitHub watchers" style="max-width: 100%;"></a>
 </div>
-<br />
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/lm)
-
 
 #### Get it on the Windows App Store and Linux Snap Store
 
