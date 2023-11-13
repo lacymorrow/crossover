@@ -8,7 +8,7 @@
 
 ![Latest releases](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=CrossOver%40latest) [![Snapcraft](https://snapcraft.io/crossover/badge.svg)](https://snapcraft.io/crossover) [![Trending](https://snapcraft.io/crossover/trending.svg?name=0)](https://snapcraft.io/crossover) [![Maintainability](https://api.codeclimate.com/v1/badges/2f447345bdeff3565392/maintainability)](https://codeclimate.com/github/lacymorrow/crossover/maintainability) [![CircleCI](https://circleci.com/gh/lacymorrow/crossover/tree/release.svg?style=shield)](https://circleci.com/gh/lacymorrow/crossover/) [![Appveyor](https://ci.appveyor.com/api/projects/status/qtxvaliwymvhxiwx/branch/release?svg=true)](https://ci.appveyor.com/project/lacymorrow/crossover/)
 
-[![forthebadge](http://forthebadge.com/images/badges/built-by-developers.svg)](http://forthebadge.com)&nbsp;&nbsp;&nbsp;&nbsp;[![forthebadge](http://forthebadge.com/images/badges/for-developers.svg)](http://forthebadge.com)<br />
+[![forthebadge](https://forthebadge.com/images/featured/featured-built-with-love.svg)]([https://forthebadge.com](https://www.patreon.com/bePatron?u=55065733))&nbsp;&nbsp;&nbsp;&nbsp;[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)]([https://forthebadge.com](https://www.patreon.com/bePatron?u=55065733))<br />
 
 <div>
 <a href="https://gitHub.com/lacymorrow/crossover/stargazers/"><img src="https://img.shields.io/github/stars/lacymorrow/crossover.svg?style=social&amp;label=Star&amp;maxAge=2592000" alt="GitHub stars" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/network/"><img src="https://img.shields.io/github/forks/lacymorrow/crossover.svg?style=social&amp;label=Forks&amp;maxAge=2592000" alt="GitHub forks" style="max-width: 100%;"></a>&nbsp;&nbsp;&nbsp;<a href="https://gitHub.com/lacymorrow/crossover/watchers/"><img src="https://img.shields.io/github/watchers/lacymorrow/crossover.svg?style=social&amp;label=Watching&amp;maxAge=2592000" alt="GitHub watchers" style="max-width: 100%;"></a>
@@ -574,3 +574,7 @@ If you would like to see specific features or improvements added to CrossOver, c
 - **ETH:** `0x5be1074a5148F8D723dE1F2Dd326e1B15c82553D`
 
 <a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img style="height:50px;" height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
+
+
+
+[![forthebadge](https://forthebadge.com/images/badges/fuck-it-ship-it.svg)]([https://forthebadge.com](https://www.patreon.com/bePatron?u=55065733)https://www.patreon.com/bePatron?u=55065733)
