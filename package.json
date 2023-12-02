@@ -13,6 +13,13 @@
 		"email": "me@lacymorrow.com",
 		"url": "https://lacymorrow.com"
 	},
+	"contributors": [
+		{
+			"name": "Lacy Morrow",
+			"email": "me@lacymorrow.com",
+			"url": "https://github.com/lacymorrow"
+		}
+	],
 	"funding": [
 		{
 			"type": "patreon",
