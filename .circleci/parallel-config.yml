@@ -6,7 +6,7 @@ orbs:
   # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@4.7
+  node: circleci/node@5.1.0
 
 executors:
   macos-executor:
@@ -36,6 +36,9 @@ jobs:
       - run:
           name: pwd
           command: pwd
+      - node/install:
+          install-yarn: true
+          node-version: "14.21.3"
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
