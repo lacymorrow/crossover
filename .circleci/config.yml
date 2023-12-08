@@ -15,6 +15,11 @@ jobs:
       - checkout
       - run:
           command: pwd
+      - node/install:
+          install-yarn: true
+          node-version: "14.21.3"
+      - run:
+          command: node --version
       - run:
           command: npm i --openssl-fips=''
       # - node/install-packages:
@@ -59,7 +64,7 @@ jobs:
           command: pwd
       - node/install:
           install-yarn: true
-          node-version: "16.20.0"
+          node-version: "14.21.3"
       # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
       # - node/install-packages:
       #     # If you are using yarn, change the line below from "npm" to "yarn"
