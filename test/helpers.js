@@ -84,18 +84,12 @@ const closeApp = async () => {
 
 const focusedMinimizedVisible = async ( { electronApp, windowName } ) => electronApp.evaluate( async ( { BrowserWindow }, windowName ) => {
 
+	console.log( windowName )
 	const windows = await BrowserWindow.getAllWindows()
-	let win = windows.find( w => w.title === windowName )
-	if ( !win ) {
-
-		console.warn( `Window "${windowName}" not found, using "${win.title}" instead` )
-		win = windows[0]
-
-	}
-
+	const win = windows.find( w => w.title === windowName )
 	win?.focus()
 
-	return { focused: win?.isFocused(), minimized: win?.isMinimized(), visible: win?.isVisible() }
+	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
 
 }, windowName )
 
@@ -135,7 +129,6 @@ function visualMouseCode() {
         puppeteer-mouse-pointer.button-3 {
           transition: none;
           border-radius: 4px;
-          border-color: rgba(255,255,0,0.9);
         }
         puppeteer-mouse-pointer.button-4 {
           transition: none;

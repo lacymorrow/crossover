@@ -41,7 +41,6 @@ const init = () => {
 	}
 
 	tray.instance = new Tray( getIconPath() )
-
 	const contextMenu = Menu.buildFromTemplate( [
 		showAppMenuItem,
 		...preferencesMenuItems,

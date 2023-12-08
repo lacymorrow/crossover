@@ -13,14 +13,12 @@ if ( args.has( '--version' ) || args.has( '-v' ) ) {
 
 console.log( `CrossOver ${version}` )
 
-// CLI arguments
 if ( args.length > 0 ) {
 
 	console.log( 'Arguments:', args )
 
 }
 
-// Development mode
 if ( args.has( '--debug' ) || args.has( '-d' ) ) {
 
 	console.log( '<Development Mode>' )
@@ -29,7 +27,6 @@ if ( args.has( '--debug' ) || args.has( '-d' ) ) {
 
 }
 
-// Force the app to reset preferences
 if ( args.has( '--reset' ) || args.has( '-r' ) ) {
 
 	console.log( '<Reset App>' )

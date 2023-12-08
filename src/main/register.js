@@ -5,7 +5,6 @@ const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
-const log = require( './log' )
 const reset = require( './reset' )
 const windows = require( './windows' )
 
@@ -21,19 +20,17 @@ const appEvents = () => {
 	// Opening 2nd instance focuses app
 	app.on( 'second-instance', async () => {
 
-		log.warn( 'Tried to create second app instance' )
-
 		// If locked, unlock, else create shadow window
 		if ( windows.win ) {
 
 			if ( preferences.value( 'hidden.locked' ) ) {
 
-				// Unlock
 				crossover.toggleWindowLock( false )
 
 			} else {
 
-				// Show app and create shadow window
+				crossover.initShadowWindow()
+
 				if ( windows.win.isMinimized() ) {
 
 					windows.win.restore()
@@ -41,7 +38,6 @@ const appEvents = () => {
 				}
 
 				windows.win.show()
-				crossover.initShadowWindow()
 
 			}
 
@@ -76,29 +72,6 @@ const appEvents = () => {
 
 	app.on( 'window-all-closed', app.quit )
 
-	app.on( 'web-contents-created', ( event, webContents ) => {
-
-		// Security #13: Prevent navigation
-		// https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
-		webContents.on( 'will-navigate', ( event, _navigationUrl ) => {
-
-			event.preventDefault()
-
-		} )
-
-		// Security workaround for https://github.com/lacymorrow/crossover/security/dependabot/7
-		// Affects electron < 13.6.6
-		webContents.on( 'select-bluetooth-device', ( event, devices, callback ) => {
-
-			// Prevent default behavior
-			event.preventDefault()
-			// Cancel the request
-			callback( '' )
-
-		} )
-
-	} )
-
 }
 
 const events = () => {
@@ -115,18 +88,18 @@ const events = () => {
 
 		switch ( key ) {
 
-		case 'chooseCrosshair':
-			crossover.openChooserWindow()
-			break
-		case 'resetPreferences':
-			reset.allPreferences()
-			break
-		case 'resetApp':
-			reset.app()
-			break
-		default:
-			// Key not found
-			break
+			case 'chooseCrosshair':
+				crossover.openChooserWindow()
+				break
+			case 'resetPreferences':
+				reset.allPreferences()
+				break
+			case 'resetApp':
+				reset.app()
+				break
+			default:
+				// Key not found
+				break
 
 		}
 

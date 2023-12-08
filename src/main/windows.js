@@ -16,6 +16,8 @@ const init = async options => {
 
 	if ( windows.win ) {
 
+		windows.win.show()
+
 		return windows.win
 
 	}
@@ -40,7 +42,6 @@ async function load( win = this.win || windows.win ) {
 // windows.each( win => console.log(win)) or each(windows, win => console.log(win))
 async function each( w, fn, ...args ) {
 
-	// If no window passed, throw away args
 	if ( typeof w === 'function' ) {
 
 		args.unshift( fn )
@@ -96,7 +97,6 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		hasShadow: false,
 		maximizable: false,
 		minimizable: false,
-		movable: true,
 		resizable: false,
 		show: false,
 		skipTaskbar: false,
@@ -109,7 +109,6 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 		height: APP_HEIGHT,
 		webPreferences: {
 			contextIsolation: true,
-			sandbox: false, // todo: enable
 			enableRemoteModule: true,
 			nativeWindowOpen: true,
 			nodeIntegration: false,
@@ -138,22 +137,19 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	win.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
 
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-	win.setAlwaysOnTop( true, 'screen-saver', 1 )
-	win.setFullScreenable( false )
+	win.setAlwaysOnTop( true, 'screen-saver' )
 
-	win.once( 'ready-to-show', () => {
-
-		log.info( 'Event: Ready to show' )
-
-		win.show()
-		// If we wanted a dock, we can use it now: https://github.com/electron/electron/pull/11599
-		// dock.setDockVisible( true )
-
-	} )
+	// If we wanted a dock, we can use it now: https://github.com/electron/electron/pull/11599
+	// dock.setDockVisible( true )
 
 	if ( isShadowWindow ) {
 
 		// Duplicate shadow windows
+		win.once( 'ready-to-show', () => {
+
+			win.show()
+
+		} )
 
 		win.on( 'closed', () => {
 
@@ -217,10 +213,9 @@ const createChild = async ( parent, windowName ) => {
 		width: 600,
 		height: 400,
 		webPreferences: {
+			nodeIntegration: false, // Is default value after Electron v5
 			contextIsolation: true, // Protect against prototype pollution
 			enableRemoteModule: true, // Turn off remote
-			nodeIntegration: false, // Is default value after Electron v5
-			sandbox: false, // todo: enable
 			preload: path.join( __renderer, `preload-${windowName}.js` ),
 		},
 	}
@@ -374,20 +369,15 @@ const center = options => {
 
 const showWindow = () => {
 
-	// Todo: showInactive() can be used in later versions of Electron
-	// each( win => win.showInactive() )
-
-	windows.win.webContents.send( 'remove_class', 'hidden' )
+	each( win => win.showInactive() )
 	windows.hidden = false
 
 }
 
 const hideWindow = () => {
 
-	// Previously:
-	// each( win => win.hide() )
+	each( win => win.hide() )
 
-	windows.win.webContents.send( 'add_class', 'hidden' )
 	windows.hidden = true
 
 }
@@ -404,6 +394,8 @@ const showHideWindow = () => {
 		hideWindow()
 
 	}
+
+	windows.hidden = !windows.hidden
 
 }
 
@@ -450,62 +442,52 @@ const moveWindow = options_ => {
 		const bounds = options.targetWindow.getBounds()
 		switch ( options.direction ) {
 
-		case 'up':
-			newBound = bounds.y - options.distance
-			options.targetWindow.setBounds( { y: newBound } )
-			if ( shouldSaveSettings ) {
+			case 'up':
+				newBound = bounds.y - options.distance
+				options.targetWindow.setBounds( { y: newBound } )
+				if ( shouldSaveSettings ) {
 
-				preferences.value( 'crosshair.positionY', newBound )
+					preferences.value( 'hidden.positionY', newBound )
 
-			}
+				}
 
-			break
-		case 'down':
-			newBound = bounds.y + options.distance
-			options.targetWindow.setBounds( { y: newBound } )
-			if ( shouldSaveSettings ) {
+				break
+			case 'down':
+				newBound = bounds.y + options.distance
+				options.targetWindow.setBounds( { y: newBound } )
+				if ( shouldSaveSettings ) {
 
-				preferences.value( 'crosshair.positionY', newBound )
+					preferences.value( 'hidden.positionY', newBound )
 
-			}
+				}
 
-			break
-		case 'left':
-			newBound = bounds.x - options.distance
-			options.targetWindow.setBounds( { x: newBound } )
-			if ( shouldSaveSettings ) {
+				break
+			case 'left':
+				newBound = bounds.x - options.distance
+				options.targetWindow.setBounds( { x: newBound } )
+				if ( shouldSaveSettings ) {
 
-				preferences.value( 'crosshair.positionX', newBound )
+					preferences.value( 'hidden.positionX', newBound )
 
-			}
+				}
 
-			break
-		case 'right':
-			newBound = bounds.x + options.distance
-			options.targetWindow.setBounds( { x: newBound } )
-			if ( shouldSaveSettings ) {
+				break
+			case 'right':
+				newBound = bounds.x + options.distance
+				options.targetWindow.setBounds( { x: newBound } )
+				if ( shouldSaveSettings ) {
 
-				preferences.value( 'crosshair.positionX', newBound )
+					preferences.value( 'hidden.positionX', newBound )
 
-			}
+				}
 
-			break
-		default:
-			break
+				break
+			default:
+				break
 
 		}
 
 	}
-
-}
-
-const nextWindow = () => {
-
-	const targetWindow = windows.getActiveWindow()
-	const windowsList = windows.getAllWindows()
-	const index = windowsList.indexOf( targetWindow )
-	const nextWin = windowsList[( index + 1 ) % windowsList.length]
-	nextWin.focus()
 
 }
 
@@ -549,13 +531,13 @@ const safeSetBounds = ( win, bounds ) => {
 
 	// Prevent windows opening offscreen
 	const screenArea = screen.getDisplayNearestPoint( bounds ).workArea
-	if ( bounds.x + bounds.width > screenArea.width + screenArea.x ) {
+	if ( bounds.x + bounds.width > screenArea.width ) {
 
 		bounds.x = screenArea.width - bounds.width
 
 	}
 
-	if ( bounds.y + bounds.height > screenArea.height + screenArea.y ) {
+	if ( bounds.y + bounds.height > screenArea.height ) {
 
 		bounds.y = screenArea.height - bounds.height
 
@@ -601,7 +583,6 @@ const windows = {
 	hideWindow,
 	moveToNextDisplay,
 	moveWindow,
-	nextWindow,
 	onWillResize,
 	safeSetBounds,
 	setProgress,

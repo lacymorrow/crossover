@@ -1,4 +1,4 @@
-name: crossover-ci
+name: crossover-tests
 
 on:
   push:
@@ -8,14 +8,9 @@ on:
       - release
 
 jobs:
-  crossover-ci-mac:
+  crossover-tests-mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-
-      # install Bun
-      - uses: oven-sh/setup-bun@v1
-
       # Make sure build is clean and no files from a previous run are re-used.
       - name: Cleanup files before run
         run: |
@@ -89,7 +84,7 @@ jobs:
           name: dist
           path: dist/*
 
-  crossover-ci-windows:
+  crossover-tests-windows:
     runs-on: windows-latest
 
     steps:

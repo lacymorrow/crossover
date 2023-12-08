@@ -6,18 +6,17 @@ const {
 const unhandled = require( 'electron-unhandled' )
 const config = require( '../config/config.js' )
 const { debounce } = require( '../config/utils.js' )
-const { play: playSound, preload: preloadSounds } = require( './lib/sounds.js' )
+const { play, preload } = require( './lib/sounds.js' )
 
 // Console.log( 'contextBridge:', contextBridge.internalContextBridge, contextBridge.internalContextBridge.contextIsolationEnabled )
 
 const api = {
-	test: 'test',
 	config,
 	debounce,
 	isMacOs: navigator.userAgent.indexOf( 'Mac' ) !== -1,
 	isWindows: navigator.userAgent.indexOf( 'Win' ) !== -1,
-	playSound,
-	preloadSounds,
+	play,
+	preload,
 	unhandled,
 	send( channel, ...args ) {
 
@@ -41,7 +40,7 @@ const api = {
 	receive( channel, func ) {
 
 		const validChannels = new Set( [
-			'add_class', 'remove_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle',
+			'add_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle',
 		] )
 
 		if ( validChannels.has( channel ) ) {
@@ -57,23 +56,25 @@ const api = {
 
 	},
 
-	// invoke( channel, arg ) {
+	invoke( channel, arg ) {
 
-	// 	const validChannels = new Set( [
-	// 		'invoke_test', 'get_bounds', 'play_sound',
-	// 	] )
+		console.log( 'preload', arg )
 
-	// 	if ( validChannels.has( channel ) ) {
+		const validChannels = new Set( [
+			'invoke_test', 'get_bounds', 'play_sound',
+		] )
 
-	// 		ipcRenderer.invoke( channel, arg )
+		if ( validChannels.has( channel ) ) {
 
-	// 	} else {
+			ipcRenderer.invoke( channel, arg )
 
-	// 		console.warn( `Renderer refused to invoke IPC message on ${channel}` )
+		} else {
 
-	// 	}
+			console.warn( `Renderer refused to invoke IPC message on ${channel}` )
 
-	// },
+		}
+
+	},
 
 }
 

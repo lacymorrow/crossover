@@ -17,7 +17,8 @@ const windows = require( './windows' )
 
 /* MENU ITEMS */
 const closeWindowMenuItem = {
-	label: 'Custom Image...',
+	label: 'Custom Image…',
+	accelerator: 'CommandOrControl+W',
 	async click() {
 
 		// Open dialog
@@ -28,7 +29,7 @@ const closeWindowMenuItem = {
 
 const preferencesMenuItems = [
 	{
-		label: 'Preferences...',
+		label: 'Preferences…',
 		accelerator: 'CommandOrControl+,',
 		click() {
 
@@ -37,7 +38,8 @@ const preferencesMenuItems = [
 		},
 	},
 	{
-		label: 'Choose Crosshair...',
+		label: 'Choose Crosshair…',
+		accelerator: 'CommandOrControl+.',
 		click() {
 
 			crossover.openChooserWindow()
@@ -47,7 +49,8 @@ const preferencesMenuItems = [
 ]
 
 const openCustomImageMenuItem = {
-	label: 'Custom Image...',
+	label: 'Custom Image…',
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -58,6 +61,7 @@ const openCustomImageMenuItem = {
 
 const resetMenuItem = {
 	label: 'Reset CrossOver',
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		// Open dialog
@@ -68,6 +72,7 @@ const resetMenuItem = {
 
 const showAppMenuItem = {
 	label: `Show ${productName}`,
+	accelerator: 'CommandOrControl+O',
 	async click() {
 
 		crossover.lockWindow( false )
@@ -93,7 +98,7 @@ const helpSubmenu = [
 		type: 'separator',
 	},
 	{
-		label: 'Report an Issue...',
+		label: 'Report an Issue…',
 		click() {
 
 			openNewGitHubIssue( {

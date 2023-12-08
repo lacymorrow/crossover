@@ -1,4 +1,4 @@
-image: Visual Studio 2019
+image: Visual Studio 2017
 
 matrix:
   fast_finish: true
@@ -17,7 +17,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "16.20.0"
+  nodejs_version: "14.17.4"
 
 cache:
   - node_modules -> package.json
@@ -25,7 +25,8 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm i  --openssl-fips=''
+  - yarn config set network-timeout 600000 -g
+  - yarn
 
 build_script:
   - cmd: node --version

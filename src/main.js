@@ -20,8 +20,6 @@
 	Todo:
 		- Add labels or tooltips for buttons
 		- electron builder dont bundle unneeded files
-		- click tray show menu; dblclick show app
-		- SECURITY: remove unsafe-eval; turn off remote module
 
 	Todo: when updating electron to 12+:
 		- Test iohook
@@ -83,9 +81,6 @@ const start = async () => {
 	console.log( '***************' )
 	log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
 
-	// Enable sandbox globally
-	// app.enableSandbox()
-
 	// Prevent multiple instances of the app
 	if ( !app.requestSingleInstanceLock() ) {
 
@@ -107,18 +102,12 @@ const start = async () => {
 	//  require( 'electron-reloader' )( module )
 	// } catch {}
 
+	//
 	// Const contextMenu = require('electron-context-menu')
 	// contextMenu()
 
-	/* LINUX FIXES */
-	// More flags: https://www.electronjs.org/docs/latest/api/command-line-switches/
-
-	// Disable hardware acceleration
-	if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
-
-		log.info( 'Setting: Enable GPU' )
-
-	} else {
+	// Fix for Linux transparency issues
+	if ( is.linux || !checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
 		// Disable hardware acceleration
 		log.info( 'Setting: Disable GPU' )
@@ -126,18 +115,9 @@ const start = async () => {
 		app.commandLine.appendSwitch( 'disable-gpu' )
 		app.disableHardwareAcceleration()
 
-	}
+	} else {
 
-	// Fix for Linux transparency issues: wayland on linux/sway
-	// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
-	// https://github.com/microsoft/vscode/issues/146464
-	// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
-	if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
-
-		log.info( 'Setting: Sharing GPU process and browser' )
-
-		app.commandLine.appendSwitch( 'in-process-gpu' )
-		app.commandLine.appendSwitch( 'use-gl=desktop' )
+		log.info( 'Setting: Enable GPU' )
 
 	}
 
@@ -160,6 +140,9 @@ const ready = async () => {
 
 	}
 
+	/* SOUND */
+	sound.preload()
+
 	/* Press Play >>> */
 	await init()
 
@@ -168,9 +151,6 @@ const ready = async () => {
 
 	/* MENU */
 	menu.init()
-
-	/* SOUND */
-	sound.preload()
 
 	/* AUTO-UPDATE */
 	autoUpdate.update()
@@ -190,18 +170,8 @@ module.exports = async () => {
 	// app.on(...)
 	register.appEvents()
 
-	// Quit app when all windows are closed; Fix for Linux tray
-	app.on( 'before-quit', _ => {
-
-		// https://electronjs.org/docs/api/app#event-before-quit
-		// https://electronjs.org/docs/api/tray#traydestroy
-		tray.instance?.destroy()
-
-	} )
-
 	// wait for app.on('ready')
 	await app.whenReady()
-	//  Remove tray in Linux to fully quit
 
 	console.timeLog( 'init' )
 

@@ -56,19 +56,7 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+C`,
 			fn() {
 
-				sound.play( 'CENTER' )
 				windows.center()
-
-			},
-		},
-
-		// Move CrossOver to next monitor
-		{
-			action: 'changeDisplay',
-			keybind: `${accelerator}+M`,
-			fn() {
-
-				windows.moveToNextDisplay()
 
 			},
 		},
@@ -83,24 +71,14 @@ const keyboardShortcuts = () => {
 
 			},
 		},
-		// Quit CrossOver
+
+		// Move CrossOver to next monitor
 		{
-			action: 'quit',
-			keybind: `${accelerator}+Q`,
+			action: 'changeDisplay',
+			keybind: `${accelerator}+M`,
 			fn() {
 
-				crossover.quit()
-
-			},
-		},
-
-		// Focus next window
-		{
-			action: 'nextWindow',
-			keybind: `${accelerator}+O`,
-			fn() {
-
-				windows.nextWindow()
+				windows.moveToNextDisplay()
 
 			},
 		},
@@ -184,7 +162,7 @@ const registerKeyboardShortcuts = () => {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
-			log.info( 'ERROR - you likely forgot to add a default keybind for this shortcut: ', shortcut )
+			log.info( 'ERROR', shortcut )
 			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
 
 		}
@@ -203,11 +181,10 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 	const hideOnMouse = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 	const hideOnKey = preferences.value( 'actions.hideOnKey' )
 	const tilt = checkboxTrue( preferences.value( 'actions.tiltEnable' ), 'tiltEnable' )
-	const resizeOnADS = preferences.value( 'actions.resizeOnADS' )
 
 	/* DO STUFF */
 	windows.hideSettingsWindow()
-	windows.hideChooserWindow()
+	windows.hideChooserWindow( { focus: true } )
 	targetWindow.closable = !lock
 	targetWindow.setFocusable( !lock )
 	targetWindow.webContents.send( 'lock_window', lock )
@@ -248,12 +225,6 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 		}
 
-		if ( resizeOnADS !== 'off' ) {
-
-			iohook.resizeOnADS()
-
-		}
-
 	} else {
 
 		/* Unlock */
@@ -277,6 +248,9 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 	}
 
+	// Bring window to front
+	targetWindow.show()
+
 	dock.setVisible( !lock )
 
 	preferences.value( 'hidden.locked', lock )
@@ -286,9 +260,9 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 const resetPosition = () => {
 
 	// App centered by default - set position if exists
-	if ( preferences.value( 'crosshair.positionX' ) !== null && typeof preferences.value( 'crosshair.positionX' ) !== 'undefined' && preferences.value( 'crosshair.positionY' ) ) {
+	if ( preferences.value( 'hidden.positionX' ) !== null && typeof preferences.value( 'hidden.positionX' ) !== 'undefined' && preferences.value( 'hidden.positionY' ) ) {
 
-		set.position( preferences.value( 'crosshair.positionX' ), preferences.value( 'crosshair.positionY' ) )
+		set.position( preferences.value( 'hidden.positionX' ), preferences.value( 'hidden.positionY' ) )
 
 	}
 
@@ -436,10 +410,10 @@ const initShadowWindow = async () => {
 	set.reticle( previousPreferences.crosshair?.reticle, shadow )
 	set.rendererProperties( properties, shadow )
 
-	if ( preferences.value( 'crosshair.positionX' ) > -1 ) {
+	if ( preferences.value( 'hidden.positionX' ) > -1 ) {
 
 		// Offset position slightly
-		set.position( preferences.value( 'crosshair.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'crosshair.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
+		set.position( preferences.value( 'hidden.positionX' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), preferences.value( 'hidden.positionY' ) + ( windows.shadowWindows.size * SHADOW_WINDOW_OFFSET ), shadow )
 
 	}
 

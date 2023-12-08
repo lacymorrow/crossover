@@ -6,39 +6,11 @@ orbs:
   # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@5.1.0
+  node: circleci/node@4.7
 
 jobs:
-  build-rpm: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
-    steps:
-      - checkout
-      - run:
-          command: pwd
-      - run:
-          command: npm i --openssl-fips=''
-      # - node/install-packages:
-      #     pkg-manager: npm
-      - run:
-          command: sudo apt-get update
-          name: Update apt-get
-      - run:
-          command: sudo apt-get install rpm
-          name: Install Dependencies
-      - run:
-          command: npm run build:rpm --openssl-fips=""
-          name: Build app
-      - run:
-          name: Create Artifacts
-          command: |
-            mkdir -p upload
-            cp dist/CrossOver* upload
-      - store_artifacts:
-          path: upload
-          destination: upload
-
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-all:
+  buildall:
     macos:
       xcode: 12.5.1
     steps:
@@ -55,38 +27,45 @@ jobs:
           command: pwd
       - node/install:
           install-yarn: true
-          node-version: "16.20.0"
+          node-version: "14.17.4"
       # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
       # - node/install-packages:
       #     # If you are using yarn, change the line below from "npm" to "yarn"
       #     pkg-manager: yarn
       - run:
           name: Install Node modules
-          command: npm i  --openssl-fips=''
+          command: npm i
       - run:
           name: Brew Clean
           command: rm '/usr/local/lib/python3.9/site-packages/six.py'
       - run:
           name: Install Dependencies
           command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-      # - run:
-      #     name: Run tests
-      #     command: yarn test || echo "There were test failures, this build may be sour."
+      - run:
+          name: Snapcraft Login
+          # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+          command: echo "$SNAP_TOKEN" | snapcraft login --with -
+      - run:
+          name: Run tests
+          command: yarn test
       - run:
           name: Build and Publish - windows
-          command: npm run build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish-never' ) --openssl-fips=""
+          command: yarn build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish never' )
       # - run:
       #     name: Create Windows EXE
       #     command: yarn sh:copyexe
       - run:
           name: Build and Publish - windows CrossOver.exe
-          command: npm run build:windows:exe --openssl-fips="" || echo 'We error here since latest.yml has already been uploaded.'
+          command: yarn build:windows:exe || echo 'We error here since latest.yml has already been uploaded.'
+      - run:
+          name: Build and Publish - snap
+          command: yarn build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish always' )
       - run:
           name: Build and Publish - linux
-          command: npm run build:linux --openssl-fips=""
+          command: yarn build:linux
       - run:
           name: Build and Publish - mac
-          command: npm run build:mac --openssl-fips=""
+          command: yarn build:mac
       - run:
           name: ls dist
           command: ls dist
@@ -100,7 +79,6 @@ jobs:
             git pull
             git merge ${CIRCLE_BRANCH} || echo "Not merging to stable"
             git push --set-upstream origin stable || echo "Not pushing stable"
-
       - run:
           name: Create Artifacts
           command: |
@@ -109,13 +87,6 @@ jobs:
             cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
       - store_artifacts:
           path: /Users/distiller/project/upload
-      #   - run:
-      #       name: Snapcraft Login
-      #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
-      #       command: snapcraft login
-      - run:
-          name: Build and Publish - snap
-          command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
 
 workflows:
   # Below is the definition of your workflow.
@@ -129,5 +100,4 @@ workflows:
         - equal: [master, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - build-rpm
-      - build-all
+      - buildall
