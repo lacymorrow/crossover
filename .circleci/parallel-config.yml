@@ -45,10 +45,10 @@ jobs:
           # command: HOMEBREW_NO_AUTO_UPDATE=1 brew install snapcraft rpm
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: yarn
+          pkg-manager: npm
       # - run:
       #     name: Install Node Modules
-      #     command: yarn --skip-integrity-check --network-timeout 300000
+      #     command: npm run --skip-integrity-check --network-timeout 300000
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
@@ -65,7 +65,7 @@ jobs:
           at: /tmp/crossover
       - run:
           name: Run snap
-          command: yarn build:snap
+          command: npm run build:snap
 
   build_linux:
     executor: macos-executor
@@ -75,7 +75,7 @@ jobs:
           at: /tmp/crossover
       - run:
           name: Run snap
-          command: yarn build:linux
+          command: npm run build:linux
 
   build_windows:
     executor: macos-executor
@@ -85,10 +85,10 @@ jobs:
           at: /tmp/crossover
       - run:
           name: Run windows
-          command: yarn build:windows
+          command: npm run build:windows
       - run:
           name: Create Windows EXE
-          command: yarn sh:copyexe
+          command: npm run sh:copyexe
 
   build_mac:
     executor: macos-executor
@@ -98,7 +98,7 @@ jobs:
           at: /tmp/crossover
       - run:
           name: Run mac
-          command: yarn build:mac
+          command: npm run build:mac
 
   cleanup:
     executor: macos-executor
