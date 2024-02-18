@@ -455,7 +455,9 @@ Then edit the automatically created GitHub Releases draft and publish.
 
 Fullscreen for MacOS may have better results.
 
-#### Workaround
+##### Workaround using AutoHotKey (Windows)
+
+> via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
 
 If you absolutely need to use `Fullscreen` mode, or your game is not supported by crossover, there is a workaround using [AutoHotKey](https://www.autohotkey.com/).
 
@@ -469,7 +471,9 @@ Home::Winset, Alwaysontop, , CrossOver
 
 Once in-game, pressing space should put the crosshair over the screen, even in fullscreen mode.
 
-> via [@girkovarpa](https://github.com/lacymorrow/crossover/issues/47#issuecomment-805017469)
+### Performance Issues
+
+There are reports of stuttering when using V-SYNC, G-SYNC, or similar Adaptive Sync ([#330](https://github.com/lacymorrow/crossover/issues/330)). Disabling these may improve performance.  s
 
 ### Graphical issues on Linux
 
