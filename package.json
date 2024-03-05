@@ -13,6 +13,13 @@
 		"email": "me@lacymorrow.com",
 		"url": "https://lacymorrow.com"
 	},
+	"contributors": [
+		{
+			"name": "Lacy Morrow",
+			"email": "me@lacymorrow.com",
+			"url": "https://github.com/lacymorrow"
+		}
+	],
 	"funding": [
 		{
 			"type": "patreon",
@@ -30,13 +37,13 @@
 	},
 	"license": "CC-BY-NC-SA-4.0",
 	"engines": {
-		"node": "14|| 16 ||18"
+		"node": "14"
 	},
 	"scripts": {
-		"install": "yarn css",
+		"install": "npm run css",
 		"postinstall": "electron-builder install-app-deps",
 		"css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
-		"start": "yarn css && electron --disable-gpu-sandbox --trace-warnings .",
+		"start": "npm run css && electron --disable-gpu-sandbox --trace-warnings .",
 		"watch": "nodemon -e js,ts,scss --ignore 'dist/' --watch . --exec 'npm run start'",
 		"lint": "eslint --fix .",
 		"lint:src": "eslint --fix src",
@@ -47,7 +54,7 @@
 		"test:debug:console": "PWDEBUG=console CI=1 playwright test",
 		"check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
 		"check:circular": "madge --circular .",
-		"depcheck": "yarn check:deps && yarn check:circular",
+		"depcheck": "npm run check:deps && npm run check:circular",
 		"release": "np --no-tests --branch release",
 		"release:snap": "snapcraft upload --release=CrossOver*.snap",
 		"pack": "rm -f *.tgz && electron-builder --dir",
@@ -65,12 +72,12 @@
 		"build:deb": "electron-builder --linux deb",
 		"build:rpm": "electron-builder --linux rpm",
 		"build:snap": "electron-builder --linux snap",
-		"build:release": "rm -rf dist && yarn build:mac && yarn build:wl && yarn build:snap && yarn sh:copyexe",
-		"build:release:snap": "electron-builder --linux snap && yarn snap:release",
-		"build:release:windows": "yarn build:windows && yarn sh:copyexe",
+		"build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
+		"build:release:snap": "electron-builder --linux snap && npm run snap:release",
+		"build:release:windows": "npm run build:windows && npm run sh:copyexe",
 		"snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
 		"snap:release": "snapcraft upload --release=stable dist/*.snap",
-		"upgrade:interactive": "yarn upgrade-interactive --latest"
+		"upgrade:interactive": "npm run upgrade-interactive --latest"
 	},
 	"dependencies": {
 		"electron-debug": "^3.2.0",
