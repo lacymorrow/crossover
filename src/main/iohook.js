@@ -169,7 +169,12 @@ const hideOnKey = async () => {
 	log.info( 'Setting: Keyboard Hold/Toggle' )
 	await iohook.importIoHook()
 
+<<<<<<< Updated upstream
 	if ( Object.prototype.hasOwnProperty.call( keycode, isEnabled ) ) {
+=======
+	const hideOnKey = preferences.value( 'actions.hideOnKey' )
+	log.info( `Key: ${hideOnKey}` )
+>>>>>>> Stashed changes
 
 		const key = keycode[isEnabled]
 
