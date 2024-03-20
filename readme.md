@@ -56,7 +56,7 @@ Improve your aim and gain a competitive advantage with a permanent colored cross
 
 # Download
 
-### [View All Dowloads (for any OS)](https://github.com/lacymorrow/crossover/releases/latest)
+### [View All Downloads (for any OS)](https://github.com/lacymorrow/crossover/releases/latest)
 
 ### Windows
 
@@ -318,6 +318,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Rocket League                     | Runs in `Windowed` mode                                                            |
 | ✅    | Rust                              | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | Star Wars Battlefront 2           | Runs in `Borderless` mode                                                          |
+| ✅    | The Finals                        | Runs in `Borderless` and `Windowed` modes                                          |
 | ✅    | Tom Clancy's The Division 2       | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | Tony Hawks Pro Skater 1+2         | Such a fun game!                                                                   |
 | ❌    | Vulkan-based games                | |
