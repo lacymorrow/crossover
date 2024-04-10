@@ -332,6 +332,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ----- | -------------------     | --------------------------------------------------------------------------------------------------------- |
 | ✅    | MacOS arm64 _(M1, M2)_  | You may need to run a command to un-quarantine the download, see below |
 | ✅    | MacOS x64 _(Intel)_     | Tested on Catalina 10.15.1                                                                                |
+| ✅    | Windows 11              |
 | ✅    | Windows 10 ia32         |
 | ✅    | Windows 10 x64          | Custom cursors do not show in draggable taskbar area                                                      |
 | ✅    | Windows 8               |                                                       |
