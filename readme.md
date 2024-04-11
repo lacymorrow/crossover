@@ -296,6 +296,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Counter-Strike (1.6)              | Runs in `Windowed` mode                                                            |
 | ✅    | CS:GO / Counter-Strike: Global Offensive | Runs in `Windowed` mode; May work in `Windowed Fullscreen` and `Fullscreen` modes with AHK script |
 | ✅    | CS 2 / Counter-Strike: 2          | Runs in `Windowed` mode; Doesn't work in `Fullscreen` modes with/without AHK script |
+| ❌    | Cyberpunk 2077                    | Does not work. (Vulkan)                                                             |
 | ✅    | Dead by Daylight                  | Runs in `Windowed` and `Fullscreen` modes                                          |
 | ✅    | Deceit                            | Runs in `Windowed` mode                                                            |
 | ✅    | Destiny 2                         | Runs in `Windowed Fullscreen` mode; _Some reports of running in `Fullscreen` mode_ |
@@ -317,6 +318,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | Roblox                            | Runs in `Fullscreen` mode _(Windows)_ and `Windowed Fullscreen` mode _(MacOS)_     |
 | ✅    | Rocket League                     | Runs in `Windowed` mode                                                            |
 | ✅    | Rust                              | Runs in `Windowed Fullscreen` mode                                                 |
+| ❌    | Sea of Theives                    | **BANNABLE**                                                                       |
 | ✅    | Star Wars Battlefront 2           | Runs in `Borderless` mode                                                          |
 | ✅    | The Finals                        | Runs in `Borderless` and `Windowed` modes                                          |
 | ✅    | Tom Clancy's The Division 2       | Runs in `Windowed Fullscreen` mode                                                 |
