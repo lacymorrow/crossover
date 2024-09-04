@@ -86,7 +86,7 @@
 		"electron-preferences": "^2.8.2",
 		"electron-reloader": "^1.2.3",
 		"electron-unhandled": "^4.0.1",
-		"electron-updater": "6.1.4",
+		"electron-updater": "6.3.0",
 		"electron-util": "^0.17.2",
 		"electron-winstore-auto-launch": "^2.0.6",
 		"got": "^13.0.0",
