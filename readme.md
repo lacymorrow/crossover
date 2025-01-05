@@ -305,7 +305,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 | ✅    | FiveM                             | Runs in `Fullscreen` mode                                                          |
 | ✅    | Fortnite                          | Runs in `Windowed Fullscreen` mode                                                 |
 | ✅    | GTFO                              | Works in `Fullscreen window`, `Maximized window`, `Windowed mode` (Doesn't work in `Exclusive Fullscreen` window) |
-| ✅    | Hunt: Showdown                    | Works in `Windowed mode` |
+| ❌    | Hunt: Showdown                    | Works in `Windowed mode` |
 | ✅    | Killing Floor                     | Runs in `Windowed` mode                                                            |
 | ✅    | League of Legends                 | Runs in `Borderless` and `Windowed` modes                                          |
 | ✅    | Left 4 Dead 2                     | Runs in `Borderless` and `Windowed` modes                                          |
