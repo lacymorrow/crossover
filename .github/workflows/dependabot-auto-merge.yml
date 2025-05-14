@@ -1,0 +1,54 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    branches: [ master, dev ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Get Node Version
+        run: |
+          echo "nodeversion=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+        id: get-node-version
+      
+      - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.get-node-version.outputs.nodeversion }}
+          cache: "npm"
+      
+      - name: Install Dependencies
+        run: npm install --openssl_fips=""
+      
+      - name: Run tests
+        run: npm run test
+      
+      - name: Lint
+        run: npm run lint
+      
+      - name: Check Dependencies
+        run: npm run depcheck
+      
+      - name: Auto-merge Dependabot PRs
+        if: ${{ success() }}
+        run: |
+          gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
