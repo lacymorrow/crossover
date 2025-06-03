@@ -1,0 +1,109 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Configuration System
+
+## Settings Structure
+Configuration is managed by [src/main/preferences.js](mdc:src/main/preferences.js) using the `electron-preferences` library.
+
+### Storage
+- **Location**: `userData/preferences.json`
+- **Format**: JSON with nested objects
+- **Debounce**: 2-second delay for saving changes from [src/config/config.js](mdc:src/config/config.js)
+
+### Default Configuration Schema
+
+```javascript
+{
+  crosshair: {
+    crosshair: '../static/crosshairs/Actual/leupold-dot.png',
+    color: '#442ac6',              // Reticle color (hex)
+    size: 80,                      // Size percentage (1-100)
+    opacity: 80,                   // Opacity percentage (1-100)
+    reticle: 'dot',               // 'dot', 'cross', 'off'
+    reticleScale: 100,            // Reticle scale percentage
+    fillColor: 'unset',           // SVG fill color
+    strokeColor: 'unset'          // SVG stroke color
+  },
+  actions: {
+    followMouse: [],              // Enable mouse following
+    hideOnMouse: '-1',            // Mouse button to hide (-1 = disabled)
+    hideOnKey: '',                // Key to hide (empty = disabled)
+    tiltEnable: [],               // Enable tilting
+    tiltAngle: 25,                // Tilt angle in degrees
+    resizeOnADS: 'off'            // ADS resize mode
+  },
+  app: {
+    theme: 'light',               // 'light', 'dark', 'system'
+    alerts: ['alerts'],           // Enable alerts
+    updates: ['updates'],         // Enable auto-updates
+    sounds: ['sounds'],           // Enable sound effects
+    gpu: ['gpu'],                 // Enable GPU acceleration
+    boot: []                      // Start on system boot
+  },
+  keybinds: {
+    lock: 'Control+Shift+Alt+X',     // Lock/unlock
+    center: 'Control+Shift+Alt+C',   // Center crosshair
+    hide: 'Control+Shift+Alt+H',     // Hide/show
+    duplicate: 'Control+Shift+Alt+D', // Create duplicate
+    reset: 'Control+Shift+Alt+R'     // Reset app
+    // ... more keybinds
+  },
+  hidden: {
+    locked: false,                // Current lock state
+    tilted: false,               // Current tilt state
+    ADSed: false                 // Current ADS state
+  }
+}
+```
+
+## Constants from config.js
+Key constants defined in [src/config/config.js](mdc:src/config/config.js):
+
+- `APP_WIDTH`: 208px
+- `APP_HEIGHT`: 130px  
+- `APP_ASPECT_RATIO`: 16/10
+- `MAX_SHADOW_WINDOWS`: 14
+- `DEBOUNCE_DELAY`: 2000ms
+- `SUPPORTED_IMAGE_FILE_TYPES`: ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'svg', 'webp']
+
+## Default Hotkeys
+All hotkeys use `Control+Shift+Alt+` prefix:
+
+- **X** - Toggle lock/unlock
+- **C** - Center crosshair
+- **H** - Hide/show crosshair  
+- **D** - Duplicate crosshair
+- **M** - Move to next monitor
+- **R** - Reset application
+- **Q** - Quit application
+- **Arrow Keys** - Fine positioning (1px movement)
+- **O** - Focus next window
+
+## Settings Categories
+
+### Crosshair Settings
+- Crosshair selection (built-in or custom)
+- Size, opacity, color customization
+- Reticle type and scale
+- SVG-specific styling options
+
+### Actions
+- Mouse following behavior
+- Hide triggers (mouse buttons, keys)
+- Crosshair tilting
+- ADS (Aim Down Sights) resizing
+
+### App Settings  
+- Theme selection (light/dark/system)
+- Update preferences
+- Sound effects toggle
+- GPU acceleration settings
+- Startup behavior
+
+### Keybinds
+- Customizable shortcuts for all actions
+- Can be disabled by setting to empty string
+- Validation prevents conflicts

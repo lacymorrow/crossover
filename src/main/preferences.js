@@ -31,6 +31,7 @@ const getDefaults = () => ( {
 		reticleScale: 100,
 		fillColor: 'unset',
 		strokeColor: 'unset',
+		circleThickness: 2,
 	},
 	actions: {
 		followMouse: [],
@@ -159,6 +160,7 @@ const preferencesConfig = {
 								options: [
 									{ label: 'Dot', value: 'dot' },
 									{ label: 'Cross', value: 'cross' },
+									{ label: 'Circle', value: 'circle' },
 									{ label: 'No reticle', value: 'off' },
 								],
 							},
@@ -176,6 +178,17 @@ const preferencesConfig = {
 								min: 1,
 								max: 500,
 								help: 'Reticle scale percentage (compared to crosshair)',
+							},
+							{
+								heading: 'Circle Reticle Options',
+							},
+							{
+								label: 'Circle Thickness',
+								key: 'circleThickness',
+								type: 'slider',
+								min: 1,
+								max: 10,
+								help: 'Thickness of the circle outline (in pixels)',
 							},
 							{
 								heading: 'SVG Customization Options',

@@ -1,0 +1,200 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Troubleshooting & Compatibility
+
+## Known Compatibility Issues
+
+### Game Compatibility
+- **Escape from Tarkov**: NOT COMPATIBLE - Anti-cheat detection
+- **Anti-cheat Systems**: May flag IOHook input monitoring
+- **Full-screen Games**: Generally compatible with proper always-on-top settings
+
+### Platform-Specific Issues
+
+**Apple Silicon (M1/M2 Macs):**
+- IOHook may not work properly ([src/main/iohook.js](mdc:src/main/iohook.js) dynamic import)
+- Gatekeeper security warnings require manual bypass
+- Fix: `sudo xattr -r -d com.apple.quarantine /Applications/CrossOver.app`
+
+**Linux Distributions:**
+- **Lightweight Desktop Environments**: May require compositor for transparency
+- **Wayland**: Special GPU process handling needed
+- **Snap Confinement**: Limited file system access for custom crosshairs
+
+**Windows:**
+- **Windows Defender**: Flags unsigned executable
+- **SmartScreen**: Prevents first-time execution
+- **Anti-virus**: May quarantine due to global input hooks
+
+## Common Issues & Solutions
+
+### Installation Issues
+
+**Windows "Windows protected your PC":**
+1. Click "More Info"
+2. Click "Run Anyway"
+3. Alternative: Disable SmartScreen temporarily
+
+**macOS "CrossOver cannot be opened":**
+1. Control+Click app icon → "Open"
+2. Or use terminal: `sudo xattr -r -d com.apple.quarantine /Applications/CrossOver.app`
+
+**Linux AppImage not executable:**
+```bash
+chmod +x CrossOver-*.AppImage
+```
+
+### Performance Issues
+
+**Transparency Problems (Linux):**
+- Install compositor: `sudo apt install compton` or similar
+- Enable GPU acceleration in settings
+- Try different GPU process settings
+
+**High CPU Usage:**
+- Disable mouse following if not needed
+- Reduce IOHook listeners
+- Check for circular update loops
+
+**Memory Leaks:**
+- Limit number of shadow windows (max 14)
+- Close unused shadow windows
+- Restart app periodically for heavy usage
+
+### Crosshair Display Issues
+
+**Crosshair Not Showing:**
+- Check if locked (Ctrl+Alt+Shift+X to unlock)
+- Verify opacity settings (not set to 0)
+- Check if window is minimized or hidden
+
+**Wrong Position After Monitor Change:**
+- Use Ctrl+Alt+Shift+C to center
+- Or Ctrl+Alt+Shift+M to move to next display
+- Reset position in preferences
+
+**Crosshair Behind Other Windows:**
+- Verify always-on-top settings
+- Check if other apps are forcing themselves on top
+- Restart CrossOver to re-establish z-order
+
+### Input/Hotkey Issues
+
+**Global Hotkeys Not Working:**
+- Check for conflicting applications
+- Verify keybind settings in preferences
+- Try different key combinations
+- Restart with admin/root privileges if needed
+
+**IOHook Fails to Load:**
+- Architecture compatibility issue (especially Apple Silicon)
+- Anti-virus blocking the module
+- Try running without elevated privileges
+
+### Settings/Preferences Issues
+
+**Settings Not Saving:**
+- Check file permissions for userData directory
+- Verify not running multiple instances
+- Check available disk space
+- Reset preferences: `--reset` command line flag
+
+**Custom Crosshair Not Loading:**
+- Verify file format (BMP, GIF, JPG, PNG, SVG, WebP)
+- Check file permissions and path
+- Try smaller file size
+- Use absolute paths for custom images
+
+## Debugging Tools
+
+### Command Line Flags
+- `--debug` / `-d`: Enable development mode with verbose logging
+- `--reset` / `-r`: Reset all preferences to defaults
+- `--version` / `-v`: Display version information
+
+### Development Debugging
+```bash
+# Enable development mode
+npm start -- --debug
+
+# Reset app state
+npm start -- --reset
+
+# View detailed logs
+tail -f ~/Library/Logs/CrossOver/main.log  # macOS
+tail -f ~/.config/CrossOver/logs/main.log  # Linux
+```
+
+### Error Reporting
+Error handling via [src/main/error-handling.js](mdc:src/main/error-handling.js):
+- Unhandled exceptions logged to file
+- Renderer errors sent to main process
+- Stack traces preserved for debugging
+
+## Performance Optimization
+
+### GPU Settings
+Located in App Settings → Performance:
+- **Enable GPU**: Hardware acceleration (default: enabled)
+- **GPU Process**: Separate vs shared process
+- Linux users may need to disable for Wayland compatibility
+
+### IOHook Optimization
+- Dynamic loading prevents anti-cheat flagging
+- Automatic cleanup on window close
+- Minimal listeners to reduce overhead
+
+### Memory Management
+- Shadow windows automatically cleaned up
+- Preference debouncing (2s) prevents excessive writes
+- Window bounds caching for performance
+
+## Security Considerations
+
+### Anti-virus/Anti-cheat
+- IOHook library may trigger false positives
+- Global input monitoring appears suspicious to security software
+- Whitelist CrossOver in anti-virus if needed
+
+### Code Signing
+- Application is NOT code signed (open source limitation)
+- Users must manually approve first execution
+- Security warnings are expected and normal
+
+### Network Access
+- Auto-updater checks GitHub for new versions
+- No telemetry or user data collection
+- Preferences stored locally only
+
+## Recovery Procedures
+
+### Complete Reset
+```bash
+# Command line reset
+crossover --reset
+
+# Or delete preferences manually
+rm ~/Library/Application\ Support/CrossOver/preferences.json  # macOS
+rm ~/.config/CrossOver/preferences.json                       # Linux
+del %APPDATA%\CrossOver\preferences.json                      # Windows
+```
+
+### Backup Settings
+```bash
+# Backup preferences
+cp ~/Library/Application\ Support/CrossOver/preferences.json ~/crossover-backup.json
+```
+
+### Factory Reset Process
+1. Close CrossOver completely
+2. Delete preferences file (see paths above)
+3. Restart CrossOver
+4. Reconfigure settings as needed
+
+## Support Resources
+- **GitHub Issues**: [https://github.com/lacymorrow/crossover/issues](mdc:https:/github.com/lacymorrow/crossover/issues)
+- **Documentation**: [readme.md](mdc:readme.md)
+- **Known Issues**: Tracked in GitHub Issues with labels

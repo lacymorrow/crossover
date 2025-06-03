@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle ring -->
+  <circle 
+    cx="50" 
+    cy="50" 
+    r="30" 
+    fill="none" 
+    stroke="#FF6B35" 
+    stroke-width="2"
+    opacity="0.8"/>
+  
+  <!-- Inner circle ring -->
+  <circle 
+    cx="50" 
+    cy="50" 
+    r="20" 
+    fill="none" 
+    stroke="#FF6B35" 
+    stroke-width="1"
+    opacity="0.6"/>
+  
+  <!-- Center dot -->
+  <circle 
+    cx="50" 
+    cy="50" 
+    r="2" 
+    fill="#FF6B35"
+    opacity="1"/>
+    
+  <!-- Cross hair lines -->
+  <line x1="35" y1="50" x2="45" y2="50" stroke="#FF6B35" stroke-width="1" opacity="0.7"/>
+  <line x1="55" y1="50" x2="65" y2="50" stroke="#FF6B35" stroke-width="1" opacity="0.7"/>
+  <line x1="50" y1="35" x2="50" y2="45" stroke="#FF6B35" stroke-width="1" opacity="0.7"/>
+  <line x1="50" y1="55" x2="50" y2="65" stroke="#FF6B35" stroke-width="1" opacity="0.7"/>
+</svg> 

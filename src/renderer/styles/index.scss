@@ -70,6 +70,8 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--svg-fill-color: inherit;
 	--svg-stroke-color: inherit;
 	--svg-stroke-width: inherit;
+	--circle-radius: 15;
+	--circle-thickness: 2;
 }
 
 * {
@@ -294,6 +296,16 @@ body {
 		&.cross {
 			#cross {
 				display: block;
+			}
+		}
+		&.circle {
+			#circle {
+				display: block;
+				// Ensure circle remains unfilled (empty ring)
+				circle {
+					fill: none !important;
+					stroke: var(--reticle-fill-color);
+				}
 			}
 		}
 	}

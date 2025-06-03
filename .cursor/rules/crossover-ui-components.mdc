@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver UI Components
+
+## Renderer Process (src/renderer/)
+
+### 1. Main Window (index.html)
+**Primary crosshair display window**
+
+Structure:
+- **Crosshair Wrapper**: Contains crosshair image and reticle overlay
+- **Background**: Transparent/colored background when unlocked
+- **Control Buttons**: Close, Settings, Center, Move/Info buttons
+- **Drag Regions**: Click-and-drag functionality for repositioning
+
+Key Elements:
+```html
+<div id="crosshair">
+  <img id="crosshairImg" src="..." alt="Crosshair" />
+  <div class="reticle dot">
+    <svg id="cross">...</svg>  <!-- Cross reticle -->
+    <svg id="dot">...</svg>    <!-- Dot reticle -->
+  </div>
+</div>
+```
+
+### 2. Renderer JavaScript (renderer.js)
+**Frontend logic and IPC communication**
+
+Key Functions:
+- `setCrosshair(crosshair)` - Updates crosshair image/SVG
+- Event listeners for settings changes
+- IPC message handling for property updates
+- Sound and notification management
+- Error handling and logging
+
+IPC Message Handlers:
+- `set_properties` - Update CSS custom properties
+- `add_class` / `remove_class` - Toggle CSS classes
+- `set_crosshair` - Change crosshair image
+- `play_sound` - Play audio feedback
+- `notify` - Show system notifications
+
+### 3. Settings Window
+**Preferences dialog using electron-preferences**
+
+Features:
+- **Tabbed Interface**: Organized by setting categories
+- **Live Preview**: Changes apply immediately
+- **File Chooser**: Custom crosshair selection
+- **Form Validation**: Input bounds checking
+- **Custom Styling**: Styled with [src/renderer/styles/dist/preferences.css](mdc:src/renderer/styles/dist/preferences.css)
+
+Settings Sections:
+1. **Crosshair Settings** - Image, size, opacity, color
+2. **Actions** - Mouse/keyboard behaviors  
+3. **App Settings** - Theme, performance, updates
+4. **Keybinds** - Hotkey customization
+
+### 4. Chooser Window (chooser.html)
+**Visual crosshair selection interface**
+
+Features:
+- **Grid Layout**: Visual crosshair thumbnails
+- **Category Filters**: Organized by crosshair type
+- **Preview**: Hover effects and selection feedback
+- **File Drop**: Drag-and-drop custom images
+- Built-in crosshairs from [src/static/crosshairs/](mdc:src/static/crosshairs)
+
+Categories:
+- Actual, Animated, Chevron, Circle Dot, Crosshair
+- Dot (Simple/Outlined), Kenney, MLG, SVG, User Created
+
+### 5. Styling System
+
+CSS Structure:
+- [src/renderer/styles/index.scss](mdc:src/renderer/styles/index.scss) → `dist/index.css`
+- [src/renderer/styles/preferences.scss](mdc:src/renderer/styles/preferences.scss) → `dist/preferences.css`
+
+CSS Custom Properties (set dynamically):
+- `--crosshair-opacity` - Crosshair transparency
+- `--crosshair-width` / `--crosshair-height` - Size
+- `--crosshair-color` - Reticle color
+- `--tilt-angle` - Rotation angle
+- `--app-bg-color` - Background color
+- `--reticle-scale` - Reticle scaling
+
+### 6. Preload Scripts
+**Secure IPC bridge between main and renderer**
+
+Files:
+- [src/renderer/preload.js](mdc:src/renderer/preload.js) - Main window preload
+- [src/renderer/preload-chooser.js](mdc:src/renderer/preload-chooser.js) - Chooser window preload
+
+Exposed APIs:
+```javascript
+window.crossover = {
+  // IPC communication
+  send(channel, data),
+  receive(channel, callback),
+  
+  // Platform detection
+  isMacOs, isWindows, isLinux,
+  
+  // Audio system
+  preloadSounds(sounds),
+  playSound(sound),
+  
+  // Configuration
+  config: { APP_BACKGROUND_OPACITY, etc. }
+}
+```
+
+### 7. Vendor Libraries
+External libraries in [src/renderer/vendor/](mdc:src/renderer/vendor):
+
+- **Feather Icons** - UI icons
+- **Inline SVG** - SVG crosshair processing
+- **Random Color** - Shadow window background colors
+- **Pickr** - Color picker component
+
+### 8. Window Behaviors
+
+**Main Window**:
+- Always on top
+- Transparent background
+- Maintains 16:10 aspect ratio
+- Draggable when unlocked
+- Resizable with constraints
+
+**Shadow Windows**:
+- Identical to main window
+- Random background colors
+- Independent positioning
+- Can be closed individually
+
+**Settings/Chooser Windows**:
+- Modal dialogs
+- Platform-specific styling
+- Auto-focus and blur handling

@@ -1,0 +1,160 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Build & Deployment
+
+## Build System
+Build configuration is managed in [package.json](mdc:package.json) using `electron-builder`.
+
+### Build Scripts
+Available npm scripts for building:
+
+**Cross-Platform:**
+- `npm run build` - Build for current platform
+- `npm run build:all` - All platforms and architectures
+- `npm run pack` - Package without installer (for testing)
+
+**Platform-Specific:**
+- `npm run build:mac` - macOS (Intel x64 + Apple Silicon arm64)
+- `npm run build:windows` - Windows (ia32 + x64)
+- `npm run build:linux` - Linux (ia32 + x64)
+
+**Linux Specific:**
+- `npm run build:deb` - Debian package
+- `npm run build:rpm` - RPM package  
+- `npm run build:snap` - Snap package
+- `npm run build:appimage` - AppImage
+
+**Windows Specific:**
+- `npm run build:windows:exe` - Standard installer
+- `npm run build:windows:appx` - Windows Store package
+
+### Build Targets by Platform
+
+**Windows:**
+- NSIS installer (`CrossOver-{version}.exe`)
+- Portable executable (`CrossOver-Portable-{version}.exe`)
+- Windows Store APPX package
+
+**macOS:**
+- DMG disk image
+- ZIP archive
+- Architectures: Intel (x64) + Apple Silicon (arm64)
+
+**Linux:**
+- AppImage (universal)
+- DEB (Debian/Ubuntu)
+- RPM (RedHat/Fedora)
+- Snap (Ubuntu Store)
+- APK (Alpine)
+- Pacman (Arch)
+- FreeBSD package
+
+### Electron Builder Configuration
+
+```javascript
+// From package.json "build" section
+{
+  "appId": "com.lacymorrow.crossover",
+  "artifactName": "${productName}-${version}-${arch}.${ext}",
+  "publish": "github",
+  "mac": {
+    "category": "public.app-category.utilities",
+    "darkModeSupport": true
+  },
+  "win": {
+    "target": ["nsis", "portable"],
+    "verifyUpdateCodeSignature": false
+  },
+  "linux": {
+    "target": ["AppImage", "deb", "rpm", "snap"],
+    "category": "Game;Shooter"
+  }
+}
+```
+
+## Distribution Channels
+
+### GitHub Releases
+- **Primary Distribution**: [GitHub Releases](mdc:https:/github.com/lacymorrow/crossover/releases)
+- **Auto-Updates**: Enabled for Windows and macOS
+- **Release Process**: Uses `np` (no-publish) for draft releases
+
+### Store Distribution
+- **Microsoft Store**: Windows APPX packages
+- **Snap Store**: Linux Snap packages
+- **Download Links**: Direct links to latest releases
+
+### Release Scripts
+- `npm run release` - Create GitHub release (no tests)
+- `npm run build:release` - Build all platforms for release
+- `npm run snap:release` - Upload to Snap Store
+
+## Auto-Update System
+Managed by [src/main/auto-update.js](mdc:src/main/auto-update.js):
+
+**Features:**
+- **Electron-Updater**: GitHub releases integration
+- **Platforms**: Windows and macOS only (Linux uses package managers)
+- **Settings**: Can be disabled in preferences
+- **Check Frequency**: On app startup
+- **Update Flow**: Download → Install on restart
+
+**Configuration:**
+```javascript
+// In package.json
+"publish": {
+  "provider": "github",
+  "releaseType": "release"
+}
+```
+
+## Code Signing
+**Current Status**: Not code signed (free/open source)
+
+**Implications:**
+- Chrome download warnings
+- Windows Defender warnings  
+- macOS Gatekeeper warnings
+- Users must manually approve first run
+
+**Workarounds Documented:**
+- Windows: "More Info" → "Run Anyway"
+- macOS: Control+Click → "Open" or `xattr` command for M1 Macs
+
+## Development Dependencies
+
+### Build Tools
+- `electron-builder` - Multi-platform building
+- `sass` - CSS preprocessing
+- `electron` - Runtime framework
+
+### Code Quality
+- `eslint` - JavaScript linting
+- `playwright` - End-to-end testing
+- `depcheck` - Dependency checking
+- `madge` - Circular dependency detection
+
+### Platform Support
+- `iohook` - Global input hooks
+- `electron-preferences` - Settings UI
+- `electron-updater` - Auto-update system
+
+## File Structure Post-Build
+```
+dist/
+├── CrossOver-{version}-{arch}.exe     # Windows installer
+├── CrossOver-Portable-{version}.exe   # Windows portable
+├── CrossOver-{version}-{arch}.dmg     # macOS disk image
+├── CrossOver-{version}-{arch}.AppImage # Linux AppImage
+├── CrossOver-{version}-{arch}.deb     # Debian package
+├── CrossOver-{version}-{arch}.rpm     # RPM package
+└── CrossOver-{version}-{arch}.snap    # Snap package
+```
+
+## Environment Variables
+- `NODE_ENV=development` - Development mode
+- `ELECTRON_IS_DEV` - Electron development flag
+- `CROSSOVER_RESET` - Force app reset on startup
