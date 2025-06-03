@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Application Overview
+
+## About CrossOver
+CrossOver is a cross-platform Electron application that provides a customizable crosshair overlay for any screen. It helps gamers improve their aim by placing a persistent crosshair over any application window.
+
+### Key Information
+- **Version**: 3.3.4
+- **License**: CC-BY-NC-SA-4.0
+- **Platforms**: Windows, macOS, Linux
+- **Built with**: Electron 11.5.0, Node.js 14
+- **Author**: Lacy Morrow
+
+## Application Architecture
+
+### Directory Structure
+- [src/main/](mdc:src/main) - Main process (Electron backend)
+- [src/renderer/](mdc:src/renderer) - Renderer process (UI/frontend)
+- [src/config/](mdc:src/config) - Configuration files
+- [src/static/](mdc:src/static) - Static assets (crosshairs, icons, sounds)
+
+### Entry Points
+- [index.js](mdc:index.js) - CLI entry point with version and debug flags
+- [src/index.js](mdc:src/index.js) - App module export
+- [src/main.js](mdc:src/main.js) - Main application initialization
+
+### Key Features
+1. **50+ Built-in Crosshairs** - Organized in categories under [src/static/crosshairs/](mdc:src/static/crosshairs)
+2. **Custom Image Support** - BMP, GIF, JPG, PNG, SVG, WebP formats
+3. **Global Hotkeys** - Default: Ctrl+Alt+Shift+ combinations
+4. **Multi-Monitor Support** - Move crosshair between displays
+5. **Advanced Actions** - Mouse following, hide triggers, crosshair tilting
+6. **Multiple Crosshairs** - Up to 14 duplicate shadow windows
+
+## Core Window Types
+- **Main Window** - Primary crosshair display
+- **Shadow Windows** - Duplicate crosshairs (max 14)
+- **Settings Window** - Preferences dialog
+- **Chooser Window** - Crosshair selection interface

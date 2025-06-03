@@ -1,0 +1,161 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Testing & Development
+
+## Testing Framework
+Testing is implemented using **Playwright** with Electron support. Configuration in [playwright.config.ts](mdc:playwright.config.ts).
+
+### Test Structure
+Tests are located in [test/](mdc:test) directory:
+
+- [test/sanity.spec.js](mdc:test/sanity.spec.js) - Basic functionality tests
+- [test/buttons.spec.js](mdc:test/buttons.spec.js) - UI interaction tests  
+- [test/ipc.spec.js](mdc:test/ipc.spec.js) - Inter-process communication tests
+- [test/electron.spec.js](mdc:test/electron.spec.js) - Platform-specific features
+- [test/a11y.spec.js](mdc:test/a11y.spec.js) - Accessibility compliance tests
+- [test/main.spec.js](mdc:test/main.spec.js) - Main process tests
+- [test/readme.spec.js](mdc:test/readme.spec.js) - Documentation validation
+- [test/helpers.js](mdc:test/helpers.js) - Shared test utilities
+
+### Test Scripts
+- `npm test` - Run full test suite
+- `npm run test:verbose` - Verbose output with development mode
+- `npm run test:debug` - Interactive debugging mode
+- `npm run test:debug:console` - Console debugging mode
+
+### Playwright Configuration
+```javascript
+{
+  testDir: 'test',
+  outputDir: 'test/results',
+  timeout: 10_000,
+  workers: 1,
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    browserName: 'chromium',
+    headless: false,
+    screenshot: 'on',
+    trace: 'on',
+    video: 'on-first-retry'
+  }
+}
+```
+
+## Development Workflow
+
+### Development Scripts
+- `npm start` - Start app in development mode
+- `npm run watch` - File watching with auto-restart (nodemon)
+- `npm run css` - Compile Sass to CSS
+- `npm run lint` - ESLint code checking and fixing
+
+### Development Mode Features
+- **Auto-reload**: File watching with nodemon
+- **DevTools**: Automatically opened (except Linux)
+- **Debug Flags**: Enhanced logging and error reporting
+- **GPU Debugging**: Optional hardware acceleration toggle
+
+### Code Quality Tools
+
+**ESLint Configuration** ([.eslintrc.js](mdc:.eslintrc.js)):
+- Base config: `eslint-config-xo`
+- Babel parser for modern JavaScript
+- Separate configs for src and test directories
+
+**Dependency Management:**
+- `npm run check:deps` - Find unused dependencies
+- `npm run check:circular` - Detect circular dependencies  
+- `npm run depcheck` - Combined dependency checking
+
+### Build Process
+
+**CSS Compilation:**
+```bash
+sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css
+sass src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css
+```
+
+**Development Server:**
+- Electron main process with `--disable-gpu-sandbox`
+- Hot reload for renderer changes
+- Automatic CSS recompilation
+
+### Debugging Tools
+
+**Electron Debug Features:**
+- DevTools integration
+- Process debugging
+- Unhandled error catching via [src/main/error-handling.js](mdc:src/main/error-handling.js)
+
+**Logging System:**
+- [src/main/log.js](mdc:src/main/log.js) - Wrapper for electron-log
+- File-based logging for production
+- Console logging for development
+
+**Debug Flags:**
+- `--debug` - Enable development mode
+- `--reset` - Force app reset
+- `NODE_ENV=development` - Development environment
+
+### Platform-Specific Development
+
+**macOS:**
+- Code signing considerations
+- Gatekeeper bypass for development
+- M1 compatibility (IOHook limitations)
+
+**Windows:**
+- SmartScreen bypass for development
+- Windows Store testing
+- Auto-launch registry entries
+
+**Linux:**
+- Compositor requirements
+- Wayland compatibility testing
+- Snap package development
+
+### Release Process
+
+1. **Version Bump**: Uses `np` package for semantic versioning
+2. **Build All Platforms**: `npm run build:release`
+3. **GitHub Release**: Automated draft creation
+4. **Store Uploads**: Manual Snap Store and Microsoft Store
+5. **Auto-Update**: Automatic distribution to existing users
+
+### Continuous Integration
+
+**GitHub Actions** ([.github/workflows/](mdc:.github/workflows)):
+- Multi-platform testing
+- Automated builds on release
+- Artifact generation and publishing
+
+**AppVeyor** ([appveyor.yml](mdc:appveyor.yml)):
+- Windows-specific testing
+- Additional Windows build verification
+
+**CircleCI** ([.circleci/](mdc:.circleci)):
+- Linux testing and Snap building
+- Cross-platform compatibility checks
+
+### Known Development Issues
+
+**Current Bugs (from src/main.js comments):**
+- Crosshair border doesn't work on first load
+- Windows flashing when hiding/showing
+- Keybind settings don't display on first load
+- Various IOHook-related issues
+
+**Todo Items:**
+- Add tooltips for buttons
+- Remove unsafe-eval CSP directive
+- Enable full sandbox mode
+- Improve security model
+
+### Performance Considerations
+- GPU acceleration settings for Linux compatibility
+- IOHook dynamic loading for anti-cheat compatibility
+- Debounced preference saving (2s delay)
+- Window bounds caching and restoration

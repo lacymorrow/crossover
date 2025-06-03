@@ -6,7 +6,7 @@ const APP_HEIGHT = 130
 const APP_WIDTH = 208
 // 16/10: 220x352 16/9: 224x356
 
-const DEFAULT_DEBOUNCE = 200
+const DEFAULT_DEBOUNCE = 20
 const DEFAULT_THEME = 'light'
 const ALERT_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/master/CROSSOVER_ALERT'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
@@ -20,7 +20,7 @@ const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
 
 // Debounce delay in ms
-const DEBOUNCE_DELAY = 2000
+const DEBOUNCE_DELAY = 200
 
 const SUPPORTED_IMAGE_FILE_TYPES = [
 	'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'jfi', 'jif', 'png', 'svg', 'webp',

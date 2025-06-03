@@ -2,7 +2,7 @@
 	"name": "crossover",
 	"productName": "CrossOver",
 	"appId": "com.lacymorrow.crossover",
-	"version": "3.3.4",
+	"version": "3.3.5",
 	"description": "A Crosshair Overlay for any screen",
 	"copyright": "Copyright © Lacy Morrow",
 	"repository": "lacymorrow/crossover",
@@ -37,7 +37,7 @@
 	},
 	"license": "CC-BY-NC-SA-4.0",
 	"engines": {
-		"node": "14"
+		"node": ">=14.0.0"
 	},
 	"scripts": {
 		"install": "npm run css",
@@ -52,7 +52,7 @@
 		"test:verbose": "NODE_ENV=development playwright test",
 		"test:debug": "PWDEBUG=1 CI=1 playwright test",
 		"test:debug:console": "PWDEBUG=console CI=1 playwright test",
-		"check:deps": "depcheck --ignores=bindings,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
+		"check:deps": "depcheck --ignores=bindings,electron-builder,electron-builder-squirrel-windows,electron-reloader,sass --ignore-dirs=build,dist",
 		"check:circular": "madge --circular .",
 		"depcheck": "npm run check:deps && npm run check:circular",
 		"release": "np --no-tests --branch release",
@@ -61,14 +61,14 @@
 		"sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
 		"sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
 		"build": "electron-builder",
-		"build:all": "electron-builder -mwl --ia32 --x64",
+		"build:all": "electron-builder -wl --ia32 --x64",
 		"build:mac": "electron-builder --macos --arm64 --x64",
 		"build:linux": "electron-builder --linux --ia32 --x64",
 		"build:windows": "electron-builder --win --ia32 --x64",
 		"build:windows:appx": "electron-builder --win appx",
 		"build:windows:exe": "electron-builder -c electron-builder-windows.yaml --win",
 		"build:wl": "electron-builder -wl --ia32 --x64",
-		"build:mw": "electron-builder -wm --arm64 --ia32 --x64",
+		"build:mw": "electron-builder -wm --arm64 --x64",
 		"build:deb": "electron-builder --linux deb",
 		"build:rpm": "electron-builder --linux rpm",
 		"build:snap": "electron-builder --linux snap",
@@ -138,7 +138,13 @@
 		"publish": "github",
 		"mac": {
 			"category": "public.app-category.utilities",
-			"darkModeSupport": true
+			"darkModeSupport": true,
+			"target": [
+				{
+					"target": "default",
+					"arch": ["x64", "arm64"]
+				}
+			]
 		},
 		"dmg": {
 			"contents": [
@@ -160,8 +166,7 @@
 				"apk",
 				"deb",
 				"freebsd",
-				"pacman",
-				"rpm"
+				"pacman"
 			],
 			"category": "Game;Shooter"
 		},

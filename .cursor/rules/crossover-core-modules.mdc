@@ -1,0 +1,77 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# CrossOver Core Modules
+
+## Main Process Modules (src/main/)
+
+### 1. crossover.js - Core Application Logic
+**Primary controller for crosshair functionality**
+
+Key Functions:
+- `lockWindow(lock, targetWindow)` - Locks/unlocks crosshair position and dragging
+- `changeCrosshair(src)` - Changes crosshair image across all windows
+- `syncSettings(options)` - Synchronizes preferences across windows
+- `initShadowWindow()` - Creates duplicate crosshair windows
+- `openSettingsWindow()` - Opens preferences dialog
+- `openChooserWindow()` - Opens crosshair selection window
+- `registerKeyboardShortcuts()` - Sets up global hotkeys
+- `toggleWindowLock(lock)` - Toggle lock state with sound/visual feedback
+
+### 2. windows.js - Window Management
+**Manages all application windows and their behaviors**
+
+Key Functions:
+- `init(options)` - Initialize main window
+- `create({isShadowWindow})` - Creates new BrowserWindow instances
+- `center()` - Centers crosshair on screen
+- `moveToNextDisplay()` - Moves crosshair between monitors
+- `showHideWindow()` - Toggles window visibility
+- `createShadow()` - Creates duplicate crosshair windows (max 14)
+- `each(fn)` - Iterate over all windows (main + shadows)
+- `getActiveWindow()` - Get currently active crosshair window
+
+### 3. preferences.js - Settings Management
+**Handles application preferences and settings UI**
+
+Key Functions:
+- `init()` - Initialize preferences system
+- `getDefaults()` - Returns default configuration object
+- Configuration sections:
+  - `crosshair` - Image, size, opacity, color, reticle
+  - `actions` - Mouse follow, hide triggers, tilt settings
+  - `app` - Theme, updates, performance, sounds
+  - `keybinds` - Customizable keyboard shortcuts
+  - `hidden` - Internal state (locked, tilted, etc.)
+
+### 4. iohook.js - Global Input Handling
+**Handles global mouse/keyboard events using iohook library**
+
+Key Functions:
+- `importIoHook()` - Dynamically loads iohook (anti-cheat protection)
+- `followMouse()` - Makes crosshair follow mouse cursor
+- `hideOnMouse()` - Hide crosshair on mouse button press
+- `hideOnKey()` - Hide crosshair on key press
+- `tiltCrosshair(angle)` - Rotate crosshair at custom angles
+- `resizeOnADS()` - Resize crosshair when aiming down sights
+- `unregisterIOHook()` - Clean up all iohook listeners
+
+### 5. set.js - Property Setter
+**Applies visual changes to renderer windows**
+
+Key Functions:
+- `rendererProperties(props, targetWindow)` - Set CSS custom properties
+- `crosshair(src, targetWindow)` - Set crosshair image
+- `reticle(type, targetWindow)` - Set reticle type (dot/cross/off)
+- `theme(theme, targetWindow)` - Apply theme styling
+
+### 6. Additional Modules
+- [register.js](mdc:src/main/register.js) - App event listeners
+- [reset.js](mdc:src/main/reset.js) - Reset app to defaults
+- [save.js](mdc:src/main/save.js) - Save window bounds
+- [sound.js](mdc:src/main/sound.js) - Audio feedback
+- [tray.js](mdc:src/main/tray.js) - System tray integration
+- [menu.js](mdc:src/main/menu.js) - Application menu
+- [auto-update.js](mdc:src/main/auto-update.js) - Update checking

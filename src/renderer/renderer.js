@@ -54,6 +54,29 @@
 			// console.log( 'Setting:', key, value )
 			document.documentElement.style.setProperty( key, value )
 
+			// Handle circle SVG attributes since CSS variables don't work in SVG attributes in Electron 11
+			if ( key === '--circle-radius' ) {
+
+				const circleElement = document.querySelector( '#circle circle' )
+				if ( circleElement ) {
+
+					circleElement.setAttribute( 'r', value )
+
+				}
+
+			}
+
+			if ( key === '--circle-thickness' ) {
+
+				const circleElement = document.querySelector( '#circle circle' )
+				if ( circleElement ) {
+
+					circleElement.setAttribute( 'stroke-width', value )
+
+				}
+
+			}
+
 		}
 
 	} )
@@ -204,7 +227,7 @@
 	// Sight
 	const setReticle = reticle => {
 
-		document.querySelector( '.reticle' ).classList.remove( 'dot', 'cross', 'off' )
+		document.querySelector( '.reticle' ).classList.remove( 'dot', 'cross', 'circle', 'off' )
 		document.querySelector( '.reticle' ).classList.add( reticle )
 
 	}

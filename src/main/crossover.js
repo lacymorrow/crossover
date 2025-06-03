@@ -314,6 +314,8 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
+		'--circle-radius': 15,
+		'--circle-thickness': options.crosshair.circleThickness,
 	}
 
 	// App color is set
@@ -422,6 +424,8 @@ const initShadowWindow = async () => {
 		'--svg-fill-color': 'unset',
 		'--svg-stroke-color': 'unset',
 		'--svg-stroke-width': 'unset',
+		'--circle-radius': 15,
+		'--circle-thickness': previousPreferences.crosshair?.circleThickness,
 	}
 
 	if ( !checkboxTrue( previousPreferences.crosshair?.svgCustomization, 'svgCustomization' ) ) {

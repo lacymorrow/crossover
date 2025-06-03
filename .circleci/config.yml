@@ -49,7 +49,8 @@ jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-all:
     macos:
-      xcode: 12.5.1
+      xcode: "15.4.0"
+    resource_class: m2pro.medium
     steps:
       # Checkout the code as the first step.
       - checkout
