@@ -1,3 +1,13 @@
+### 2024-12-19
+- Feature: SVG circle demo crosshair added
+- Improvements: Enhanced crosshair rendering and positioning
+- Bug fixes: Various stability improvements
+- Refactor: Code organization and modernization
+- Dependencies: Updated package-lock.json for security
+- Documentation: Added comprehensive cursor rules and guides
+- Testing: Enhanced test coverage and CI improvements
+- v3.3.5
+
 ### 2022-04-13
 - Add developer alert
 - Handle errors better
