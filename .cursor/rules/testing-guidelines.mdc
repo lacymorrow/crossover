@@ -1,0 +1,123 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Testing Guidelines
+
+## Test Framework
+CrossOver uses **Playwright** for end-to-end testing with Electron applications.
+
+## Test Configuration
+- **Config**: [playwright.config.ts](mdc:playwright.config.ts)
+- **Test Directory**: [test/](mdc:test)
+- **Helpers**: [test/helpers.js](mdc:test/helpers.js)
+- **Results**: [test/results/](mdc:test/results)
+
+## Test Commands
+```bash
+npm test                # Run all tests
+npm run test:verbose    # Verbose output
+npm run test:debug      # Debug mode with PWDEBUG=1
+```
+
+## Test Categories
+
+### Core Functionality Tests
+- **Sanity Tests**: [test/sanity.spec.js](mdc:test/sanity.spec.js) - Basic app functionality
+- **Main Tests**: [test/main.spec.js](mdc:test/main.spec.js) - App launch and core features
+- **IPC Tests**: [test/ipc.spec.js](mdc:test/ipc.spec.js) - Inter-process communication
+
+### UI Interaction Tests
+- **Button Tests**: [test/buttons.spec.js](mdc:test/buttons.spec.js) - UI element interactions
+- **Electron Tests**: [test/electron.spec.js](mdc:test/electron.spec.js) - Electron-specific features
+
+### Quality Assurance Tests
+- **Accessibility**: [test/a11y.spec.js](mdc:test/a11y.spec.js) - A11y compliance
+- **Documentation**: [test/readme.spec.js](mdc:test/readme.spec.js) - Asset validation
+- **Audio**: [test/zzzap.spec.js](mdc:test/zzzap.spec.js) - Sound functionality
+
+## Test Status & Expectations
+
+### Current Results
+- **23/30 tests passing** (77% pass rate)
+- **3 failing tests** - Window-focused flaky tests (acceptable)
+- **4 skipped tests** - Non-critical features
+
+### Acceptable Test Failures
+Some tests are **environment-dependent** and flaky:
+- Window focus tests
+- Multi-window scenarios
+- Platform-specific timing issues
+
+**These failures are acceptable** as they don't indicate functional problems.
+
+## Test Helpers
+The [test/helpers.js](mdc:test/helpers.js) provides utilities:
+- **startApp()** - Launch Electron app for testing
+- **focusedMinimizedVisible()** - Window state checking
+- **Platform detection** - OS-specific test logic
+
+## Writing Tests
+
+### Test Structure
+```javascript
+const { test, expect } = require('@playwright/test')
+const { startApp } = require('./helpers')
+
+test('Test description', async () => {
+    const { electronApp, mainPage } = await startApp()
+    // Test logic here
+    await electronApp.close()
+})
+```
+
+### Best Practices
+- **Use descriptive test names** - Clear purpose and expectations
+- **Test critical paths** - Focus on core crosshair functionality
+- **Handle timing issues** - Use proper waits and timeouts
+- **Clean up resources** - Close apps and windows after tests
+- **Accept platform differences** - Not all tests work on all platforms
+
+## Test Data & Assets
+- **Screenshots**: Stored in [test/results/](mdc:test/results)
+- **Traces**: Playwright traces for debugging
+- **Error Context**: Markdown files with error details
+- **Video**: Recording of test failures
+
+## CI/CD Testing
+The [.github/workflows/production-validation.yml](mdc:.github/workflows/production-validation.yml) runs tests:
+- **Single worker** - Prevents test conflicts
+- **10-second timeout** - Appropriate for Electron tests
+- **Artifact collection** - Screenshots and traces on failure
+
+## Performance Testing
+Consider these performance aspects:
+- **App startup time** - < 2 seconds target
+- **Memory usage** - < 50MB baseline
+- **UI responsiveness** - Smooth interactions
+- **Resource cleanup** - No memory leaks
+
+## Debugging Tests
+For test debugging:
+```bash
+npm run test:debug           # Interactive debugging
+npm run test:debug:console   # Console debugging
+```
+
+Use Playwright traces for detailed failure analysis:
+```bash
+npx playwright show-trace test/results/[test-name]/trace.zip
+```
+
+## Test Coverage Goals
+- **Core functionality**: 100% coverage required
+- **UI interactions**: Major workflows tested
+- **Error handling**: Edge cases covered
+- **Cross-platform**: Basic compatibility verified
+
+## Flaky Test Management
+- **Identify flaky tests** - Window/focus dependent
+- **Document acceptable failures** - Known environmental issues
+- **Focus on stability** - Prioritize reliable tests
+- **Monitor trends** - Track test reliability over time

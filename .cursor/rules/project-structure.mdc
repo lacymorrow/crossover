@@ -1,0 +1,46 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# CrossOver Project Structure
+
+## Overview
+CrossOver is an Electron-based crosshair overlay application with comprehensive cross-platform distribution support.
+
+## Key Entry Points
+- **Main Entry**: [index.js](mdc:index.js) - Application entry point
+- **Main Process**: [src/main/crossover.js](mdc:src/main/crossover.js) - Core application logic
+- **Window Management**: [src/main/windows.js](mdc:src/main/windows.js) - Window creation and management
+- **Initialization**: [src/main/init.js](mdc:src/main/init.js) - App startup and IPC setup
+- **Renderer**: [src/renderer/renderer.js](mdc:src/renderer/renderer.js) - Frontend logic
+
+## Configuration Files
+- **Package Config**: [package.json](mdc:package.json) - Dependencies, scripts, and electron-builder config
+- **Playwright Testing**: [playwright.config.ts](mdc:playwright.config.ts) - Test configuration
+- **Windows Build**: [electron-builder-windows.yaml](mdc:electron-builder-windows.yaml) - Windows-specific build settings
+- **AppX Build**: [electron-builder-appx.yaml](mdc:electron-builder-appx.yaml) - Windows Store configuration
+
+## Assets Structure
+- **Icons**: [src/static/icons/](mdc:src/static/icons) - Platform-specific icons (PNG, ICO, ICNS)
+- **Crosshairs**: [src/static/crosshairs/](mdc:src/static/crosshairs) - 25+ crosshair categories
+- **Sounds**: [src/static/sounds/](mdc:src/static/sounds) - UI sound effects
+- **Styles**: [src/renderer/styles/](mdc:src/renderer/styles) - SCSS stylesheets
+
+## Production Files
+- **Validation Script**: [scripts/validate-production.js](mdc:scripts/validate-production.js) - Production readiness checks
+- **Release Checklist**: [RELEASE_CHECKLIST.md](mdc:RELEASE_CHECKLIST.md) - Pre-release validation steps
+- **Production Plan**: [production-readiness-plan.md](mdc:production-readiness-plan.md) - Implementation roadmap
+- **CI/CD**: [.github/workflows/production-validation.yml](mdc:.github/workflows/production-validation.yml) - Automated validation
+
+## Testing Structure
+- **Test Directory**: [test/](mdc:test) - Playwright test suites
+- **Test Helpers**: [test/helpers.js](mdc:test/helpers.js) - Common test utilities
+- **Test Results**: [test/results/](mdc:test/results) - Test output and artifacts
+
+## Development Guidelines
+- Keep files under 700 lines
+- Use explicit variable names
+- Follow existing code style
+- Run production validation before releases
+- Address security vulnerabilities promptly

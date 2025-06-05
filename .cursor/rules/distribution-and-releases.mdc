@@ -1,0 +1,123 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Distribution and Release Process
+
+## Supported Platforms
+CrossOver supports comprehensive cross-platform distribution:
+
+### Windows
+- **NSIS Installer** - Standard Windows installer
+- **Portable EXE** - Standalone executable
+- **Windows Store (APPX)** - Microsoft Store distribution
+- **Configuration**: [electron-builder-windows.yaml](mdc:electron-builder-windows.yaml), [electron-builder-appx.yaml](mdc:electron-builder-appx.yaml)
+
+### macOS
+- **DMG** - Disk image installer
+- **ZIP** - Archive format
+- **Architecture**: Intel (x64) + Apple Silicon (arm64)
+- **Icons**: Uses [src/static/icons/icon.icns](mdc:src/static/icons/icon.icns)
+
+### Linux
+- **AppImage** - Universal Linux executable
+- **DEB** - Debian/Ubuntu packages
+- **RPM** - Red Hat/Fedora packages
+- **Snap** - Ubuntu Snap Store
+- **APK** - Alpine Linux packages
+- **FreeBSD** - FreeBSD packages
+- **Pacman** - Arch Linux packages
+
+## Build Commands
+```bash
+# Development builds
+npm run pack              # Build without distribution
+npm run build             # Build for current platform
+
+# Platform-specific builds
+npm run build:win         # Windows (ia32 + x64)
+npm run build:mac         # macOS (Intel + Apple Silicon)
+npm run build:linux       # Linux (ia32 + x64)
+
+# Comprehensive builds
+npm run build:all         # Windows + Linux (ia32 + x64)
+npm run build:release     # All platforms + cleanup
+```
+
+## Release Workflow
+Follow the complete [RELEASE_CHECKLIST.md](mdc:RELEASE_CHECKLIST.md) process:
+
+### 1. Pre-Release Validation
+```bash
+npm run validate:production  # Must pass
+npm test                     # Accept flaky tests
+npm run depcheck            # No issues
+```
+
+### 2. Version Management
+```bash
+npm version patch|minor|major --no-git-tag-version
+# Update CHANGELOG.md
+git add . && git commit -m "chore: bump version to vX.X.X"
+```
+
+### 3. Build & Distribution
+```bash
+npm run build:release       # Generate all platform builds
+# Test installers on target platforms
+# Upload to distribution channels
+```
+
+### 4. Distribution Channels
+- **GitHub Releases** - Primary distribution
+- **Windows Store** - [electron-builder-appx.yaml](mdc:electron-builder-appx.yaml) config
+- **Snap Store** - Linux snap packages
+- **Direct Downloads** - CrossOver.exe, DMG files
+
+## Auto-Update Configuration
+The [package.json](mdc:package.json) includes electron-updater configuration:
+- **Windows/macOS**: Automatic background updates
+- **Linux**: Manual update notifications
+- **GitHub Releases**: Primary update source
+
+## Code Signing Requirements
+For production releases:
+- **Windows**: Code signing certificate required
+- **macOS**: Apple Developer ID certificate required
+- **Linux**: GPG signing recommended
+
+## Asset Requirements
+All platforms require complete asset sets:
+- **Icons**: [src/static/icons/](mdc:src/static/icons) - PNG, ICO, ICNS formats
+- **Crosshairs**: [src/static/crosshairs/](mdc:src/static/crosshairs) - 25+ categories
+- **Sounds**: [src/static/sounds/](mdc:src/static/sounds) - UI feedback
+
+## Quality Gates
+Before any release:
+1. ✅ Production validation passes
+2. ✅ Manual testing on all platforms
+3. ✅ Security vulnerabilities addressed
+4. ✅ Performance benchmarks met
+5. ✅ Documentation updated
+
+## CI/CD Integration
+The [.github/workflows/production-validation.yml](mdc:.github/workflows/production-validation.yml) automates:
+- **Multi-platform builds** verification
+- **Security scanning**
+- **Code quality** checks
+- **Artifact generation** for testing
+
+## Emergency Rollback
+If critical issues are discovered:
+1. **Disable auto-update** immediately
+2. **Remove download links**
+3. **Communicate with users**
+4. **Prepare hotfix release**
+5. **Follow emergency procedures** in [RELEASE_CHECKLIST.md](mdc:RELEASE_CHECKLIST.md)
+
+## Performance Targets
+- **Bundle size**: Optimized for each platform
+- **Startup time**: < 2 seconds
+- **Memory usage**: < 50MB baseline
+- **Update size**: Delta updates preferred

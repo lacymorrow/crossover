@@ -1,0 +1,66 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Production Validation Process
+
+## Validation Command
+Always run production validation before any release:
+```bash
+npm run validate:production
+```
+
+## Validation Script
+The [scripts/validate-production.js](mdc:scripts/validate-production.js) performs comprehensive checks:
+
+### Critical Validations
+- **Package.json**: Required fields, version format, build configuration
+- **Security**: Vulnerability scanning with `npm audit`
+- **Code Quality**: ESLint compliance, TODO comment tracking
+- **Assets**: Platform icons (PNG, ICO, ICNS), crosshair categories
+- **Dependencies**: Unused packages, circular dependencies
+- **Electron Config**: Entry points, main/renderer files
+- **Build Process**: Pack validation, output verification
+
+### Success Criteria
+- **0 critical errors** - Must pass for production
+- **Warnings acceptable** - TODO comments, non-critical issues
+- **23+ checks passing** - Comprehensive validation coverage
+
+## Automated Validation
+The [.github/workflows/production-validation.yml](mdc:.github/workflows/production-validation.yml) runs on:
+- Push to `main` or `release` branches
+- Pull requests to main branches
+- Manual workflow dispatch
+
+### CI/CD Jobs
+- **Multi-platform builds** (Ubuntu, Windows, macOS)
+- **Node.js matrix testing** (18.x, 20.x)
+- **Security auditing**
+- **Code quality gates**
+- **Build artifact generation**
+
+## Pre-Release Hook
+The `prerelease` npm script automatically runs validation:
+```json
+"prerelease": "npm run validate:production"
+```
+
+## Validation Checklist
+Before any release, ensure:
+1. ✅ Production validation passes
+2. ✅ Security vulnerabilities addressed
+3. ✅ All required assets present
+4. ✅ Build process successful
+5. ✅ Cross-platform compatibility verified
+
+## Emergency Procedures
+If validation fails in production:
+1. **Stop release process immediately**
+2. **Review validation output**
+3. **Fix critical errors**
+4. **Re-run validation**
+5. **Only proceed when all critical checks pass**
+
+Refer to [RELEASE_CHECKLIST.md](mdc:RELEASE_CHECKLIST.md) for complete release procedures.

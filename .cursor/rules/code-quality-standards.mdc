@@ -1,0 +1,72 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Code Quality Standards
+
+## ESLint Configuration
+The project uses ESLint with XO configuration. All code must pass linting:
+```bash
+npm run lint        # Lint entire project
+npm run lint:src    # Lint source code only
+npm run lint:test   # Lint test files only
+```
+
+## Critical Standards
+- **0 ESLint errors** - Required for production
+- **Warnings acceptable** - TODO comments, non-critical style issues
+- **No circular dependencies** - Validated with madge
+- **No unused dependencies** - Checked with depcheck
+
+## File Organization
+- **Keep files under 700 lines** - Split large files for maintainability
+- **Use explicit variable names** - Prefer descriptive over abbreviated names
+- **Modular design** - Separate concerns into focused modules
+- **Consistent code style** - Follow existing patterns in the codebase
+
+## Security Requirements
+- **No high-severity vulnerabilities** - Must be addressed before release
+- **Dependencies up to date** - Regular security audits required
+- **Input validation** - Sanitize all external inputs
+- **Security-first approach** - Consider security implications in all changes
+
+## Documentation Standards
+- **JSDoc comments** for public functions
+- **Clear commit messages** following conventional commits
+- **Update README.md** for user-facing changes
+- **Update CHANGELOG.md** for version releases
+
+## Error Handling
+- **Robust error handling** - Catch and handle errors gracefully
+- **Proper logging** - Use electron-log for consistent logging
+- **User-friendly error messages** - Don't expose technical details to users
+
+## Accessibility
+The [src/main/accessibility.js](mdc:src/main/accessibility.js) handles macOS permissions:
+- **Follow accessibility best practices**
+- **Test permission flows** on macOS
+- **Provide clear user guidance** for permission requests
+
+## Performance Considerations
+- **App startup time < 2 seconds**
+- **Memory usage < 50MB**
+- **Bundle size optimization** - Remove unnecessary dependencies
+- **Efficient rendering** - Minimize DOM updates in renderer
+
+## Testing Guidelines
+- **Test critical functionality** - Core crosshair features must be tested
+- **Accept flaky window tests** - Window-focused tests can be environment-dependent
+- **Use Playwright helpers** from [test/helpers.js](mdc:test/helpers.js)
+- **Write descriptive test names** - Clear test purpose and expectations
+
+## Version Compatibility
+- **Node.js >= 18.18.2** - As specified in [package.json](mdc:package.json)
+- **Electron compatibility** - Test with target Electron version
+- **Cross-platform support** - Windows, macOS, Linux
+
+## Build Requirements
+- **All platform icons required** - PNG, ICO, ICNS formats
+- **SCSS compilation** - Run `npm run css` before testing
+- **Clean builds** - Remove dist/ before production builds
+- **Artifact verification** - Validate generated installers
