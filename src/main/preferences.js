@@ -1,6 +1,6 @@
 const { app } = require( 'electron' )
 const path = require( 'path' )
-const { debugInfo, is } = require( 'electron-util' )
+const { is } = require( 'electron-util' )
 const ElectronPreferences = require( 'electron-preferences' )
 const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_FILE_TYPES, DEBOUNCE_DELAY } = require( '../config/config.js' )
 /* Via https://github.com/tkambler/electron-preferences */
@@ -595,7 +595,7 @@ const preferencesConfig = {
 									Feedback and bug reports welcome at <a target="_blank" href="https://github.com/lacymorrow/crossover/issues">lacymorrow/crossover</a>.<br /> \
 									Developed by Lacy Morrow. Crosshairs thanks to /u/IrisFlame.</p> \
 									<p>Copyright © Lacy Morrow ${new Date().getFullYear()}</p> \
-									<p>${debugInfo()}</p> \
+									<p>Electron ${process.versions.electron}<br/>Node.js ${process.versions.node}<br/>${process.platform} ${process.arch}</p> \
 									<br/> \
 									<p>Looking for a designer!<br />We want to redesign CrossOver, reach out to <a target="_blank" href="mailto:me@lacymorrow.com">me@lacymorrow.com</a> \
 									for details.</p>

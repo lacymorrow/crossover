@@ -1,5 +1,4 @@
 const log = require( 'electron-log' )
-const unhandled = require( 'electron-unhandled' )
 const { debugInfo, openNewGitHubIssue } = require( './util' )
 
 // Const { openReportCrashDialog } = require( './dialog.js' )
@@ -23,6 +22,7 @@ const init = async () => {
 	// uncaughtException : This only catches fatal errors or errors that would crash your node instance
 
 	// Report unhandled errors
+	const { default: unhandled } = await import( 'electron-unhandled' )
 	await unhandled( {
 		showDialog: false, // default: only in production
 		logger: log.warn,

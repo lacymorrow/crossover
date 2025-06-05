@@ -29,7 +29,7 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 			if ( stat.isDirectory() && level > 0 ) {
 
-				// eslint-disable-next-line no-await-in-loop
+				 
 				const next = await getImages( path.join( directory, filepath ), level - 1 )
 				crosshairs.push( next )
 

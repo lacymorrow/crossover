@@ -77,17 +77,19 @@
 		"build:release:windows": "npm run build:win && npm run sh:copyexe",
 		"snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
 		"snap:release": "snapcraft upload --release=stable dist/*.snap",
-		"upgrade:interactive": "npm run upgrade-interactive --latest"
+		"upgrade:interactive": "npm run upgrade-interactive --latest",
+		"validate:production": "node scripts/validate-production.js",
+		"prerelease": "npm run validate:production"
 	},
 	"dependencies": {
 		"electron-debug": "^3.2.0",
-		"electron-is-dev": "^2.0.0",
-		"electron-log": "^5.0.0",
+		"electron-is-dev": "^3.0.1",
+		"electron-log": "^5.4.0",
 		"electron-preferences": "^2.8.2",
 		"electron-reloader": "^1.2.3",
 		"electron-unhandled": "^4.0.1",
-		"electron-updater": "6.1.4",
-		"electron-util": "^0.17.2",
+		"electron-updater": "^6.6.2",
+		"electron-util": "^0.18.1",
 		"got": "^13.0.0",
 		"uiohook-napi": "^1.5.4"
 	},
@@ -95,24 +97,25 @@
 		"electron-winstore-auto-launch": "^2.0.6"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.23.2",
-		"@babel/eslint-parser": "^7.22.15",
-		"@playwright/test": "^1.39.0",
-		"axe-playwright": "^1.2.3",
+		"@babel/core": "^7.27.4",
+		"@babel/eslint-parser": "^7.27.5",
+		"@eslint/js": "^9.28.0",
+		"@playwright/test": "^1.52.0",
+		"axe-playwright": "^2.1.0",
 		"bindings": "^1.5.0",
 		"depcheck": "^1.4.7",
 		"electron": "^36.4.0",
-		"electron-builder": "^24.6.4",
-		"electron-builder-squirrel-windows": "^24.8.0",
-		"eslint": "^8.52.0",
-		"eslint-config-xo": "^0.43.1",
-		"husky": "^8.0.3",
-		"jimp": "^0.22.10",
-		"madge": "^6.1.0",
-		"nodemon": "^3.0.1",
-		"np": "^7.7.0",
-		"playwright": "^1.39.0",
-		"sass": "^1.69.5"
+		"electron-builder": "^26.0.12",
+		"electron-builder-squirrel-windows": "^26.0.12",
+		"eslint": "^9.28.0",
+		"eslint-config-xo": "^0.47.0",
+		"husky": "^9.1.7",
+		"jimp": "^1.6.0",
+		"madge": "^8.0.0",
+		"nodemon": "^3.1.10",
+		"np": "^10.2.0",
+		"playwright": "^1.52.0",
+		"sass": "^1.89.1"
 	},
 	"np": {
 		"publish": false,
@@ -203,5 +206,6 @@
 		"hooks": {
 			"pre-commit": "npm test"
 		}
-	}
+	},
+	"packageManager": "pnpm@10.11.1"
 }

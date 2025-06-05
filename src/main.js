@@ -58,7 +58,7 @@ console.time( 'init' )
 const process = require( 'process' )
 
 const { app } = require( 'electron' )
-const debug = require( 'electron-debug' )
+const electronDebug = require( 'electron-debug' )
 const { checkboxTrue } = require( './config/utils.js' )
 
 const { is } = require( './main/util' )
@@ -98,7 +98,7 @@ const start = async () => {
 	app.setAppUserModelId( appId )
 
 	// Debug Settings
-	debug( {
+	electronDebug( {
 		showDevTools: is.development && !is.linux,
 		devToolsMode: 'undocked',
 	} )

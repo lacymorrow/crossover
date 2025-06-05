@@ -1,4 +1,4 @@
-/* eslint-disable no-bitwise */
+ 
 
 const { DEBOUNCE_DELAY } = require( './config' )
 
@@ -53,7 +53,7 @@ const checkLinuxTraySupport = cb => {
 
 }
 
-/* eslint-disable no-prototype-builtins */
+ 
 /**
  * Recursively Object.freeze() on objects and functions
  * @see https://github.com/substack/deep-freeze
@@ -109,7 +109,7 @@ const hexToRgbA = ( hex, alpha ) => {
 
 }
 
-/* eslint-enable */
+ 
 
 module.exports = {
 	checkboxTrue,

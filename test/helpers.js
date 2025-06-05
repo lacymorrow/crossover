@@ -11,7 +11,7 @@ const delays = {
 	long: 5000,
 }
 
-// eslint-disable-next-line no-promise-executor-return
+ 
 const wait = ms => new Promise( r => setTimeout( r, ms ) )
 
 const startApp = async () => {
@@ -169,7 +169,7 @@ function visualMouseCode() {
 
 		for ( let i = 0; i < 5; i++ ) {
 
-			// eslint-disable-next-line no-bitwise
+			 
 			box.classList.toggle( 'button-' + i, buttons & ( 1 << i ) )
 
 		}
