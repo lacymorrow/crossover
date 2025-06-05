@@ -1,8 +1,8 @@
 <p align="center">
-  <img style="width:200px; height:200px;" width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/master/src/static/icons/icon.png">
+  <img style="width:200px; height:200px;" width="200" height="200" src="https://github.com/lacymorrow/crossover/raw/main/src/static/icons/icon.png">
 </p>
 
-# CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" height="40"  style="height:40px;" align="right" />](https://www.patreon.com/bePatron?u=55065733) [<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="40"  style="height:40px;" align="right" />](https://www.buymeacoffee.com/lm)
+# CrossOver [<img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/patreon-button.webp" height="40"  style="height:40px;" align="right" />](https://www.patreon.com/bePatron?u=55065733) [<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="40"  style="height:40px;" align="right" />](https://www.buymeacoffee.com/lm)
 
 > 🎯 Adjustable Crosshair Overlay for any screen
 
@@ -35,7 +35,7 @@ CrossOver allows you to place a customizable crosshair overlay above any applica
 Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-main.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png"/>
 </p>
 
 
@@ -99,12 +99,12 @@ Or download from the Snap Store
 
 <p align="center">
 	<br />
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/ballistic-firedot.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Green.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Chevron/Amethyst.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair052.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/ballistic-firedot.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Green.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Chevron/Amethyst.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/moa-delta.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
 </p>
 
 # Features
@@ -130,7 +130,7 @@ Or download from the Snap Store
 ##### [View all dowloads for any OS](https://github.com/lacymorrow/crossover/releases/latest)
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-duplicate.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-duplicate.png"/>
 </p>
 
 Other crosshair programs offer a single style or color option, and often don't allow you to reposition them. CrossOver is a small, unintrusive crosshair overlay which has plenty of configuration options to assist with aiming and vision of your crosshair. CrossOver offers a huge improvement to many games' default crosshairs for those with colorblindness or contrast issues.
@@ -187,7 +187,7 @@ _Certain lightweight desktop environments may require a compositor to allow Cros
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-chooser.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-chooser.png"/>
 </p>
 
 
@@ -223,7 +223,7 @@ _Certain lightweight desktop environments may require a compositor to allow Cros
 ###### Linux: Some distributions do not center on double-click.
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/demo-settings.png"/>
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-settings.png"/>
 </p>
 
 
@@ -273,12 +273,12 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 
 <p align="center">
 	<br />
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/The%20Diatoku/Purple.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Kenney/crosshair035.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/master/src/static/crosshairs/Actual/leupold-dot.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Purple.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/leupold-dot.png">
 </p>
 
 ---
@@ -576,5 +576,5 @@ If you would like to see specific features or improvements added to CrossOver, c
 - **BTC:** `3Bdu2sTAmXyZzqeRQxCt6P22zHtTLg4mQE`
 - **ETH:** `0x5be1074a5148F8D723dE1F2Dd326e1B15c82553D`
 
-<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/master/src/static/meta/patreon-button.webp" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img style="height:50px;" height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
+<a href="https://www.patreon.com/bePatron?u=55065733" target="_blank"><img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/patreon-button.webp" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://opencollective.com/crossover/donate" target="_blank"><img src="https://opencollective.com/crossover/donate/button@2x.png?color=blue" style="height:50px;" height="50" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.buymeacoffee.com/lm" target="_blank"><img style="height:50px;" height="50" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" ></a>
 

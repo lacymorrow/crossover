@@ -1,7 +1,7 @@
 /*
 	Developer Alerts
 
-	If a file named CROSSOVER_ALERT is found in the root of the master branch, users will see the alert pop up in a dialog.
+	If a file named CROSSOVER_ALERT is found in the root of the main branch, users will see the alert pop up in a dialog.
 
 	Todo: Markdown
 */

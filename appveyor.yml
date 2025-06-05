@@ -11,7 +11,7 @@ os: unstable
 
 branches:
   only:
-    - master
+    - main
     - release
 
 skip_tags: true

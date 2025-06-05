@@ -138,7 +138,7 @@ workflows:
     when: # Only test on select branches (not stable)
       or: # One must be true to trigger
         - equal: [dev, << pipeline.git.branch >>]
-        - equal: [master, << pipeline.git.branch >>]
+        - equal: [main, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
       # - build-linux
