@@ -4,6 +4,7 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const Preferences = require( './preferences' )
 const keyboard = require( './keyboard' )
+const accessibility = require( './accessibility' )
 const preferences = Preferences.init()
 const app = skipFullReset => {
 
@@ -17,6 +18,9 @@ const app = skipFullReset => {
 	keyboard.escapeAction()
 
 	reset.allPreferences()
+
+	// Reset accessibility preferences
+	accessibility.resetAccessibilityPreferences()
 
 	if ( !skipFullReset ) {
 

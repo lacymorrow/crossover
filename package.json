@@ -37,7 +37,7 @@
 	},
 	"license": "CC-BY-NC-SA-4.0",
 	"engines": {
-		"node": ">=14.0.0"
+		"node": ">=18.18.2"
 	},
 	"scripts": {
 		"install": "npm run css",
@@ -89,7 +89,7 @@
 		"electron-updater": "6.1.4",
 		"electron-util": "^0.17.2",
 		"got": "^13.0.0",
-		"iohook": "^0.9.3"
+		"uiohook-napi": "^1.5.4"
 	},
 	"optionalDependencies": {
 		"electron-winstore-auto-launch": "^2.0.6"
@@ -101,7 +101,7 @@
 		"axe-playwright": "^1.2.3",
 		"bindings": "^1.5.0",
 		"depcheck": "^1.4.7",
-		"electron": "^11.5.0",
+		"electron": "^36.4.0",
 		"electron-builder": "^24.6.4",
 		"electron-builder-squirrel-windows": "^24.8.0",
 		"eslint": "^8.52.0",
@@ -113,21 +113,6 @@
 		"np": "^7.7.0",
 		"playwright": "^1.39.0",
 		"sass": "^1.69.5"
-	},
-	"iohook": {
-		"targets": [
-			"node-83",
-			"electron-85"
-		],
-		"platforms": [
-			"win32",
-			"darwin",
-			"linux"
-		],
-		"arches": [
-			"x64",
-			"ia32"
-		]
 	},
 	"np": {
 		"publish": false,

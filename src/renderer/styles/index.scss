@@ -50,15 +50,6 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--app-bg-opacity: #{$app_background_opacity};
 	--app-chooser-bg-color: #{rgba($theme_bg_light, 1)};
 
-
-	// ANY LIGHT/DARK MODE SETTINGS ^v
-	@media (prefers-color-scheme: dark) {
-			--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
-			--app-highlight-color-initial: #{$icon_dark};
-			--app-icon-hover-color: #{$icon_hover_dark};
-	}
-
-
 	// Settings
 	--crosshair-scale: 1;
 	--crosshair-width: 100px;
@@ -72,6 +63,13 @@ $scrollbar_shadow: rgba(0, 0, 0, .3);
 	--svg-stroke-width: inherit;
 	--circle-radius: 15;
 	--circle-thickness: 2;
+
+	// ANY LIGHT/DARK MODE SETTINGS ^v
+	@media (prefers-color-scheme: dark) {
+			--app-bg-color-initial: #{rgba($theme_bg_dark, .6)};
+			--app-highlight-color-initial: #{$icon_dark};
+			--app-icon-hover-color: #{$icon_hover_dark};
+	}
 }
 
 * {
@@ -158,7 +156,7 @@ body {
     z-index: -10;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
-	border: 1px solid var(--app-highlight-color, var(--app-highlight-color-initial));
+	border: 3px solid var(--app-highlight-color, var(--app-highlight-color-initial));
 }
 
 #titlebar {
