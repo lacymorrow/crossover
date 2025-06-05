@@ -111,6 +111,7 @@ body {
 /* Application Style */
 
 .container {
+    overflow: hidden;
     position: relative;
     background: none;
     border-radius: 5px;
@@ -133,12 +134,11 @@ body {
         &:before {
             content: '';
             position: absolute;
-            top: 4px;
-            right: 4px;
-            bottom: 4px;
-            left: 4px;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            left: 5px;
             border: 4px dashed $border_dragging;
-            border-radius: 5px;
             pointer-events: none;
             z-index: 30;
         }
@@ -156,7 +156,7 @@ body {
     z-index: -10;
     display: none;
     background: var(--app-bg-color, var(--app-bg-color-initial));
-	border: 1px solid var(--app-highlight-color, var(--app-highlight-color-initial));
+	border: 3px solid var(--app-highlight-color, var(--app-highlight-color-initial));
 }
 
 #titlebar {
