@@ -6,10 +6,19 @@ const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
+const accessibility = require( './accessibility' )
 
 const init = async options => {
 
 	log.info( 'Init', options )
+
+	// Initialize accessibility check on first boot
+	if ( !options?.triggeredByReset ) {
+
+		// Check accessibility permissions before starting any input hooks
+		await accessibility.initializeAccessibilityCheck()
+
+	}
 
 	// Cleanup (if reset)
 	// TODO explicitly remove channels

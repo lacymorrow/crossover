@@ -1,9 +1,10 @@
-const { uIOhook, UiohookKey } = require( 'uiohook-napi' );
-const { checkboxTrue } = require( '../config/utils.js' );
-const preferences = require( './preferences' ).init();
-const log = require( './log.js' );
-const set = require( './set.js' );
-const windows = require( './windows.js' );
+const { uIOhook, UiohookKey } = require( 'uiohook-napi' )
+const { checkboxTrue } = require( '../config/utils.js' )
+const preferences = require( './preferences' ).init()
+const log = require( './log.js' )
+const set = require( './set.js' )
+const windows = require( './windows.js' )
+const accessibility = require( './accessibility.js' )
 
 // Keep track of registered shortcuts to remove them later
 const registeredShortcuts = [];
@@ -64,28 +65,76 @@ const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
 };
 
 
-const followMouse = () => {
-	const { width, height } = windows.win.getBounds();
-	log.info( 'Setting: Mouse Follow' );
+const followMouse = async () => {
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Mouse follow requires accessibility permissions' )
+
+		// Show user-friendly notification instead of crashing
+		accessibility.showAccessibilityDisabledNotification()
+
+		// Try to request permissions
+		const granted = await accessibility.requestAccessibilityPermissions()
+		if ( !granted ) {
+
+			log.info( 'Mouse follow disabled - accessibility permissions not granted' )
+			return
+
+		}
+
+	}
+
+	const { width, height } = windows.win.getBounds()
+	log.info( 'Setting: Mouse Follow' )
 
 	const listener = event => {
+
 		windows.win.setBounds( {
 			x: event.x - Math.round( width / 2 ),
 			y: event.y - Math.round( height / 2 ),
-		} );
-	};
+		} )
 
-	uIOhook.on( 'mousemove', listener );
-	registeredShortcuts.push( { event: 'mousemove', listener } );
-	uIOhook.start();
-};
+	}
 
-const hideOnMouse = () => {
-	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100;
-	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 );
-	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' );
+	try {
 
-	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) );
+		uIOhook.on( 'mousemove', listener )
+		registeredShortcuts.push( { event: 'mousemove', listener } )
+		uIOhook.start()
+
+	} catch ( error ) {
+
+		log.error( 'Failed to start mouse follow:', error )
+
+		// If we get the accessibility error, handle it gracefully
+		if ( error.message && error.message.includes( 'Accessibility API is disabled' ) ) {
+
+			accessibility.showAccessibilityDisabledNotification()
+
+		}
+
+	}
+
+}
+
+const hideOnMouse = async () => {
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Hide on mouse requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+		return
+
+	}
+
+	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' )
+
+	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) )
 
 	if ( hideOnMouseToggle ) {
 		const listener = event => {
@@ -121,19 +170,32 @@ const hideOnMouse = () => {
 	uIOhook.start();
 };
 
-const hideOnKey = () => {
-	const isEnabled = preferences.value( 'actions.hideOnKey' );
-	log.info( 'Setting: Keyboard Hold/Toggle' );
+const hideOnKey = async () => {
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Hide on key requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+		return
+
+	}
+
+	const isEnabled = preferences.value( 'actions.hideOnKey' )
+	log.info( 'Setting: Keyboard Hold/Toggle' )
 
 	if ( UiohookKey[isEnabled] ) {
+
 		registerShortcut(
 			[ isEnabled ],
 			() => windows.hideWindow(),
 			() => windows.showWindow()
-		);
-		uIOhook.start();
+		)
+		uIOhook.start()
+
 	}
-};
+
+}
 
 const tiltCrosshair = angle => {
 	if ( angle && windows.win ) {
@@ -143,13 +205,23 @@ const tiltCrosshair = angle => {
 	}
 };
 
-const tilt = () => {
-	const tiltAngle = Number.parseInt( preferences.value( 'actions.tiltAngle' ), 10 );
-	const tiltToggle = checkboxTrue( preferences.value( 'actions.tiltToggle' ), 'tiltToggle' );
-	const tiltLeft = preferences.value( 'actions.tiltLeft' );
-	const tiltRight = preferences.value( 'actions.tiltRight' );
+const tilt = async () => {
 
-	log.info( 'Setting: Tilt' );
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Tilt controls require accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+		return
+
+	}
+
+	const tiltAngle = Number.parseInt( preferences.value( 'actions.tiltAngle' ), 10 )
+	const tiltToggle = checkboxTrue( preferences.value( 'actions.tiltToggle' ), 'tiltToggle' )
+	const tiltLeft = preferences.value( 'actions.tiltLeft' )
+	const tiltRight = preferences.value( 'actions.tiltRight' )
+
+	log.info( 'Setting: Tilt' )
 
 	if ( UiohookKey[tiltLeft] ) {
 		if ( tiltToggle ) {
@@ -194,15 +266,25 @@ const tilt = () => {
 };
 
 
-const resizeOnADS = () => {
-	const ads = preferences.value( 'actions.resizeOnADS' );
-	const adsSize = Number.parseInt( preferences.value( 'actions.resizeOnADSSize' ), 10 );
-	const adsToggle = checkboxTrue( preferences.value( 'actions.resizeOnADSToggle' ), 'resizeOnADSToggle' );
-	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100;
-	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 );
-	const newCrosshairSize = adsSize;
+const resizeOnADS = async () => {
 
-	log.info( 'Setting: ADS Resize' );
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'ADS resize requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+		return
+
+	}
+
+	const ads = preferences.value( 'actions.resizeOnADS' )
+	const adsSize = Number.parseInt( preferences.value( 'actions.resizeOnADSSize' ), 10 )
+	const adsToggle = checkboxTrue( preferences.value( 'actions.resizeOnADSToggle' ), 'resizeOnADSToggle' )
+	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
+	const newCrosshairSize = adsSize
+
+	log.info( 'Setting: ADS Resize' )
 
 	if ( adsToggle ) {
 		const listener = event => {

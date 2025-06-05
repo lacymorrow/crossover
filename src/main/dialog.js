@@ -140,8 +140,31 @@ const openUpdateDialog = async action => {
 
 }
 
+const openAccessibilityDialog = async () => {
+
+	await electronDialog.showMessageBox( {
+		type: 'info',
+		title: 'Accessibility Permission Required',
+		message: 'CrossOver needs accessibility permissions to capture global mouse and keyboard events.',
+		detail: 'This enables features like:\n• Mouse follow mode\n• Hide crosshair on mouse/key press\n• Resize crosshair when aiming\n• Tilt crosshair controls\n\nGo to System Preferences > Security & Privacy > Accessibility and check the box next to CrossOver.',
+		buttons: [ 'Open System Preferences', 'Skip' ],
+	} ).then( result => {
+
+		const buttonIndex = validButtonIndex( result )
+
+		if ( buttonIndex === 0 ) {
+
+			return shell.openExternal( 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility' )
+
+		}
+
+	} )
+
+}
+
 const dialog = {
 	openAboutWindow,
+	openAccessibilityDialog,
 	openAlertDialog,
 	openCustomImageDialog,
 	openReportCrashDialog,
