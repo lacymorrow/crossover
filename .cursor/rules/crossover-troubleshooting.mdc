@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
 # CrossOver Troubleshooting & Compatibility
@@ -15,7 +15,7 @@ alwaysApply: false
 ### Platform-Specific Issues
 
 **Apple Silicon (M1/M2 Macs):**
-- IOHook may not work properly ([src/main/iohook.js](mdc:src/main/iohook.js) dynamic import)
+- Now fully supported with uiohook-napi (N-API based)
 - Gatekeeper security warnings require manual bypass
 - Fix: `sudo xattr -r -d com.apple.quarantine /Applications/CrossOver.app`
 
@@ -89,10 +89,11 @@ chmod +x CrossOver-*.AppImage
 - Try different key combinations
 - Restart with admin/root privileges if needed
 
-**IOHook Fails to Load:**
-- Architecture compatibility issue (especially Apple Silicon)
+**uiohook-napi Fails to Load:**
+- Check Node.js version compatibility (requires ≥18.18.2)
+- Architecture compatibility (now supports Apple Silicon natively)
 - Anti-virus blocking the module
-- Try running without elevated privileges
+- Try rebuilding: `npm rebuild uiohook-napi`
 
 ### Settings/Preferences Issues
 
@@ -142,10 +143,11 @@ Located in App Settings → Performance:
 - **GPU Process**: Separate vs shared process
 - Linux users may need to disable for Wayland compatibility
 
-### IOHook Optimization
-- Dynamic loading prevents anti-cheat flagging
-- Automatic cleanup on window close
+### uiohook-napi Optimization
+- Direct event listeners (no dynamic loading needed)
+- Robust automatic cleanup on window close
 - Minimal listeners to reduce overhead
+- N-API stability across Node.js versions
 
 ### Memory Management
 - Shadow windows automatically cleaned up
@@ -155,9 +157,10 @@ Located in App Settings → Performance:
 ## Security Considerations
 
 ### Anti-virus/Anti-cheat
-- IOHook library may trigger false positives
+- uiohook-napi library may trigger false positives (like previous iohook)
 - Global input monitoring appears suspicious to security software
 - Whitelist CrossOver in anti-virus if needed
+- N-API implementation provides better stability and compatibility
 
 ### Code Signing
 - Application is NOT code signed (open source limitation)

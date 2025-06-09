@@ -3,3 +3,145 @@ description:
 globs:
 alwaysApply: false
 ---
+# CrossOver 2025 Migration Guide
+
+## Major Migration: iohook → uiohook-napi
+
+### Background
+CrossOver was previously stuck on Node.js 14 and Electron 11 due to dependency on `wilix-iohook`, which only supported these older versions. This migration enables modern development with current Node.js and Electron versions.
+
+### Key Changes Made
+
+#### 1. Input Handling Library Migration
+**Before:** `iohook@0.9.3` (unmaintained, Node ≤15 only)
+**After:** `uiohook-napi@1.5.4` (actively maintained, N-API based)
+
+**Benefits:**
+- Node.js 18.18.2+ compatibility
+- Electron 27.0.3+ compatibility
+- Apple Silicon (M1/M2) native support
+- Cross-platform stability via N-API
+- Active maintenance and security updates
+
+#### 2. Implementation Changes in [src/main/iohook.js](mdc:src/main/iohook.js)
+
+**Replaced Components:**
+- `require('iohook')` → `require('uiohook-napi')`
+- `importIoHook()` dynamic loading → Direct `uIOhook` usage
+- Custom `registerShortcut()` implementation (uiohook-napi lacks this)
+- Event listener tracking for proper cleanup
+
+**New Architecture:**
+```javascript
+const { uIOhook, UiohookKey } = require('uiohook-napi');
+
+// Custom shortcut manager
+const registeredShortcuts = [];
+const registerShortcut = (keys, keyDownCallback, keyUpCallback) => {
+  // Implementation handles key combinations and cleanup
+};
+
+// Direct event listeners
+uIOhook.on('mousemove', listener);
+uIOhook.on('mousedown', listener);
+uIOhook.on('keydown', listener);
+```
+
+**Key Mapping Migration:**
+- Removed `src/config/keycode.js` (platform-specific codes)
+- Now uses `UiohookKey` enum from uiohook-napi (cross-platform)
+- Automatic keycode mapping: `UiohookKey[keyName]`
+
+#### 3. Version Updates
+
+**Node.js:**
+- Engine requirement: `>=14.0.0` → `>=18.18.2`
+- [.nvmrc](mdc:.nvmrc): `14` → `18.18.2`
+
+**Electron:**
+- Development dependency: `^11.5.0` → `^27.0.3`
+- Enables modern Electron APIs and security features
+
+**Package Configuration:**
+- Removed `iohook` build configuration from [package.json](mdc:package.json)
+- Updated engine requirements
+- Cleaned up legacy platform targets
+
+#### 4. Sass Modernization
+
+**Fixed Deprecation Warnings:**
+- Mixed declarations: Moved CSS variables before `@media` rules
+- Color functions: `darken()` → `color.scale()` with `@use "sass:color"`
+
+**Files Updated:**
+- [src/renderer/styles/index.scss](mdc:src/renderer/styles/index.scss)
+- [src/renderer/styles/preferences.scss](mdc:src/renderer/styles/preferences.scss)
+
+### Functional Compatibility
+
+**All existing features preserved:**
+- ✅ Mouse following (`followMouse()`)
+- ✅ Hide on mouse/key press (`hideOnMouse()`, `hideOnKey()`)
+- ✅ Crosshair tilting (`tilt()`)
+- ✅ ADS resizing (`resizeOnADS()`)
+- ✅ Global keyboard shortcuts
+- ✅ Event cleanup and memory management
+
+**API Compatibility:**
+- External API unchanged - no breaking changes for users
+- Internal implementation completely rewritten
+- All [src/main/crossover.js](mdc:src/main/crossover.js) and [src/main/register.js](mdc:src/main/register.js) calls work identically
+
+### Testing & Verification
+
+**Startup Verification:**
+```bash
+npm start
+# Should show clean compilation without Sass warnings
+# Application should initialize with all features working
+```
+
+**Feature Testing:**
+- Mouse following: Enable in preferences → crosshair follows cursor
+- Hide triggers: Test mouse buttons and keyboard shortcuts
+- Crosshair tilting: Verify left/right tilt functionality
+- ADS resizing: Test scope button resize behavior
+
+### Troubleshooting Migration Issues
+
+**If uiohook-napi fails to load:**
+- Check Node.js version: `node --version` (should be ≥18.18.2)
+- Verify architecture compatibility (especially Apple Silicon)
+- Try rebuilding: `npm rebuild uiohook-napi`
+
+**Key mapping issues:**
+- Old keycode references removed - now use key names
+- Available keys: Check `UiohookKey` enum documentation
+- Common mappings: `Esc`, `Space`, `Control`, `Shift`, `Alt`, `A-Z`, `F1-F12`
+
+**Performance considerations:**
+- uiohook-napi may have different performance characteristics
+- Monitor CPU usage during heavy input scenarios
+- Event listener cleanup is now more robust
+
+### Future Benefits
+
+**Development Environment:**
+- Modern Node.js features and performance
+- Latest Electron APIs and security
+- Better debugging tools and stack traces
+- NPM package ecosystem compatibility
+
+**Distribution:**
+- Improved build process with modern tools
+- Better native compilation support
+- Enhanced Apple Silicon compatibility
+- Future-proofed dependency chain
+
+### Breaking Changes (Internal Only)
+- `src/config/keycode.js` removed
+- `iohook` package configuration removed
+- `importIoHook()` function removed
+- Dynamic loading approach changed
+
+**No user-facing breaking changes** - all functionality preserved.

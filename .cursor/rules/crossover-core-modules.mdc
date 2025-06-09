@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
 # CrossOver Core Modules
@@ -47,16 +47,23 @@ Key Functions:
   - `hidden` - Internal state (locked, tilted, etc.)
 
 ### 4. iohook.js - Global Input Handling
-**Handles global mouse/keyboard events using iohook library**
+**Handles global mouse/keyboard events using uiohook-napi library**
 
 Key Functions:
-- `importIoHook()` - Dynamically loads iohook (anti-cheat protection)
+- `unregisterIOHook()` - Clean up all listeners and reset crosshair state
+- `registerShortcut(keys, keyDownCallback, keyUpCallback)` - Custom shortcut handler
 - `followMouse()` - Makes crosshair follow mouse cursor
 - `hideOnMouse()` - Hide crosshair on mouse button press
 - `hideOnKey()` - Hide crosshair on key press
 - `tiltCrosshair(angle)` - Rotate crosshair at custom angles
 - `resizeOnADS()` - Resize crosshair when aiming down sights
-- `unregisterIOHook()` - Clean up all iohook listeners
+
+**Migration Notes:**
+- Now uses `uiohook-napi` (N-API based, Node 18.18.2+)
+- Direct event listeners instead of dynamic loading
+- Custom shortcut implementation (uiohook-napi lacks registerShortcut)
+- Event listener tracking for proper cleanup
+- Cross-platform keycode handling via `UiohookKey` enum
 
 ### 5. set.js - Property Setter
 **Applies visual changes to renderer windows**

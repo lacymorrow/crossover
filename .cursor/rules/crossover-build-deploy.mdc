@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
 # CrossOver Build & Deployment
@@ -23,7 +23,7 @@ Available npm scripts for building:
 
 **Linux Specific:**
 - `npm run build:deb` - Debian package
-- `npm run build:rpm` - RPM package  
+- `npm run build:rpm` - RPM package
 - `npm run build:snap` - Snap package
 - `npm run build:appimage` - AppImage
 
@@ -116,7 +116,7 @@ Managed by [src/main/auto-update.js](mdc:src/main/auto-update.js):
 
 **Implications:**
 - Chrome download warnings
-- Windows Defender warnings  
+- Windows Defender warnings
 - macOS Gatekeeper warnings
 - Users must manually approve first run
 
@@ -126,9 +126,14 @@ Managed by [src/main/auto-update.js](mdc:src/main/auto-update.js):
 
 ## Development Dependencies
 
+### Version Requirements
+- **Node.js**: ≥18.18.2 (updated from 14.0.0)
+- **Electron**: ^27.0.3 (updated from ^11.5.0)
+- **NPM**: Latest compatible with Node.js version
+
 ### Build Tools
 - `electron-builder` - Multi-platform building
-- `sass` - CSS preprocessing
+- `sass` - CSS preprocessing (with modern color functions)
 - `electron` - Runtime framework
 
 ### Code Quality
@@ -138,7 +143,7 @@ Managed by [src/main/auto-update.js](mdc:src/main/auto-update.js):
 - `madge` - Circular dependency detection
 
 ### Platform Support
-- `iohook` - Global input hooks
+- `uiohook-napi` - Global input hooks (N-API based, replaces iohook)
 - `electron-preferences` - Settings UI
 - `electron-updater` - Auto-update system
 
