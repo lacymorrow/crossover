@@ -7,12 +7,13 @@ const windows = require( './windows.js' )
 const accessibility = require( './accessibility.js' )
 
 // Keep track of registered shortcuts to remove them later
-const registeredShortcuts = [];
+const registeredShortcuts = []
 
 const unregisterIOHook = () => {
+
 	// Reset any changes to the crosshair
-	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100;
-	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 );
+	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
 	// If smaller/tilted; move to actual size
 	set.rendererProperties( {
@@ -20,50 +21,71 @@ const unregisterIOHook = () => {
 		'--crosshair-width': `${oldCrosshairSize}px`,
 		'--crosshair-height': `${oldCrosshairSize}px`,
 		'--tilt-angle': '0deg',
-	}, windows.win );
+	}, windows.win )
 
 	// Reset any changes to the prefs
-	preferences.value( 'hidden.tilted', false );
-	preferences.value( 'hidden.ADShidden', false );
-	preferences.value( 'hidden.ADSed', false );
+	preferences.value( 'hidden.tilted', false )
+	preferences.value( 'hidden.ADShidden', false )
+	preferences.value( 'hidden.ADSed', false )
 
 	// Stop and remove all listeners
-	uIOhook.stop();
+	uIOhook.stop()
 	registeredShortcuts.forEach( ( { event, listener } ) => {
-		uIOhook.off( event, listener );
-	} );
-	registeredShortcuts.length = 0; // Clear the array
-};
+
+		uIOhook.off( event, listener )
+
+	} )
+	registeredShortcuts.length = 0 // Clear the array
+
+}
 
 const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
-	const pressed = new Set();
-	const keyCodes = keys.map( key => UiohookKey[key] || key );
+
+	const pressed = new Set()
+	const keyCodes = keys.map( key => UiohookKey[key] || key )
 
 	const keyDownListener = e => {
+
 		if ( keyCodes.includes( e.keycode ) ) {
-			pressed.add( e.keycode );
+
+			pressed.add( e.keycode )
 			if ( pressed.size === keyCodes.length ) {
-				keyDownCallback( e );
+
+				keyDownCallback( e )
+
 			}
+
 		}
-	};
-	uIOhook.on( 'keydown', keyDownListener );
-	registeredShortcuts.push( { event: 'keydown', listener: keyDownListener } );
+
+	}
+
+	uIOhook.on( 'keydown', keyDownListener )
+	registeredShortcuts.push( { event: 'keydown', listener: keyDownListener } )
 
 	if ( keyUpCallback ) {
-		const keyUpListener = e => {
-			if ( keyCodes.includes( e.keycode ) ) {
-				if ( pressed.size === keyCodes.length ) {
-					keyUpCallback( e );
-				}
-				pressed.delete( e.keycode );
-			}
-		};
-		uIOhook.on( 'keyup', keyUpListener );
-		registeredShortcuts.push( { event: 'keyup', listener: keyUpListener } );
-	}
-};
 
+		const keyUpListener = e => {
+
+			if ( keyCodes.includes( e.keycode ) ) {
+
+				if ( pressed.size === keyCodes.length ) {
+
+					keyUpCallback( e )
+
+				}
+
+				pressed.delete( e.keycode )
+
+			}
+
+		}
+
+		uIOhook.on( 'keyup', keyUpListener )
+		registeredShortcuts.push( { event: 'keyup', listener: keyUpListener } )
+
+	}
+
+}
 
 const followMouse = async () => {
 
@@ -80,6 +102,7 @@ const followMouse = async () => {
 		if ( !granted ) {
 
 			log.info( 'Mouse follow disabled - accessibility permissions not granted' )
+
 			return
 
 		}
@@ -126,6 +149,7 @@ const hideOnMouse = async () => {
 
 		log.warn( 'Hide on mouse requires accessibility permissions' )
 		accessibility.showAccessibilityDisabledNotification()
+
 		return
 
 	}
@@ -137,38 +161,64 @@ const hideOnMouse = async () => {
 	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) )
 
 	if ( hideOnMouseToggle ) {
+
 		const listener = event => {
-			const hidden = preferences.value( 'hidden.ADShidden' );
+
+			const hidden = preferences.value( 'hidden.ADShidden' )
 			if ( event.button === mouseButton ) {
+
 				if ( hidden ) {
-					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win );
+
+					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+
 				} else {
-					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win );
+
+					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+
 				}
-				preferences.value( 'hidden.ADShidden', !hidden );
+
+				preferences.value( 'hidden.ADShidden', !hidden )
+
 			}
-		};
-		uIOhook.on( 'mousedown', listener );
-		registeredShortcuts.push( { event: 'mousedown', listener } );
+
+		}
+
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
+
 	} else {
+
 		const mouseDownListener = event => {
+
 			if ( event.button === mouseButton ) {
-				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win );
+
+				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+
 			}
-		};
-		uIOhook.on( 'mousedown', mouseDownListener );
-		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } );
+
+		}
+
+		uIOhook.on( 'mousedown', mouseDownListener )
+		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } )
 
 		const mouseUpListener = event => {
+
 			if ( event.button === mouseButton ) {
-				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win );
+
+				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+
 			}
-		};
-		uIOhook.on( 'mouseup', mouseUpListener );
-		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } );
+
+		}
+
+		uIOhook.on( 'mouseup', mouseUpListener )
+		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } )
+
 	}
-	uIOhook.start();
-};
+
+	uIOhook.start()
+
+}
 
 const hideOnKey = async () => {
 
@@ -177,6 +227,7 @@ const hideOnKey = async () => {
 
 		log.warn( 'Hide on key requires accessibility permissions' )
 		accessibility.showAccessibilityDisabledNotification()
+
 		return
 
 	}
@@ -189,7 +240,7 @@ const hideOnKey = async () => {
 		registerShortcut(
 			[ isEnabled ],
 			() => windows.hideWindow(),
-			() => windows.showWindow()
+			() => windows.showWindow(),
 		)
 		uIOhook.start()
 
@@ -198,12 +249,18 @@ const hideOnKey = async () => {
 }
 
 const tiltCrosshair = angle => {
+
 	if ( angle && windows.win ) {
-		set.rendererProperties( { '--tilt-angle': `${angle}deg` }, windows.win );
+
+		set.rendererProperties( { '--tilt-angle': `${angle}deg` }, windows.win )
+
 	} else {
-		set.rendererProperties( { '--tilt-angle': '0deg' }, windows.win );
+
+		set.rendererProperties( { '--tilt-angle': '0deg' }, windows.win )
+
 	}
-};
+
+}
 
 const tilt = async () => {
 
@@ -212,6 +269,7 @@ const tilt = async () => {
 
 		log.warn( 'Tilt controls require accessibility permissions' )
 		accessibility.showAccessibilityDisabledNotification()
+
 		return
 
 	}
@@ -224,47 +282,74 @@ const tilt = async () => {
 	log.info( 'Setting: Tilt' )
 
 	if ( UiohookKey[tiltLeft] ) {
+
 		if ( tiltToggle ) {
+
 			registerShortcut( [ tiltLeft ], () => {
-				const tilted = preferences.value( 'hidden.tilted' );
+
+				const tilted = preferences.value( 'hidden.tilted' )
 				if ( tilted ) {
-					tiltCrosshair( 0 );
+
+					tiltCrosshair( 0 )
+
 				} else {
-					tiltCrosshair( tiltAngle * -1 );
+
+					tiltCrosshair( tiltAngle * -1 )
+
 				}
-				preferences.value( 'hidden.tilted', !tilted );
-			} );
+
+				preferences.value( 'hidden.tilted', !tilted )
+
+			} )
+
 		} else {
+
 			registerShortcut(
 				[ tiltLeft ],
 				() => tiltCrosshair( tiltAngle * -1 ),
-				() => tiltCrosshair( 0 )
-			);
+				() => tiltCrosshair( 0 ),
+			)
+
 		}
+
 	}
 
 	if ( UiohookKey[tiltRight] ) {
+
 		if ( tiltToggle ) {
+
 			registerShortcut( [ tiltRight ], () => {
-				const tilted = preferences.value( 'hidden.tilted' );
+
+				const tilted = preferences.value( 'hidden.tilted' )
 				if ( tilted ) {
-					tiltCrosshair( 0 );
+
+					tiltCrosshair( 0 )
+
 				} else {
-					tiltCrosshair( tiltAngle );
+
+					tiltCrosshair( tiltAngle )
+
 				}
-				preferences.value( 'hidden.tilted', !tilted );
-			} );
+
+				preferences.value( 'hidden.tilted', !tilted )
+
+			} )
+
 		} else {
+
 			registerShortcut(
 				[ tiltRight ],
 				() => tiltCrosshair( tiltAngle ),
-				() => tiltCrosshair( 0 )
-			);
-		}
-	}
-	uIOhook.start();
-};
+				() => tiltCrosshair( 0 ),
+			)
 
+		}
+
+	}
+
+	uIOhook.start()
+
+}
 
 const resizeOnADS = async () => {
 
@@ -273,6 +358,7 @@ const resizeOnADS = async () => {
 
 		log.warn( 'ADS resize requires accessibility permissions' )
 		accessibility.showAccessibilityDisabledNotification()
+
 		return
 
 	}
@@ -287,51 +373,77 @@ const resizeOnADS = async () => {
 	log.info( 'Setting: ADS Resize' )
 
 	if ( adsToggle ) {
+
 		const listener = event => {
+
 			if ( event.button === Number.parseInt( ads, 10 ) ) {
-				const adsed = preferences.value( 'hidden.ADSed' );
+
+				const adsed = preferences.value( 'hidden.ADSed' )
 				if ( adsed ) {
+
 					set.rendererProperties( {
 						'--crosshair-width': `${oldCrosshairSize}px`,
 						'--crosshair-height': `${oldCrosshairSize}px`,
-					}, windows.win );
+					}, windows.win )
+
 				} else {
+
 					set.rendererProperties( {
 						'--crosshair-width': `${newCrosshairSize}px`,
 						'--crosshair-height': `${newCrosshairSize}px`,
-					}, windows.win );
+					}, windows.win )
+
 				}
-				preferences.value( 'hidden.ADSed', !adsed );
+
+				preferences.value( 'hidden.ADSed', !adsed )
+
 			}
-		};
-		uIOhook.on( 'mousedown', listener );
-		registeredShortcuts.push( { event: 'mousedown', listener } );
+
+		}
+
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
+
 	} else {
+
 		const mouseDownListener = event => {
+
 			if ( event.button === Number.parseInt( ads, 10 ) ) {
+
 				set.rendererProperties( {
 					'--crosshair-width': `${newCrosshairSize}px`,
 					'--crosshair-height': `${newCrosshairSize}px`,
-				}, windows.win );
+				}, windows.win )
+
 			}
-		};
-		uIOhook.on( 'mousedown', mouseDownListener );
-		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } );
+
+		}
+
+		uIOhook.on( 'mousedown', mouseDownListener )
+		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } )
 
 		const mouseUpListener = event => {
+
 			if ( event.button === Number.parseInt( ads, 10 ) ) {
+
 				set.rendererProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,
 					'--crosshair-height': `${oldCrosshairSize}px`,
 					'--crosshair-opacity': opacity.toString(),
-				}, windows.win );
+				}, windows.win )
+
 			}
-		};
-		uIOhook.on( 'mouseup', mouseUpListener );
-		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } );
+
+		}
+
+		uIOhook.on( 'mouseup', mouseUpListener )
+		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } )
+
 	}
-	uIOhook.start();
-};
+
+	uIOhook.start()
+
+}
 
 const iohook = {
 	unregisterIOHook,
@@ -340,6 +452,6 @@ const iohook = {
 	hideOnKey,
 	tilt,
 	resizeOnADS,
-};
+}
 
-module.exports = iohook;
+module.exports = iohook
