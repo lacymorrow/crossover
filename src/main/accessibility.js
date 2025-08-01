@@ -65,7 +65,7 @@ const requestAccessibilityPermissions = async () => {
 		}
 
 		// Create a promise to handle the permission request flow
-		accessibilityCheckPromise = new Promise( resolve => {
+		accessibilityCheckPromise = new Promise( ( resolve, reject ) => {
 
 			// Wrap the async flow in an IIFE so we can use await while
 			// keeping the Promise executor itself synchronous (required
@@ -105,25 +105,33 @@ const requestAccessibilityPermissions = async () => {
 					// Show follow-up dialog
 					setTimeout( async () => {
 
-						const followUpResult = await dialog.showMessageBox( {
-							type: 'question',
-							title: 'Restart Required',
-							message: 'After granting accessibility permissions in System Preferences, CrossOver needs to restart.',
-							detail: 'Have you granted accessibility permissions to CrossOver?',
-							buttons: [ 'Restart Now', 'I\'ll Restart Later' ],
-							defaultId: 0,
-						} )
+						try {
 
-						if ( followUpResult.response === 0 ) {
+							const followUpResult = await dialog.showMessageBox( {
+								type: 'question',
+								title: 'Restart Required',
+								message: 'After granting accessibility permissions in System Preferences, CrossOver needs to restart.',
+								detail: 'Have you granted accessibility permissions to CrossOver?',
+								buttons: [ 'Restart Now', 'I\'ll Restart Later' ],
+								defaultId: 0,
+							} )
 
-							app.relaunch()
-							app.quit()
+							if ( followUpResult.response === 0 ) {
 
-						} else {
+								app.relaunch()
+								app.quit()
 
-							// Save a flag to check permissions on next startup
-							preferences.value( 'hidden.needsAccessibilityCheck', true )
-							resolve( false )
+							} else {
+
+								// Save a flag to check permissions on next startup
+								preferences.value( 'hidden.needsAccessibilityCheck', true )
+								resolve( false )
+
+							}
+
+						} catch ( error ) {
+
+							reject( error )
 
 						}
 
@@ -146,7 +154,7 @@ const requestAccessibilityPermissions = async () => {
 
 				}
 
-			} )()
+			} )().catch( reject )
 
 		} )
 
