@@ -12,7 +12,10 @@ const registeredShortcuts = []
 const unregisterIOHook = () => {
 
 	// Reset any changes to the crosshair
-	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
+	const opacity = (() => {
+	  const v = Number.parseInt(preferences.value('crosshair.opacity'), 10)
+	  return Number.isFinite(v) ? v / 100 : 1         // default to fully opaque
+	})()
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
 	// If smaller/tilted; move to actual size
