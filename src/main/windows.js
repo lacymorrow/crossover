@@ -49,13 +49,13 @@ async function each( w, fn, ...args ) {
 
 	}
 
-	w = w || this.windows || windows
+	w = w || windows
 
-	fn.call( this, w.win, ...args )
+	fn.call( w, w.win, ...args )
 
 	for ( const currentWindow of w.shadowWindows ) {
 
-		fn.call( this, currentWindow, ...args )
+		fn.call( w, currentWindow, ...args )
 
 	}
 

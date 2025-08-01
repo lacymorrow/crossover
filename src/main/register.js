@@ -132,22 +132,26 @@ const events = () => {
 	} )
 
 	// Reopen settings/chooser if killed
-	windows.chooserWindow.on( 'close', async () => {
+	if ( windows.chooserWindow ) {
 
-		windows.showHideWindow()
-		await windows.createChooser()
-		events()
+		windows.chooserWindow.on( 'close', async () => {
 
-	} )
-
-	// Close windows if clicked away (mac only)
-	if ( !is.development ) {
-
-		windows.chooserWindow.on( 'blur', () => {
-
-			windows.hideChooserWindow( { focus: true } )
+			windows.showHideWindow()
+			await windows.createChooser()
+			events()
 
 		} )
+
+		// Close windows if clicked away (mac only)
+		if ( !is.development ) {
+
+			windows.chooserWindow.on( 'blur', () => {
+
+				windows.hideChooserWindow( { focus: true } )
+
+			} )
+
+		}
 
 	}
 

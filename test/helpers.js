@@ -11,7 +11,7 @@ const delays = {
 	long: 5000,
 }
 
- 
+
 const wait = ms => new Promise( r => setTimeout( r, ms ) )
 
 const startApp = async () => {
@@ -86,8 +86,8 @@ const focusedMinimizedVisible = async ( { electronApp, windowName } ) => electro
 	let win = windows.find( w => w.title === windowName )
 	if ( !win ) {
 
-		console.warn( `Window "${windowName}" not found, using "${win.title}" instead` )
 		win = windows[0]
+		console.warn( `Window "${windowName}" not found, using "${win?.title || 'unknown'}" instead` )
 
 	}
 
@@ -169,7 +169,7 @@ function visualMouseCode() {
 
 		for ( let i = 0; i < 5; i++ ) {
 
-			 
+
 			box.classList.toggle( 'button-' + i, buttons & ( 1 << i ) )
 
 		}

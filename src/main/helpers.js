@@ -11,16 +11,13 @@ const getCrosshairImages = async () => {
 
 }
 
-const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
+const getImages = async ( directory, level ) => {
 
 	const crosshairs = []
-	fs.promises.readdir( directory, async ( error, dir ) => {
 
-		if ( error ) {
+	try {
 
-			reject( new Error( `Promise Errored: ${error}`, directory ) )
-
-		}
+		const dir = await fs.promises.readdir( directory )
 
 		for ( let i = 0, filepath;
 			( filepath = dir[i] ); i++ ) {
@@ -29,7 +26,7 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 			if ( stat.isDirectory() && level > 0 ) {
 
-				 
+
 				const next = await getImages( path.join( directory, filepath ), level - 1 )
 				crosshairs.push( next )
 
@@ -42,11 +39,15 @@ const getImages = ( directory, level ) => new Promise( ( resolve, reject ) => {
 
 		}
 
-		resolve( crosshairs )
+		return crosshairs
 
-	} )
+	} catch ( error ) {
 
-} )
+		throw new Error( `Promise Errored: ${error}`, directory )
+
+	}
+
+}
 
 const helpers = {
 	getImages,

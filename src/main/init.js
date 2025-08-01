@@ -68,6 +68,7 @@ const init = async options => {
 		// Show or hide window
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
+		ipcMain.removeAllListeners( 'init' )
 		ipcMain.once( 'init', () => {
 
 			log.info( 'INIT TRIGGERED' )

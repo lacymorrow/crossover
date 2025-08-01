@@ -1,4 +1,4 @@
- 
+
 
 const { DEBOUNCE_DELAY } = require( './config' )
 
@@ -25,7 +25,7 @@ const debounce = ( func, delay = DEBOUNCE_DELAY ) => {
 }
 
 // checkboxTrue( preferences.value( 'actions.followMouse' ), 'followMouse' )
-const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value.includes( key ) )
+const checkboxTrue = ( value, key ) => ( typeof value === 'object' && value !== null && Array.isArray( value ) && value.includes( key ) )
 
 /**
  * Check for libappindicator1 support before creating tray icon
@@ -53,7 +53,7 @@ const checkLinuxTraySupport = cb => {
 
 }
 
- 
+
 /**
  * Recursively Object.freeze() on objects and functions
  * @see https://github.com/substack/deep-freeze
@@ -109,7 +109,7 @@ const hexToRgbA = ( hex, alpha ) => {
 
 }
 
- 
+
 
 module.exports = {
 	checkboxTrue,
