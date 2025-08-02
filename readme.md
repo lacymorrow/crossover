@@ -103,7 +103,7 @@ Or download from the Snap Store
 	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Green.png">
 	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Chevron/Amethyst.png">
 	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/moa-delta.png">
-	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney/crosshair052.png">
+	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney-SVG/crosshair052.svg">
 	<img width="120" height="120" style="display:inline-block; width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png">
 </p>
 
@@ -275,7 +275,7 @@ To reset all settings and binds to default, press <kbd>Control</kbd>-<kbd>Alt</k
 	<br />
 	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/boone-crockett-illuminated.png">
 	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Purple.png">
-	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney/crosshair035.png">
+	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Kenney-SVG/crosshair035.svg">
 	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Special%20Requests/Monkeybolo.png">
 	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png">
 	<img width="120" height="120" style="width:120px; height:120px;" src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/leupold-dot.png">
