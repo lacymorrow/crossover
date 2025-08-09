@@ -86,14 +86,22 @@ const focusedMinimizedVisible = async ( { electronApp, windowName } ) => electro
 	let win = windows.find( w => w.title === windowName )
 	if ( !win ) {
 
-		console.warn( `Window "${windowName}" not found, using "${win.title}" instead` )
+		// Fallback to the first available window if the requested one doesn't exist yet
 		win = windows[0]
+
+		if ( !win ) {
+
+			return { focused: false, minimized: false, visible: false }
+
+		}
+
+		console.warn( `Window "${windowName}" not found, using first window instead` )
 
 	}
 
-	win?.focus()
+	win.focus()
 
-	return { focused: win?.isFocused(), minimized: win?.isMinimized(), visible: win?.isVisible() }
+	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
 
 }, windowName )
 

@@ -181,8 +181,6 @@ const ready = async () => {
 
 	console.timeEnd( 'init' )
 
-	console.log( menuBarHeight() )
-
 }
 
 module.exports = async () => {
