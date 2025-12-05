@@ -15,7 +15,7 @@
 #### Get it on the Windows App Store and Linux Snap Store
 
 <div>
-<a href="ms-windows-store://pdp/?ProductId=9MTD5ZLN7NL1&mode=mini" style="">
+<a href="https://apps.microsoft.com/detail/9mtd5zln7nl1?hl=en-US&gl=US" style="">
    <img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Download CrossOver for Windows" style="height:60px;" />
 </a>
 <a href="https://snapcraft.io/crossover">
