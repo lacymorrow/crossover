@@ -332,12 +332,16 @@ const hideChooserWindow = ( { focus } = {} ) => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-	if ( windows.preferencesWindow && windows.preferencesWindow.isVisible() ) {
+	if ( windows.preferencesWindow && !windows.preferencesWindow.isDestroyed() && windows.preferencesWindow.isVisible() ) {
 
 		preferences.value( 'hidden.showSettings', false )
 		windows.preferencesWindow.close()
 		windows.preferencesWindow = null
 		windows.win.focus()
+
+	} else {
+
+		windows.preferencesWindow = null
 
 	}
 
