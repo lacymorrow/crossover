@@ -40,6 +40,7 @@ const init = async options => {
 	// Reset some preferences for app startup
 	preferences.value( 'hidden.showSettings', false )
 	preferences.value( 'hidden.tilted', false )
+	preferences.value( 'hidden.reticleHidden', false )
 
 	// Start unlocked?
 	if ( checkboxTrue( preferences.value( 'app.startUnlocked' ), 'startUnlocked' ) ) {
