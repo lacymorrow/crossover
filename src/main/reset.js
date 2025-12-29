@@ -69,11 +69,19 @@ const preference = key => {
 // Temp until implemented in electron-preferences
 const allPreferences = () => {
 
-	// defaults are all different: defaults.crosshair.positionX, Preferences.defaults.crosshair.positionX, Preferences.getDefaults().crosshair.positionX
+	if ( typeof preferences.resetToDefaults === 'function' ) {
 
-	for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
+		preferences.resetToDefaults()
 
-		preferences.value( key, value )
+	} else {
+
+		// defaults are all different: defaults.crosshair.positionX, Preferences.defaults.crosshair.positionX, Preferences.getDefaults().crosshair.positionX
+
+		for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
+
+			preferences.value( key, value )
+
+		}
 
 	}
 

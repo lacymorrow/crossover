@@ -33,12 +33,14 @@ const position = bounds => {
 	}
 
 	log.info( `Save position: ${x}, ${y}` )
-	preferences.value( 'crosshair.positionX', x )
-	preferences.value( 'crosshair.positionY', y )
+	preferences.value( [
+		{ key: 'crosshair.positionX', value: x },
+		{ key: 'crosshair.positionY', value: y },
+	] )
 
 }
 
-const positionDebounced = debounce( bounds => position( bounds ), config.DEFAULT_DEBOUNCE || 200 )
+const positionDebounced = debounce( bounds => position( bounds ), config.DEBOUNCE_DELAY || 1000 )
 
 const save = { crosshair, position: positionDebounced }
 
