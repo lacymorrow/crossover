@@ -563,7 +563,7 @@ const openSettingsWindow = async () => {
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
 		// Todo: remove this check when updating to electron 12, this is to allow 11/12 compatibility
-		if ( windows.preferencesWindow.webContents.setWindowOpenHandler ) {
+		if ( typeof windows.preferencesWindow.webContents.setWindowOpenHandler === 'function' ) {
 
 			// Electron 12+
 			windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
