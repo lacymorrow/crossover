@@ -1,10 +1,69 @@
-const { uIOhook, UiohookKey } = require( 'uiohook-napi' )
+const log = require( './log.js' )
+const notification = require( './notification' )
 const { checkboxTrue } = require( '../config/utils.js' )
 const preferences = require( './preferences' ).init()
-const log = require( './log.js' )
 const set = require( './set.js' )
 const windows = require( './windows.js' )
 const accessibility = require( './accessibility.js' )
+
+let uIOhook
+let UiohookKey = {}
+let iohookLoadError = null
+
+try {
+
+	( { uIOhook, UiohookKey } = require( 'uiohook-napi' ) )
+
+} catch ( error ) {
+
+	iohookLoadError = error
+	log.error( 'Failed to load uiohook-napi native module', error )
+
+}
+
+const getIOHookHint = () => {
+
+	if ( process.platform === 'linux' ) {
+
+		return 'Install the libxkbcommon-x11-0 package (sudo apt install libxkbcommon-x11-0) and restart CrossOver.'
+
+	}
+
+	if ( process.platform === 'win32' ) {
+
+		return 'Repair or reinstall CrossOver to restore the input hook.'
+
+	}
+
+	return 'Reinstall CrossOver or run npm rebuild uiohook-napi.'
+
+}
+
+let iohookNotificationShown = false
+
+const ensureIOHookAvailable = action => {
+
+	if ( uIOhook ) {
+
+		return true
+
+	}
+
+	log.error( `Skipping "${action}" because the input hook failed to load.`, iohookLoadError )
+
+	if ( !iohookNotificationShown ) {
+
+		notification( {
+			title: 'Input controls unavailable',
+			body: `CrossOver could not load the system hook module required for ${action}. ${getIOHookHint()}`,
+		} )
+		iohookNotificationShown = true
+
+	}
+
+	return false
+
+}
 
 // Keep track of registered shortcuts to remove them later
 const registeredShortcuts = []
@@ -35,17 +94,28 @@ const unregisterIOHook = () => {
 	preferences.value( 'hidden.ADSed', false )
 
 	// Stop and remove all listeners
-	uIOhook.stop()
-	registeredShortcuts.forEach( ( { event, listener } ) => {
+	if ( uIOhook ) {
 
-		uIOhook.off( event, listener )
+		uIOhook.stop()
+		registeredShortcuts.forEach( ( { event, listener } ) => {
 
-	} )
+			uIOhook.off( event, listener )
+
+		} )
+
+	}
+
 	registeredShortcuts.length = 0 // Clear the array
 
 }
 
 const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
+
+	if ( !ensureIOHookAvailable( 'registering shortcuts' ) ) {
+
+		return
+
+	}
 
 	const pressed = new Set()
 	const keyCodes = keys.map( key => UiohookKey[key] || key )
@@ -94,6 +164,12 @@ const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
 }
 
 const followMouse = async () => {
+
+	if ( !ensureIOHookAvailable( 'Follow Mouse' ) ) {
+
+		return
+
+	}
 
 	// Check accessibility permissions before starting
 	if ( !accessibility.checkAccessibilityPermissions() ) {
@@ -149,6 +225,12 @@ const followMouse = async () => {
 }
 
 const hideOnMouse = async () => {
+
+	if ( !ensureIOHookAvailable( 'Hide on Mouse' ) ) {
+
+		return
+
+	}
 
 	// Check accessibility permissions before starting
 	if ( !accessibility.checkAccessibilityPermissions() ) {
@@ -228,6 +310,12 @@ const hideOnMouse = async () => {
 
 const hideOnKey = async () => {
 
+	if ( !ensureIOHookAvailable( 'Hide on Key' ) ) {
+
+		return
+
+	}
+
 	// Check accessibility permissions before starting
 	if ( !accessibility.checkAccessibilityPermissions() ) {
 
@@ -269,6 +357,12 @@ const tiltCrosshair = angle => {
 }
 
 const tilt = async () => {
+
+	if ( !ensureIOHookAvailable( 'Tilt controls' ) ) {
+
+		return
+
+	}
 
 	// Check accessibility permissions before starting
 	if ( !accessibility.checkAccessibilityPermissions() ) {
@@ -358,6 +452,12 @@ const tilt = async () => {
 }
 
 const resizeOnADS = async () => {
+
+	if ( !ensureIOHookAvailable( 'ADS resize' ) ) {
+
+		return
+
+	}
 
 	// Check accessibility permissions before starting
 	if ( !accessibility.checkAccessibilityPermissions() ) {

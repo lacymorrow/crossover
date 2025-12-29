@@ -184,6 +184,10 @@ _The AppImage needs to be [made executable](http://discourse.appimage.org/t/how-
 
 _Certain lightweight desktop environments may require a compositor to allow CrossOver to work correctly ([#230](https://github.com/lacymorrow/crossover/issues/230))._
 
+###### Linux dependencies
+
+Advanced actions such as lock, hide, ADS resize, and Mouse Follow rely on the system `libxkbcommon` library. Install it via your package manager (for example `sudo apt install libxkbcommon-x11-0` on Ubuntu/Pop!\_OS or `sudo dnf install libxkbcommon-x11` on Fedora) and restart CrossOver if you see `libxkbcommon-x11.so.0` errors.
+
 ###### _Further instructions for [Windows](https://www.techjunkie.com/windows-protected-your-pc-disable-smartscreen/) and [Mac](https://support.apple.com/en-us/HT202491)_
 
 <p align="center">
