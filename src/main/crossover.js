@@ -79,10 +79,33 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+H`,
 			fn() {
 
-				windows.showHideWindow()
+				if ( preferences.value( 'hidden.locked' ) ) {
+
+					windows.showHideWindow()
+
+				}
 
 			},
 		},
+
+		// Toggle Reticle
+		{
+			action: 'hideReticle',
+			keybind: `${accelerator}+S`,
+			fn() {
+
+				if ( preferences.value( 'hidden.locked' ) ) {
+
+					const hidden = !preferences.value( 'hidden.reticleHidden' )
+					preferences.value( 'hidden.reticleHidden', hidden )
+					log.info( `Reticle hidden: ${hidden}` )
+					syncSettings()
+
+				}
+
+			},
+		},
+
 		// Quit CrossOver
 		{
 			action: 'quit',
@@ -195,6 +218,12 @@ const registerKeyboardShortcuts = () => {
 
 // Allows dragging and setting options
 const lockWindow = ( lock, targetWindow = windows.win ) => {
+
+	if ( !targetWindow || targetWindow.isDestroyed() ) {
+
+		return
+
+	}
 
 	log.info( `Locked: ${lock}` )
 
@@ -370,7 +399,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 	windows.each( win => {
 
 		set.crosshair( options.crosshair?.crosshair, win )
-		set.reticle( options.crosshair?.reticle, win )
+		set.reticle( options.hidden?.reticleHidden ? 'off' : options.crosshair?.reticle, win )
 		set.rendererProperties( properties, win )
 
 	} )
@@ -437,7 +466,7 @@ const initShadowWindow = async () => {
 	}
 
 	set.crosshair( previousPreferences.crosshair?.crosshair, shadow )
-	set.reticle( previousPreferences.crosshair?.reticle, shadow )
+	set.reticle( preferences.value( 'hidden.reticleHidden' ) ? 'off' : previousPreferences.crosshair?.reticle, shadow )
 	set.rendererProperties( properties, shadow )
 
 	if ( preferences.value( 'crosshair.positionX' ) > -1 ) {
