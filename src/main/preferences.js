@@ -391,7 +391,7 @@ const preferencesConfig = {
 								modifierRequired: true,
 							},
 							{
-								label: 'Show/Hide Crosshair',
+								label: 'Show/Hide CrossOver',
 								key: 'hide',
 								type: 'accelerator',
 								help: 'Hide CrossOver from the screen.',
