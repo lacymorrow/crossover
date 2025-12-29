@@ -72,6 +72,7 @@ const getDefaults = () => ( {
 		nextWindow: 'Control+Shift+Alt+O',
 		about: 'Control+Shift+Alt+A',
 		quit: 'Control+Shift+Alt+Q',
+		hideReticle: 'Control+Shift+Alt+S',
 
 	},
 	hidden: {
@@ -81,6 +82,7 @@ const getDefaults = () => ( {
 		tilted: false,
 		ADSed: false,
 		ADShidden: false,
+		reticleHidden: false,
 	},
 } )
 
@@ -389,10 +391,17 @@ const preferencesConfig = {
 								modifierRequired: true,
 							},
 							{
-								label: 'Show/Hide Crosshair',
+								label: 'Show/Hide CrossOver',
 								key: 'hide',
 								type: 'accelerator',
 								help: 'Hide CrossOver from the screen.',
+								modifierRequired: true,
+							},
+							{
+								label: 'Show/Hide Reticle',
+								key: 'hideReticle',
+								type: 'accelerator',
+								help: 'Toggle the center reticle visibility.',
 								modifierRequired: true,
 							},
 							{
