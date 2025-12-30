@@ -55,6 +55,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "ea:9f:b9:27:c8:2b:8c:fb:f8:63:dc:a8:33:a7:55:62"
+            - "SHA256:7RZbZC9iBycbPRfK/ENv1iu1YsvRrUKFvRWCWm/3ojk"
       - run:
           name: ls
           command: ls
