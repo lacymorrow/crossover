@@ -47,7 +47,7 @@ jobs:
           destination: upload
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-all:
+#   build-all:
     macos:
       xcode: "15.4.0"
     resource_class: m2pro.medium
