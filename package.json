@@ -63,8 +63,8 @@
     "build": "electron-builder",
     "build:all": "electron-builder -wl --ia32 --x64",
     "build:mac": "electron-builder --macos --arm64 --x64",
-    "build:linux": "electron-builder --linux --ia32 --x64",
-    "build:win": "electron-builder --win --ia32 --x64",
+    "build:linux": "electron-builder --linux --x64",
+    "build:win": "electron-builder --win --x64",
     "build:win:appx": "electron-builder --win appx",
     "build:win:exe": "electron-builder -c electron-builder-windows.yaml --win",
     "build:wl": "electron-builder -wl --ia32 --x64",
@@ -118,6 +118,7 @@
     "releaseDraft": true
   },
   "build": {
+    "npmRebuild": false,
     "appId": "com.lacymorrow.crossover",
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "copyright": "Copyright © Lacy Morrow",

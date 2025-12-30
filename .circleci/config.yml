@@ -81,13 +81,12 @@ jobs:
           command: npm i  --openssl-fips=''
       - run:
           name: Install Dependencies
-          command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
-      # - run:
-      #     name: Run tests
-      #     command: yarn test || echo "There were test failures, this build may be sour."
+          command: |
+            softwareupdate --install-rosetta --agree-to-license || true
+            HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm squashfs
       - run:
           name: Build and Publish - linux
-          command: npm run build:linux --openssl-fips=""
+          command: export ELECTRON_BUILDER_SKIP_REBUILD=true && npm run build:linux --openssl-fips=""
       - run:
           name: Build and Publish - windows
           command: npm run build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish-never' ) --openssl-fips=""
