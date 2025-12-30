@@ -268,9 +268,9 @@ body {
 	transition: transform .1s ease-in-out;
 
 	svg {
-		fill: var(--svg-fill-color);
-		stroke: var(--svg-stroke-color);
-		stroke-width: var(--svg-stroke-width);
+		fill: var(--svg-fill-color) !important;
+		stroke: var(--svg-stroke-color) !important;
+		stroke-width: var(--svg-stroke-width) !important;
 	}
 
 	.reticle {

@@ -362,7 +362,7 @@ const syncSettings = ( options = preferences.preferences ) => {
 	}
 
 	// SVG customizations enabled
-	if ( !checkboxTrue( options.crosshair.svgCustomization, 'svgCustomization' ) ) {
+	if ( checkboxTrue( options.crosshair.svgCustomization, 'svgCustomization' ) ) {
 
 		properties['--svg-fill-color'] = options.crosshair.fillColor
 		properties['--svg-stroke-color'] = options.crosshair.strokeColor
@@ -457,7 +457,7 @@ const initShadowWindow = async () => {
 		'--circle-thickness': previousPreferences.crosshair?.circleThickness,
 	}
 
-	if ( !checkboxTrue( previousPreferences.crosshair?.svgCustomization, 'svgCustomization' ) ) {
+	if ( checkboxTrue( previousPreferences.crosshair?.svgCustomization, 'svgCustomization' ) ) {
 
 		properties['--svg-fill-color'] = previousPreferences.crosshair?.fillColor
 		properties['--svg-stroke-color'] = previousPreferences.crosshair?.strokeColor
@@ -562,29 +562,13 @@ const openSettingsWindow = async () => {
 		} )
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
-		// Todo: remove this check when updating to electron 12, this is to allow 11/12 compatibility
-		if ( typeof windows.preferencesWindow.webContents.setWindowOpenHandler === 'function' ) {
+		windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
 
-			// Electron 12+
-			windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
+			shell.openExternal( details.url )
 
-				shell.openExternal( details.url )
+			return { action: 'deny' }
 
-				return { action: 'deny' }
-
-			} )
-
-		} else {
-
-			// Electron 11
-			windows.preferencesWindow.webContents.on( 'new-window', ( event, url ) => {
-
-				event.preventDefault()
-				shell.openExternal( url )
-
-			} )
-
-		}
+		} )
 
 		// Track window state
 		windows.preferencesWindow.on( 'closed', () => {
@@ -598,9 +582,10 @@ const openSettingsWindow = async () => {
 		const newBounds = { x: mainBounds.x + mainBounds.width + 1, y: mainBounds.y + mainBounds.height + 1 }
 		windows.safeSetBounds( windows.preferencesWindow, newBounds )
 
+		// Keep settings on top of everything else
 		// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
-		windows.preferencesWindow.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
-		windows.preferencesWindow.setAlwaysOnTop( true, 'screen-saver' )
+		// windows.preferencesWindow.setVisibleOnAllWorkspaces( true, { visibleOnFullScreen: true } )
+		// windows.preferencesWindow.setAlwaysOnTop( true, 'screen-saver' )
 		windows.preferencesWindow.focus()
 
 		preferences.value( 'hidden.showSettings', true )

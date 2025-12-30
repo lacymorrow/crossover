@@ -6,7 +6,7 @@ const { DEFAULT_THEME, FILE_FILTERS, SETTINGS_WINDOW_DEVTOOLS, SUPPORTED_IMAGE_F
 /* Via https://github.com/tkambler/electron-preferences */
 
 const browserWindowOverrides = {
-	alwaysOnTop: true,
+	alwaysOnTop: false,
 	title: 'CrossOver Preferences',
 	// width: 600,
 	// height: 400,
