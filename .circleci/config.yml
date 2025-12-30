@@ -80,9 +80,6 @@ jobs:
           name: Install Node modules
           command: npm i  --openssl-fips=''
       - run:
-          name: Brew Clean
-          command: rm '/usr/local/lib/python3.9/site-packages/six.py'
-      - run:
           name: Install Dependencies
           command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
       # - run:
