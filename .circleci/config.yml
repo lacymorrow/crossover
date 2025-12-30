@@ -47,8 +47,10 @@ jobs:
 #           destination: upload
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-it:
-    executor: node/default
+  build-all:
+    macos:
+        xcode: "26.2.0"
+    resource_class: m4pro.medium
     steps:
       # Checkout the code as the first step.
       - checkout
@@ -144,6 +146,6 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      - build-mac
+      - build-all
     #   - build-linux
-      - build-it
+    #   - build-it
