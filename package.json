@@ -56,9 +56,9 @@
     "check:circular": "madge --circular .",
     "depcheck": "npm run check:deps && npm run check:circular",
     "release": "np --no-tests --branch release",
-    "release:snap": "snapcraft upload --release=CrossOver*.snap",
+    "release:snap": "snapcraft upload --release=stable dist/*.snap",
     "pack": "rm -f *.tgz && electron-builder --dir",
-    "sh:copyexe": "cp dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
+    "sh:moveexe": "mv dist/CrossOver-[!Portable]*.exe dist/CrossOver.exe",
     "sh:replacespaces": "find dist/ -name 'CrossOver*' -maxdepth 1 -exec bash -c ' mv \"$0\" \"${0// /-}\" ' {} \\;",
     "build": "electron-builder",
     "build:all": "electron-builder -wl --ia32 --x64",
@@ -72,11 +72,10 @@
     "build:deb": "electron-builder --linux deb",
     "build:rpm": "electron-builder --linux rpm",
     "build:snap": "electron-builder --linux snap",
-    "build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
-    "build:release:snap": "electron-builder --linux snap && npm run snap:release",
-    "build:release:windows": "npm run build:win && npm run sh:copyexe",
+    "build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:moveexe",
+    "build:release:snap": "npm run build:snap && npm run release:snap",
+    "build:release:windows": "npm run build:win && npm run sh:moveexe",
     "snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
-    "snap:release": "snapcraft upload --release=stable dist/*.snap",
     "upgrade:interactive": "npm run upgrade-interactive --latest"
   },
   "dependencies": {
@@ -155,7 +154,8 @@
         "apk",
         "deb",
         "freebsd",
-        "pacman"
+        "pacman",
+        "rpm"
       ],
       "category": "Game;Shooter"
     },
