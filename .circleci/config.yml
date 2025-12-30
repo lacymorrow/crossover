@@ -139,5 +139,5 @@ workflows:
         - equal: [release, << pipeline.git.branch >>]
     jobs:
       # - build
-      - build-linux
+    #   - build-linux
       - build-it
