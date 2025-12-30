@@ -9,45 +9,46 @@ orbs:
   node: circleci/node@5.1.0
 
 jobs:
-  build-linux: # this can be any name you choose
-    executor: node/default # use the default executor defined within the orb
-    steps:
-      - checkout
-      - run:
-          command: pwd
-      - node/install:
-          install-yarn: true
-          node-version: "14.21.3"
-      - run:
-          command: node --version
-      - run:
-          command: npm i --openssl-fips=''
-      # - node/install-packages:
-      #     pkg-manager: npm
-      - run:
-          command: sudo apt-get update
-          name: Update apt-get
-      - run:
-          command: sudo apt-get install rpm
-          name: Install Dependencies
-      - run:
-          command: npm run build:linux --openssl-fips=""
-          name: Build app
-      - run:
-          name: Build and Publish - snap
-          command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
+#   build-linux: # this can be any name you choose
+#     executor: node/default # use the default executor defined within the orb
+#     steps:
+#       - checkout
+#       - run:
+#           command: pwd
+#       - node/install:
+#           install-yarn: true
+#           node-version: "14.21.3"
+#       - run:
+#           command: node --version
+#       - run:
+#           command: npm i --openssl-fips=''
+#       # - node/install-packages:
+#       #     pkg-manager: npm
+#       - run:
+#           command: sudo apt-get update
+#           name: Update apt-get
+#       - run:
+#           command: sudo apt-get install rpm
+#           name: Install Dependencies
+#       - run:
+#           command: npm run build:linux --openssl-fips=""
+#           name: Build app
+#       - run:
+#           name: Build and Publish - snap
+#           command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
 
-      - run:
-          name: Create Artifacts
-          command: |
-            mkdir -p upload
-            cp dist/CrossOver* upload
-      - store_artifacts:
-          path: upload
-          destination: upload
+#       - run:
+#           name: Create Artifacts
+#           command: |
+#             mkdir -p upload
+#             cp dist/CrossOver* upload
+#       - store_artifacts:
+#           path: upload
+#           destination: upload
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-it:
+    executor: node/default
     steps:
       # Checkout the code as the first step.
       - checkout
