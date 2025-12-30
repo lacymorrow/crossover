@@ -128,6 +128,84 @@ jobs:
 #             cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
 #       - store_artifacts:
 #           path: /Users/distiller/project/upload
+    build:
+        steps:
+        # Checkout the code as the first step.
+        - checkout
+        - add_ssh_keys:
+            fingerprints:
+                - "ea:9f:b9:27:c8:2b:8c:fb:f8:63:dc:a8:33:a7:55:62"
+        - run:
+            name: ls
+            command: ls
+        - run:
+            name: pwd
+            command: pwd
+        - node/install:
+            install-yarn: true
+            node-version: "14.21.3"
+        # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
+        # - node/install-packages:
+        #     # If you are using yarn, change the line below from "npm" to "yarn"
+        #     pkg-manager: yarn
+        - run:
+            name: Install Node modules
+            command: npm i  --openssl-fips=''
+        - run:
+            name: Brew Clean
+            command: rm '/usr/local/lib/python3.9/site-packages/six.py'
+        - run:
+            name: Install Dependencies
+            command: HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install snapcraft rpm
+        # - run:
+        #     name: Run tests
+        #     command: yarn test || echo "There were test failures, this build may be sour."
+        - run:
+            name: Build and Publish - linux
+            command: npm run build:linux --openssl-fips=""
+        - run:
+            name: Build and Publish - windows
+            command: npm run build:windows $( [ "$CIRCLE_BRANCH" != "release" ] && printf %s '--publish-never' ) --openssl-fips=""
+        # - run:
+        #     name: Create Windows EXE
+        #     command: yarn sh:copyexe
+        - run:
+            name: Build and Publish - windows CrossOver.exe
+            command: npm run build:windows:exe --openssl-fips="" || echo 'We error here since latest.yml has already been uploaded.'
+        # Snapcraft > 6 uses a different login method that requires an ENV variable: SNAPCRAFT_STORE_CREDENTIALS
+        # See https://snapcraft.io/docs/snapcraft-authentication
+        #   - run:
+        #       name: Snapcraft Login
+        #       # Generate the snap token with 'snapcraft export-login --snaps crossover --channels edge,stable -'
+        #       command: snapcraft login
+        # - run:
+        #     name: Build and Publish - snap
+        #     command: npm run build:snap $( [ "$CIRCLE_BRANCH" == "release" ] && printf %s '--publish-always' )  --openssl-fips=""
+        - run:
+            name: Build and Publish - mac
+            command: npm run build:mac --openssl-fips=""
+        - run:
+            name: ls dist
+            command: ls dist
+        - run:
+            name: Cut stable branch
+            command: |
+                rm yarn.lock package-lock.json || echo "No lock files to remove"
+                git config user.email "me@lacymorrow.com"
+                git config user.name "Lacy CI"
+                git checkout stable || git checkout -b stable
+                git pull
+                git merge ${CIRCLE_BRANCH} || echo "Not merging to stable"
+                git push --set-upstream origin stable || echo "Not pushing stable"
+
+        - run:
+            name: Create Artifacts
+            command: |
+                mkdir -p /Users/distiller/project/upload
+                cp /Users/distiller/project/dist/CrossOver* /Users/distiller/project/upload
+                cp /Users/distiller/project/dist/latest* /Users/distiller/project/upload
+        - store_artifacts:
+            path: /Users/distiller/project/upload
 
 workflows:
   # Below is the definition of your workflow.
@@ -141,5 +219,5 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      # - build-linux
-      - build-all
+      # - build
+      - build
