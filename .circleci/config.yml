@@ -52,6 +52,7 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
+
       - add_ssh_keys:
           fingerprints:
             - "SHA256:311ERxz9sAFh4w7E5tOf1NZqcTLS1DdaKMSiNaIImaU"
@@ -143,6 +144,6 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      # - build
+      - build-mac
     #   - build-linux
       - build-it
