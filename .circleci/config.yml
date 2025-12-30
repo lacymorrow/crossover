@@ -6,7 +6,7 @@ orbs:
   # The Node.js orb contains a set of prepackaged CircleCI configuration you can utilize
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@5.1.0
+  node: circleci/node@7.2.1
 
 jobs:
 #   build-linux: # this can be any name you choose
@@ -48,6 +48,7 @@ jobs:
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-all:
+
     macos:
         xcode: "26.2.0"
     resource_class: m4pro.medium
@@ -69,8 +70,8 @@ jobs:
           name: pwd
           command: pwd
       - node/install:
-          install-yarn: true
-          node-version: "14.21.3"
+        #   install-yarn: true
+          node-version: "22.16.0"
       # AT SOME POINT YARN INSTALL BROKE FOR NO REASON, TRY SWITCHING BACK TO YARN TO SEE IF IT WORKS
       # - node/install-packages:
       #     # If you are using yarn, change the line below from "npm" to "yarn"
