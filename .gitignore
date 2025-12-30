@@ -1,4 +1,4 @@
 node_modules
 dist
 src/renderer/styles/dist
-test/results/
+test/results
