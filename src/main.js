@@ -73,7 +73,6 @@ const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
 const tray = require( './main/tray.js' )
 const { appId } = require( '../package.json' )
-const { menuBarHeight } = require( 'electron-util' )
 
 const start = async () => {
 
