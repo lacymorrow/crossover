@@ -1,5 +1,5 @@
 const path = require( 'path' )
-const { app, shell, Menu } = require( 'electron' )
+const { app, dialog, shell, Menu } = require( 'electron' )
 const {
 	aboutMenuItem,
 	openUrlMenuItem,
