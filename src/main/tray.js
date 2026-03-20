@@ -47,7 +47,9 @@ const init = () => {
 		showAppMenuItem,
 		...preferencesMenuItems,
 		openCustomImageMenuItem,
+		{ type: 'separator' },
 		resetMenuItem,
+		{ type: 'separator' },
 		{ role: 'quit' },
 	] )
 	tray.instance.setToolTip( `${productName} Control` )

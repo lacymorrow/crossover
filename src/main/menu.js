@@ -1,5 +1,5 @@
 const path = require( 'path' )
-const { app, shell, Menu } = require( 'electron' )
+const { app, dialog, shell, Menu } = require( 'electron' )
 const {
 	aboutMenuItem,
 	openUrlMenuItem,
@@ -60,8 +60,19 @@ const resetMenuItem = {
 	label: 'Reset CrossOver',
 	async click() {
 
-		// Open dialog
-		reset.app()
+		const { dialog } = require('electron')
+		const { response } = await dialog.showMessageBox({
+			type: 'warning',
+			buttons: ['Cancel', 'Reset'],
+			defaultId: 0,
+			cancelId: 0,
+			title: 'Reset CrossOver',
+			message: 'Are you sure you want to reset all settings?',
+			detail: 'This will remove all customizations and restore default settings. This cannot be undone.',
+		})
+		if (response === 1) {
+			reset.app()
+		}
 
 	},
 }
