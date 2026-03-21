@@ -9,7 +9,7 @@ const {
 } = require( './util' )
 
 const errorHandling = require( './error-handling' )
-const dialog = require( './dialog' )
+const customDialog = require( './dialog' )
 const crossover = require( './crossover' )
 const reset = require( './reset' )
 const { productName } = require( '../../package.json' )
@@ -51,7 +51,7 @@ const openCustomImageMenuItem = {
 	async click() {
 
 		// Open dialog
-		dialog.openCustomImageDialog()
+		customDialog.openCustomImageDialog()
 
 	},
 }

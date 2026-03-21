@@ -55,6 +55,7 @@ const getDefaults = () => ( {
 		sounds: [ 'sounds' ],
 		gpu: [ 'gpu' ],
 		startUnlocked: [ 'startUnlocked' ],
+		startLocked: [],
 		boot: [],
 		appSize: 'normal',
 	},
@@ -522,6 +523,13 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'Unlock and show CrossOver window on startup', value: 'startUnlocked' } ],
 								help: 'This will always unlock CrossOver and show the app window when the app starts. Uncheck to allow CrossOver to start locked.',
+							},
+							{
+								label: 'Start Locked',
+								key: 'startLocked',
+								type: 'checkbox',
+								options: [ { label: 'Always start CrossOver locked in place', value: 'startLocked' } ],
+								help: 'CrossOver will launch directly into locked mode. Overrides "Show Crosshair Windows on App Start".',
 							},
 							{
 								label: 'Notifications',

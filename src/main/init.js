@@ -49,6 +49,11 @@ const init = async options => {
 
 	}
 
+	// Start locked? (takes priority over startUnlocked)
+	if ( checkboxTrue( preferences.value( 'app.startLocked' ), 'startLocked' ) ) {
+		preferences.value( 'hidden.locked', true )
+	}
+
 	/* Create main window */
 
 	await windows.init()
