@@ -4,7 +4,7 @@
   "appId": "com.lacymorrow.crossover",
   "version": "3.4.2",
   "description": "A Crosshair Overlay for any screen",
-  "copyright": "Copyright © Lacy Morrow",
+  "copyright": "Copyright \u00a9 Lacy Morrow",
   "repository": "lacymorrow/crossover",
   "homepage": "https://lacymorrow.github.io/crossover",
   "company": "Fly5",
@@ -21,6 +21,10 @@
     }
   ],
   "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/lacymorrow"
+    },
     {
       "type": "patreon",
       "url": "https://patreon.com/lacymorrow"
@@ -121,7 +125,7 @@
   "build": {
     "appId": "com.lacymorrow.crossover",
     "artifactName": "${productName}-${version}-${arch}.${ext}",
-    "copyright": "Copyright © Lacy Morrow",
+    "copyright": "Copyright \u00a9 Lacy Morrow",
     "publish": "github",
     "mac": {
       "category": "public.app-category.utilities",
@@ -160,7 +164,7 @@
       "category": "Game;Shooter"
     },
     "snap": {
-      "summary": "🎯 A Crosshair Overlay for any screen.",
+      "summary": "\ud83c\udfaf A Crosshair Overlay for any screen.",
       "description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
       "plugs": [
         "default",
