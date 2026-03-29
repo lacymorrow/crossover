@@ -60,13 +60,39 @@ const appEvents = () => {
 	// See https://github.com/electron/electron/issues/5273
 	app.on( 'before-quit', () => {
 
+		// Unlock the window before quitting so it can properly close on Windows
+		// When locked, closable=false prevents the window from being destroyed,
+		// leaving a zombie process (see #480)
+		const win = windows.win
+		if ( win && !win.isDestroyed() ) {
+
+			win.closable = true
+			win.setFocusable( true )
+			win.setIgnoreMouseEvents( false )
+
+		}
+
+		// Also unlock shadow windows
+		for ( const shadowWin of windows.shadowWindows ) {
+
+			if ( shadowWin && !shadowWin.isDestroyed() ) {
+
+				shadowWin.closable = true
+				shadowWin.setFocusable( true )
+				shadowWin.setIgnoreMouseEvents( false )
+
+			}
+
+		}
+
 		app.releaseSingleInstanceLock()
 
 	} )
 
 	app.on( 'will-quit', () => {
 
-		// Unregister all shortcuts.
+		// Save lock state before cleanup so it persists for next launch
+		// Then unregister all hooks and shortcuts
 		iohook.unregisterIOHook()
 		keyboard.unregisterShortcuts()
 		// process.exit( EXIT_CODES.SUCCESS )
