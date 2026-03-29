@@ -95,19 +95,21 @@ const init = async options => {
 			// Reset case: page is already loaded, small delay to avoid the reset loop
 			setTimeout( setupLockState, 100 )
 
-		} else if ( windows.win.webContents.isLoading() ) {
-
-			// First boot: wait for renderer to finish loading
-			windows.win.webContents.once( 'did-finish-load', () => {
-
-				setTimeout( setupLockState, 50 )
-
-			} )
-
 		} else {
 
-			// Page already loaded
-			setTimeout( setupLockState, 50 )
+			const scheduleSetup = () => setTimeout( setupLockState, 50 )
+
+			if ( windows.win.webContents.isLoading() ) {
+
+				// First boot: wait for renderer to finish loading
+				windows.win.webContents.once( 'did-finish-load', scheduleSetup )
+
+			} else {
+
+				// Page already loaded
+				scheduleSetup()
+
+			}
 
 		}
 
