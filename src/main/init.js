@@ -59,14 +59,24 @@ const init = async options => {
 
 	crossover.resetPosition()
 
-	// Set lock state, timeout makes it pretty
-	setTimeout( () => {
+	// Set lock state after renderer is ready
+	// Using did-finish-load ensures the renderer's IPC listeners are registered
+	// before we send lock_window. The 400ms timeout was unreliable on Windows (#480).
+	let lockStateInitialized = false
+	const setupLockState = () => {
 
-		// Todo: We shouldn't need a timeout here
-		// Keyboard shortcuts - delay fixes an unbreakable loop on reset, continually triggering resets
+		if ( lockStateInitialized ) {
+
+			return
+
+		}
+
+		lockStateInitialized = true
+
+		// Keyboard shortcuts (delay from did-finish-load avoids the reset loop)
 		crossover.registerKeyboardShortcuts()
 
-		// Show or hide window
+		// Restore lock state
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
 		ipcMain.once( 'init', () => {
@@ -76,7 +86,39 @@ const init = async options => {
 
 		} )
 
-	}, 400 )
+	}
+
+	if ( windows.win && windows.win.webContents ) {
+
+		if ( options?.triggeredByReset ) {
+
+			// Reset case: page is already loaded, small delay to avoid the reset loop
+			setTimeout( setupLockState, 100 )
+
+		} else {
+
+			const scheduleSetup = () => setTimeout( setupLockState, 50 )
+
+			if ( windows.win.webContents.isLoading() ) {
+
+				// First boot: wait for renderer to finish loading
+				windows.win.webContents.once( 'did-finish-load', scheduleSetup )
+
+			} else {
+
+				// Page already loaded
+				scheduleSetup()
+
+			}
+
+		}
+
+	} else {
+
+		// Fallback
+		setTimeout( setupLockState, 400 )
+
+	}
 
 	// Spawn chooser window (if resetting it may exist)
 	if ( !windows.chooserWindow ) {
