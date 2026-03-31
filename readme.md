@@ -573,7 +573,11 @@ Created by [Lacy Morrow](http://lacymorrow.com)
 Problem is, downloads don't pay the bills.
 If you would like to see specific features or improvements added to CrossOver, consider donating on [OpenCollective](https://opencollective.com/crossover)
 
-## If you like this software and want to see it improved more often, consider supporting me on [Patreon](https://patreon.com/lacymorrow) or through another channel:
+## If you like this software and want to see it improved more often, consider supporting through:
+
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor-❤-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/lacymorrow)
+
+Or through another channel:
 
 ### Tip Crypto
 
