@@ -45,6 +45,41 @@
 				<i class="info-icon d-none" data-feather="alert-circle"></i>
 				<i class="resize-icon d-none" data-feather="arrow-up-right"></i>
 			</div>
+
+			<div id="onboarding" class="onboarding d-none">
+				<div class="onboarding-step active" data-step="0">
+					<div class="onboarding-icon">&#127919;</div>
+					<div class="onboarding-title">Welcome to CrossOver</div>
+					<div class="onboarding-body">A customizable crosshair overlay for any game or app.</div>
+				</div>
+				<div class="onboarding-step" data-step="1">
+					<div class="onboarding-icon">&#128247;</div>
+					<div class="onboarding-title">Choose a Crosshair</div>
+					<div class="onboarding-body">Click the <b>target icon</b> to browse built-ins, or drag a custom image onto the window.</div>
+				</div>
+				<div class="onboarding-step" data-step="2">
+					<div class="onboarding-icon">&#128274;</div>
+					<div class="onboarding-title">Position &amp; Lock</div>
+					<div class="onboarding-body">Drag to position, then press <code>Ctrl+Alt+Shift+X</code> to lock it over your game.</div>
+				</div>
+				<div class="onboarding-step" data-step="3">
+					<div class="onboarding-icon">&#9881;</div>
+					<div class="onboarding-title">Explore &amp; Customize</div>
+					<div class="onboarding-body">Use <b>Settings</b> to tweak colors, size &amp; keybinds. Try shadow windows &amp; mouse-follow!</div>
+				</div>
+				<div class="onboarding-nav">
+					<div class="onboarding-dots">
+						<span class="onboarding-dot active"></span>
+						<span class="onboarding-dot"></span>
+						<span class="onboarding-dot"></span>
+						<span class="onboarding-dot"></span>
+					</div>
+					<div class="onboarding-actions">
+						<button id="onboarding-skip">Skip</button>
+						<button id="onboarding-next">Next</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script src="./renderer.js"></script>

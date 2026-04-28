@@ -123,6 +123,12 @@ const init = () => {
 
 	} )
 
+	ipcMain.on( 'complete_onboarding', () => {
+
+		preferences.value( 'hidden.onboardingCompleted', true )
+
+	} )
+
 	ipcMain.on( 'set_preference', arg => {
 
 		if ( arg.key && arg.value ) {
