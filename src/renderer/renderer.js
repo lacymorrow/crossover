@@ -356,4 +356,56 @@
 
 	}, true )
 
+	// Onboarding overlay
+	const onboardingEl = document.querySelector( '#onboarding' )
+	if ( onboardingEl ) {
+
+		const steps = onboardingEl.querySelectorAll( '.onboarding-step' )
+		const dots = onboardingEl.querySelectorAll( '.onboarding-dot' )
+		const skipBtn = document.querySelector( '#onboarding-skip' )
+		const nextBtn = document.querySelector( '#onboarding-next' )
+		let currentStep = 0
+
+		const showStep = step => {
+
+			steps.forEach( ( el, i ) => el.classList.toggle( 'active', i === step ) )
+			dots.forEach( ( el, i ) => el.classList.toggle( 'active', i === step ) )
+			nextBtn.textContent = step === steps.length - 1 ? 'Done' : 'Next'
+
+		}
+
+		const completeOnboarding = () => {
+
+			onboardingEl.classList.add( 'd-none' )
+			window.crossover.send( 'complete_onboarding' )
+
+		}
+
+		skipBtn.addEventListener( 'click', completeOnboarding )
+
+		nextBtn.addEventListener( 'click', () => {
+
+			if ( currentStep < steps.length - 1 ) {
+
+				currentStep++
+				showStep( currentStep )
+
+			} else {
+
+				completeOnboarding()
+
+			}
+
+		} )
+
+		window.crossover.receive( 'show_onboarding', () => {
+
+			currentStep = 0
+			showStep( currentStep )
+			onboardingEl.classList.remove( 'd-none' )
+
+		} )
+
+	}
+
 } )()

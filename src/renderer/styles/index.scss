@@ -495,6 +495,128 @@ label {
     display: none;
 }
 
+/* Onboarding overlay */
+.onboarding {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    background: var(--app-bg-color, var(--app-bg-color-initial));
+    border-radius: 5px;
+    padding: 8px 8px 6px;
+    border: 3px solid var(--app-highlight-color, var(--app-highlight-color-initial));
+    -webkit-app-region: no-drag;
+    pointer-events: auto;
+
+    &.d-none {
+        display: none;
+    }
+
+    .onboarding-step {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        &.active {
+            display: flex;
+        }
+    }
+
+    .onboarding-icon {
+        font-size: 20px;
+        margin-bottom: 4px;
+        line-height: 1;
+    }
+
+    .onboarding-title {
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 3px;
+        color: var(--app-text-color);
+    }
+
+    .onboarding-body {
+        font-size: 9px;
+        color: var(--app-text-color);
+        line-height: 1.35;
+
+        b {
+            font-weight: bold;
+        }
+
+        code {
+            font-size: 7.5px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 2px;
+            padding: 1px 2px;
+        }
+    }
+
+    .onboarding-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 5px;
+        flex-shrink: 0;
+    }
+
+    .onboarding-dots {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .onboarding-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.15);
+        transition: background 0.2s ease;
+
+        &.active {
+            background: var(--app-highlight-color, var(--app-highlight-color-initial));
+        }
+    }
+
+    .onboarding-actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+
+    #onboarding-skip,
+    #onboarding-next {
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-size: 9px;
+        font-family: inherit;
+        pointer-events: auto;
+        transition: opacity 0.15s ease;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    #onboarding-skip {
+        background: transparent;
+        color: var(--app-text-color);
+    }
+
+    #onboarding-next {
+        background: var(--app-highlight-color, var(--app-highlight-color-initial));
+        color: #fff;
+    }
+}
+
 .d-inline-block {
     display: inline-block;
 }

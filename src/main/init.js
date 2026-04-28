@@ -7,6 +7,7 @@ const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
+const reviewPrompt = require( './review-prompt' )
 
 const init = async options => {
 
@@ -78,6 +79,20 @@ const init = async options => {
 
 		// Restore lock state
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
+
+		// Show onboarding overlay on first launch
+		if ( !options?.triggeredByReset && !preferences.value( 'hidden.onboardingCompleted' ) ) {
+
+			windows.win.webContents.send( 'show_onboarding' )
+
+		}
+
+		// Check review prompt (not on settings reset; deferred so lock state is applied first)
+		if ( !options?.triggeredByReset ) {
+
+			reviewPrompt.check( windows.win ).catch( log.error )
+
+		}
 
 		ipcMain.once( 'init', () => {
 

@@ -78,11 +78,16 @@ const getDefaults = () => ( {
 	hidden: {
 		frame: false,
 		locked: false,
+		onboardingCompleted: false,
 		showSettings: false,
 		tilted: false,
 		ADSed: false,
 		ADShidden: false,
 		reticleHidden: false,
+		reviewPromptLaunchCount: 0,
+		reviewPromptFirstLaunchDate: null,
+		reviewPromptState: 'pending',
+		reviewPromptLaterDate: null,
 	},
 } )
 
