@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1920px; height: 1080px; overflow: hidden; font-family: 'Segoe UI', -apple-system, sans-serif; }
+.scene {
+	width: 1920px; height: 1080px;
+	background: linear-gradient(160deg, #080a14 0%, #0f1225 50%, #080a14 100%);
+	position: relative;
+	display: flex; align-items: center; justify-content: center;
+	gap: 30px;
+}
+/* Monitor frame */
+.monitor {
+	position: relative;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+.monitor-bezel {
+	background: #1a1c24;
+	padding: 12px;
+	border-radius: 12px;
+	border: 1px solid rgba(255,255,255,0.08);
+}
+.monitor-screen {
+	border-radius: 4px;
+	overflow: hidden;
+	position: relative;
+}
+.monitor-stand {
+	width: 80px; height: 40px;
+	background: linear-gradient(180deg, #1a1c24, #14161e);
+	margin: 0 auto;
+	border-radius: 0 0 4px 4px;
+}
+.monitor-base {
+	width: 120px; height: 8px;
+	background: #1a1c24;
+	margin: 0 auto;
+	border-radius: 0 0 8px 8px;
+}
+/* Left monitor - game scene */
+.monitor-left .monitor-screen {
+	width: 560px; height: 340px;
+	background: linear-gradient(135deg, #1a2840 0%, #0d1a30 50%, #152238 100%);
+}
+/* Center monitor - active with crosshair */
+.monitor-center .monitor-screen {
+	width: 640px; height: 380px;
+	background: linear-gradient(135deg, #0a1520 0%, #152535 50%, #0d1825 100%);
+}
+.monitor-center .monitor-bezel {
+	border-color: rgba(85,0,255,0.3);
+	box-shadow: 0 0 30px rgba(85,0,255,0.15);
+}
+/* Right monitor - different scene */
+.monitor-right .monitor-screen {
+	width: 560px; height: 340px;
+	background: linear-gradient(135deg, #201a28 0%, #150d20 50%, #1a1530 100%);
+}
+/* Game elements */
+.game-element {
+	position: absolute;
+	border: 1px solid rgba(255,255,255,0.04);
+	background: rgba(255,255,255,0.015);
+}
+/* Crosshair on center monitor */
+.crosshair-active {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10;
+}
+.crosshair-active svg {
+	width: 50px; height: 50px;
+	filter: drop-shadow(0 0 10px rgba(85,0,255,0.6));
+}
+/* Ghost crosshair showing movement */
+.crosshair-ghost {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0.2;
+}
+.crosshair-ghost svg { width: 40px; height: 40px; }
+/* Arrow showing movement */
+.move-arrow {
+	position: absolute;
+	z-index: 15;
+}
+.move-arrow svg {
+	width: 120px; height: 40px;
+}
+/* HUD elements for each monitor */
+.mini-hud {
+	position: absolute;
+	bottom: 8px; left: 10px; right: 10px;
+	display: flex; justify-content: space-between;
+	opacity: 0.3;
+}
+.mini-hud span {
+	font-size: 9px;
+	color: rgba(255,255,255,0.6);
+}
+/* Monitor label */
+.monitor-label {
+	position: absolute;
+	bottom: -65px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: rgba(255,255,255,0.25);
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+/* Text overlay */
+.text-overlay {
+	position: absolute;
+	bottom: 60px;
+	left: 0; right: 0;
+	text-align: center;
+	z-index: 20;
+}
+.text-overlay h1 {
+	font-size: 48px;
+	font-weight: 800;
+	color: #ffffff;
+	text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+}
+.text-overlay h1 span {
+	background: linear-gradient(135deg, #7733ff, #5500ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+/* App badge */
+.app-badge {
+	position: absolute; top: 40px; left: 40px;
+	display: flex; align-items: center; gap: 14px; z-index: 20;
+}
+.app-badge .icon {
+	width: 44px; height: 44px;
+	background: linear-gradient(135deg, #ff8800, #ff3388);
+	border-radius: 10px;
+	display: flex; align-items: center; justify-content: center;
+}
+.app-badge .icon svg { width: 26px; height: 26px; }
+.app-badge .name { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.9); }
+/* Keyboard shortcut hint */
+.shortcut-hint {
+	position: absolute; top: 40px; right: 40px;
+	background: rgba(85,0,255,0.15);
+	border: 1px solid rgba(85,0,255,0.3);
+	border-radius: 8px;
+	padding: 8px 16px;
+	color: #aa88ff;
+	font-size: 14px;
+	font-weight: 500;
+	z-index: 20;
+	display: flex; align-items: center; gap: 8px;
+}
+.key {
+	background: rgba(255,255,255,0.1);
+	border: 1px solid rgba(255,255,255,0.15);
+	border-radius: 4px;
+	padding: 2px 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="scene">
+	<div class="app-badge">
+		<div class="icon">
+			<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="4"/><line x1="50" y1="10" x2="50" y2="35" stroke="white" stroke-width="4"/><line x1="50" y1="65" x2="50" y2="90" stroke="white" stroke-width="4"/><line x1="10" y1="50" x2="35" y2="50" stroke="white" stroke-width="4"/><line x1="65" y1="50" x2="90" y2="50" stroke="white" stroke-width="4"/></svg>
+		</div>
+		<div class="name">CrossOver</div>
+	</div>
+
+	<div class="shortcut-hint">
+		<span class="key">Ctrl</span>+<span class="key">Alt</span>+<span class="key">Shift</span>+<span class="key">M</span> Switch Monitor
+	</div>
+
+	<!-- Left Monitor -->
+	<div class="monitor monitor-left" style="margin-top: 20px;">
+		<div class="monitor-bezel">
+			<div class="monitor-screen">
+				<div class="game-element" style="left:40px;top:60px;width:150px;height:200px;"></div>
+				<div class="game-element" style="right:30px;top:40px;width:120px;height:250px;"></div>
+				<div class="game-element" style="left:200px;bottom:40px;width:300px;height:3px;background:rgba(255,255,255,0.03);"></div>
+				<div class="crosshair-ghost">
+					<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(85,0,255,0.4)" stroke-width="2" stroke-dasharray="6 3"/><circle cx="50" cy="50" r="3" fill="rgba(85,0,255,0.4)"/></svg>
+				</div>
+				<div class="mini-hud"><span>Display 1</span><span>1920×1080</span></div>
+			</div>
+		</div>
+		<div class="monitor-stand"></div>
+		<div class="monitor-base"></div>
+	</div>
+
+	<!-- Center Monitor (active) -->
+	<div class="monitor monitor-center" style="margin-top: -20px;">
+		<div class="monitor-bezel">
+			<div class="monitor-screen">
+				<div class="game-element" style="left:60px;top:40px;width:200px;height:280px;"></div>
+				<div class="game-element" style="right:50px;top:60px;width:160px;height:240px;"></div>
+				<div class="game-element" style="left:280px;top:100px;width:100px;height:180px;"></div>
+				<div class="game-element" style="left:0;bottom:80px;width:100%;height:2px;background:rgba(255,255,255,0.04);"></div>
+				<div class="crosshair-active">
+					<svg viewBox="0 0 100 100">
+						<circle cx="50" cy="50" r="20" fill="none" stroke="#5500ff" stroke-width="2.5"/>
+						<line x1="50" y1="15" x2="50" y2="38" stroke="#5500ff" stroke-width="2.5"/>
+						<line x1="50" y1="62" x2="50" y2="85" stroke="#5500ff" stroke-width="2.5"/>
+						<line x1="15" y1="50" x2="38" y2="50" stroke="#5500ff" stroke-width="2.5"/>
+						<line x1="62" y1="50" x2="85" y2="50" stroke="#5500ff" stroke-width="2.5"/>
+						<circle cx="50" cy="50" r="3" fill="#5500ff"/>
+					</svg>
+				</div>
+				<div class="mini-hud"><span>Display 2 (Active)</span><span>2560×1440</span></div>
+			</div>
+		</div>
+		<div class="monitor-stand"></div>
+		<div class="monitor-base"></div>
+	</div>
+
+	<!-- Right Monitor -->
+	<div class="monitor monitor-right" style="margin-top: 20px;">
+		<div class="monitor-bezel">
+			<div class="monitor-screen">
+				<div class="game-element" style="left:50px;top:70px;width:180px;height:180px;"></div>
+				<div class="game-element" style="right:40px;top:50px;width:140px;height:220px;"></div>
+				<div class="crosshair-ghost">
+					<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(85,0,255,0.4)" stroke-width="2" stroke-dasharray="6 3"/><circle cx="50" cy="50" r="3" fill="rgba(85,0,255,0.4)"/></svg>
+				</div>
+				<div class="mini-hud"><span>Display 3</span><span>1920×1080</span></div>
+			</div>
+		</div>
+		<div class="monitor-stand"></div>
+		<div class="monitor-base"></div>
+	</div>
+
+	<div class="text-overlay">
+		<h1><span>Multi-monitor support</span> — move between displays instantly</h1>
+	</div>
+</div>
+</body>
+</html>
