@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1920px; height: 1080px; overflow: hidden; font-family: 'Segoe UI', -apple-system, sans-serif; }
+.scene {
+	width: 1920px; height: 1080px;
+	background: linear-gradient(160deg, #0c0f1a 0%, #141830 50%, #0a0d18 100%);
+	position: relative;
+	display: flex; align-items: center; justify-content: center;
+}
+/* Settings window */
+.settings-window {
+	width: 900px; height: 680px;
+	background: #1a1d2e;
+	border-radius: 16px;
+	box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+	overflow: hidden;
+	display: flex;
+}
+/* Sidebar */
+.sidebar {
+	width: 220px;
+	background: #12141f;
+	padding: 20px 0;
+	border-right: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-item {
+	padding: 12px 24px;
+	color: rgba(255,255,255,0.4);
+	font-size: 14px;
+	display: flex; align-items: center; gap: 10px;
+	cursor: pointer;
+}
+.sidebar-item.active {
+	background: rgba(85,0,255,0.15);
+	color: #aa88ff;
+	border-right: 3px solid #5500ff;
+}
+.sidebar-item .dot {
+	width: 8px; height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+	opacity: 0.5;
+}
+.sidebar-item.active .dot { opacity: 1; background: #5500ff; }
+/* Settings content */
+.settings-content {
+	flex: 1;
+	padding: 30px;
+	overflow: hidden;
+}
+.settings-title {
+	font-size: 22px; font-weight: 700;
+	color: rgba(255,255,255,0.9);
+	margin-bottom: 24px;
+}
+.setting-group {
+	margin-bottom: 24px;
+}
+.setting-group-title {
+	font-size: 11px; font-weight: 700;
+	color: rgba(255,255,255,0.3);
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	margin-bottom: 12px;
+}
+.setting-row {
+	display: flex; align-items: center;
+	justify-content: space-between;
+	padding: 12px 0;
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.setting-label {
+	font-size: 14px;
+	color: rgba(255,255,255,0.7);
+}
+.setting-desc {
+	font-size: 11px;
+	color: rgba(255,255,255,0.3);
+	margin-top: 2px;
+}
+/* Controls */
+.slider-control {
+	display: flex; align-items: center; gap: 12px;
+}
+.slider {
+	width: 140px; height: 6px;
+	background: rgba(255,255,255,0.1);
+	border-radius: 3px;
+	position: relative;
+}
+.slider-fill {
+	height: 100%;
+	background: linear-gradient(90deg, #5500ff, #7733ff);
+	border-radius: 3px;
+}
+.slider-thumb {
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 16px; height: 16px;
+	background: #5500ff;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.slider-value {
+	font-size: 13px;
+	color: rgba(255,255,255,0.5);
+	font-weight: 600;
+	min-width: 36px;
+	text-align: right;
+}
+/* Color picker */
+.color-picker {
+	display: flex; gap: 6px;
+}
+.color-swatch {
+	width: 28px; height: 28px;
+	border-radius: 6px;
+	border: 2px solid transparent;
+	cursor: pointer;
+}
+.color-swatch.active {
+	border-color: #fff;
+	box-shadow: 0 0 12px rgba(85,0,255,0.5);
+}
+/* Toggle */
+.toggle {
+	width: 44px; height: 24px;
+	background: rgba(255,255,255,0.1);
+	border-radius: 12px;
+	position: relative;
+	cursor: pointer;
+}
+.toggle.on {
+	background: #5500ff;
+}
+.toggle-knob {
+	position: absolute;
+	top: 2px;
+	width: 20px; height: 20px;
+	background: white;
+	border-radius: 50%;
+	transition: left 0.2s;
+}
+.toggle.off .toggle-knob { left: 2px; }
+.toggle.on .toggle-knob { left: 22px; }
+/* Dropdown */
+.dropdown {
+	padding: 6px 12px;
+	background: rgba(255,255,255,0.06);
+	border: 1px solid rgba(255,255,255,0.1);
+	border-radius: 6px;
+	color: rgba(255,255,255,0.6);
+	font-size: 13px;
+}
+/* Preview */
+.preview-box {
+	position: absolute;
+	right: -380px; top: 50%;
+	transform: translateY(-50%);
+	width: 320px; height: 320px;
+	background: rgba(10,12,20,0.8);
+	border-radius: 16px;
+	border: 1px solid rgba(255,255,255,0.06);
+	display: flex; align-items: center; justify-content: center;
+	box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.preview-label {
+	position: absolute;
+	top: 16px; left: 20px;
+	font-size: 11px;
+	color: rgba(255,255,255,0.3);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+.preview-crosshair svg {
+	width: 80px; height: 80px;
+	filter: drop-shadow(0 0 12px rgba(85,0,255,0.5));
+}
+/* Text overlay */
+.text-overlay {
+	position: absolute;
+	bottom: 70px;
+	left: 0; right: 0;
+	text-align: center;
+	z-index: 20;
+}
+.text-overlay h1 {
+	font-size: 48px;
+	font-weight: 800;
+	color: #ffffff;
+	text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+}
+.text-overlay h1 span {
+	background: linear-gradient(135deg, #7733ff, #5500ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+/* App badge */
+.app-badge {
+	position: absolute; top: 40px; left: 40px;
+	display: flex; align-items: center; gap: 14px; z-index: 20;
+}
+.app-badge .icon {
+	width: 44px; height: 44px;
+	background: linear-gradient(135deg, #ff8800, #ff3388);
+	border-radius: 10px;
+	display: flex; align-items: center; justify-content: center;
+}
+.app-badge .icon svg { width: 26px; height: 26px; }
+.app-badge .name { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.9); }
+</style>
+</head>
+<body>
+<div class="scene">
+	<div class="app-badge">
+		<div class="icon">
+			<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="4"/><line x1="50" y1="10" x2="50" y2="35" stroke="white" stroke-width="4"/><line x1="50" y1="65" x2="50" y2="90" stroke="white" stroke-width="4"/><line x1="10" y1="50" x2="35" y2="50" stroke="white" stroke-width="4"/><line x1="65" y1="50" x2="90" y2="50" stroke="white" stroke-width="4"/></svg>
+		</div>
+		<div class="name">CrossOver</div>
+	</div>
+
+	<div style="position:relative;">
+		<div class="settings-window">
+			<div class="sidebar">
+				<div class="sidebar-item active"><div class="dot"></div> Crosshair</div>
+				<div class="sidebar-item"><div class="dot"></div> Appearance</div>
+				<div class="sidebar-item"><div class="dot"></div> Behavior</div>
+				<div class="sidebar-item"><div class="dot"></div> Keyboard</div>
+				<div class="sidebar-item"><div class="dot"></div> Mouse</div>
+				<div class="sidebar-item"><div class="dot"></div> Shadows</div>
+				<div class="sidebar-item"><div class="dot"></div> Advanced</div>
+				<div class="sidebar-item"><div class="dot"></div> About</div>
+			</div>
+			<div class="settings-content">
+				<div class="settings-title">Crosshair Settings</div>
+
+				<div class="setting-group">
+					<div class="setting-group-title">Size & Position</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Crosshair Size</div>
+							<div class="setting-desc">Scale the crosshair image</div>
+						</div>
+						<div class="slider-control">
+							<div class="slider">
+								<div class="slider-fill" style="width:60%;"></div>
+								<div class="slider-thumb" style="left:60%;"></div>
+							</div>
+							<div class="slider-value">60%</div>
+						</div>
+					</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Opacity</div>
+							<div class="setting-desc">Crosshair transparency</div>
+						</div>
+						<div class="slider-control">
+							<div class="slider">
+								<div class="slider-fill" style="width:85%;"></div>
+								<div class="slider-thumb" style="left:85%;"></div>
+							</div>
+							<div class="slider-value">85%</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting-group">
+					<div class="setting-group-title">Color</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Crosshair Color</div>
+							<div class="setting-desc">Override crosshair color</div>
+						</div>
+						<div class="color-picker">
+							<div class="color-swatch active" style="background:#5500ff;"></div>
+							<div class="color-swatch" style="background:#ff4444;"></div>
+							<div class="color-swatch" style="background:#44ff44;"></div>
+							<div class="color-swatch" style="background:#ffaa00;"></div>
+							<div class="color-swatch" style="background:#44aaff;"></div>
+							<div class="color-swatch" style="background:#ff44ff;"></div>
+							<div class="color-swatch" style="background:#ffffff;"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting-group">
+					<div class="setting-group-title">Reticle</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Center Dot</div>
+							<div class="setting-desc">Show center dot on crosshair</div>
+						</div>
+						<div class="toggle on"><div class="toggle-knob"></div></div>
+					</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Reticle Shape</div>
+							<div class="setting-desc">Dot, cross, or circle</div>
+						</div>
+						<div class="dropdown">Cross + Dot ▾</div>
+					</div>
+					<div class="setting-row">
+						<div>
+							<div class="setting-label">Hide on ADS</div>
+							<div class="setting-desc">Hide when aiming down sights</div>
+						</div>
+						<div class="toggle on"><div class="toggle-knob"></div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Live preview -->
+		<div class="preview-box">
+			<div class="preview-label">Live Preview</div>
+			<div class="preview-crosshair">
+				<svg viewBox="0 0 100 100">
+					<circle cx="50" cy="50" r="20" fill="none" stroke="#5500ff" stroke-width="2.5"/>
+					<line x1="50" y1="15" x2="50" y2="38" stroke="#5500ff" stroke-width="2.5"/>
+					<line x1="50" y1="62" x2="50" y2="85" stroke="#5500ff" stroke-width="2.5"/>
+					<line x1="15" y1="50" x2="38" y2="50" stroke="#5500ff" stroke-width="2.5"/>
+					<line x1="62" y1="50" x2="85" y2="50" stroke="#5500ff" stroke-width="2.5"/>
+					<circle cx="50" cy="50" r="3" fill="#5500ff"/>
+				</svg>
+			</div>
+		</div>
+	</div>
+
+	<div class="text-overlay">
+		<h1><span>Full control:</span> size, color, opacity, reticle shape</h1>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Dark background -->
+  <rect width="1024" height="1024" fill="#0d0d1a"/>
+
+  <!-- Outer ring - segmented (gaps at cardinal points for crosshair pass-through) -->
+  <!-- Top-right arc -->
+  <path d="M 512 132 A 380 380 0 0 1 892 512" fill="none" stroke="#006670" stroke-width="18"/>
+  <!-- Bottom-right arc -->
+  <path d="M 892 512 A 380 380 0 0 1 512 892" fill="none" stroke="#006670" stroke-width="18"/>
+  <!-- Bottom-left arc -->
+  <path d="M 512 892 A 380 380 0 0 1 132 512" fill="none" stroke="#006670" stroke-width="18"/>
+  <!-- Top-left arc -->
+  <path d="M 132 512 A 380 380 0 0 1 512 132" fill="none" stroke="#006670" stroke-width="18"/>
+
+  <!-- Inner ring - segmented -->
+  <path d="M 512 312 A 200 200 0 0 1 712 512" fill="none" stroke="#00b8c9" stroke-width="14"/>
+  <path d="M 712 512 A 200 200 0 0 1 512 712" fill="none" stroke="#00b8c9" stroke-width="14"/>
+  <path d="M 512 712 A 200 200 0 0 1 312 512" fill="none" stroke="#00b8c9" stroke-width="14"/>
+  <path d="M 312 512 A 200 200 0 0 1 512 312" fill="none" stroke="#00b8c9" stroke-width="14"/>
+
+  <!-- Crosshair lines - VERY BOLD, bright cyan, full length -->
+  <!-- Top -->
+  <rect x="504" y="60" width="16" height="330" fill="#00fff5"/>
+  <!-- Bottom -->
+  <rect x="504" y="634" width="16" height="330" fill="#00fff5"/>
+  <!-- Left -->
+  <rect x="60" y="504" width="330" height="16" fill="#00fff5"/>
+  <!-- Right -->
+  <rect x="634" y="504" width="330" height="16" fill="#00fff5"/>
+
+  <!-- Center dot - large, bright, glowing -->
+  <circle cx="512" cy="512" r="50" fill="#00fff5" opacity="0.06"/>
+  <circle cx="512" cy="512" r="36" fill="#00fff5" opacity="0.10"/>
+  <circle cx="512" cy="512" r="24" fill="#00fff5" opacity="0.18"/>
+  <circle cx="512" cy="512" r="16" fill="#00fff5"/>
+
+  <!-- Diagonal tick marks -->
+  <rect x="248" y="246" width="30" height="6" fill="#00b8c9" opacity="0.5" transform="rotate(45 263 249)"/>
+  <rect x="746" y="246" width="30" height="6" fill="#00b8c9" opacity="0.5" transform="rotate(-45 761 249)"/>
+  <rect x="248" y="772" width="30" height="6" fill="#00b8c9" opacity="0.5" transform="rotate(-45 263 775)"/>
+  <rect x="746" y="772" width="30" height="6" fill="#00b8c9" opacity="0.5" transform="rotate(45 761 775)"/>
+</svg>
