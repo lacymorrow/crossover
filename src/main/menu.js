@@ -1,208 +1,250 @@
-const path = require("path");
-const { app, shell, Menu } = require("electron");
+const path = require( 'path' )
+const { app, shell, Menu } = require( 'electron' )
 const {
 	aboutMenuItem,
 	openUrlMenuItem,
 	openNewGitHubIssue,
 	is,
 	appMenu,
-} = require("./util");
+} = require( './util' )
+const { TROUBLESHOOTING_URL, COMPATIBILITY_URL } = require( '../config/config' )
 
-const errorHandling = require("./error-handling");
-const dialog = require("./dialog");
-const crossover = require("./crossover");
-const reset = require("./reset");
-const { productName } = require("../../package.json");
-const windows = require("./windows");
+const errorHandling = require( './error-handling' )
+const dialog = require( './dialog' )
+const crossover = require( './crossover' )
+const reset = require( './reset' )
+const { productName } = require( '../../package.json' )
+const windows = require( './windows' )
 
 /* MENU ITEMS */
 const closeWindowMenuItem = {
-	label: "Custom Image...",
+	label: 'Close Window',
 	async click() {
+
 		// Open dialog
-		windows.closeWindow();
+		windows.closeWindow()
+
 	},
-};
+}
 
 const preferencesMenuItems = [
 	{
-		label: "Preferences...",
-		accelerator: "CommandOrControl+,",
+		label: 'Preferences...',
+		accelerator: 'CommandOrControl+,',
 		click() {
-			crossover.openSettingsWindow();
+
+			crossover.openSettingsWindow()
+
 		},
 	},
 	{
-		label: "Choose Crosshair...",
+		label: 'Choose Crosshair...',
 		click() {
-			crossover.openChooserWindow();
+
+			crossover.openChooserWindow()
+
 		},
 	},
-];
+]
 
 const openCustomImageMenuItem = {
-	label: "Custom Image...",
+	label: 'Custom Image...',
 	async click() {
+
 		// Open dialog
-		dialog.openCustomImageDialog();
+		dialog.openCustomImageDialog()
+
 	},
-};
+}
 
 const resetMenuItem = {
-	label: "Reset CrossOver",
+	label: 'Reset CrossOver',
 	async click() {
-		const { dialog } = require("electron");
-		const { response } = await dialog.showMessageBox({
-			type: "warning",
-			buttons: ["Cancel", "Reset"],
+
+		const { dialog } = require( 'electron' )
+		const { response } = await dialog.showMessageBox( {
+			type: 'warning',
+			buttons: [ 'Cancel', 'Reset' ],
 			defaultId: 0,
 			cancelId: 0,
-			title: "Reset CrossOver",
-			message: "Are you sure you want to reset all settings?",
+			title: 'Reset CrossOver',
+			message: 'Are you sure you want to reset all settings?',
 			detail:
-				"This will remove all customizations and restore default settings. This cannot be undone.",
-		});
-		if (response === 1) {
-			reset.app();
+				'This will remove all customizations and restore default settings. This cannot be undone.',
+		} )
+		if ( response === 1 ) {
+
+			reset.app()
+
 		}
+
 	},
-};
+}
 
 const showAppMenuItem = {
 	label: `Show ${productName}`,
 	async click() {
-		crossover.lockWindow(false);
+
+		crossover.lockWindow( false )
+
 	},
-};
+}
+
+const troubleshootingMenuItem = openUrlMenuItem( {
+	label: 'Game Not Working? Troubleshooting Guide',
+	url: TROUBLESHOOTING_URL,
+} )
 
 /* SUBMENUS */
 const helpSubmenu = [
-	openUrlMenuItem({
-		label: "Learn more about CrossOver",
-		url: "lacymorrow.github.io/crossover",
-	}),
-	openUrlMenuItem({
-		label: "Contribute on GitHub",
-		url: "https://github.com/lacymorrow/crossover",
-	}),
-	openUrlMenuItem({
-		label: "Support the Developer",
-		url: "https://www.patreon.com/lacymorrow",
-	}),
+	openUrlMenuItem( {
+		label: 'Learn more about CrossOver',
+		url: 'lacymorrow.github.io/crossover',
+	} ),
+	openUrlMenuItem( {
+		label: 'Contribute on GitHub',
+		url: 'https://github.com/lacymorrow/crossover',
+	} ),
+	openUrlMenuItem( {
+		label: 'Support the Developer',
+		url: 'https://www.patreon.com/lacymorrow',
+	} ),
 	{
-		type: "separator",
+		type: 'separator',
+	},
+	troubleshootingMenuItem,
+	openUrlMenuItem( {
+		label: 'Game Compatibility List',
+		url: COMPATIBILITY_URL,
+	} ),
+	{
+		type: 'separator',
 	},
 	{
-		label: "Report an Issue...",
+		label: 'Report an Issue...',
 		click() {
-			openNewGitHubIssue({
-				user: "lacymorrow",
-				repo: "crossover",
+
+			openNewGitHubIssue( {
+				user: 'lacymorrow',
+				repo: 'crossover',
 				body: errorHandling.reportBody(),
-			});
+			} )
+
 		},
 	},
 	resetMenuItem,
-	aboutMenuItem({
-		icon: path.join(__dirname, "static", "icons", "icon.png"),
-		text: "Created by Lacy Morrow",
-	}),
-];
+	aboutMenuItem( {
+		icon: path.join( __dirname, 'static', 'icons', 'icon.png' ),
+		text: 'Created by Lacy Morrow',
+	} ),
+]
 
 const debugSubmenu = [
 	{
-		label: "Show Preferences File",
+		label: 'Show Preferences File',
 		async click() {
+
 			await shell.openPath(
-				path.resolve(app.getPath("userData"), "preferences.json"),
-			);
+				path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+			)
+
 		},
 	},
 	{
-		label: "Show App Data",
+		label: 'Show App Data',
 		async click() {
-			await shell.openPath(app.getPath("userData"));
+
+			await shell.openPath( app.getPath( 'userData' ) )
+
 		},
 	},
 	{
-		type: "separator",
+		type: 'separator',
 	},
 	{
-		label: "Delete Preferences",
+		label: 'Delete Preferences',
 		click() {
+
 			shell.trashItem(
-				path.resolve(app.getPath("userData"), "preferences.json"),
-			);
-			app.relaunch();
-			app.quit();
+				path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+			)
+			app.relaunch()
+			app.quit()
+
 		},
 	},
 	{
-		label: "Delete App Data",
+		label: 'Delete App Data',
 		click() {
-			shell.trashItem(app.getPath("userData"));
-			app.relaunch();
-			app.quit();
+
+			shell.trashItem( app.getPath( 'userData' ) )
+			app.relaunch()
+			app.quit()
+
 		},
 	},
-];
+]
 
 /* TEMPLATES */
 const macosTemplate = [
-	appMenu([...preferencesMenuItems]),
+	appMenu( [ ...preferencesMenuItems ] ),
 	{
-		role: "fileMenu",
+		role: 'fileMenu',
 		submenu: [
 			openCustomImageMenuItem,
 			{
-				type: "separator",
+				type: 'separator',
 			},
 			closeWindowMenuItem,
 		],
 	},
 	{
-		role: "windowMenu",
+		role: 'windowMenu',
 	},
 	{
-		role: "help",
+		role: 'help',
 		submenu: helpSubmenu,
 	},
-];
+]
 
 // Linux and Windows
 const otherTemplate = [
 	{
-		role: "fileMenu",
+		role: 'fileMenu',
 		submenu: [
 			...preferencesMenuItems,
 			openCustomImageMenuItem,
 			{
-				type: "separator",
+				type: 'separator',
 			},
 			closeWindowMenuItem,
 			{
-				role: "quit",
+				role: 'quit',
 			},
 		],
 	},
 	{
-		role: "help",
+		role: 'help',
 		submenu: helpSubmenu,
 	},
-];
+]
 
 const init = () => {
-	const template = is.macos ? macosTemplate : otherTemplate;
 
-	if (is.development) {
-		template.push({
-			label: "Debug",
+	const template = is.macos ? macosTemplate : otherTemplate
+
+	if ( is.development ) {
+
+		template.push( {
+			label: 'Debug',
 			submenu: debugSubmenu,
-		});
+		} )
+
 	}
 
-	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-};
+	Menu.setApplicationMenu( Menu.buildFromTemplate( template ) )
+
+}
 
 const menu = {
 	init,
@@ -211,5 +253,6 @@ const menu = {
 	openCustomImageMenuItem,
 	resetMenuItem,
 	showAppMenuItem,
-};
-module.exports = menu;
+	troubleshootingMenuItem,
+}
+module.exports = menu
