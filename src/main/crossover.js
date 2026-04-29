@@ -11,6 +11,7 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
+const helpPrompt = require( './help-prompt' )
 const { getWindowBoundsCentered } = require( './util' )
 const preferences = Preferences.init()
 
@@ -309,6 +310,12 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 	dock.setVisible( !lock )
 
 	preferences.value( 'hidden.locked', lock )
+
+	if ( lock ) {
+
+		helpPrompt.check().catch( log.error )
+
+	}
 
 }
 

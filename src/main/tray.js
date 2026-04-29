@@ -2,7 +2,7 @@ const { Menu, Tray } = require( 'electron' )
 const { is, aboutMenuItem } = require( './util' )
 const path = require( 'path' )
 const log = require( './log' )
-const { preferencesMenuItems, openCustomImageMenuItem, resetMenuItem, showAppMenuItem } = require( './menu' )
+const { preferencesMenuItems, openCustomImageMenuItem, resetMenuItem, showAppMenuItem, troubleshootingMenuItem } = require( './menu' )
 const paths = require( './paths' )
 const { productName } = require( '../../package.json' )
 
@@ -47,6 +47,8 @@ const init = () => {
 		showAppMenuItem,
 		...preferencesMenuItems,
 		openCustomImageMenuItem,
+		{ type: 'separator' },
+		troubleshootingMenuItem,
 		{ type: 'separator' },
 		resetMenuItem,
 		{ type: 'separator' },

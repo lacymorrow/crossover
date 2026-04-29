@@ -1,4 +1,4 @@
-const { app } = require( 'electron' )
+const { app, shell } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
@@ -7,6 +7,7 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
 const windows = require( './windows' )
+const { TROUBLESHOOTING_URL, COMPATIBILITY_URL } = require( '../config/config' )
 
 const appEvents = () => {
 
@@ -141,6 +142,12 @@ const events = () => {
 			break
 		case 'resetApp':
 			reset.app()
+			break
+		case 'openTroubleshootingGuide':
+			shell.openExternal( TROUBLESHOOTING_URL ).catch( log.error )
+			break
+		case 'openGitHubIssues':
+			shell.openExternal( `${COMPATIBILITY_URL.replace( '#compatibility', '' )}/issues` ).catch( log.error )
 			break
 		default:
 			// Key not found

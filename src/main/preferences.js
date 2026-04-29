@@ -88,6 +88,8 @@ const getDefaults = () => ( {
 		reviewPromptFirstLaunchDate: null,
 		reviewPromptState: 'pending',
 		reviewPromptLaterDate: null,
+		helpPromptLockCount: 0,
+		helpPromptState: 'pending',
 	},
 } )
 
@@ -585,6 +587,59 @@ const preferencesConfig = {
 								key: 'resetApp',
 								type: 'button',
 								help: 'Reset all settings to default and clear any custom keybinds',
+							},
+						],
+					},
+				],
+			},
+		},
+
+		{
+			id: 'help',
+			label: 'Help',
+			icon: 'help-circle',
+			form: {
+				groups: [
+					{
+						label: '🎮 Game Compatibility Guide',
+						fields: [
+							{
+								content: `
+									<p>CrossOver works best with <strong>Borderless Windowed</strong> mode. If the crosshair disappears in-game, try the fixes below.</p>
+									<ol>
+										<li><strong>Borderless Windowed Mode</strong> — In your game's video settings, select "Borderless Window" or "Windowed Fullscreen". This is the most reliable fix.</li>
+										<li><strong>Vulkan / DirectX 12 Games</strong> — These APIs bypass screen overlays by design. Borderless windowed is required.</li>
+										<li><strong>Run as Administrator</strong> — Right-click the CrossOver shortcut and select "Run as administrator" so it can render above protected game windows.</li>
+										<li><strong>Anti-Cheat Software</strong> — Games using Easy Anti-Cheat or BattlEye may block overlays. Check if your game explicitly allows them.</li>
+										<li><strong>Move to Your Gaming Monitor</strong> — Press <kbd>Ctrl+Shift+Alt+M</kbd> to move the crosshair to the correct display.</li>
+										<li><strong>Toggle GPU Acceleration</strong> — If the crosshair flickers or vanishes, go to App Settings and toggle GPU acceleration off.</li>
+										<li><strong>Disable Windows Game Mode</strong> — Open Windows Settings → Gaming → Game Mode → Off to prevent interference.</li>
+										<li><strong>NVIDIA / AMD Overlay Conflicts</strong> — Disable GeForce Experience or AMD Adrenalin overlays which can conflict with CrossOver's window layering.</li>
+										<li><strong>HDR Display Mode</strong> — Windows HDR can affect overlay transparency. Try disabling HDR in your display settings during gameplay.</li>
+										<li><strong>AHK Script Alternative</strong> — For games where no overlay works, use an AutoHotKey script to draw a crosshair within the game process. See the GitHub README for an example.</li>
+									</ol>
+									<p><a target="_blank" href="https://github.com/lacymorrow/crossover#compatibility">View the full game compatibility list on GitHub →</a></p>
+								`,
+								type: 'message',
+							},
+						],
+					},
+					{
+						label: 'Still having trouble?',
+						fields: [
+							{
+								label: 'Open Troubleshooting Guide',
+								buttonLabel: 'Open Guide on GitHub',
+								key: 'openTroubleshootingGuide',
+								type: 'button',
+								help: 'Open the full troubleshooting guide and community workarounds',
+							},
+							{
+								label: 'Report an Issue',
+								buttonLabel: 'Open GitHub Issues',
+								key: 'openGitHubIssues',
+								type: 'button',
+								help: 'Report a bug or request a new game to be added to the compatibility list',
 							},
 						],
 					},

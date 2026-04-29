@@ -11,6 +11,8 @@ const DEFAULT_THEME = 'light'
 const ALERT_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/master/CROSSOVER_ALERT'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
 const RELEASES_URL = 'https://github.com/lacymorrow/crossover/releases/latest'
+const COMPATIBILITY_URL = 'https://github.com/lacymorrow/crossover#compatibility'
+const TROUBLESHOOTING_URL = 'https://github.com/lacymorrow/crossover#troubleshooting'
 const APP_ASPECT_RATIO = 16 / 10
 const APP_HEIGHT_MEDIUM = 225
 const APP_WIDTH_MEDIUM = 360
@@ -45,6 +47,8 @@ const config = {
 	ALERT_URL,
 	HOMEPAGE_URL,
 	RELEASES_URL,
+	COMPATIBILITY_URL,
+	TROUBLESHOOTING_URL,
 	MAX_SHADOW_WINDOWS,
 	SETTINGS_WINDOW_DEVTOOLS,
 	SHADOW_WINDOW_OFFSET,
