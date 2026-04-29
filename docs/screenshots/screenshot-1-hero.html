@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1920px; height: 1080px; overflow: hidden; font-family: 'Segoe UI', -apple-system, sans-serif; }
+.scene {
+	width: 1920px; height: 1080px;
+	background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 30%, #0d1225 60%, #151a30 100%);
+	position: relative;
+	display: flex; align-items: center; justify-content: center;
+}
+/* Simulated gameplay environment */
+.game-hud {
+	position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+}
+.game-hud .minimap {
+	position: absolute; bottom: 40px; left: 40px;
+	width: 200px; height: 200px;
+	border: 2px solid rgba(255,255,255,0.15);
+	border-radius: 8px;
+	background: rgba(0,0,0,0.4);
+}
+.game-hud .minimap::after {
+	content: '';
+	position: absolute; top: 50%; left: 50%;
+	width: 6px; height: 6px;
+	background: #5500ff;
+	border-radius: 50%;
+	transform: translate(-50%, -50%);
+}
+.game-hud .minimap .dot {
+	position: absolute;
+	width: 4px; height: 4px;
+	border-radius: 50%;
+}
+.game-hud .health {
+	position: absolute; bottom: 40px; left: 270px;
+	display: flex; align-items: center; gap: 12px;
+}
+.game-hud .health-bar {
+	width: 200px; height: 8px;
+	background: rgba(255,255,255,0.1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+.game-hud .health-bar-fill {
+	width: 78%; height: 100%;
+	background: linear-gradient(90deg, #22cc44, #44ee66);
+	border-radius: 4px;
+}
+.game-hud .health-text {
+	color: rgba(255,255,255,0.6);
+	font-size: 14px; font-weight: 600;
+}
+.game-hud .ammo {
+	position: absolute; bottom: 40px; right: 40px;
+	color: rgba(255,255,255,0.5);
+	font-size: 40px; font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.game-hud .ammo span { font-size: 20px; color: rgba(255,255,255,0.3); }
+.game-hud .killfeed {
+	position: absolute; top: 40px; right: 40px;
+	text-align: right;
+}
+.game-hud .killfeed div {
+	color: rgba(255,255,255,0.3);
+	font-size: 13px;
+	margin-bottom: 4px;
+}
+/* Simulated 3D environment lines */
+.env-line {
+	position: absolute;
+	background: rgba(255,255,255,0.03);
+}
+/* Crosshair overlay */
+.crosshair {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10;
+}
+.crosshair svg {
+	width: 60px; height: 60px;
+	filter: drop-shadow(0 0 8px rgba(85, 0, 255, 0.5));
+}
+/* Text overlay */
+.text-overlay {
+	position: absolute;
+	bottom: 140px;
+	left: 0; right: 0;
+	text-align: center;
+	z-index: 20;
+}
+.text-overlay h1 {
+	font-size: 72px;
+	font-weight: 800;
+	color: #ffffff;
+	letter-spacing: -1px;
+	text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+	line-height: 1.1;
+}
+.text-overlay h1 span {
+	background: linear-gradient(135deg, #7733ff, #5500ff, #aa44ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+/* App badge */
+.app-badge {
+	position: absolute;
+	top: 40px; left: 40px;
+	display: flex; align-items: center; gap: 14px;
+	z-index: 20;
+}
+.app-badge .icon {
+	width: 48px; height: 48px;
+	background: linear-gradient(135deg, #ff8800, #ff3388);
+	border-radius: 12px;
+	display: flex; align-items: center; justify-content: center;
+}
+.app-badge .icon svg { width: 28px; height: 28px; }
+.app-badge .name {
+	font-size: 22px; font-weight: 700;
+	color: rgba(255,255,255,0.9);
+	letter-spacing: 0.5px;
+}
+/* Subtle grid lines for depth */
+.grid-overlay {
+	position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+	background-image:
+		linear-gradient(rgba(85,0,255,0.03) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(85,0,255,0.03) 1px, transparent 1px);
+	background-size: 80px 80px;
+	perspective: 800px;
+	transform: rotateX(60deg);
+	transform-origin: center 120%;
+	opacity: 0.5;
+}
+/* Structures */
+.structure {
+	position: absolute;
+	border: 1px solid rgba(255,255,255,0.04);
+	background: rgba(255,255,255,0.01);
+}
+</style>
+</head>
+<body>
+<div class="scene">
+	<!-- Perspective grid for depth -->
+	<div class="grid-overlay"></div>
+
+	<!-- Simulated structures -->
+	<div class="structure" style="left:100px;top:150px;width:300px;height:500px;border-color:rgba(255,255,255,0.06);"></div>
+	<div class="structure" style="right:200px;top:100px;width:250px;height:600px;border-color:rgba(255,255,255,0.05);"></div>
+	<div class="structure" style="left:500px;top:300px;width:180px;height:350px;border-color:rgba(255,255,255,0.04);"></div>
+	<div class="structure" style="right:500px;top:250px;width:200px;height:400px;border-color:rgba(255,255,255,0.05);"></div>
+
+	<!-- Environment lines -->
+	<div class="env-line" style="left:0;top:680px;width:100%;height:1px;background:rgba(255,255,255,0.06);"></div>
+	<div class="env-line" style="left:0;top:400px;width:100%;height:1px;background:rgba(255,255,255,0.03);"></div>
+
+	<!-- Game HUD elements -->
+	<div class="game-hud">
+		<div class="minimap">
+			<div class="dot" style="top:30%;left:60%;background:#ff4444;"></div>
+			<div class="dot" style="top:70%;left:35%;background:#ff4444;"></div>
+			<div class="dot" style="top:45%;left:75%;background:#4488ff;"></div>
+		</div>
+		<div class="health">
+			<div class="health-bar"><div class="health-bar-fill"></div></div>
+			<div class="health-text">78 HP</div>
+		</div>
+		<div class="ammo">24 <span>/ 90</span></div>
+		<div class="killfeed">
+			<div>Player_X eliminated Noob42</div>
+			<div>SniperElite headshot DarkMatter</div>
+		</div>
+	</div>
+
+	<!-- CrossOver crosshair -->
+	<div class="crosshair">
+		<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="50" cy="50" r="20" fill="none" stroke="#5500ff" stroke-width="2.5" opacity="0.9"/>
+			<line x1="50" y1="15" x2="50" y2="38" stroke="#5500ff" stroke-width="2.5" opacity="0.9"/>
+			<line x1="50" y1="62" x2="50" y2="85" stroke="#5500ff" stroke-width="2.5" opacity="0.9"/>
+			<line x1="15" y1="50" x2="38" y2="50" stroke="#5500ff" stroke-width="2.5" opacity="0.9"/>
+			<line x1="62" y1="50" x2="85" y2="50" stroke="#5500ff" stroke-width="2.5" opacity="0.9"/>
+			<circle cx="50" cy="50" r="3" fill="#5500ff" opacity="0.9"/>
+		</svg>
+	</div>
+
+	<!-- App badge -->
+	<div class="app-badge">
+		<div class="icon">
+			<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="4"/>
+				<line x1="50" y1="10" x2="50" y2="35" stroke="white" stroke-width="4"/>
+				<line x1="50" y1="65" x2="50" y2="90" stroke="white" stroke-width="4"/>
+				<line x1="10" y1="50" x2="35" y2="50" stroke="white" stroke-width="4"/>
+				<line x1="65" y1="50" x2="90" y2="50" stroke="white" stroke-width="4"/>
+			</svg>
+		</div>
+		<div class="name">CrossOver</div>
+	</div>
+
+	<!-- Text overlay -->
+	<div class="text-overlay">
+		<h1>100+ Crosshairs. <span>Any Game.</span> Free.</h1>
+	</div>
+</div>
+</body>
+</html>

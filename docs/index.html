@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossOver — Crosshair Overlay for Any Screen</title>
+  <meta name="description" content="Free crosshair overlay. 530+ sights. Windows, Mac, Linux. Open source.">
+  <meta property="og:title" content="CrossOver — Crosshair Overlay for Any Screen">
+  <meta property="og:description" content="Free crosshair overlay. 530+ sights. Every platform. Open source.">
+  <meta property="og:image" content="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png">
+  <meta property="og:url" content="https://crossover.lacy.sh">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CrossOver — Crosshair Overlay">
+  <meta name="twitter:description" content="Free crosshair overlay. 530+ sights. Every platform.">
+  <meta name="twitter:image" content="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png">
+  <link rel="icon" href="https://github.com/lacymorrow/crossover/raw/main/src/static/icons/icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#08080a;--surface:#0e0e12;--surface-2:#151519;
+      --border:#1c1c24;--border-lt:#28283a;
+      --text:#e4e2df;--dim:#5e5c60;
+      --amber:#d9a514;--amber-gl:rgba(217,165,20,.06);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Chakra Petch',system-ui,sans-serif;
+      background:var(--bg);color:var(--text);
+      line-height:1.6;-webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    .dot-grid{
+      position:fixed;inset:0;
+      background-image:radial-gradient(rgba(255,255,255,.02) 1px,transparent 1px);
+      background-size:28px 28px;pointer-events:none;z-index:0;
+    }
+    a{color:var(--amber);text-decoration:none}
+
+    /* NAV */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      height:52px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;
+      background:rgba(8,8,10,.92);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-brand{
+      display:flex;align-items:center;gap:.5rem;
+      font-weight:700;font-size:.85rem;
+      letter-spacing:.12em;text-transform:uppercase;color:var(--text);
+    }
+    .nav-brand img{width:24px;height:24px}
+    .nav-r{display:flex;align-items:center;gap:1.5rem}
+    .nav-lk{
+      color:var(--dim);font-size:.75rem;
+      letter-spacing:.08em;text-transform:uppercase;
+      transition:color .2s;
+    }
+    .nav-lk:hover{color:var(--text)}
+    .btn-dl{
+      padding:.45rem 1.1rem;
+      background:var(--amber);color:var(--bg);
+      font-family:inherit;font-weight:700;font-size:.72rem;
+      letter-spacing:.1em;text-transform:uppercase;
+      border:none;cursor:pointer;transition:all .2s;
+      clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+    }
+    .btn-dl:hover{background:var(--text)}
+
+    /* HERO */
+    .hero{
+      position:relative;min-height:100vh;min-height:100dvh;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;padding:5rem 1.5rem 3rem;overflow:hidden;
+    }
+    @media(hover:hover){.hero{cursor:none}}
+    .hero-xh,.hero-xv{position:absolute;background:var(--amber);opacity:.1;z-index:1}
+    .hero-xh{
+      top:50%;left:0;right:0;height:1px;transform-origin:center;
+      animation:sH 1.4s cubic-bezier(.16,1,.3,1) .3s both;
+    }
+    .hero-xv{
+      left:50%;top:0;bottom:0;width:1px;transform-origin:center;
+      animation:sV 1.4s cubic-bezier(.16,1,.3,1) .3s both;
+    }
+    @keyframes sH{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes sV{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+    .tick{position:absolute;background:var(--amber);opacity:.08;z-index:1}
+    .tick-h{width:1px;height:12px;top:calc(50% - 6px)}
+    .tick-v{height:1px;width:12px;left:calc(50% - 6px)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    .hero-content{position:relative;z-index:2}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.3rem .9rem;border:1px solid var(--border);
+      font-family:'JetBrains Mono',monospace;
+      font-size:.65rem;color:var(--dim);letter-spacing:.06em;
+      animation:fadeUp .6s ease 1.1s both;
+    }
+    .pulse-dot{
+      width:5px;height:5px;border-radius:50%;background:#22c55e;
+      animation:blink 2.5s ease-in-out infinite;
+    }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero h1{
+      font-size:clamp(3.2rem,11vw,8rem);font-weight:700;
+      letter-spacing:.18em;line-height:.95;text-transform:uppercase;
+      margin:1.5rem 0;animation:fadeUp .8s ease .7s both;
+    }
+    .hero h1 em{font-style:normal;color:var(--amber)}
+    .hero-sub{
+      font-weight:300;font-size:1.1rem;color:var(--dim);
+      max-width:380px;margin:0 auto 2.5rem;
+      animation:fadeUp .8s ease .9s both;
+    }
+    .hero-cta{
+      display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;
+      margin-bottom:1.5rem;animation:fadeUp .7s ease 1.2s both;
+    }
+    .btn-big{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.7rem 2rem;font-family:inherit;font-weight:700;
+      font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+      border:none;cursor:pointer;transition:all .25s;
+    }
+    .btn-big.fill{
+      background:var(--amber);color:var(--bg);
+      clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+    }
+    .btn-big.fill:hover{background:var(--text)}
+    .btn-big.outline{background:transparent;color:var(--dim);border:1px solid var(--border-lt)}
+    .btn-big.outline:hover{color:var(--amber);border-color:var(--amber)}
+    .hero-note{
+      font-family:'JetBrains Mono',monospace;
+      font-size:.65rem;color:var(--dim);
+      letter-spacing:.1em;text-transform:uppercase;
+      animation:fadeUp .6s ease 1.4s both;
+    }
+
+    /* STORE BADGES */
+    .hero-stores{
+      display:flex;gap:1rem;justify-content:center;align-items:center;
+      margin-top:1.5rem;animation:fadeUp .6s ease 1.6s both;
+    }
+    .store-badge{opacity:.6;transition:opacity .25s}
+    .store-badge:hover{opacity:1}
+    .store-badge img{height:40px;display:block}
+
+    /* MOUSE CROSSHAIR */
+    .xhc{
+      position:fixed;pointer-events:none;z-index:90;
+      width:44px;height:44px;opacity:0;transition:opacity .25s;
+    }
+    .xc{position:absolute;background:var(--amber)}
+    .xc-n{width:1px;height:15px;left:50%;top:0;transform:translateX(-50%)}
+    .xc-s{width:1px;height:15px;left:50%;bottom:0;transform:translateX(-50%)}
+    .xc-e{height:1px;width:15px;top:50%;right:0;transform:translateY(-50%)}
+    .xc-w{height:1px;width:15px;top:50%;left:0;transform:translateY(-50%)}
+    .xc-d{
+      width:3px;height:3px;border-radius:50%;background:var(--amber);
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    }
+
+    /* STATS */
+    .stats{
+      position:relative;z-index:2;display:flex;justify-content:center;
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      background:var(--surface);
+    }
+    .stat{
+      padding:1.8rem 2.5rem;text-align:center;
+      border-right:1px solid var(--border);
+    }
+    .stat:last-child{border-right:none}
+    .stat-v{
+      font-family:'JetBrains Mono',monospace;
+      font-size:1.6rem;margin-bottom:.15rem;
+    }
+    .stat-v .u{font-size:.8rem;color:var(--amber)}
+    .stat-l{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+    /* SHOWCASE */
+    .showcase{position:relative;z-index:2;padding:6rem 2rem;text-align:center}
+    .frame{position:relative;display:inline-block;max-width:900px;width:100%}
+    .frame::before,.frame::after,.frame .br-bl,.frame .br-br{
+      content:'';position:absolute;width:28px;height:28px;z-index:3;
+    }
+    .frame::before{top:-1px;left:-1px;border-top:2px solid var(--amber);border-left:2px solid var(--amber)}
+    .frame::after{top:-1px;right:-1px;border-top:2px solid var(--amber);border-right:2px solid var(--amber)}
+    .frame .br-bl{bottom:-1px;left:-1px;border-bottom:2px solid var(--amber);border-left:2px solid var(--amber)}
+    .frame .br-br{bottom:-1px;right:-1px;border-bottom:2px solid var(--amber);border-right:2px solid var(--amber)}
+    .frame img{width:100%;display:block;border:1px solid var(--border)}
+
+    /* FEATURES */
+    .features{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:4rem 2rem 6rem}
+    .s-label{
+      font-family:'JetBrains Mono',monospace;
+      font-size:.65rem;letter-spacing:.15em;
+      text-transform:uppercase;color:var(--amber);margin-bottom:1rem;
+    }
+    .s-title{
+      font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;
+      letter-spacing:.04em;margin-bottom:3.5rem;line-height:1.2;
+    }
+    .fg{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+    .ft{background:var(--bg);padding:2.2rem 2rem;transition:background .25s}
+    .ft:hover{background:var(--surface)}
+    .ft-ic{width:28px;height:28px;margin-bottom:1rem;color:var(--amber)}
+    .ft h3{font-size:1rem;font-weight:600;letter-spacing:.03em;margin-bottom:.4rem}
+    .ft p{font-size:.88rem;font-weight:300;color:var(--dim);line-height:1.55}
+
+    /* GALLERY */
+    .gallery{
+      position:relative;z-index:2;padding:4rem 0;
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      background:var(--surface);overflow:hidden;
+    }
+    .gallery-lbl{text-align:center;margin-bottom:2.5rem}
+    .gallery-wrap{overflow:hidden}
+    .gallery-track{
+      display:flex;gap:3rem;width:max-content;
+      animation:marquee 50s linear infinite;
+    }
+    .gallery-track:hover{animation-play-state:paused}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .gallery-track img{
+      width:64px;height:64px;object-fit:contain;
+      opacity:.55;filter:grayscale(20%);transition:all .3s;
+    }
+    .gallery-track img:hover{opacity:1;filter:none;transform:scale(1.2)}
+
+    /* DOWNLOAD */
+    .download{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:6rem 2rem}
+    .dlg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+    .dlc{
+      background:var(--surface);border:1px solid var(--border);
+      padding:2rem 1.5rem;transition:border-color .2s;
+      clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+    }
+    .dlc:hover{border-color:var(--amber)}
+    .dlc h3{font-size:1.1rem;font-weight:600;letter-spacing:.05em;margin-bottom:.3rem}
+    .dlc .dn{font-size:.78rem;color:var(--dim);margin-bottom:1.5rem}
+    .dlc .btn-dl{width:100%;text-align:center;display:block}
+    .dlc .da{margin-top:.8rem;font-size:.7rem;color:var(--dim);text-align:center}
+    .dlc .da a{color:var(--dim);transition:color .2s}
+    .dlc .da a:hover{color:var(--amber)}
+
+    /* CTA */
+    .cta{position:relative;z-index:2;text-align:center;padding:6rem 2rem 8rem}
+    .cta h2{
+      font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;
+      letter-spacing:.05em;margin-bottom:.8rem;
+    }
+    .cta p{font-size:1rem;color:var(--dim);margin-bottom:2rem}
+
+    /* FOOTER */
+    footer{
+      position:relative;z-index:2;
+      border-top:1px solid var(--border);
+      padding:2.5rem 2rem;text-align:center;
+    }
+    .f-links{
+      display:flex;gap:2rem;justify-content:center;
+      flex-wrap:wrap;margin-bottom:1.2rem;
+    }
+    .f-links a{
+      color:var(--dim);font-size:.75rem;
+      letter-spacing:.06em;text-transform:uppercase;transition:color .2s;
+    }
+    .f-links a:hover{color:var(--text)}
+    footer small{font-size:.7rem;color:var(--dim);letter-spacing:.04em}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      nav{padding:0 1rem}
+      .hm{display:none}
+      .hero{padding:5rem 1rem 2rem}
+      .hero h1{letter-spacing:.1em}
+      .stats{flex-wrap:wrap}
+      .stat{flex:1 1 50%;border-bottom:1px solid var(--border)}
+      .stat:nth-child(2){border-right:none}
+      .stat:nth-child(4){border-right:none}
+      .fg{grid-template-columns:1fr}
+      .dlg{grid-template-columns:1fr}
+      .frame::before,.frame::after,.frame .br-bl,.frame .br-br{width:18px;height:18px}
+    }
+    @media(max-width:480px){
+      .stat{padding:1.2rem 1rem}
+      .stat-v{font-size:1.3rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="dot-grid"></div>
+
+  <nav>
+    <a href="#" class="nav-brand">
+      <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/icons/icon.png" alt="" width="24" height="24">
+      CrossOver
+    </a>
+    <div class="nav-r">
+      <a href="#features" class="nav-lk hm">Features</a>
+      <a href="#download" class="nav-lk hm">Download</a>
+      <a href="https://github.com/lacymorrow/crossover" class="nav-lk">GitHub</a>
+      <a href="https://github.com/lacymorrow/crossover/releases/latest" class="btn-dl">Download</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-xh"></div>
+    <div class="hero-xv"></div>
+    <div class="tick tick-h" style="left:20%"></div>
+    <div class="tick tick-h" style="left:40%"></div>
+    <div class="tick tick-h" style="left:60%"></div>
+    <div class="tick tick-h" style="left:80%"></div>
+    <div class="tick tick-v" style="top:25%"></div>
+    <div class="tick tick-v" style="top:40%"></div>
+    <div class="tick tick-v" style="top:60%"></div>
+    <div class="tick tick-v" style="top:75%"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge"><span class="pulse-dot"></span> Open Source &middot; Free Forever</div>
+      <h1>CROSS<em>OVER</em></h1>
+      <p class="hero-sub">Put a crosshair on anything. 530+ sights. Every platform.</p>
+      <div class="hero-cta">
+        <a href="https://github.com/lacymorrow/crossover/releases/latest/" class="btn-big fill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Free
+        </a>
+        <a href="https://github.com/lacymorrow/crossover" class="btn-big outline">View Source</a>
+      </div>
+      <p class="hero-note">Windows &middot; macOS &middot; Linux</p>
+      <div class="hero-stores">
+        <a href="https://apps.microsoft.com/detail/9mtd5zln7nl1?hl=en-US&gl=US" class="store-badge" aria-label="Get it from the Microsoft Store">
+          <img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Microsoft Store" height="40" loading="lazy">
+        </a>
+        <a href="https://snapcraft.io/crossover" class="store-badge" aria-label="Get it from the Snap Store">
+          <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Snap Store" height="40" loading="lazy">
+        </a>
+      </div>
+    </div>
+
+    <div class="xhc" id="xhc">
+      <span class="xc xc-n"></span><span class="xc xc-s"></span>
+      <span class="xc xc-e"></span><span class="xc xc-w"></span>
+      <span class="xc-d"></span>
+    </div>
+  </section>
+
+  <div class="stats reveal">
+    <div class="stat">
+      <div class="stat-v">217<span class="u">K+</span></div>
+      <div class="stat-l">Monthly Users</div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">530<span class="u">+</span></div>
+      <div class="stat-l">Built-in Sights</div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">4.8<span class="u">&#9733;</span></div>
+      <div class="stat-l">MS Store Rating</div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">1.1<span class="u">K</span></div>
+      <div class="stat-l">GitHub Stars</div>
+    </div>
+  </div>
+
+  <section class="showcase reveal">
+    <div class="frame">
+      <div class="br-bl"></div>
+      <div class="br-br"></div>
+      <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png" alt="CrossOver overlay on a game" loading="lazy">
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="s-label reveal">Capabilities</div>
+    <h2 class="s-title reveal">Precision tools.<br>Zero bloat.</h2>
+    <div class="fg reveal">
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="4"/>
+          <line x1="14" y1="1" x2="14" y2="7"/><line x1="14" y1="21" x2="14" y2="27"/>
+          <line x1="1" y1="14" x2="7" y2="14"/><line x1="21" y1="14" x2="27" y2="14"/>
+        </svg>
+        <h3>530+ Sights</h3>
+        <p>Mil-dot replicas, chevrons, tactical reticles across 25 categories. Drop in any custom image.</p>
+      </div>
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="4" width="24" height="16" rx="2"/>
+          <line x1="8" y1="24" x2="20" y2="24"/><line x1="14" y1="20" x2="14" y2="24"/>
+        </svg>
+        <h3>Every Platform</h3>
+        <p>Windows, macOS Intel &amp; Apple Silicon, Linux. Same app, same crosshair, everywhere.</p>
+      </div>
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="22" height="22" rx="3"/>
+          <circle cx="14" cy="14" r="5"/><line x1="10" y1="8" x2="18" y2="8"/>
+        </svg>
+        <h3>Works Everywhere</h3>
+        <p>Overlay sits above any windowed app. Valorant, CS2, Apex, Fortnite, same crosshair across every game.</p>
+      </div>
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2L24 7v8c0 6-4.5 10.5-10 12C8.5 25.5 4 21 4 15V7l10-5z"/>
+          <polyline points="10 14 13 17 19 11"/>
+        </svg>
+        <h3>Not Bannable</h3>
+        <p>Window overlay only. No memory injection, no game hooks, no anti-cheat triggers. Completely external.</p>
+      </div>
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="10" height="10" rx="1"/><rect x="16" y="2" width="10" height="10" rx="1"/>
+          <rect x="2" y="16" width="10" height="10" rx="1"/><rect x="16" y="16" width="10" height="10" rx="1"/>
+        </svg>
+        <h3>Multi-Monitor</h3>
+        <p>Move between displays. Duplicate up to 14 crosshairs across screens. Each remembers its position.</p>
+      </div>
+      <div class="ft">
+        <svg class="ft-ic" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 14s5-10 12-10 12 10 12 10-5 10-12 10S2 14 2 14z"/>
+          <circle cx="14" cy="14" r="4"/>
+        </svg>
+        <h3>Smart Hide</h3>
+        <p>Auto-hide on ADS or right-click. Global hotkeys for everything. Customizable size, color, opacity.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery">
+    <div class="gallery-lbl"><div class="s-label">Sample Sights</div></div>
+    <div class="gallery-wrap">
+      <div class="gallery-track">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/ballistic-firedot.png" alt="Ballistic Firedot" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Green.png" alt="Diatoku Green" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Chevron/Amethyst.png" alt="Chevron Amethyst" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/moa-delta.png" alt="MOA Delta" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png" alt="MLG Blue" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/boone-crockett-illuminated.png" alt="Boone Crockett" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Purple.png" alt="Diatoku Purple" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png" alt="MLG Orange" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/leupold-dot.png" alt="Leupold Dot" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Special%20Requests/Monkeybolo.png" alt="Monkeybolo" width="64" height="64" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/ballistic-firedot.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Green.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Chevron/Amethyst.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/moa-delta.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Blue.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/boone-crockett-illuminated.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/The%20Diatoku/Purple.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/MLG%20Dot%20Outlined/Orange.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Actual/leupold-dot.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+        <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/crosshairs/Special%20Requests/Monkeybolo.png" alt="" width="64" height="64" aria-hidden="true" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section class="download" id="download">
+    <div class="s-label reveal">Get CrossOver</div>
+    <h2 class="s-title reveal">Free. No account.<br>No ads. No tracking.</h2>
+    <div class="dlg reveal">
+      <div class="dlc">
+        <h3>Windows</h3>
+        <p class="dn">Windows 7 and later</p>
+        <a href="https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe" class="btn-dl">Download .exe</a>
+        <p class="da"><a href="https://apps.microsoft.com/detail/9mtd5zln7nl1">Microsoft Store</a> &middot; <a href="https://github.com/lacymorrow/crossover/releases/latest/">Portable</a></p>
+      </div>
+      <div class="dlc">
+        <h3>macOS</h3>
+        <p class="dn">10.10+ &middot; Intel &amp; Apple Silicon</p>
+        <a href="https://github.com/lacymorrow/crossover/releases/latest/" class="btn-dl">Download .dmg</a>
+        <p class="da">x64 and arm64 builds</p>
+      </div>
+      <div class="dlc">
+        <h3>Linux</h3>
+        <p class="dn">AppImage, deb, snap, rpm</p>
+        <a href="https://snapcraft.io/crossover" class="btn-dl">Snap Store</a>
+        <p class="da"><a href="https://github.com/lacymorrow/crossover/releases/latest/">AppImage</a> &middot; <a href="https://github.com/lacymorrow/crossover/releases/latest/">deb</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta reveal">
+    <h2>Stop paying for crosshairs.</h2>
+    <p>CrossOver is free, open source, and always will be.</p>
+    <a href="https://github.com/lacymorrow/crossover/releases/latest/" class="btn-big fill">Download CrossOver</a>
+  </section>
+
+  <footer>
+    <div class="f-links">
+      <a href="https://github.com/lacymorrow/crossover">GitHub</a>
+      <a href="https://github.com/lacymorrow/crossover/releases">Releases</a>
+      <a href="https://github.com/lacymorrow/crossover/issues">Issues</a>
+      <a href="https://github.com/sponsors/lacymorrow">Sponsor</a>
+      <a href="https://www.patreon.com/lacymorrow">Patreon</a>
+    </div>
+    <small>&copy; 2025 Lacy Morrow &middot; MIT License</small>
+  </footer>
+
+  <script>
+    (function(){
+      var hero=document.querySelector('.hero'),xh=document.getElementById('xhc'),inH=false;
+      hero.addEventListener('mouseenter',function(){inH=true;xh.style.opacity='1'});
+      hero.addEventListener('mouseleave',function(){inH=false;xh.style.opacity='0'});
+      hero.addEventListener('mousemove',function(e){
+        if(!inH)return;
+        xh.style.left=(e.clientX-22)+'px';
+        xh.style.top=(e.clientY-22)+'px';
+      });
+
+      var els=document.querySelectorAll('.reveal');
+      var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting)entry.target.classList.add('visible');
+        });
+      },{threshold:0.12});
+      els.forEach(function(el){obs.observe(el)});
+
+      document.querySelectorAll('a[href^="#"]').forEach(function(a){
+        a.addEventListener('click',function(e){
+          e.preventDefault();
+          var t=document.querySelector(a.getAttribute('href'));
+          if(t)t.scrollIntoView({behavior:'smooth'});
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

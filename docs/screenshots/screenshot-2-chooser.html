@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 1920px; height: 1080px; overflow: hidden; font-family: 'Segoe UI', -apple-system, sans-serif; }
+.scene {
+	width: 1920px; height: 1080px;
+	background: linear-gradient(160deg, #0c0f1a 0%, #141830 50%, #0a0d18 100%);
+	position: relative;
+	display: flex; align-items: center; justify-content: center;
+}
+/* App window mockup */
+.app-window {
+	width: 1100px; height: 750px;
+	background: #1a1d2e;
+	border-radius: 16px;
+	box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+	overflow: hidden;
+	position: relative;
+}
+.window-titlebar {
+	height: 40px;
+	background: #12141f;
+	display: flex; align-items: center;
+	padding: 0 16px;
+	gap: 8px;
+}
+.window-dot {
+	width: 12px; height: 12px;
+	border-radius: 50%;
+}
+.window-dot.red { background: #ff5f57; }
+.window-dot.yellow { background: #febc2e; }
+.window-dot.green { background: #28c840; }
+.window-title {
+	flex: 1;
+	text-align: center;
+	color: rgba(255,255,255,0.4);
+	font-size: 13px;
+	font-weight: 500;
+}
+.chooser-grid {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	gap: 6px;
+	padding: 24px;
+	height: calc(100% - 40px);
+	overflow: hidden;
+	align-content: start;
+}
+.crosshair-cell {
+	aspect-ratio: 1;
+	background: rgba(255,255,255,0.04);
+	border-radius: 8px;
+	display: flex; align-items: center; justify-content: center;
+	border: 1px solid rgba(255,255,255,0.06);
+	transition: all 0.2s;
+	position: relative;
+}
+.crosshair-cell.selected {
+	border-color: #5500ff;
+	background: rgba(85,0,255,0.15);
+	box-shadow: 0 0 20px rgba(85,0,255,0.3);
+}
+.crosshair-cell svg {
+	width: 55%; height: 55%;
+	opacity: 0.85;
+}
+/* Different crosshair styles */
+.ch-dot svg circle { fill: var(--ch-color, #00ff88); }
+.ch-cross svg line { stroke: var(--ch-color, #ff4444); stroke-width: 3; }
+.ch-circle svg circle { fill: none; stroke: var(--ch-color, #44aaff); stroke-width: 2.5; }
+.ch-chevron svg path { fill: none; stroke: var(--ch-color, #ffaa00); stroke-width: 3; stroke-linecap: round; }
+
+/* Category tabs */
+.category-tabs {
+	position: absolute; top: 40px; left: 0; right: 0;
+	display: flex; gap: 0;
+	background: #0f111a;
+	padding: 0 24px;
+	border-bottom: 1px solid rgba(255,255,255,0.06);
+	overflow: hidden;
+}
+.tab {
+	padding: 10px 16px;
+	color: rgba(255,255,255,0.35);
+	font-size: 12px; font-weight: 500;
+	white-space: nowrap;
+	border-bottom: 2px solid transparent;
+}
+.tab.active {
+	color: #5500ff;
+	border-bottom-color: #5500ff;
+}
+
+.chooser-grid { margin-top: 38px; }
+
+/* Text overlay */
+.text-overlay {
+	position: absolute;
+	bottom: 80px;
+	left: 0; right: 0;
+	text-align: center;
+	z-index: 20;
+}
+.text-overlay h1 {
+	font-size: 52px;
+	font-weight: 800;
+	color: #ffffff;
+	text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+}
+.text-overlay h1 span {
+	background: linear-gradient(135deg, #7733ff, #5500ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+/* App badge */
+.app-badge {
+	position: absolute; top: 40px; left: 40px;
+	display: flex; align-items: center; gap: 14px; z-index: 20;
+}
+.app-badge .icon {
+	width: 44px; height: 44px;
+	background: linear-gradient(135deg, #ff8800, #ff3388);
+	border-radius: 10px;
+	display: flex; align-items: center; justify-content: center;
+}
+.app-badge .icon svg { width: 26px; height: 26px; }
+.app-badge .name { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.9); }
+/* Count badge */
+.count-badge {
+	position: absolute; top: 40px; right: 40px;
+	background: rgba(85,0,255,0.2);
+	border: 1px solid rgba(85,0,255,0.4);
+	border-radius: 20px;
+	padding: 8px 20px;
+	color: #aa88ff;
+	font-size: 16px; font-weight: 600;
+	z-index: 20;
+}
+</style>
+</head>
+<body>
+<div class="scene">
+	<div class="app-badge">
+		<div class="icon">
+			<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="white" stroke-width="4"/><line x1="50" y1="10" x2="50" y2="35" stroke="white" stroke-width="4"/><line x1="50" y1="65" x2="50" y2="90" stroke="white" stroke-width="4"/><line x1="10" y1="50" x2="35" y2="50" stroke="white" stroke-width="4"/><line x1="65" y1="50" x2="90" y2="50" stroke="white" stroke-width="4"/></svg>
+		</div>
+		<div class="name">CrossOver</div>
+	</div>
+	<div class="count-badge">326 crosshairs</div>
+
+	<div class="app-window">
+		<div class="window-titlebar">
+			<div class="window-dot red"></div>
+			<div class="window-dot yellow"></div>
+			<div class="window-dot green"></div>
+			<div class="window-title">Choose Crosshair</div>
+		</div>
+		<div class="category-tabs">
+			<div class="tab active">All</div>
+			<div class="tab">Actual</div>
+			<div class="tab">Chevron</div>
+			<div class="tab">Circle Dot</div>
+			<div class="tab">Crossdot</div>
+			<div class="tab">Crosshair</div>
+			<div class="tab">Dot</div>
+			<div class="tab">Kenney</div>
+			<div class="tab">Special</div>
+			<div class="tab">T-Dot</div>
+			<div class="tab">X-Hair</div>
+			<div class="tab">User Created</div>
+		</div>
+		<div class="chooser-grid" id="grid"></div>
+	</div>
+
+	<div class="text-overlay">
+		<h1>Pick from <span>326 crosshairs</span> and custom designs</h1>
+	</div>
+</div>
+
+<script>
+const colors = ['#ff4444','#44ff44','#4488ff','#ffaa00','#ff44ff','#44ffff','#ff8844','#88ff44','#ff4488','#44aaff','#ffff44','#aa44ff','#44ff88','#ff6644','#66ff44'];
+const types = ['dot','cross','circle','chevron','crossdot','ring','tdot'];
+const grid = document.getElementById('grid');
+
+for (let i = 0; i < 70; i++) {
+	const cell = document.createElement('div');
+	cell.className = 'crosshair-cell' + (i === 23 ? ' selected' : '');
+	const color = colors[i % colors.length];
+	const type = types[i % types.length];
+	let svg = '';
+	switch(type) {
+		case 'dot':
+			svg = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="8" fill="${color}"/></svg>`;
+			break;
+		case 'cross':
+			svg = `<svg viewBox="0 0 100 100"><line x1="50" y1="15" x2="50" y2="40" stroke="${color}" stroke-width="3"/><line x1="50" y1="60" x2="50" y2="85" stroke="${color}" stroke-width="3"/><line x1="15" y1="50" x2="40" y2="50" stroke="${color}" stroke-width="3"/><line x1="60" y1="50" x2="85" y2="50" stroke="${color}" stroke-width="3"/><circle cx="50" cy="50" r="3" fill="${color}"/></svg>`;
+			break;
+		case 'circle':
+			svg = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="none" stroke="${color}" stroke-width="2.5"/><circle cx="50" cy="50" r="3" fill="${color}"/></svg>`;
+			break;
+		case 'chevron':
+			svg = `<svg viewBox="0 0 100 100"><path d="M35 65 L50 35 L65 65" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+			break;
+		case 'crossdot':
+			svg = `<svg viewBox="0 0 100 100"><line x1="50" y1="20" x2="50" y2="38" stroke="${color}" stroke-width="2.5"/><line x1="50" y1="62" x2="50" y2="80" stroke="${color}" stroke-width="2.5"/><line x1="20" y1="50" x2="38" y2="50" stroke="${color}" stroke-width="2.5"/><line x1="62" y1="50" x2="80" y2="50" stroke="${color}" stroke-width="2.5"/><circle cx="50" cy="50" r="5" fill="${color}"/></svg>`;
+			break;
+		case 'ring':
+			svg = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="18" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="8 4"/><circle cx="50" cy="50" r="3" fill="${color}"/></svg>`;
+			break;
+		case 'tdot':
+			svg = `<svg viewBox="0 0 100 100"><line x1="50" y1="20" x2="50" y2="40" stroke="${color}" stroke-width="3"/><line x1="25" y1="50" x2="40" y2="50" stroke="${color}" stroke-width="3"/><line x1="60" y1="50" x2="75" y2="50" stroke="${color}" stroke-width="3"/><circle cx="50" cy="50" r="4" fill="${color}"/></svg>`;
+			break;
+	}
+	cell.innerHTML = svg;
+	grid.appendChild(cell);
+}
+</script>
+</body>
+</html>
