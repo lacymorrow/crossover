@@ -7,6 +7,7 @@ const {
 	is,
 	appMenu,
 } = require( './util' )
+const { TROUBLESHOOTING_URL, COMPATIBILITY_URL } = require( '../config/config' )
 
 const errorHandling = require( './error-handling' )
 const dialog = require( './dialog' )
@@ -17,7 +18,7 @@ const windows = require( './windows' )
 
 /* MENU ITEMS */
 const closeWindowMenuItem = {
-	label: 'Custom Image...',
+	label: 'Close Window',
 	async click() {
 
 		// Open dialog
@@ -89,6 +90,11 @@ const showAppMenuItem = {
 	},
 }
 
+const troubleshootingMenuItem = openUrlMenuItem( {
+	label: 'Game Not Working? Troubleshooting Guide',
+	url: TROUBLESHOOTING_URL,
+} )
+
 /* SUBMENUS */
 const helpSubmenu = [
 	openUrlMenuItem( {
@@ -102,6 +108,14 @@ const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Support the Developer',
 		url: 'https://www.patreon.com/lacymorrow',
+	} ),
+	{
+		type: 'separator',
+	},
+	troubleshootingMenuItem,
+	openUrlMenuItem( {
+		label: 'Game Compatibility List',
+		url: COMPATIBILITY_URL,
 	} ),
 	{
 		type: 'separator',
@@ -239,5 +253,6 @@ const menu = {
 	openCustomImageMenuItem,
 	resetMenuItem,
 	showAppMenuItem,
+	troubleshootingMenuItem,
 }
 module.exports = menu
