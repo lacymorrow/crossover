@@ -17,7 +17,7 @@ jobs:
           rm -rf *
         if: ${{ always() }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Check memory and cpu
       - name: Verify Runner Resources
@@ -31,10 +31,9 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
-          cache: "npm"
 
       - name: Install Dependencies
         run: |
@@ -74,7 +73,7 @@ jobs:
 
       - name: Upload Test Results 🗃
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/*
@@ -91,7 +90,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       - name: Checkout Project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Node Version
         run: |
@@ -103,10 +102,9 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
-          cache: "npm"
 
       # - name: Get MSFT Cert
       #   id: write_file
