@@ -196,6 +196,12 @@ const followMouse = async () => {
 
 	const listener = event => {
 
+		if ( !windows.win || windows.win.isDestroyed() ) {
+
+			return
+
+		}
+
 		windows.win.setBounds( {
 			x: event.x - Math.round( width / 2 ),
 			y: event.y - Math.round( height / 2 ),

@@ -60,6 +60,11 @@ const appEvents = () => {
 	// See https://github.com/electron/electron/issues/5273
 	app.on( 'before-quit', () => {
 
+		// Stop IOHook before windows close so in-flight events (e.g. mousemove
+		// for followMouse) can't call setBounds on a destroyed window and trigger
+		// an ObjC exception crash (EXC_BAD_INSTRUCTION via _crashOnException).
+		iohook.unregisterIOHook()
+
 		// Unlock all windows before quitting so they can properly close on Windows
 		// When locked, closable=false prevents the window from being destroyed,
 		// leaving a zombie process (see #480)
