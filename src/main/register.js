@@ -89,9 +89,7 @@ const appEvents = () => {
 
 	app.on( 'will-quit', () => {
 
-		// Save lock state before cleanup so it persists for next launch
-		// Then unregister all hooks and shortcuts
-		iohook.unregisterIOHook()
+		// IOHook already stopped in before-quit; just clean up keyboard shortcuts
 		keyboard.unregisterShortcuts()
 		// process.exit( EXIT_CODES.SUCCESS )
 
