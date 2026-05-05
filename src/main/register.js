@@ -1,4 +1,4 @@
-const { app } = require( 'electron' )
+const { app, session } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
@@ -9,6 +9,15 @@ const reset = require( './reset' )
 const windows = require( './windows' )
 
 const appEvents = () => {
+
+	// CrossOver only renders local files and needs no browser permissions.
+	// Deny all permission requests (geolocation, notifications, camera, etc.)
+	// to prevent unexpected OS prompts, particularly on Windows. (#471)
+	session.defaultSession.setPermissionRequestHandler( ( _webContents, _permission, callback ) => {
+
+		callback( false )
+
+	} )
 
 	app.on( 'activate', async () => {
 
