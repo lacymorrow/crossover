@@ -19,6 +19,8 @@ const appEvents = () => {
 
 	} )
 
+	session.defaultSession.setPermissionCheckHandler( () => false )
+
 	app.on( 'activate', async () => {
 
 		// Will return current window if exists
