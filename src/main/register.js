@@ -7,6 +7,7 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
 const windows = require( './windows' )
+const EXIT_CODES = require( '../config/exit-codes' )
 
 const appEvents = () => {
 
@@ -101,8 +102,9 @@ const appEvents = () => {
 	app.on( 'will-quit', () => {
 
 		// IOHook already stopped in before-quit; just clean up keyboard shortcuts
+		// then force-exit to prevent lingering handles from keeping the process alive.
 		keyboard.unregisterShortcuts()
-		// process.exit( EXIT_CODES.SUCCESS )
+		process.exit( EXIT_CODES.SUCCESS )
 
 	} )
 
