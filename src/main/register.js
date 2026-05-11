@@ -7,6 +7,7 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
 const windows = require( './windows' )
+const EXIT_CODES = require( '../config/exit-codes' )
 
 const appEvents = () => {
 
@@ -84,11 +85,12 @@ const appEvents = () => {
 
 	app.on( 'will-quit', () => {
 
-		// Save lock state before cleanup so it persists for next launch
-		// Then unregister all hooks and shortcuts
+		// Unregister all hooks and shortcuts, then force-exit to prevent
+		// lingering handles (timers, native modules) from keeping the process
+		// alive after the user quits. (#486)
 		iohook.unregisterIOHook()
 		keyboard.unregisterShortcuts()
-		// process.exit( EXIT_CODES.SUCCESS )
+		process.exit( EXIT_CODES.SUCCESS )
 
 	} )
 
