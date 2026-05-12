@@ -76,7 +76,7 @@
       position:relative;min-height:100vh;min-height:100dvh;
       display:flex;flex-direction:column;
       align-items:center;justify-content:center;
-      text-align:center;padding:5rem 1.5rem 3rem;overflow:hidden;
+      text-align:center;padding:5rem 1.5rem 3rem;
     }
     @media(hover:hover){.hero{cursor:none}}
     .hero-xh,.hero-xv{position:absolute;background:var(--amber);opacity:.1;z-index:1}
@@ -151,6 +151,15 @@
     .store-badge{opacity:.6;transition:opacity .25s}
     .store-badge:hover{opacity:1}
     .store-badge img{height:40px;display:block}
+
+    /* HERO DEMO */
+    .hero-demo{
+      margin-top:3rem;position:relative;z-index:2;
+      max-width:820px;width:100%;
+      animation:fadeUp .8s ease 1.8s both;
+    }
+    .hero-demo .frame::before,.hero-demo .frame::after,
+    .hero-demo .frame .br-bl,.hero-demo .frame .br-br{width:20px;height:20px}
 
     /* MOUSE CROSSHAIR */
     .xhc{
@@ -293,6 +302,8 @@
       .fg{grid-template-columns:1fr}
       .dlg{grid-template-columns:1fr}
       .frame::before,.frame::after,.frame .br-bl,.frame .br-br{width:18px;height:18px}
+      .hero-demo .frame::before,.hero-demo .frame::after,
+      .hero-demo .frame .br-bl,.hero-demo .frame .br-br{width:18px;height:18px}
     }
     @media(max-width:480px){
       .stat{padding:1.2rem 1rem}
@@ -347,6 +358,13 @@
         <a href="https://snapcraft.io/crossover" class="store-badge" aria-label="Get it from the Snap Store">
           <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Snap Store" height="40" loading="lazy">
         </a>
+      </div>
+
+      <div class="hero-demo">
+        <div class="frame">
+          <div class="br-bl"></div><div class="br-br"></div>
+          <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png" alt="CrossOver crosshair overlay on a game" width="628" height="338" loading="eager">
+        </div>
       </div>
     </div>
 
