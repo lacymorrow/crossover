@@ -152,6 +152,16 @@
     .store-badge:hover{opacity:1}
     .store-badge img{height:40px;display:block}
 
+    /* HERO DEMO */
+    .hero-demo{
+      margin-top:3rem;position:relative;z-index:2;
+      max-width:820px;width:100%;
+      animation:fadeUp .8s ease 1.8s both;
+    }
+    .hero-demo .frame img{border:1px solid var(--border)}
+    .hero-demo .frame::before,.hero-demo .frame::after,
+    .hero-demo .frame .br-bl,.hero-demo .frame .br-br{width:20px;height:20px}
+
     /* MOUSE CROSSHAIR */
     .xhc{
       position:fixed;pointer-events:none;z-index:90;
@@ -347,6 +357,13 @@
         <a href="https://snapcraft.io/crossover" class="store-badge" aria-label="Get it from the Snap Store">
           <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" alt="Snap Store" height="40" loading="lazy">
         </a>
+      </div>
+
+      <div class="hero-demo">
+        <div class="frame">
+          <div class="br-bl"></div><div class="br-br"></div>
+          <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-main.png" alt="CrossOver crosshair overlay on a game" loading="eager">
+        </div>
       </div>
     </div>
 
