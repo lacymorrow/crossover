@@ -470,19 +470,22 @@ const resizeOnADS = async () => {
 	}
 
 	const ads = preferences.value( 'actions.resizeOnADS' )
-	const adsSize = Number.parseInt( preferences.value( 'actions.resizeOnADSSize' ), 10 )
-	const adsToggle = checkboxTrue( preferences.value( 'actions.resizeOnADSToggle' ), 'resizeOnADSToggle' )
+	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 )
+	const adsToggle = ads === 'toggle'
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 	const newCrosshairSize = adsSize
 
 	log.info( 'Setting: ADS Resize' )
 
+	// Right mouse button (MOUSE_BUTTON2 = 2 in uiohook-napi)
+	const RIGHT_MOUSE_BUTTON = 2
+
 	if ( adsToggle ) {
 
 		const listener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				const adsed = preferences.value( 'hidden.ADSed' )
 				if ( adsed ) {
@@ -514,7 +517,7 @@ const resizeOnADS = async () => {
 
 		const mouseDownListener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				set.rendererProperties( {
 					'--crosshair-width': `${newCrosshairSize}px`,
@@ -530,7 +533,7 @@ const resizeOnADS = async () => {
 
 		const mouseUpListener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				set.rendererProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,
