@@ -108,13 +108,6 @@ jobs:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
           cache: "npm"
 
-      # - name: Get MSFT Cert
-      #   id: write_file
-      #   uses: timheuer/base64-to-file@v1
-      #   with:
-      #     fileName: "kubeshop_msft.p12"
-      #     encodedString: ${{ secrets.CERT_MSFT_KUBESHOP_P12_B64 }}
-
       # Install Dependencies
       - name: Install Dependencies
         run: |
@@ -135,15 +128,25 @@ jobs:
           # We use circle as ci
           CI: false
 
-      # - name: Package
-      #   run: |
-      #     npm exec -c 'electron-builder --publish "never"'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.github_token }}
-      #     WIN_CSC_LINK: ${{ steps.write_file.outputs.filePath }}
-      #     WIN_CSC_KEY_PASSWORD: ${{ secrets.CERT_MSFT_KUBESHOP_P12_PASSWORD }}
-      #     EP_PRE_RELEASE: true
-      #     USE_HARD_LINKS: false
+      - name: Prepare Microsoft Defender submission archive
+        if: github.ref == 'refs/heads/release'
+        shell: pwsh
+        run: |
+          $installers = Get-ChildItem -Path dist -File -Include *.exe,*.msi -Recurse
+          if (-not $installers) {
+            Write-Host "No Windows installers were found in dist; skipping Defender submission archive."
+            exit 0
+          }
+
+          Compress-Archive -Path $installers.FullName -DestinationPath "defender-submission.zip" -Force
+
+      - name: Upload Microsoft Defender submission archive
+        if: github.ref == 'refs/heads/release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: microsoft-defender-submission
+          path: defender-submission.zip
+          if-no-files-found: ignore
 
       # # Check Binary Sizes
       # - name: Build Succeeded
