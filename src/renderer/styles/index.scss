@@ -630,3 +630,67 @@ label {
 	display: none;
 	pointer-events: none;
 }
+
+.review-prompt {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+    z-index: 90;
+    background: var(--app-bg-color, var(--app-bg-color-initial));
+    border: 2px solid var(--app-highlight-color, var(--app-highlight-color-initial));
+    border-radius: 4px;
+    padding: 5px 7px;
+    -webkit-app-region: no-drag;
+    pointer-events: auto;
+
+    &.d-none {
+        display: none;
+    }
+
+    .review-prompt-body {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .review-prompt-text {
+        font-size: 9px;
+        color: var(--app-text-color);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .review-prompt-actions {
+        display: flex;
+        gap: 3px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .review-prompt-btn {
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 8px;
+        font-family: inherit;
+        pointer-events: auto;
+        text-decoration: none;
+        transition: opacity 0.15s ease;
+        background: transparent;
+        color: var(--app-text-color);
+        display: inline-block;
+
+        &:hover {
+            opacity: 0.7;
+        }
+
+        &--primary {
+            background: var(--app-highlight-color, var(--app-highlight-color-initial));
+            color: #fff;
+        }
+    }
+}
