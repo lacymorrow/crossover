@@ -297,7 +297,7 @@ $ npm install
 $ npm start
 ```
 
-Bug reports, feature requests, and PRs are all welcome — see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md).
+Bug reports, feature requests, and PRs are all welcome — open an [issue](https://github.com/lacymorrow/crossover/issues/new/choose) or jump into [Discussions](https://github.com/lacymorrow/crossover/discussions).
 
 ## Credits
 
@@ -323,7 +323,7 @@ CrossOver is built and maintained by one person. Downloads don't pay bills. If C
 <summary>Crypto tips</summary>
 
 - **ETH:** `0xfa81F824ea177DA04F7F3E799058b31854C003BC`
-- **BTC:** `0x55520815d29a3Ac0067Dc23ccb8d24c6Ea89DD82`
+- **ETH (alt):** `0x55520815d29a3Ac0067Dc23ccb8d24c6Ea89DD82`
 
 </details>
 

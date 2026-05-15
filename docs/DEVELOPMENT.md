@@ -102,7 +102,7 @@ $ /Applications/CrossOver.app/Contents/MacOS/CrossOver --debug
 - **ESLint** with the XO config.
 - **Tabs**, no semicolons. Spaces inside arrays/objects/parens. Imports sorted alphabetically.
 - Don't introduce new frameworks — vanilla HTML/JS keeps the runtime tiny.
-- No `.unwrap()`-style "this should never fail" code in the IPC layer — surface errors and log them through `electron-log`.
+- Don't write "this should never fail" code in the IPC layer — surface errors and log them through `electron-log`.
 
 ## Architecture cheat sheet
 
@@ -114,7 +114,7 @@ src/
 │   ├── windows.js       # multi-window management
 │   ├── preferences.js   # electron-preferences integration
 │   ├── keyboard.js      # global hotkey registration
-│   └── iohook.js        # mouse/keyboard hook hook
+│   └── iohook.js        # mouse/keyboard hook integration
 ├── renderer/
 │   ├── renderer.js      # main crosshair window
 │   ├── chooser.js       # crosshair picker
