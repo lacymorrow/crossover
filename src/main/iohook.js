@@ -245,8 +245,16 @@ const hideOnMouse = async () => {
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' )
+	const showOnMouseInvert = checkboxTrue( preferences.value( 'actions.showOnMouseInvert' ), 'showOnMouseInvert' )
 
-	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) )
+	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) + ( showOnMouseInvert ? ' (inverted: show on ADS)' : '' ) )
+
+	// In inverted mode the crosshair starts hidden; the button reveals it.
+	if ( showOnMouseInvert ) {
+
+		set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+
+	}
 
 	if ( hideOnMouseToggle ) {
 
@@ -255,17 +263,13 @@ const hideOnMouse = async () => {
 			const hidden = preferences.value( 'hidden.ADShidden' )
 			if ( event.button === mouseButton ) {
 
-				if ( hidden ) {
+				const nextHidden = !hidden
 
-					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// In inverted mode, "hidden" state maps to visible (opposite of normal)
+				const showOpacity = showOnMouseInvert ? ( nextHidden ? opacity.toString() : '0' ) : ( nextHidden ? '0' : opacity.toString() )
 
-				} else {
-
-					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
-
-				}
-
-				preferences.value( 'hidden.ADShidden', !hidden )
+				set.rendererProperties( { '--crosshair-opacity': showOpacity }, windows.win )
+				preferences.value( 'hidden.ADShidden', nextHidden )
 
 			}
 
@@ -280,7 +284,8 @@ const hideOnMouse = async () => {
 
 			if ( event.button === mouseButton ) {
 
-				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+				// Normal: hide on press. Inverted: show on press.
+				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? opacity.toString() : '0' }, windows.win )
 
 			}
 
@@ -293,7 +298,8 @@ const hideOnMouse = async () => {
 
 			if ( event.button === mouseButton ) {
 
-				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// Normal: show on release. Inverted: hide on release.
+				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? '0' : opacity.toString() }, windows.win )
 
 			}
 
