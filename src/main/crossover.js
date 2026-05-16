@@ -347,17 +347,22 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--circle-thickness': options.crosshair.circleThickness,
 	}
 
-	// App color is set
-
-	if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
-
-		properties['--app-highlight-color'] = options.app.appHighlightColor
-
-	}
+	// App colors — highlight only applies when bg is also set; resetting bg resets highlight too
 
 	if ( options.app.appBgColor.charAt( 0 ) === '#' ) {
 
 		properties['--app-bg-color'] = hexToRgbA( options.app.appBgColor, APP_BACKGROUND_OPACITY )
+
+		if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
+
+			properties['--app-highlight-color'] = options.app.appHighlightColor
+
+		}
+
+	} else if ( options.app.appHighlightColor !== 'unset' ) {
+
+		// bg was reset to default — clear orphaned highlight color so buttons stay visible
+		preferences.value( 'app.appHighlightColor', 'unset' )
 
 	}
 
