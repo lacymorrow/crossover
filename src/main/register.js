@@ -1,4 +1,4 @@
-const { app } = require( 'electron' )
+const { app, session } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
@@ -7,8 +7,20 @@ const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
 const windows = require( './windows' )
+const EXIT_CODES = require( '../config/exit-codes' )
 
 const appEvents = () => {
+
+	// CrossOver only renders local files and needs no browser permissions.
+	// Deny all permission requests (geolocation, notifications, camera, etc.)
+	// to prevent unexpected OS prompts, particularly on Windows. (#471)
+	session.defaultSession.setPermissionRequestHandler( ( _webContents, _permission, callback ) => {
+
+		callback( false )
+
+	} )
+
+	session.defaultSession.setPermissionCheckHandler( () => false )
 
 	app.on( 'activate', async () => {
 
@@ -60,6 +72,11 @@ const appEvents = () => {
 	// See https://github.com/electron/electron/issues/5273
 	app.on( 'before-quit', () => {
 
+		// Stop IOHook before windows close so in-flight events (e.g. mousemove
+		// for followMouse) can't call setBounds on a destroyed window and trigger
+		// an ObjC exception crash (EXC_BAD_INSTRUCTION via _crashOnException).
+		iohook.unregisterIOHook()
+
 		// Unlock all windows before quitting so they can properly close on Windows
 		// When locked, closable=false prevents the window from being destroyed,
 		// leaving a zombie process (see #480)
@@ -84,11 +101,17 @@ const appEvents = () => {
 
 	app.on( 'will-quit', () => {
 
-		// Save lock state before cleanup so it persists for next launch
-		// Then unregister all hooks and shortcuts
-		iohook.unregisterIOHook()
-		keyboard.unregisterShortcuts()
-		// process.exit( EXIT_CODES.SUCCESS )
+		// IOHook already stopped in before-quit; just clean up keyboard shortcuts
+		// then force-exit to prevent lingering handles from keeping the process alive. (#486)
+		try {
+
+			keyboard.unregisterShortcuts()
+
+		} finally {
+
+			app.exit( EXIT_CODES.SUCCESS )
+
+		}
 
 	} )
 

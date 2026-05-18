@@ -196,6 +196,12 @@ const followMouse = async () => {
 
 	const listener = event => {
 
+		if ( !windows.win || windows.win.isDestroyed() ) {
+
+			return
+
+		}
+
 		windows.win.setBounds( {
 			x: event.x - Math.round( width / 2 ),
 			y: event.y - Math.round( height / 2 ),
@@ -245,8 +251,16 @@ const hideOnMouse = async () => {
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' )
+	const showOnMouseInvert = checkboxTrue( preferences.value( 'actions.showOnMouseInvert' ), 'showOnMouseInvert' )
 
-	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) )
+	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) + ( showOnMouseInvert ? ' (inverted: show on ADS)' : '' ) )
+
+	// In inverted mode the crosshair starts hidden; the button reveals it.
+	if ( showOnMouseInvert ) {
+
+		set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+
+	}
 
 	if ( hideOnMouseToggle ) {
 
@@ -255,17 +269,13 @@ const hideOnMouse = async () => {
 			const hidden = preferences.value( 'hidden.ADShidden' )
 			if ( event.button === mouseButton ) {
 
-				if ( hidden ) {
+				const nextHidden = !hidden
 
-					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// In inverted mode, "hidden" state maps to visible (opposite of normal)
+				const showOpacity = showOnMouseInvert ? ( nextHidden ? opacity.toString() : '0' ) : ( nextHidden ? '0' : opacity.toString() )
 
-				} else {
-
-					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
-
-				}
-
-				preferences.value( 'hidden.ADShidden', !hidden )
+				set.rendererProperties( { '--crosshair-opacity': showOpacity }, windows.win )
+				preferences.value( 'hidden.ADShidden', nextHidden )
 
 			}
 
@@ -280,7 +290,8 @@ const hideOnMouse = async () => {
 
 			if ( event.button === mouseButton ) {
 
-				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+				// Normal: hide on press. Inverted: show on press.
+				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? opacity.toString() : '0' }, windows.win )
 
 			}
 
@@ -293,7 +304,8 @@ const hideOnMouse = async () => {
 
 			if ( event.button === mouseButton ) {
 
-				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// Normal: show on release. Inverted: hide on release.
+				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? '0' : opacity.toString() }, windows.win )
 
 			}
 
@@ -470,19 +482,29 @@ const resizeOnADS = async () => {
 	}
 
 	const ads = preferences.value( 'actions.resizeOnADS' )
-	const adsSize = Number.parseInt( preferences.value( 'actions.resizeOnADSSize' ), 10 )
-	const adsToggle = checkboxTrue( preferences.value( 'actions.resizeOnADSToggle' ), 'resizeOnADSToggle' )
+
+	if ( !ads || ads === 'off' ) {
+
+		return
+
+	}
+
+	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 ) || 50
+	const adsToggle = ads === 'toggle'
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 	const newCrosshairSize = adsSize
 
 	log.info( 'Setting: ADS Resize' )
 
+	// Right mouse button (MOUSE_BUTTON2 = 2 in uiohook-napi)
+	const RIGHT_MOUSE_BUTTON = 2
+
 	if ( adsToggle ) {
 
 		const listener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				const adsed = preferences.value( 'hidden.ADSed' )
 				if ( adsed ) {
@@ -514,7 +536,7 @@ const resizeOnADS = async () => {
 
 		const mouseDownListener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				set.rendererProperties( {
 					'--crosshair-width': `${newCrosshairSize}px`,
@@ -530,7 +552,7 @@ const resizeOnADS = async () => {
 
 		const mouseUpListener = event => {
 
-			if ( event.button === Number.parseInt( ads, 10 ) ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				set.rendererProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,

@@ -113,31 +113,43 @@ const start = async () => {
 	/* LINUX FIXES */
 	// More flags: https://www.electronjs.org/docs/latest/api/command-line-switches/
 
-	// Disable hardware acceleration
-	if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+	// When resetting, force safe GPU settings so the GPU process doesn't crash
+	// before the reset logic can run. (#450)
+	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
 
-		log.info( 'Setting: Enable GPU' )
+		log.info( 'Reset mode: forcing safe GPU settings' )
+		app.commandLine.appendSwitch( 'disable-gpu' )
+		app.disableHardwareAcceleration()
 
 	} else {
 
 		// Disable hardware acceleration
-		log.info( 'Setting: Disable GPU' )
-		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-		app.commandLine.appendSwitch( 'disable-gpu' )
-		app.disableHardwareAcceleration()
+		if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
-	}
+			log.info( 'Setting: Enable GPU' )
 
-	// Fix for Linux transparency issues: wayland on linux/sway
-	// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
-	// https://github.com/microsoft/vscode/issues/146464
-	// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
-	if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
+		} else {
 
-		log.info( 'Setting: Sharing GPU process and browser' )
+			// Disable hardware acceleration
+			log.info( 'Setting: Disable GPU' )
+			app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+			app.commandLine.appendSwitch( 'disable-gpu' )
+			app.disableHardwareAcceleration()
 
-		app.commandLine.appendSwitch( 'in-process-gpu' )
-		app.commandLine.appendSwitch( 'use-gl=desktop' )
+		}
+
+		// Fix for Linux transparency issues: wayland on linux/sway
+		// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
+		// https://github.com/microsoft/vscode/issues/146464
+		// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
+		if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
+
+			log.info( 'Setting: Sharing GPU process and browser' )
+
+			app.commandLine.appendSwitch( 'in-process-gpu' )
+			app.commandLine.appendSwitch( 'use-gl=desktop' )
+
+		}
 
 	}
 
@@ -151,7 +163,7 @@ const ready = async () => {
 	log.info( 'App ready' )
 
 	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET ) {
+	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
 
 		log.info( 'Command-line reset triggered' )
 		reset.app( true )

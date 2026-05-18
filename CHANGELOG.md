@@ -1,3 +1,6 @@
+### 2026-05-16
+- fix: resetting bg color now also resets foreground/accent color ([LAC-1313](https://github.com/lacymorrow/xover/issues/3))
+
 ### 2024-12-19
 - Feature: SVG circle demo crosshair added
 - Improvements: Enhanced crosshair rendering and positioning

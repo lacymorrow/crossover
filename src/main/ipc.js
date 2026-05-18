@@ -5,6 +5,7 @@ const preferences = require( './preferences' ).init()
 const helpers = require( './helpers' )
 const log = require( './log' )
 const reset = require( './reset' )
+const reviewPrompt = require( './review-prompt' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
@@ -126,6 +127,18 @@ const init = () => {
 	ipcMain.on( 'complete_onboarding', () => {
 
 		preferences.value( 'hidden.onboardingCompleted', true )
+
+	} )
+
+	ipcMain.on( 'review_prompt_dismiss', () => {
+
+		reviewPrompt.dismiss()
+
+	} )
+
+	ipcMain.on( 'review_prompt_later', () => {
+
+		reviewPrompt.later()
 
 	} )
 

@@ -536,6 +536,12 @@ const onWillResize = ( _event, newBounds ) => {
 // Prevent opening windows off-screen; Must pass width/height to set safely
 const safeSetBounds = ( win, bounds ) => {
 
+	if ( !win || win.isDestroyed() ) {
+
+		return
+
+	}
+
 	let currentBounds
 	if ( !( bounds.width && bounds.height ) ) {
 
