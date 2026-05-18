@@ -115,7 +115,7 @@ const start = async () => {
 
 	// When resetting, force safe GPU settings so the GPU process doesn't crash
 	// before the reset logic can run. (#450)
-	if ( process.env.CROSSOVER_RESET ) {
+	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
 
 		log.info( 'Reset mode: forcing safe GPU settings' )
 		app.commandLine.appendSwitch( 'disable-gpu' )
@@ -163,7 +163,7 @@ const ready = async () => {
 	log.info( 'App ready' )
 
 	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET ) {
+	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
 
 		log.info( 'Command-line reset triggered' )
 		reset.app( true )

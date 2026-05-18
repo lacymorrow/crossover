@@ -88,9 +88,16 @@ const appEvents = () => {
 		// Unregister all hooks and shortcuts, then force-exit to prevent
 		// lingering handles (timers, native modules) from keeping the process
 		// alive after the user quits. (#486)
-		iohook.unregisterIOHook()
-		keyboard.unregisterShortcuts()
-		process.exit( EXIT_CODES.SUCCESS )
+		try {
+
+			iohook.unregisterIOHook()
+			keyboard.unregisterShortcuts()
+
+		} finally {
+
+			app.exit( EXIT_CODES.SUCCESS )
+
+		}
 
 	} )
 
