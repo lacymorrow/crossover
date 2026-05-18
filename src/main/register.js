@@ -102,9 +102,16 @@ const appEvents = () => {
 	app.on( 'will-quit', () => {
 
 		// IOHook already stopped in before-quit; just clean up keyboard shortcuts
-		// then force-exit to prevent lingering handles from keeping the process alive.
-		keyboard.unregisterShortcuts()
-		process.exit( EXIT_CODES.SUCCESS )
+		// then force-exit to prevent lingering handles from keeping the process alive. (#486)
+		try {
+
+			keyboard.unregisterShortcuts()
+
+		} finally {
+
+			app.exit( EXIT_CODES.SUCCESS )
+
+		}
 
 	} )
 
