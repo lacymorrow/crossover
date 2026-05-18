@@ -35,7 +35,7 @@ const shouldShow = () => {
 
 }
 
-const check = async win => {
+const check = win => {
 
 	const count = ( preferences.value( 'hidden.reviewPromptLaunchCount' ) || 0 ) + 1
 	preferences.value( 'hidden.reviewPromptLaunchCount', count )

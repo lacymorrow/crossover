@@ -83,14 +83,30 @@ const init = async options => {
 		// Show onboarding overlay on first launch
 		if ( !options?.triggeredByReset && !preferences.value( 'hidden.onboardingCompleted' ) ) {
 
-			if ( windows.win && windows.win.webContents ) windows.win.webContents.send( 'show_onboarding' )
+			if ( windows.win && windows.win.webContents ) {
+
+				windows.win.webContents.send( 'show_onboarding' )
+
+			}
 
 		}
 
 		// Check review prompt (not on settings reset; deferred so lock state is applied first)
 		if ( !options?.triggeredByReset ) {
 
-			if ( windows.win ) reviewPrompt.check( windows.win ).catch( log.error )
+			if ( windows.win ) {
+
+				try {
+
+					reviewPrompt.check( windows.win )
+
+				} catch ( error ) {
+
+					log.error( error )
+
+				}
+
+			}
 
 		}
 
