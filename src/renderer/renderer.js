@@ -408,4 +408,59 @@
 
 	}
 
+	// Review prompt
+	const reviewPromptEl = document.querySelector( '#review-prompt' )
+	if ( reviewPromptEl ) {
+
+		const rateBtn = document.querySelector( '#review-prompt-rate' )
+		const laterBtn = document.querySelector( '#review-prompt-later' )
+		const dismissBtn = document.querySelector( '#review-prompt-dismiss' )
+
+		const hideReviewPrompt = () => {
+
+			reviewPromptEl.classList.add( 'd-none' )
+
+		}
+
+		if ( rateBtn ) {
+
+			rateBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_dismiss' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		if ( laterBtn ) {
+
+			laterBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_later' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		if ( dismissBtn ) {
+
+			dismissBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_dismiss' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		window.crossover.receive( 'show_review_prompt', () => {
+
+			reviewPromptEl.classList.remove( 'd-none' )
+
+		} )
+
+	}
+
 } )()
