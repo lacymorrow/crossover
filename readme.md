@@ -32,10 +32,6 @@
 
 ---
 
-<p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/main/docs/screenshots/screenshot-1-hero.png" alt="CrossOver crosshair overlaid on gameplay" />
-</p>
-
 ## What it is
 
 CrossOver pins a customizable crosshair on top of any window so you can actually see where you're aiming. 530+ built-in sights — real scope reticles, dots, chevrons, tactical optics — or drag in any image and use that instead. Resize it, recolor it, dial the opacity, lock it in place.
@@ -78,7 +74,7 @@ It's just an overlay. No injection. No game files touched. **Not bannable.** Fre
 - **No telemetry** — your data stays on your machine. CrossOver only talks to GitHub to fetch updates.
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/main/docs/screenshots/screenshot-2-chooser.png" alt="Crosshair chooser with 530+ options" />
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-chooser.png" alt="The CrossOver overlay above the crosshair chooser drawer" />
 </p>
 
 ## Install
@@ -124,10 +120,6 @@ $ sudo apt install libxkbcommon-x11-0      # Ubuntu / Pop!_OS
 $ sudo dnf install libxkbcommon-x11        # Fedora
 ```
 
-<p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/main/docs/screenshots/screenshot-3-custom-drop.png" alt="Drag any image to use as your crosshair" />
-</p>
-
 ## Usage
 
 > ❌ marks the spot…
@@ -155,10 +147,6 @@ $ sudo dnf install libxkbcommon-x11        # Fedora
 
 On macOS, <kbd>⌥</kbd> replaces <kbd>Alt</kbd>. All keybinds (except reset) can be remapped or cleared in Settings — click the input and press your new combo, or hit <kbd>Backspace</kbd> to disable.
 
-<p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/main/docs/screenshots/screenshot-5-duplicates.png" alt="Place up to 14 crosshairs on screen at once" />
-</p>
-
 ## Settings
 
 | Setting | What it does |
@@ -175,7 +163,7 @@ On macOS, <kbd>⌥</kbd> replaces <kbd>Alt</kbd>. All keybinds (except reset) ca
 Duplicate windows share the main window's settings and don't support every feature (no mouse-follow). Their state isn't saved separately, and they all close when the main window closes.
 
 <p align="center">
-  <img src="https://github.com/lacymorrow/crossover/raw/main/docs/screenshots/screenshot-6-settings.png" alt="Full control over size, color, opacity, reticle shape" />
+  <img src="https://github.com/lacymorrow/crossover/raw/main/src/static/meta/demo-settings.png" alt="CrossOver Preferences with the Crosshair Settings color picker open" />
 </p>
 
 ## Game compatibility
