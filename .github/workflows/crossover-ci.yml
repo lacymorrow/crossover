@@ -74,7 +74,7 @@ jobs:
 
       - name: Upload Test Results 🗃
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/*
@@ -142,7 +142,7 @@ jobs:
 
       - name: Upload Microsoft Defender submission archive
         if: github.ref == 'refs/heads/release'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: microsoft-defender-submission
           path: defender-submission.zip
@@ -158,7 +158,7 @@ jobs:
 
       # - name: Upload Test Results 🗃
       #   if: always()
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v4
       #   with:
       #     name: playwright-output
       #     path: test-output/**
