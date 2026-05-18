@@ -470,7 +470,14 @@ const resizeOnADS = async () => {
 	}
 
 	const ads = preferences.value( 'actions.resizeOnADS' )
-	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 )
+
+	if ( !ads || ads === 'off' ) {
+
+		return
+
+	}
+
+	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 ) || 50
 	const adsToggle = ads === 'toggle'
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
