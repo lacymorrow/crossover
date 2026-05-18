@@ -349,11 +349,11 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	// App colors — highlight only applies when bg is also set; resetting bg resets highlight too
 
-	if ( options.app.appBgColor.charAt( 0 ) === '#' ) {
+	if ( options.app.appBgColor?.startsWith( '#' ) ) {
 
 		properties['--app-bg-color'] = hexToRgbA( options.app.appBgColor, APP_BACKGROUND_OPACITY )
 
-		if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
+		if ( options.app.appHighlightColor?.startsWith( '#' ) ) {
 
 			properties['--app-highlight-color'] = options.app.appHighlightColor
 
