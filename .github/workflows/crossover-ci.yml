@@ -127,7 +127,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build:windows
+          npm run build:win
         env:
           # Set CI flag to false, or the build fails on all warnings, not just errors as locally.
           # We use circle as ci
