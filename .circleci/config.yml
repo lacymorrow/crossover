@@ -28,10 +28,10 @@ jobs:
           command: sudo apt-get update
           name: Update apt-get
       - run:
-          command: sudo apt-get install -y rpm gcc-multilib libc6-dev-i386
+          command: sudo apt-get install -y rpm
           name: Install Dependencies
       - run:
-          command: npm run build:linux --openssl-fips=""
+          command: npx electron-builder --linux AppImage deb --x64 --openssl-fips=""
           name: Build app
       - run:
           name: Build and Publish - snap
