@@ -17,7 +17,7 @@ jobs:
           rm -rf *
         if: ${{ always() }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Check memory and cpu
       - name: Verify Runner Resources
@@ -31,7 +31,7 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
 
@@ -90,7 +90,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get Node Version
         run: |
@@ -102,7 +102,7 @@ jobs:
         id: get-node-version
 
       - name: Use Node.js ${{ steps.get-node-version.outputs.nodeversion }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ steps.get-node-version.outputs.nodeversion }}
 
