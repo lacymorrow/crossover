@@ -31,7 +31,7 @@ jobs:
           command: sudo apt-get install -y rpm
           name: Install Dependencies
       - run:
-          command: npx electron-builder --linux AppImage deb --x64 --openssl-fips=""
+          command: npx electron-builder --linux AppImage deb --x64
           name: Build app
       - run:
           name: Build and Publish - snap
