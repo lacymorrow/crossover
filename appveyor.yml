@@ -1,13 +1,10 @@
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 matrix:
   fast_finish: true
 
 platform:
-  - x86
   - x64
-
-os: unstable
 
 branches:
   only:
@@ -17,7 +14,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "14.21.3"
+  nodejs_version: "18.18.2"
 
 cache:
   - node_modules -> package.json
@@ -25,11 +22,15 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm i  --openssl-fips=''
+  - npm install
 
 build_script:
   - cmd: node --version
   - cmd: npm --version
-  # - cmd: yarn test
-  - cmd: yarn build:windows
-  - cmd: if %platform%==x64 yarn build:windows
+  - cmd: npm run build:win
+
+artifacts:
+  - path: dist\*.exe
+    name: installer
+  - path: dist\*.nsis
+    name: nsis
