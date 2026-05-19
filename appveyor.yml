@@ -14,7 +14,7 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "18.18.2"
+  nodejs_version: "18"
 
 cache:
   - node_modules -> package.json
@@ -22,15 +22,14 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
+  - ps: New-Item -ItemType Directory -Force -Path $env:APPDATA\npm | Out-Null
+  - node --version
+  - npm --version
   - npm install
 
 build_script:
-  - cmd: node --version
-  - cmd: npm --version
   - cmd: npm run build:win
 
 artifacts:
   - path: dist\*.exe
     name: installer
-  - path: dist\*.nsis
-    name: nsis
