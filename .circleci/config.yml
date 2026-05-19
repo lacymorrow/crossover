@@ -141,5 +141,5 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [release, << pipeline.git.branch >>]
     jobs:
-      # - build-linux
-      - build-all
+      - build-linux
+      # - build-all  # requires m2pro.medium (CircleCI Scale plan); macOS/Windows handled by GitHub Actions
