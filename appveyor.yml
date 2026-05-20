@@ -13,9 +13,13 @@ branches:
 
 skip_tags: true
 
+build_timeout_in_minutes: 120
+
 cache:
   - node_modules -> package.json
   - '%USERPROFILE%\.electron'
+  - '%LOCALAPPDATA%\electron\Cache'
+  - '%LOCALAPPDATA%\electron-builder\Cache'
 
 install:
   - ps: |
@@ -32,7 +36,7 @@ install:
   - cmd: pip install setuptools
   - node --version
   - npm --version
-  - npm install
+  - npm install --ignore-scripts
   - cmd: npm run css
 
 build_script:
