@@ -39,19 +39,29 @@ install:
 
 build_script:
   - ps: |
-      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
       $libpaths = @()
+      # Search for Windows.winmd in SDK UnionMetadata
+      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
       if (Test-Path $umDir) {
-        $versioned = Get-ChildItem $umDir -Directory | Where-Object { $_.Name -match '^\d+\.' } | Sort-Object Name -Descending | Select-Object -First 1
-        if ($versioned) { $libpaths += $versioned.FullName }
-        $facade = Join-Path $umDir "Facade"
-        if (Test-Path $facade) { $libpaths += $facade }
+        $wmds = Get-ChildItem $umDir -Recurse -Filter "Windows.winmd" -ErrorAction SilentlyContinue
+        if ($wmds) {
+          $wmds | ForEach-Object { if ($libpaths -notcontains $_.DirectoryName) { $libpaths += $_.DirectoryName } }
+        } else {
+          # Fallback: add versioned dirs and Facade even without confirming the file
+          $versioned = Get-ChildItem $umDir -Directory | Where-Object { $_.Name -match '^\d+\.' } | Sort-Object Name -Descending | Select-Object -First 1
+          if ($versioned) { $libpaths += $versioned.FullName }
+          $facade = Join-Path $umDir "Facade"
+          if (Test-Path $facade) { $libpaths += $facade }
+        }
       }
+      # Also include system WinMetadata (always present on Windows)
+      $sysWinMeta = "C:\Windows\System32\WinMetadata"
+      if ((Test-Path $sysWinMeta) -and ($libpaths -notcontains $sysWinMeta)) { $libpaths += $sysWinMeta }
       if ($libpaths.Count -gt 0) {
         $env:LIBPATH = $libpaths -join ";"
         Write-Host "LIBPATH=$env:LIBPATH"
       } else {
-        Write-Host "WARNING: No UnionMetadata paths found"
+        Write-Host "WARNING: No WinMetadata paths found"
       }
       npm run build:win
       if ($LASTEXITCODE -ne 0) { throw "build:win failed with exit code $LASTEXITCODE" }
