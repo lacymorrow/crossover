@@ -82,6 +82,11 @@ build_script:
       if ($libpaths.Count -gt 0) {
         $env:LIBPATH = $libpaths -join ";"
         Write-Host "LIBPATH=$env:LIBPATH"
+        # _CL_ is prepended to every cl.exe invocation — injects /AI flags so
+        # cl.exe finds Windows.winmd regardless of vcxproj AdditionalUsingDirectories.
+        $aiFlags = ($libpaths | ForEach-Object { "/AI`"$_`"" }) -join " "
+        $env:_CL_ = $aiFlags
+        Write-Host "_CL_=$env:_CL_"
       } else {
         Write-Host "WARNING: No WinMetadata paths found"
       }
