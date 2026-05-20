@@ -1,0 +1,16 @@
+# CrossOver
+
+> Free crosshair overlay for any screen. 530+ sights. Windows, Mac, Linux. Open source.
+
+## What is CrossOver?
+CrossOver puts a customizable crosshair on top of any application. Useful for FPS games that hide the crosshair, hipfire practice, monitor centering, screen recording, accessibility, and any case where you want a persistent reticle on your display. Free and open source.
+
+## Main
+- [Home](https://crossover.lacy.sh): Overview, features, and download
+- [Features](https://crossover.lacy.sh#features): Customization, sight library, hotkeys
+- [Download](https://crossover.lacy.sh#download): Windows, macOS, Linux installers
+
+## Resources
+- [GitHub](https://github.com/lacymorrow/crossover): Source code and issues
+- [Microsoft Store](https://apps.microsoft.com/detail/9mtd5zln7nl1): Windows install
+- [Releases](https://github.com/lacymorrow/crossover/releases): Latest binaries and changelog
