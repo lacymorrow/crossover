@@ -31,7 +31,8 @@ install:
       Write-Host "Node.js v$v installed to $nodePath"
   - node --version
   - npm --version
-  - npm install
+  - npm install --ignore-scripts
+  - cmd: npm run css
 
 build_script:
   - cmd: npm run build:win
