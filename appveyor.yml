@@ -32,6 +32,16 @@ install:
       [Environment]::SetEnvironmentVariable("PATH", $env:Path, "Machine")
       Write-Host "Node.js v$v installed to $nodePath"
   - cmd: pip install setuptools
+  - ps: |
+      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
+      if (Test-Path $umDir) {
+        $latest = Get-ChildItem $umDir -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        $env:LIBPATH = $latest.FullName
+        [Environment]::SetEnvironmentVariable("LIBPATH", $latest.FullName, "Machine")
+        Write-Host "Set LIBPATH=$($latest.FullName)"
+      } else {
+        Write-Host "WARNING: Windows SDK UnionMetadata not found at $umDir"
+      }
   - node --version
   - npm --version
   - npm install --ignore-scripts
