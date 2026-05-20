@@ -35,6 +35,28 @@ install:
   - node --version
   - npm --version
   - npm install --ignore-scripts
+  - ps: |
+      # Patch NodeRT common.gypi to use available Windows SDK — the package
+      # hardcodes 10.0.14393.0 (Anniversary Update) which is not on VS2022 images.
+      # AdditionalUsingDirectories in the gypi controls /AI paths for cl.exe;
+      # setting LIBPATH alone does not fix C1107.
+      $gypiPath = "node_modules\@nodert-win10-au\windows.applicationmodel\common.gypi"
+      if (Test-Path $gypiPath) {
+        $sdkRoot = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
+        $latestSdk = Get-ChildItem $sdkRoot -Directory -ErrorAction SilentlyContinue |
+          Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } |
+          Sort-Object Name | Select-Object -Last 1
+        if ($latestSdk) {
+          $content = Get-Content $gypiPath -Raw
+          $patched = $content -replace '10\.\d+\.\d+\.\d+', $latestSdk.Name
+          [System.IO.File]::WriteAllText((Resolve-Path $gypiPath), $patched)
+          Write-Host "Patched common.gypi: SDK -> $($latestSdk.Name)"
+        } else {
+          Write-Host "WARNING: no versioned SDK found under UnionMetadata"
+        }
+      } else {
+        Write-Host "WARNING: common.gypi not found at $gypiPath"
+      }
   - cmd: npm run css
 
 build_script:
