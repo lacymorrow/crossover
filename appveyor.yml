@@ -32,28 +32,29 @@ install:
       [Environment]::SetEnvironmentVariable("PATH", $env:Path, "Machine")
       Write-Host "Node.js v$v installed to $nodePath"
   - cmd: pip install setuptools
-  - ps: |
-      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
-      if (Test-Path $umDir) {
-        $match = Get-ChildItem $umDir -Directory | Where-Object { $_.Name -match '^\d+\.' } | Sort-Object Name -Descending | Select-Object -First 1
-        if ($match) {
-          $env:LIBPATH = $match.FullName
-          [Environment]::SetEnvironmentVariable("LIBPATH", $match.FullName, "Machine")
-          Write-Host "Set LIBPATH=$($match.FullName)"
-        } else {
-          Write-Host "WARNING: No versioned UnionMetadata folder found under $umDir"
-          Get-ChildItem $umDir -Directory | ForEach-Object { Write-Host "  Found: $($_.Name)" }
-        }
-      } else {
-        Write-Host "WARNING: Windows SDK UnionMetadata not found at $umDir"
-      }
   - node --version
   - npm --version
   - npm install --ignore-scripts
   - cmd: npm run css
 
 build_script:
-  - cmd: npm run build:win
+  - ps: |
+      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
+      $libpaths = @()
+      if (Test-Path $umDir) {
+        $versioned = Get-ChildItem $umDir -Directory | Where-Object { $_.Name -match '^\d+\.' } | Sort-Object Name -Descending | Select-Object -First 1
+        if ($versioned) { $libpaths += $versioned.FullName }
+        $facade = Join-Path $umDir "Facade"
+        if (Test-Path $facade) { $libpaths += $facade }
+      }
+      if ($libpaths.Count -gt 0) {
+        $env:LIBPATH = $libpaths -join ";"
+        Write-Host "LIBPATH=$env:LIBPATH"
+      } else {
+        Write-Host "WARNING: No UnionMetadata paths found"
+      }
+      npm run build:win
+      if ($LASTEXITCODE -ne 0) { throw "build:win failed with exit code $LASTEXITCODE" }
 
 artifacts:
   - path: dist\*.exe
