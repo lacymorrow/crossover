@@ -36,62 +36,29 @@ install:
   - npm --version
   - npm install --ignore-scripts
   - ps: |
-      # Patch NodeRT common.gypi to use available Windows SDK — the package
-      # hardcodes 10.0.14393.0 (Anniversary Update) which is not on VS2022 images.
-      # AdditionalUsingDirectories in the gypi controls /AI paths for cl.exe;
-      # setting LIBPATH alone does not fix C1107.
-      $gypiPath = "node_modules\@nodert-win10-au\windows.applicationmodel\common.gypi"
-      if (Test-Path $gypiPath) {
-        $sdkRoot = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
-        $latestSdk = Get-ChildItem $sdkRoot -Directory -ErrorAction SilentlyContinue |
-          Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } |
-          Sort-Object Name | Select-Object -Last 1
-        if ($latestSdk) {
-          $content = Get-Content $gypiPath -Raw
-          $patched = $content -replace '10\.\d+\.\d+\.\d+', $latestSdk.Name
-          [System.IO.File]::WriteAllText((Resolve-Path $gypiPath), $patched)
-          Write-Host "Patched common.gypi: SDK -> $($latestSdk.Name)"
-        } else {
-          Write-Host "WARNING: no versioned SDK found under UnionMetadata"
-        }
+      # Patch NodeRT binding.gyp to use the installed versioned SDK path.
+      # The package hardcodes the bare UnionMetadata/ root; on VS2022 images
+      # Windows.winmd lives in a versioned subdirectory (e.g. 10.0.26100.0/).
+      $sdkRoot = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
+      $latestSdk = Get-ChildItem $sdkRoot -Directory -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } |
+        Sort-Object Name | Select-Object -Last 1
+      $gypPath = "node_modules\@nodert-win10-au\windows.applicationmodel\binding.gyp"
+      if ($latestSdk -and (Test-Path $gypPath)) {
+        $ver = $latestSdk.Name
+        $content = Get-Content $gypPath -Raw
+        $patched = $content `
+          -replace '%ProgramFiles\(x86\)%/Windows Kits/10/UnionMetadata/', "%ProgramFiles(x86)%/Windows Kits/10/UnionMetadata/$ver/" `
+          -replace '%ProgramFiles%/Windows Kits/10/UnionMetadata/', "%ProgramFiles%/Windows Kits/10/UnionMetadata/$ver/"
+        [System.IO.File]::WriteAllText((Resolve-Path $gypPath), $patched)
+        Write-Host "Patched binding.gyp: UnionMetadata -> $ver"
       } else {
-        Write-Host "WARNING: common.gypi not found at $gypiPath"
+        Write-Host "WARNING: SDK not found or binding.gyp missing"
       }
   - cmd: npm run css
 
 build_script:
-  - ps: |
-      $libpaths = @()
-      # Search for Windows.winmd in SDK UnionMetadata
-      $umDir = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
-      if (Test-Path $umDir) {
-        $wmds = Get-ChildItem $umDir -Recurse -Filter "Windows.winmd" -ErrorAction SilentlyContinue
-        if ($wmds) {
-          $wmds | ForEach-Object { if ($libpaths -notcontains $_.DirectoryName) { $libpaths += $_.DirectoryName } }
-        } else {
-          # Fallback: add versioned dirs and Facade even without confirming the file
-          $versioned = Get-ChildItem $umDir -Directory | Where-Object { $_.Name -match '^\d+\.' } | Sort-Object Name -Descending | Select-Object -First 1
-          if ($versioned) { $libpaths += $versioned.FullName }
-          $facade = Join-Path $umDir "Facade"
-          if (Test-Path $facade) { $libpaths += $facade }
-        }
-      }
-      # Also include system WinMetadata (always present on Windows)
-      $sysWinMeta = "C:\Windows\System32\WinMetadata"
-      if ((Test-Path $sysWinMeta) -and ($libpaths -notcontains $sysWinMeta)) { $libpaths += $sysWinMeta }
-      if ($libpaths.Count -gt 0) {
-        $env:LIBPATH = $libpaths -join ";"
-        Write-Host "LIBPATH=$env:LIBPATH"
-        # _CL_ is prepended to every cl.exe invocation — injects /AI flags so
-        # cl.exe finds Windows.winmd regardless of vcxproj AdditionalUsingDirectories.
-        $aiFlags = ($libpaths | ForEach-Object { "/AI`"$_`"" }) -join " "
-        $env:_CL_ = $aiFlags
-        Write-Host "_CL_=$env:_CL_"
-      } else {
-        Write-Host "WARNING: No WinMetadata paths found"
-      }
-      npx electron-builder --win --ia32 --x64 --publish never
-      if ($LASTEXITCODE -ne 0) { throw "build:win failed with exit code $LASTEXITCODE" }
+  - cmd: npx electron-builder --win --ia32 --x64 --publish never
 
 artifacts:
   - path: dist\*.exe
