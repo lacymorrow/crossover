@@ -13,6 +13,11 @@ branches:
 
 skip_tags: true
 
+build_timeout_in_minutes: 120
+
+environment:
+  MSBUILD_FLAGS: /maxcpucount:2
+
 cache:
   - node_modules -> package.json
   - '%USERPROFILE%\.electron'
