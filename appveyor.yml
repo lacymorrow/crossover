@@ -29,9 +29,10 @@ install:
       $env:Path = "$nodePath;$env:Path"
       [Environment]::SetEnvironmentVariable("PATH", $env:Path, "Machine")
       Write-Host "Node.js v$v installed to $nodePath"
+  - cmd: pip install setuptools
   - node --version
   - npm --version
-  - npm install --ignore-scripts
+  - npm install
   - cmd: npm run css
 
 build_script:
