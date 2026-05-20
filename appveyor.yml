@@ -13,18 +13,15 @@ branches:
 
 skip_tags: true
 
-environment:
-  nodejs_version: "18.18.2"
-
 cache:
   - node_modules -> package.json
   - '%USERPROFILE%\.electron'
 
 install:
   - ps: |
-      $v = $env:nodejs_version
+      $v = "18.18.2"
       $url = "https://nodejs.org/dist/v$v/node-v$v-win-x64.zip"
-      Write-Host "Downloading Node.js v$v..."
+      Write-Host "Downloading Node.js v$v from $url"
       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
       Invoke-WebRequest $url -OutFile "$env:TEMP\node.zip" -UseBasicParsing
       Expand-Archive "$env:TEMP\node.zip" -DestinationPath C:\ -Force
