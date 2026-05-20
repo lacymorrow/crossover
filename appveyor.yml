@@ -90,7 +90,7 @@ build_script:
       } else {
         Write-Host "WARNING: No WinMetadata paths found"
       }
-      npm run build:win
+      npx electron-builder --win --ia32 --x64 --publish never
       if ($LASTEXITCODE -ne 0) { throw "build:win failed with exit code $LASTEXITCODE" }
 
 artifacts:
