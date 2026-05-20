@@ -60,20 +60,6 @@ install:
   - cmd: npm run css
 
 build_script:
-  - ps: |
-      # Pre-fetch Electron headers so the silent electron-builder rebuild
-      # step cannot hang on a network download.
-      $electronVer = (Get-Content node_modules\electron\dist\version -Raw).Trim().TrimStart('v')
-      Write-Host "Pre-fetching Electron $electronVer headers..."
-      $headerUrl = "https://electronjs.org/headers/v$electronVer/node-v$electronVer-headers.tar.gz"
-      $headerDest = "$env:LOCALAPPDATA\electron-gyp\$electronVer"
-      if (-not (Test-Path $headerDest)) {
-        New-Item -ItemType Directory -Path $headerDest -Force | Out-Null
-        Invoke-WebRequest $headerUrl -OutFile "$headerDest\headers.tar.gz" -UseBasicParsing -TimeoutSec 120
-        Write-Host "Downloaded Electron headers to $headerDest"
-      } else {
-        Write-Host "Electron headers already cached at $headerDest"
-      }
   - cmd: npx electron-builder --win --ia32 --x64 --publish never
 
 artifacts:
