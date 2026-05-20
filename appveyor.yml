@@ -14,15 +14,15 @@ branches:
 skip_tags: true
 
 environment:
-  nodejs_version: "18"
+  nodejs_version: "18.18.2"
 
 cache:
   - node_modules -> package.json
   - '%USERPROFILE%\.electron'
 
 install:
-  - ps: Install-Product node $env:nodejs_version
-  - ps: New-Item -ItemType Directory -Force -Path $env:APPDATA\npm | Out-Null
+  - nvm install %nodejs_version%
+  - nvm use %nodejs_version%
   - node --version
   - npm --version
   - npm install
