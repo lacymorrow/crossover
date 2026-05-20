@@ -21,8 +21,8 @@ cache:
   - '%USERPROFILE%\.electron'
 
 install:
-  - nvm install %nodejs_version%
-  - nvm use %nodejs_version%
+  - ps: nvm install $env:nodejs_version
+  - ps: nvm use $env:nodejs_version
   - node --version
   - npm --version
   - npm install
