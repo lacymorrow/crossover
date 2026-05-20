@@ -21,8 +21,17 @@ cache:
   - '%USERPROFILE%\.electron'
 
 install:
-  - ps: nvm install $env:nodejs_version
-  - ps: nvm use $env:nodejs_version
+  - ps: |
+      $v = $env:nodejs_version
+      $url = "https://nodejs.org/dist/v$v/node-v$v-win-x64.zip"
+      Write-Host "Downloading Node.js v$v..."
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      Invoke-WebRequest $url -OutFile "$env:TEMP\node.zip" -UseBasicParsing
+      Expand-Archive "$env:TEMP\node.zip" -DestinationPath C:\ -Force
+      $nodePath = "C:\node-v$v-win-x64"
+      $env:Path = "$nodePath;$env:Path"
+      [Environment]::SetEnvironmentVariable("PATH", $env:Path, "Machine")
+      Write-Host "Node.js v$v installed to $nodePath"
   - node --version
   - npm --version
   - npm install
