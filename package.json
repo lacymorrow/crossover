@@ -4,7 +4,7 @@
   "appId": "com.lacymorrow.crossover",
   "version": "3.4.2",
   "description": "A Crosshair Overlay for any screen",
-  "copyright": "Copyright © Lacy Morrow",
+  "copyright": "Copyright \u00a9 Lacy Morrow",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lacymorrow/crossover.git"
@@ -48,7 +48,6 @@
   },
   "scripts": {
     "install": "npm run css",
-    "postinstall": "node -e \"if (process.platform === 'win32') { require('child_process').execSync('npx electron-builder install-app-deps', {stdio: 'inherit'}); }\"",
     "css": "sass src/renderer/styles/index.scss:src/renderer/styles/dist/index.css src/renderer/styles/preferences.scss:src/renderer/styles/dist/preferences.css -s compressed",
     "start": "npm run css && electron --disable-gpu-sandbox --trace-warnings .",
     "watch": "nodemon -e js,ts,scss --ignore 'dist/' --watch . --exec 'npm run start'",
@@ -128,7 +127,7 @@
   "build": {
     "appId": "com.lacymorrow.crossover",
     "artifactName": "${productName}-${version}-${arch}.${ext}",
-    "copyright": "Copyright © Lacy Morrow",
+    "copyright": "Copyright \u00a9 Lacy Morrow",
     "publish": "github",
     "mac": {
       "category": "public.app-category.utilities",
@@ -167,7 +166,7 @@
       "category": "Game;Shooter"
     },
     "snap": {
-      "summary": "🎯 A Crosshair Overlay for any screen.",
+      "summary": "\ud83c\udfaf A Crosshair Overlay for any screen.",
       "description": "CrossOver allows you to place a customizable crosshair overlay above any application window. Improve your aim and gain a competitive advantage with a permanent colored crosshair to mark center screen.",
       "plugs": [
         "default",
