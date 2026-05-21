@@ -1,7 +1,5 @@
 image: Visual Studio 2022
 
-build_timeout_in_minutes: 90
-
 matrix:
   fast_finish: true
 
