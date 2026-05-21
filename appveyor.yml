@@ -35,7 +35,7 @@ install:
   - cmd: pip install setuptools
   - node --version
   - npm --version
-  - npm install --ignore-scripts
+  - npm install
   - ps: |
       # Patch NodeRT binding.gyp to use the installed versioned SDK path.
       # The package hardcodes the bare UnionMetadata/ root; on VS2022 images
