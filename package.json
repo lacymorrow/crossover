@@ -5,7 +5,10 @@
   "version": "3.4.2",
   "description": "A Crosshair Overlay for any screen",
   "copyright": "Copyright © Lacy Morrow",
-  "repository": "lacymorrow/crossover",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lacymorrow/crossover.git"
+  },
   "homepage": "https://lacymorrow.github.io/crossover",
   "company": "Fly5",
   "author": {
