@@ -35,28 +35,6 @@ install:
   - node --version
   - npm --version
   - npm install
-  - ps: |
-      # Patch NodeRT binding.gyp to use the installed versioned SDK path.
-      # The package hardcodes the bare UnionMetadata/ root; on VS2022 images
-      # Windows.winmd lives in a versioned subdirectory (e.g. 10.0.26100.0/).
-      $sdkRoot = "C:\Program Files (x86)\Windows Kits\10\UnionMetadata"
-      $latestSdk = Get-ChildItem $sdkRoot -Directory -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } |
-        Sort-Object Name | Select-Object -Last 1
-      $gypPath = "node_modules\@nodert-win10-au\windows.applicationmodel\binding.gyp"
-      if ($latestSdk -and (Test-Path $gypPath)) {
-        $ver = $latestSdk.Name
-        $content = Get-Content $gypPath -Raw
-        $patched = $content `
-          -replace '%ProgramFiles\(x86\)%/Windows Kits/10/UnionMetadata/', "%ProgramFiles(x86)%/Windows Kits/10/UnionMetadata/$ver/" `
-          -replace '%ProgramFiles%/Windows Kits/10/UnionMetadata/', "%ProgramFiles%/Windows Kits/10/UnionMetadata/$ver/"
-        # Also enable multi-processor C++ compilation to speed up the WinRT build
-        $patched = $patched -replace '"/ZW"', '"/ZW", "/MP"'
-        [System.IO.File]::WriteAllText((Resolve-Path $gypPath), $patched)
-        Write-Host "Patched binding.gyp: UnionMetadata -> $ver, added /MP"
-      } else {
-        Write-Host "WARNING: SDK not found or binding.gyp missing"
-      }
   - cmd: npm run css
 
 build_script:
