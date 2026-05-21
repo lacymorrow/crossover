@@ -5,7 +5,6 @@ matrix:
 
 platform:
   - x64
-  - x86
 
 branches:
   only:
@@ -62,12 +61,8 @@ install:
 
 build_script:
   - ps: |
-      # Build only the arch matching the AppVeyor job platform so each job
-      # rebuilds native modules once instead of twice (--ia32 --x64 doubles
-      # compile time and hits the 60-min timeout).
-      $arch = if ($env:PLATFORM -eq 'x86') { '--ia32' } else { '--x64' }
-      Write-Host "Building arch: $arch"
-      cmd /c "npx electron-builder --win dir $arch --publish never"
+      Write-Host "Building x64 (dir — no installer, CI verification only)"
+      cmd /c "npx electron-builder --win dir --x64 --publish never"
       exit $LASTEXITCODE
 
 artifacts:
