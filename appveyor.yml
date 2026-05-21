@@ -67,9 +67,9 @@ build_script:
       # compile time and hits the 60-min timeout).
       $arch = if ($env:PLATFORM -eq 'x86') { '--ia32' } else { '--x64' }
       Write-Host "Building arch: $arch"
-      cmd /c "npx electron-builder --win $arch --publish never"
+      cmd /c "npx electron-builder --win dir $arch --publish never"
       exit $LASTEXITCODE
 
 artifacts:
-  - path: dist\*.exe
-    name: installer
+  - path: dist\win-unpacked\*.exe
+    name: app-binary
