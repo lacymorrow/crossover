@@ -38,9 +38,12 @@ install:
 
 build_script:
   - ps: |
-      Write-Host "Building x64 (dir — no installer, CI verification only)"
-      cmd /c "npx electron-builder --win dir --x64 --publish never"
-      exit $LASTEXITCODE
+      Write-Host "Building x64 (dir - no installer, CI verification only)"
+      $env:DEBUG = "electron-builder"
+      & npx electron-builder --win dir --x64 --publish never 2>&1 | ForEach-Object { Write-Host $_ }
+      $code = $LASTEXITCODE
+      Write-Host "electron-builder exit code: $code"
+      if ($code -ne 0) { throw "electron-builder failed with exit code $code" }
 
 artifacts:
   - path: dist\win-unpacked\*.exe
