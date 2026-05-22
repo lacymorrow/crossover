@@ -21,7 +21,7 @@ cache:
 
 install:
   - ps: |
-      $v = "18.18.2"
+      $v = "20.19.2"
       $url = "https://nodejs.org/dist/v$v/node-v$v-win-x64.zip"
       Write-Host "Downloading Node.js v$v from $url"
       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -35,7 +35,6 @@ install:
   - node --version
   - npm --version
   - npm install
-  - cmd: npm run css
 
 build_script:
   - ps: |
