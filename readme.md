@@ -96,6 +96,7 @@ Download the `.dmg` for your architecture (Intel `x64` or Apple Silicon `arm64`)
 
 If macOS says *"CrossOver cannot be opened because the developer cannot be verified"*: locate the app, **Control-click** it, then choose **Open**.
 
+#### Troubleshooting
 > [!TIP]
 > **macOS quarantine fix** — if you see *"CrossOver is damaged and can't be opened"*, move the app to `/Applications` and run:
 > ```sh
