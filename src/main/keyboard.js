@@ -22,7 +22,19 @@ const registerEscape = ( action = keyboard.escapeAction ) => {
 
 }
 
-const registerShortcut = ( ...args ) => globalShortcut.register( ...args )
+const registerShortcut = ( accelerator, fn ) => {
+
+	const registered = globalShortcut.register( accelerator, fn )
+	if ( !registered ) {
+
+		// eslint-disable-next-line no-console
+		console.warn( `[CrossOver] globalShortcut.register failed for: ${accelerator} (another app may have claimed this combo)` )
+
+	}
+
+	return registered
+
+}
 
 const unregisterShortcut = ( ...args ) => globalShortcut.unregister( ...args )
 
