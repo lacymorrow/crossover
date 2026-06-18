@@ -232,8 +232,8 @@ const registerKeyboardShortcuts = () => {
 
 		log.warn( `Shortcut registration failed for: ${failed.join( ', ' )}` )
 
-		// Notify the user — renderer must be ready; guard against early startup calls
-		try {
+		// Notify the user — only if the renderer window is ready
+		if ( windows.win && !windows.win.isDestroyed() ) {
 
 			const notification = require( './notification' )
 			notification( {
@@ -241,9 +241,6 @@ const registerKeyboardShortcuts = () => {
 				body: `Could not register: ${failed.join( ', ' )}. Another app may be using this combo. Try rebinding in Settings.`,
 			} )
 
-		} catch ( _err ) {
-
-			// Window not yet ready — failure already logged above
 		}
 
 	}
