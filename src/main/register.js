@@ -14,13 +14,17 @@ const appEvents = () => {
 	// CrossOver only renders local files and needs no browser permissions.
 	// Deny all permission requests (geolocation, notifications, camera, etc.)
 	// to prevent unexpected OS prompts, particularly on Windows. (#471)
-	session.defaultSession.setPermissionRequestHandler( ( _webContents, _permission, callback ) => {
+	app.whenReady().then( () => {
 
-		callback( false )
+		session.defaultSession.setPermissionRequestHandler( ( _webContents, _permission, callback ) => {
+
+			callback( false )
+
+		} )
+
+		session.defaultSession.setPermissionCheckHandler( () => false )
 
 	} )
-
-	session.defaultSession.setPermissionCheckHandler( () => false )
 
 	app.on( 'activate', async () => {
 

@@ -142,9 +142,9 @@ const init = () => {
 
 	} )
 
-	ipcMain.on( 'set_preference', arg => {
+	ipcMain.on( 'set_preference', ( _event, arg ) => {
 
-		if ( arg.key && arg.value ) {
+		if ( arg && arg.key && arg.value !== undefined ) {
 
 			preferences.value( arg.key, arg.value )
 

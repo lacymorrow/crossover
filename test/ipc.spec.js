@@ -94,12 +94,12 @@ test( 'Validate open_settings + focus', async () => {
 test( 'Validate set_preference + reset_preference', async () => {
 
 	// Test set_preference
-	await electronApp.evaluate( async app => app.ipcMain.emit( 'set_preference', { key: 'crosshair.opacity', value: 50 } ) )
+	await electronApp.evaluate( async app => app.ipcMain.emit( 'set_preference', {}, { key: 'crosshair.opacity', value: 50 } ) )
 	await wait( delays.short )
 
 	const opacity = await electronApp.evaluate( async app => {
 
-		const preferences = require( './src/main/preferences.js' ).init()
+		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
 
 		return preferences.value( 'crosshair.opacity' )
 
@@ -107,19 +107,19 @@ test( 'Validate set_preference + reset_preference', async () => {
 	expect( opacity ).toBe( 50 )
 
 	// Test reset_preferences
-	await electronApp.evaluate( async app => app.ipcMain.emit( 'reset_preferences' ) )
+	await electronApp.evaluate( async app => app.ipcMain.emit( 'reset_preferences', {} ) )
 	await wait( delays.short )
 
 	// Verify reset
 	const newOpacity = await electronApp.evaluate( async app => {
 
-		const preferences = require( './src/main/preferences.js' ).init()
+		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
 
 		return preferences.value( 'crosshair.opacity' )
 
 	} )
-	// Assuming default opacity is 100
-	expect( newOpacity ).toBe( 100 )
+	// Verify default opacity value is restored to 80
+	expect( newOpacity ).toBe( 80 )
 
 } )
 
@@ -129,10 +129,11 @@ test( 'Validate quit', async () => {
 
 	// quit app
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'quit' ) )
+	await wait( delays.medium )
 
 	try {
 
-		console.log( 'This should throw an error!', await mainPage.title() )
+		await mainPage.title()
 
 	} catch {
 
