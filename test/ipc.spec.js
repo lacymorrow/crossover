@@ -97,7 +97,7 @@ test( 'Validate set_preference + reset_preference', async () => {
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'set_preference', {}, { key: 'crosshair.opacity', value: 50 } ) )
 	await wait( delays.short )
 
-	const opacity = await electronApp.evaluate( async app => {
+	const opacity = await electronApp.evaluate( async () => {
 
 		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
 
@@ -111,7 +111,7 @@ test( 'Validate set_preference + reset_preference', async () => {
 	await wait( delays.short )
 
 	// Verify reset
-	const newOpacity = await electronApp.evaluate( async app => {
+	const newOpacity = await electronApp.evaluate( async () => {
 
 		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
 

@@ -31,9 +31,6 @@ const FILE_FILTERS = [
 	{ name: 'All Files', extensions: [ '*' ] },
 ]
 
-const TROUBLESHOOTING_URL = 'https://github.com/lacymorrow/crossover/wiki/Troubleshooting'
-const COMPATIBILITY_URL = 'https://github.com/lacymorrow/crossover/wiki/Compatibility'
-
 const config = {
 	APP_ASPECT_RATIO,
 	APP_BACKGROUND_OPACITY,
@@ -51,8 +48,6 @@ const config = {
 	MAX_SHADOW_WINDOWS,
 	SETTINGS_WINDOW_DEVTOOLS,
 	SHADOW_WINDOW_OFFSET,
-	TROUBLESHOOTING_URL,
-	COMPATIBILITY_URL,
 
 	SUPPORTED_IMAGE_FILE_TYPES,
 }
