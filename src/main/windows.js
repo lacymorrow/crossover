@@ -4,6 +4,7 @@ const { app, BrowserWindow, screen } = require( 'electron' )
 
 const { activeWindow, centerWindow, is } = require( './util' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, APP_ASPECT_RATIO } = require( '../config/config.js' )
+const { checkboxTrue } = require( '../config/utils.js' )
 const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
 const log = require( './log.js' )
@@ -77,6 +78,43 @@ const getActiveWindow = () => {
 
 }
 
+// Toggle whether a window is excluded from screen captures / recordings (#359)
+// Uses Electron's setContentProtection, which maps to WDA_MONITOR / WDA_EXCLUDEFROMCAPTURE
+// on Windows and NSWindowSharingNone on macOS.
+const applyContentProtection = ( win, enabled = checkboxTrue( preferences.value( 'app.hideFromScreenCapture' ), 'hideFromScreenCapture' ) ) => {
+
+	if ( !win || win.isDestroyed() ) {
+
+		return
+
+	}
+
+	try {
+
+		win.setContentProtection( Boolean( enabled ) )
+
+	} catch ( error ) {
+
+		log.error( `setContentProtection failed: ${error?.message}` )
+
+	}
+
+}
+
+// Apply the current hideFromScreenCapture preference to every crosshair window
+const syncContentProtection = () => {
+
+	const enabled = checkboxTrue( preferences.value( 'app.hideFromScreenCapture' ), 'hideFromScreenCapture' )
+	applyContentProtection( windows.win, enabled )
+
+	for ( const currentWindow of windows.shadowWindows ) {
+
+		applyContentProtection( currentWindow, enabled )
+
+	}
+
+}
+
 // Prevent window from being garbage collected
 // Default no shadow window
 const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
@@ -140,6 +178,9 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	win.setAlwaysOnTop( true, 'screen-saver', 1 )
 	win.setFullScreenable( false )
+
+	// Exclude the crosshair from screen recordings / captures when enabled (#359)
+	applyContentProtection( win )
 
 	win.once( 'ready-to-show', () => {
 
@@ -594,6 +635,8 @@ const unregister = () => {
 
 const windows = {
 
+	applyContentProtection,
+	syncContentProtection,
 	init,
 	load,
 	each,
