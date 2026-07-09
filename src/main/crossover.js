@@ -409,6 +409,9 @@ const syncSettings = ( options = preferences.preferences ) => {
 
 	} )
 
+	// Sync screen-capture exclusion across all windows (#359)
+	windows.syncContentProtection()
+
 	set.startOnBoot()
 
 	// Reset all custom shortcuts

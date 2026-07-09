@@ -55,6 +55,7 @@ const getDefaults = () => ( {
 		updates: [ 'updates' ],
 		sounds: [ 'sounds' ],
 		gpu: [ 'gpu' ],
+		hideFromScreenCapture: [],
 		startUnlocked: [ 'startUnlocked' ],
 		boot: [],
 		appSize: 'normal',
@@ -570,6 +571,13 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpuprocess' } ],
 								help: 'This can help avoid issues with transparency.',
+							},
+							{
+								label: 'Hide From Screen Recording',
+								key: 'hideFromScreenCapture',
+								type: 'checkbox',
+								options: [ { label: 'Exclude the crosshair from screen captures and recordings', value: 'hideFromScreenCapture' } ],
+								help: 'Prevents the crosshair from showing up in screen recordings (e.g. GeForce Instant Replay, OBS, screenshots). The crosshair remains visible on-screen. Requires Windows 10 or later for full effect.',
 							},
 							{
 								label: 'Run App On System Start',
