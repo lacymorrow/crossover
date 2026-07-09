@@ -58,6 +58,12 @@ console.time( 'init' )
 const process = require( 'process' )
 
 const { app } = require( 'electron' )
+
+// Portable-mode path override MUST run before any module that reads
+// app.getPath('userData') (electron-log, electron-preferences, etc.).
+const { initPortablePaths } = require( './main/portable.js' )
+const isPortable = initPortablePaths()
+
 const debug = require( 'electron-debug' )
 const { checkboxTrue } = require( './config/utils.js' )
 
@@ -82,6 +88,12 @@ const start = async () => {
 	/* App setup */
 	console.log( '***************' )
 	log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
+
+	if ( isPortable ) {
+
+		log.info( `Portable mode: userData redirected to ${app.getPath( 'userData' )}` )
+
+	}
 
 	// Enable sandbox globally
 	// app.enableSandbox()
