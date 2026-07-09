@@ -1,41 +1,3 @@
-// Not tested:
-// - keybinds
-// - drag File
-// - drag window
-// - native close button
-// - Notification
-// - Sounds
-
-// Test:
-// - Main
-// 	- 2nd instance
-// 	- will-quit remove shortcuts
-// 	- exit code
-// 	- Menu
-// 	- Dock
-// 	- Always visible
-// - Features
-// - Functions
-// 	- Create child window
-// - Settings
-// 	- IOHooks
-// - Accelerators
-// 	- moveX
-// 	- Lock
-// 	- duplicate
-// 	- center
-// 	- reset
-// 	- changeDisplay
-// 	- hide
-// - IPC
-// 	- reset_preferences
-// 	- close_window
-// 	- save_custom_image
-// 	- get_crosshairs
-// 	- save_crosshair
-// 	- update_and_restart
-// 	- quit
-
 const { expect, test } = require( '@playwright/test' )
 const { startApp, closeApp, wait, focusedMinimizedVisible, getBounds, delays, CHOOSER_WINDOW, SETTINGS_WINDOW } = require( './helpers.js' )
 const { productName } = require( '../package.json' )
@@ -131,6 +93,34 @@ test( 'Validate open_settings + focus', async () => {
 
 test( 'Validate set_preference + reset_preference', async () => {
 
+	// Test set_preference
+	await electronApp.evaluate( async app => app.ipcMain.emit( 'set_preference', {}, { key: 'crosshair.opacity', value: 50 } ) )
+	await wait( delays.short )
+
+	const opacity = await electronApp.evaluate( async () => {
+
+		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
+
+		return preferences.value( 'crosshair.opacity' )
+
+	} )
+	expect( opacity ).toBe( 50 )
+
+	// Test reset_preferences
+	await electronApp.evaluate( async app => app.ipcMain.emit( 'reset_preferences', {} ) )
+	await wait( delays.short )
+
+	// Verify reset
+	const newOpacity = await electronApp.evaluate( async () => {
+
+		const preferences = process.mainModule.require( './src/main/preferences.js' ).init()
+
+		return preferences.value( 'crosshair.opacity' )
+
+	} )
+	// Verify default opacity value is restored to 80
+	expect( newOpacity ).toBe( 80 )
+
 } )
 
 test( 'Validate quit', async () => {
@@ -139,10 +129,11 @@ test( 'Validate quit', async () => {
 
 	// quit app
 	await electronApp.evaluate( async app => app.ipcMain.emit( 'quit' ) )
+	await wait( delays.medium )
 
 	try {
 
-		console.log( 'This should throw an error!', await mainPage.title() )
+		await mainPage.title()
 
 	} catch {
 
