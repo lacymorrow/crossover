@@ -1,3 +1,4 @@
+const fs = require( 'fs' )
 const path = require( 'path' )
 const { app } = require( 'electron' )
 
@@ -17,9 +18,26 @@ const initPortablePaths = () => {
 	}
 
 	const dataDir = path.join( portableDir, 'data' )
-	app.setPath( 'userData', dataDir )
-	app.setPath( 'logs', path.join( dataDir, 'logs' ) )
-	app.setPath( 'crashDumps', path.join( dataDir, 'crashDumps' ) )
+	const logsDir = path.join( dataDir, 'logs' )
+	const crashDir = path.join( dataDir, 'crashDumps' )
+
+	try {
+
+		fs.mkdirSync( logsDir, { recursive: true } )
+		fs.mkdirSync( crashDir, { recursive: true } )
+		app.setPath( 'userData', dataDir )
+		app.setPath( 'logs', logsDir )
+		app.setPath( 'crashDumps', crashDir )
+
+	} catch ( error ) {
+
+		// If the portable directory isn't writable (e.g. read-only media),
+		// fall back to the default %APPDATA% paths rather than crashing.
+		console.error( '[portable] failed to init portable paths, falling back to defaults:', error )
+
+		return false
+
+	}
 
 	return true
 
