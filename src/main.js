@@ -74,6 +74,17 @@ const reset = require( './main/reset.js' )
 const tray = require( './main/tray.js' )
 const { appId } = require( '../package.json' )
 
+// Detect `--reset` from env, Electron switch, or raw argv.
+// Some Linux launchers (AppImage/Snap/Flatpak) can strip Chromium switches, so
+// fall back to scanning argv for `--reset` / `-reset` / `reset`.
+const isResetRequested = () => {
+
+	if ( process.env.CROSSOVER_RESET ) return true
+	if ( app.commandLine.hasSwitch( 'reset' ) ) return true
+	return process.argv.slice( 1 ).some( arg => arg === '--reset' || arg === '-reset' || arg === 'reset' )
+
+}
+
 const start = async () => {
 
 	// Handle errors early
@@ -115,7 +126,9 @@ const start = async () => {
 
 	// When resetting, force safe GPU settings so the GPU process doesn't crash
 	// before the reset logic can run. (#450)
-	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
+	// Also match on process.argv — AppImage/Snap/Flatpak launchers occasionally
+	// strip Chromium switches, so hasSwitch() alone can miss `--reset` on Linux.
+	if ( isResetRequested() ) {
 
 		log.info( 'Reset mode: forcing safe GPU settings' )
 		app.commandLine.appendSwitch( 'disable-gpu' )
@@ -163,7 +176,7 @@ const ready = async () => {
 	log.info( 'App ready' )
 
 	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET || app.commandLine.hasSwitch( 'reset' ) ) {
+	if ( isResetRequested() ) {
 
 		log.info( 'Command-line reset triggered' )
 		reset.app( true )
