@@ -39,7 +39,8 @@ jobs:
         run: npm install
 
       - name: Build and publish Windows
-        run: npx electron-builder --win --ia32 --x64 --publish always
+        # x64 only — uiohook-napi ships no ia32 N-API prebuilt (npmRebuild is disabled)
+        run: npx electron-builder --win --x64 --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
