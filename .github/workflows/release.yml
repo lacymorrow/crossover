@@ -80,8 +80,14 @@ jobs:
       - name: Install snapcraft
         run: sudo snap install snapcraft --classic
 
-      - name: Build and publish snap
+      - name: Build snap and upload to GitHub release
+        # snapStore publish happens in the next step — electron-builder's bundled
+        # app-builder still calls `snapcraft push`, removed in modern snapcraft
         run: npx electron-builder --linux snap --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish snap to Snap Store
+        run: snapcraft upload --release=stable dist/*.snap
+        env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
