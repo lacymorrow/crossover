@@ -174,8 +174,7 @@
         "removable-media"
       ],
       "publish": [
-        "github",
-        "snapStore"
+        "github"
       ]
     },
     "win": {

@@ -80,8 +80,15 @@ jobs:
       - name: Install snapcraft
         run: sudo snap install snapcraft --classic
 
-      - name: Build and publish snap
+      - name: Build snap and attach to GitHub release
         run: npx electron-builder --linux snap --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # app-builder-bin still runs the removed `snapcraft push` (exit 64 on
+      # snapcraft >=8), so upload to the Snap Store directly instead of via
+      # electron-builder's snapStore publisher.
+      - name: Publish snap to Snap Store
+        run: snapcraft upload --release=stable dist/*.snap
+        env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
