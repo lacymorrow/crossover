@@ -1,6 +1,7 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const { expect, test } = require( '@playwright/test' )
+const { SRC_DIR, collectSourceFiles } = require( './helpers.js' )
 
 // Regression tests for #529 (startup race): appEvents() ran before
 // app.whenReady() and touched session.defaultSession to install the
@@ -10,7 +11,6 @@ const { expect, test } = require( '@playwright/test' )
 // the race. The handlers must always be installed via a whenReady()
 // deferral (src/main/session-permissions.js).
 
-const SRC_DIR = path.resolve( 'src' )
 const MODULE_PATH = require.resolve( '../src/main/session-permissions.js' )
 
 // Minimal stand-in for Electron that reproduces the real semantics the
@@ -33,37 +33,33 @@ const loadWithFakeElectron = () => {
 
 	const fakeElectron = {
 		app: {
-			isReady: () => ready,
 			whenReady: () => readyPromise,
-			on() {},
 		},
-		session: {},
+		session: {
+			get defaultSession() {
+
+				if ( !ready ) {
+
+					throw new Error( 'Session can only be received when app is ready' )
+
+				}
+
+				return {
+					setPermissionRequestHandler( handler ) {
+
+						handlers.request = handler
+
+					},
+					setPermissionCheckHandler( handler ) {
+
+						handlers.check = handler
+
+					},
+				}
+
+			},
+		},
 	}
-
-	Object.defineProperty( fakeElectron.session, 'defaultSession', {
-		get() {
-
-			if ( !ready ) {
-
-				throw new Error( 'Session can only be received when app is ready' )
-
-			}
-
-			return {
-				setPermissionRequestHandler( handler ) {
-
-					handlers.request = handler
-
-				},
-				setPermissionCheckHandler( handler ) {
-
-					handlers.check = handler
-
-				},
-			}
-
-		},
-	} )
 
 	const electronPath = require.resolve( 'electron' )
 	const previous = require.cache[electronPath]
@@ -73,7 +69,6 @@ const loadWithFakeElectron = () => {
 		loaded: true,
 		exports: fakeElectron,
 	}
-	delete require.cache[MODULE_PATH]
 
 	try {
 
@@ -101,15 +96,7 @@ const loadWithFakeElectron = () => {
 
 }
 
-test( 'init() before app is ready must not throw', async () => {
-
-	const { sessionPermissions } = loadWithFakeElectron()
-
-	expect( () => sessionPermissions.init() ).not.toThrow()
-
-} )
-
-test( 'Handlers are installed after ready and deny all permissions', async () => {
+test( 'init() before app is ready must not throw; handlers install after ready and deny all', async () => {
 
 	const { sessionPermissions, handlers, resolveReady } = loadWithFakeElectron()
 
@@ -133,20 +120,6 @@ test( 'Handlers are installed after ready and deny all permissions', async () =>
 } )
 
 test( 'session.defaultSession is only accessed by session-permissions.js', async () => {
-
-	const collectSourceFiles = dir => fs.readdirSync( dir, { withFileTypes: true } )
-		.flatMap( entry => {
-
-			const fullPath = path.join( dir, entry.name )
-			if ( entry.isDirectory() ) {
-
-				return collectSourceFiles( fullPath )
-
-			}
-
-			return entry.name.endsWith( '.js' ) ? [ fullPath ] : []
-
-		} )
 
 	for ( const file of collectSourceFiles( SRC_DIR ) ) {
 
