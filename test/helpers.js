@@ -1,9 +1,27 @@
+const fs = require( 'fs' )
+const path = require( 'path' )
 const { _electron: electron } = require( 'playwright' )
 
 let electronApp
 
 const CHOOSER_WINDOW = 'Crosshairs'
 const SETTINGS_WINDOW = 'Preferences'
+
+const SRC_DIR = path.resolve( 'src' )
+
+const collectSourceFiles = dir => fs.readdirSync( dir, { withFileTypes: true } )
+	.flatMap( entry => {
+
+		const fullPath = path.join( dir, entry.name )
+		if ( entry.isDirectory() ) {
+
+			return collectSourceFiles( fullPath )
+
+		}
+
+		return entry.name.endsWith( '.js' ) ? [ fullPath ] : []
+
+	} )
 
 const delays = {
 	short: 500,
@@ -195,7 +213,9 @@ const visualMouse = async mainPage => {
 module.exports = {
 	CHOOSER_WINDOW,
 	SETTINGS_WINDOW,
+	SRC_DIR,
 	closeApp,
+	collectSourceFiles,
 	delays,
 	focusedMinimizedVisible,
 	getBounds,

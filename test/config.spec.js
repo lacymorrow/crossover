@@ -2,22 +2,7 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const { expect, test } = require( '@playwright/test' )
 const config = require( '../src/config/config.js' )
-
-const SRC_DIR = path.resolve( 'src' )
-
-const collectSourceFiles = dir => fs.readdirSync( dir, { withFileTypes: true } )
-	.flatMap( entry => {
-
-		const fullPath = path.join( dir, entry.name )
-		if ( entry.isDirectory() ) {
-
-			return collectSourceFiles( fullPath )
-
-		}
-
-		return entry.name.endsWith( '.js' ) ? [ fullPath ] : []
-
-	} )
+const { SRC_DIR, collectSourceFiles } = require( './helpers.js' )
 
 // Regression test for #529: menu.js destructured TROUBLESHOOTING_URL and
 // COMPATIBILITY_URL from config.js before they existed, crashing the main

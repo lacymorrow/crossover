@@ -1,4 +1,4 @@
-const { app, session } = require( 'electron' )
+const { app } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
@@ -6,21 +6,14 @@ const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
+const sessionPermissions = require( './session-permissions' )
 const windows = require( './windows' )
 const EXIT_CODES = require( '../config/exit-codes' )
 
 const appEvents = () => {
 
-	// CrossOver only renders local files and needs no browser permissions.
-	// Deny all permission requests (geolocation, notifications, camera, etc.)
-	// to prevent unexpected OS prompts, particularly on Windows. (#471)
-	session.defaultSession.setPermissionRequestHandler( ( _webContents, _permission, callback ) => {
-
-		callback( false )
-
-	} )
-
-	session.defaultSession.setPermissionCheckHandler( () => false )
+	// Deferred until app ready internally; appEvents() runs pre-ready (#529)
+	sessionPermissions.init()
 
 	app.on( 'activate', async () => {
 
