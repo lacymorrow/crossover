@@ -1,4 +1,5 @@
 const { globalShortcut } = require( 'electron' )
+const log = require( './log' )
 const windows = require( './windows' )
 
 const escapeAction = () => {
@@ -22,7 +23,18 @@ const registerEscape = ( action = keyboard.escapeAction ) => {
 
 }
 
-const registerShortcut = ( ...args ) => globalShortcut.register( ...args )
+const registerShortcut = ( accelerator, fn ) => {
+
+	const registered = globalShortcut.register( accelerator, fn )
+	if ( !registered ) {
+
+		log.warn( `globalShortcut.register failed for: ${accelerator} (another app may have claimed this combo)` )
+
+	}
+
+	return registered
+
+}
 
 const unregisterShortcut = ( ...args ) => globalShortcut.unregister( ...args )
 

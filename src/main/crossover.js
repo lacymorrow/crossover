@@ -185,7 +185,12 @@ const registerKeyboardShortcuts = () => {
 	// Register all shortcuts
 	const { keybinds } = Preferences.getDefaults()
 	const custom = preferences.value( 'keybinds' ) // Defaults
+	const failed = []
+
 	for ( const shortcut of keyboardShortcuts() ) {
+
+		let accelerator
+		let registered
 
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
@@ -196,19 +201,45 @@ const registerKeyboardShortcuts = () => {
 
 			// If a custom shortcut exists for this action
 			log.info( `Custom keybind for ${shortcut.action}` )
-			keyboard.registerShortcut( custom[shortcut.action], shortcut.fn )
+			accelerator = custom[shortcut.action]
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
 
 		} else if ( keybinds[shortcut.action] ) {
 
 			// Set default keybind
-			keyboard.registerShortcut( keybinds[shortcut.action], shortcut.fn )
+			accelerator = keybinds[shortcut.action]
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
 
 		} else {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
 			log.info( 'ERROR - you likely forgot to add a default keybind for this shortcut: ', shortcut )
-			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
+			accelerator = shortcut.keybind
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
+
+		}
+
+		if ( accelerator && registered === false ) {
+
+			failed.push( accelerator )
+
+		}
+
+	}
+
+	if ( failed.length > 0 ) {
+
+		log.warn( `Shortcut registration failed for: ${failed.join( ', ' )}` )
+
+		// Notify the user — only if the renderer window is ready
+		if ( windows.win && !windows.win.isDestroyed() ) {
+
+			const notification = require( './notification' )
+			notification( {
+				title: 'Keyboard Shortcut Conflict',
+				body: `Could not register: ${failed.join( ', ' )}. Another app may be using this combo. Try rebinding in Settings.`,
+			} )
 
 		}
 
