@@ -124,11 +124,47 @@ $ sudo snap install crossover
 
 `AppImage` needs to be [made executable](http://discourse.appimage.org/t/how-to-make-an-appimage-executable/80) after download. Some lightweight desktop environments require a compositor for the overlay to work ([#230](https://github.com/lacymorrow/crossover/issues/230)).
 
-Advanced features (lock, hide, ADS resize, mouse follow) rely on `libxkbcommon`:
+Advanced features (lock, hide, ADS resize, mouse follow) rely on `libxkbcommon` and a few X11 helper libs:
 
 ```sh
-$ sudo apt install libxkbcommon-x11-0      # Ubuntu / Pop!_OS
-$ sudo dnf install libxkbcommon-x11        # Fedora
+# Ubuntu / Pop!_OS / Linux Mint
+$ sudo apt install libxkbcommon-x11-0 libxtst6 libnotify4 libnss3 libsecret-1-0
+
+# Fedora / Nobara
+$ sudo dnf install libxkbcommon-x11 libXtst libnotify nss libsecret
+
+# Arch
+$ sudo pacman -S libxkbcommon-x11 libxtst libnotify nss libsecret
+```
+
+#### X11 vs Wayland
+
+CrossOver's transparent overlay currently works best on **X11**. If you're on Wayland (default on GNOME 40+, KDE Plasma 6, and most modern distros) and see a black or opaque background:
+
+- Log out and pick **"GNOME on Xorg"** or **"Plasma (X11)"** at the login screen.
+- Or launch with the Wayland-to-X11 shim: `crossover --ozone-platform=x11`.
+- KDE/KWin on Wayland is the most affected combination ([#450](https://github.com/lacymorrow/crossover/issues/450)).
+
+#### Linux Mint 22 Cinnamon
+
+Cinnamon disables compositing on certain themes, which hides the overlay. Enable compositing in **System Settings → General → Enable compositing** and restart CrossOver ([#468](https://github.com/lacymorrow/crossover/issues/468)).
+
+#### Nobara / gaming distros
+
+Overlays don't draw on top of Proton/Vulkan games — the crosshair renders on the desktop but not over the game window. Use windowed or borderless mode and see [Vulkan-based games](#game-compatibility) above ([#347](https://github.com/lacymorrow/crossover/issues/347)).
+
+#### Fedora Silverblue / immutable distros
+
+If CrossOver core-dumps on start, GPU sandboxing is likely blocked. Launch with `crossover --disable-gpu-sandbox` or install the Flatpak build once available ([#120](https://github.com/lacymorrow/crossover/issues/120)).
+
+#### Reset stuck preferences
+
+If the app crashes on launch after a bad setting, wipe preferences:
+
+```sh
+$ crossover --reset          # preferred — clears prefs and restarts
+$ crossover --disable-gpu --reset   # if the GPU process crashes before reset runs
+$ rm -rf ~/.config/CrossOver    # nuclear option — delete the config dir directly
 ```
 
 ## Usage
