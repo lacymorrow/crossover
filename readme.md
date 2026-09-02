@@ -92,7 +92,17 @@ Or get it from the [Microsoft Store](https://apps.microsoft.com/detail/9mtd5zln7
 
 ### macOS
 
-Download the `.dmg` for your architecture (Intel `x64` or Apple Silicon `arm64`) from the [releases page](https://github.com/lacymorrow/crossover/releases/latest).
+Grab a `.dmg` from the [releases page](https://github.com/lacymorrow/crossover/releases/latest), open it, and drag **CrossOver** into your **Applications** folder.
+
+**Which file?** Pick one — any of these will work:
+
+| File | Use if |
+|------|--------|
+| `CrossOver-<version>-universal.dmg` | You're not sure — this one runs on any Mac (Intel or Apple Silicon). |
+| `CrossOver-<version>-arm64.dmg` | You have an Apple Silicon Mac (M1/M2/M3/M4). Smaller download. |
+| `CrossOver-<version>-x64.dmg` | You have an Intel Mac. |
+
+To check which Mac you have: **Apple menu ▸ About This Mac** — look for **Chip** (Apple Silicon, e.g. *Apple M1*) or **Processor** (Intel). The `.zip` files contain the same app as the matching `.dmg` if you prefer that format.
 
 If macOS says *"CrossOver cannot be opened because the developer cannot be verified"*: locate the app, **Control-click** it, then choose **Open**.
 
