@@ -267,11 +267,15 @@ const preferencesConfig = {
 						label: 'Mouse Actions',
 						fields: [
 							{
+								content: '<p><b>Note:</b> Mouse Actions only take effect once the crosshair is locked (default <code>Ctrl+Shift+Alt+X</code>). If a setting here appears to do nothing, lock the crosshair first.</p>',
+								type: 'message',
+							},
+							{
 								label: 'Follow Mouse',
 								key: 'followMouse',
 								type: 'checkbox',
 								options: [ { label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' } ],
-								help: 'Keeps CrossOver centered on the mouse cursor. ',
+								help: 'Keeps CrossOver centered on the mouse cursor. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Resize crosshair on ADS',
@@ -282,7 +286,7 @@ const preferencesConfig = {
 									{ label: 'Toggle right mouse-button', value: 'toggle' },
 									{ label: 'Hold right mouse-button', value: 'hold' },
 								],
-								help: 'Change crosshair size when ADS-ing',
+								help: 'Change crosshair size when ADS-ing. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Crosshair ADS Size',
@@ -303,7 +307,7 @@ const preferencesConfig = {
 									{ label: 'Backward mouse-button', value: '4' },
 									{ label: 'Forward mouse-button', value: '5' },
 								],
-								help: 'Hides the crosshair when the specified mouse button is held.',
+								help: 'Hides the crosshair when the specified mouse button is held. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Toggle/Hold ADS',
@@ -324,6 +328,10 @@ const preferencesConfig = {
 					{
 						label: 'Keyboard Actions',
 						fields: [
+							{
+								content: '<p><b>Note:</b> Keyboard Actions only take effect once the crosshair is locked (default <code>Ctrl+Shift+Alt+X</code>).</p>',
+								type: 'message',
+							},
 							{
 								label: 'Hide on keypress',
 								key: 'hideOnKey',
