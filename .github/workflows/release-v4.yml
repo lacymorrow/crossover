@@ -1,0 +1,59 @@
+name: release-v4
+
+# Builds CrossOver 4 from lacymorrow/xover and publishes it here as a GitHub
+# pre-release. v3 installs only see it after opting in from the remote banner
+# (allowPrerelease); everyone else keeps getting /releases/latest.
+# Lives in this repo so the built-in GITHUB_TOKEN can write the release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'xover tag, branch or SHA to build'
+        required: true
+        default: 'main'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    strategy:
+      # One at a time so the three jobs don't race to create the release
+      max-parallel: 1
+      matrix:
+        include:
+          - os: macos-latest
+            target: --mac
+          - os: windows-latest
+            target: --win
+          - os: ubuntu-latest
+            target: --linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: lacymorrow/xover
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and build
+        run: |
+          npm install
+          npm run postinstall
+          npm run build
+
+      - name: Publish pre-release
+        run: npx electron-builder ${{ matrix.target }} --publish always -c.publish.releaseType=prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Apple signing applies to the macOS job only
+          CSC_LINK: ${{ matrix.os == 'macos-latest' && secrets.CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ matrix.os == 'macos-latest' && secrets.CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}

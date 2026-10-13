@@ -140,8 +140,18 @@
             "universal"
           ]
         }
-      ]
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": {
+        "teamId": "DPFY6AHP57"
+      }
     },
+    "asarUnpack": [
+      "node_modules/uiohook-napi/**"
+    ],
     "dmg": {
       "contents": [
         {
