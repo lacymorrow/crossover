@@ -94,7 +94,6 @@
     "electron-unhandled": "^4.0.1",
     "electron-updater": "6.3.0",
     "electron-util": "^0.17.2",
-    "got": "^13.0.0",
     "uiohook-napi": "^1.5.4"
   },
   "optionalDependencies": {
