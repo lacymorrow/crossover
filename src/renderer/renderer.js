@@ -463,4 +463,51 @@
 
 	}
 
+	/* Remote banner (see src/main/banner.js) */
+	const bannerEl = document.querySelector( '#remote-banner' )
+	if ( bannerEl ) {
+
+		const bannerText = document.querySelector( '#remote-banner-text' )
+		const bannerAction = document.querySelector( '#remote-banner-action' )
+		const bannerDismiss = document.querySelector( '#remote-banner-dismiss' )
+
+		window.crossover.receive( 'set_banner', banner => {
+
+			if ( !banner ) {
+
+				bannerEl.classList.add( 'd-none' )
+
+				return
+
+			}
+
+			bannerText.textContent = banner.message
+			bannerAction.textContent = banner.action?.label || ''
+			bannerAction.classList.toggle( 'd-none', !banner.action )
+			bannerEl.classList.remove( 'd-none' )
+
+		} )
+
+		window.crossover.receive( 'set_banner_status', status => {
+
+			bannerText.textContent = status
+			bannerAction.classList.add( 'd-none' )
+
+		} )
+
+		bannerAction.addEventListener( 'click', () => {
+
+			window.crossover.send( 'banner_action' )
+
+		} )
+
+		bannerDismiss.addEventListener( 'click', () => {
+
+			window.crossover.send( 'banner_dismiss' )
+			bannerEl.classList.add( 'd-none' )
+
+		} )
+
+	}
+
 } )()

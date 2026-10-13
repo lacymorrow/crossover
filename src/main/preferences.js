@@ -90,6 +90,8 @@ const getDefaults = () => ( {
 		reviewPromptFirstLaunchDate: null,
 		reviewPromptState: 'pending',
 		reviewPromptLaterDate: null,
+		bannerDismissedId: null,
+		updateChannel: null,
 	},
 } )
 

@@ -7,6 +7,7 @@ const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
+const banner = require( './banner' )
 const reviewPrompt = require( './review-prompt' )
 
 const init = async options => {
@@ -99,6 +100,7 @@ const init = async options => {
 				try {
 
 					reviewPrompt.check( windows.win )
+					banner.init( windows.win )
 
 				} catch ( error ) {
 
