@@ -558,7 +558,7 @@ const preferencesConfig = {
 								key: 'alerts',
 								type: 'checkbox',
 								options: [ { label: 'Receive information from the developer', value: 'alerts' } ],
-								help: 'You may receive a notification regarding bugs or updates from the developer.',
+								help: 'Shows an occasional note from the developer in the crosshair window while it is unlocked. Never shown while locked.',
 							},
 							{
 								label: 'Hardware Acceleration',

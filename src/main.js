@@ -212,9 +212,6 @@ const ready = async () => {
 	/* AUTO-UPDATE */
 	autoUpdate.update()
 
-	// Alert from developer
-	// alert.init()
-
 	console.timeEnd( 'init' )
 
 }
