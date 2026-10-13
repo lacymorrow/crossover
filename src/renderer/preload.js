@@ -23,7 +23,7 @@ const api = {
 
 		// Whitelist channels
 		const validChannels = new Set( [
-			'center_window', 'close_window', 'complete_onboarding', 'error', 'focus_window', 'log', 'review_prompt_dismiss', 'review_prompt_later', 'save_custom_image', 'open_chooser', 'open_settings', 'quit',
+			'banner_action', 'banner_dismiss', 'center_window', 'close_window', 'complete_onboarding', 'error', 'focus_window', 'log', 'review_prompt_dismiss', 'review_prompt_later', 'save_custom_image', 'open_chooser', 'open_settings', 'quit',
 		] )
 
 		if ( validChannels.has( channel ) ) {
@@ -41,7 +41,7 @@ const api = {
 	receive( channel, func ) {
 
 		const validChannels = new Set( [
-			'add_class', 'remove_class', 'notify', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle', 'show_onboarding', 'show_review_prompt',
+			'add_class', 'remove_class', 'notify', 'set_banner', 'set_banner_status', 'lock_window', 'preload_sounds', 'play_sound', 'set_crosshair', 'set_info_icon', 'set_properties', 'set_reticle', 'show_onboarding', 'show_review_prompt',
 		] )
 
 		if ( validChannels.has( channel ) ) {

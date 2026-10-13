@@ -694,3 +694,14 @@ label {
         }
     }
 }
+
+// Remote banner reuses .review-prompt styles; only shown while unlocked
+body:not(.draggable) .remote-banner,
+.remote-banner .d-none {
+    display: none !important;
+}
+
+// One prompt at a time: the banner wins over the review prompt
+.remote-banner:not(.d-none) ~ #review-prompt {
+    display: none;
+}

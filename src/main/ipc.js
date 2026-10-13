@@ -5,6 +5,7 @@ const preferences = require( './preferences' ).init()
 const helpers = require( './helpers' )
 const log = require( './log' )
 const reset = require( './reset' )
+const banner = require( './banner' )
 const reviewPrompt = require( './review-prompt' )
 const set = require( './set' )
 const sound = require( './sound' )
@@ -133,6 +134,23 @@ const init = () => {
 	ipcMain.on( 'review_prompt_dismiss', () => {
 
 		reviewPrompt.dismiss()
+
+	} )
+
+	ipcMain.on( 'banner_dismiss', () => {
+
+		banner.dismiss()
+
+	} )
+
+	ipcMain.on( 'banner_action', event => {
+
+		const status = banner.act()
+		if ( status ) {
+
+			event.sender.send( 'set_banner_status', status )
+
+		}
 
 	} )
 
