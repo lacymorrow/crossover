@@ -20,6 +20,7 @@
 	downloads it. Installs that can't auto-update open action.url instead.
 */
 const https = require( 'https' )
+const os = require( 'os' )
 const { shell } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
 const { BANNER_URL } = require( '../config/config' )
@@ -90,6 +91,27 @@ const isSafeUrl = url => {
 
 }
 
+// CrossOver 4 (Electron 40) needs Windows 10+ or macOS 12+ (Darwin 21)
+const supportsV4 = ( platform = process.platform, release = os.release() ) => {
+
+	const major = Number.parseInt( release.split( '.' )[0], 10 )
+
+	if ( platform === 'win32' ) {
+
+		return major >= 10
+
+	}
+
+	if ( platform === 'darwin' ) {
+
+		return major >= 21
+
+	}
+
+	return true
+
+}
+
 // Only accept the shape we expect; anything else hides the banner
 const sanitize = data => {
 
@@ -104,6 +126,13 @@ const sanitize = data => {
 		type: data.action.type === 'update-v4' ? 'update-v4' : 'url',
 		url: isSafeUrl( data.action.url ) ? data.action.url : '',
 	} : null
+
+	// Don't advertise v4 to machines that can't run it
+	if ( action?.type === 'update-v4' && !supportsV4() ) {
+
+		return null
+
+	}
 
 	if ( action?.type === 'url' && !action.url ) {
 
@@ -210,4 +239,4 @@ const act = () => {
 
 }
 
-module.exports = { act, dismiss, init, refresh }
+module.exports = { act, dismiss, init, refresh, supportsV4 }
