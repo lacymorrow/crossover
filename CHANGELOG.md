@@ -6,21 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.4.7] - 2026-10-14
+
+### Added
+
+- A banner in the unlocked crosshair window carries news from the developer, and can offer to move you to CrossOver 4 on systems that can run it. It follows your Developer Information preference, never appears while the crosshair is locked, and stays dismissed once you dismiss it. (#547, #549, #555)
+
 ### Changed
 
+- macOS builds are signed with a Developer ID and notarized by Apple, so they open without a Gatekeeper warning and can update themselves in place. (#548)
+- Preferences now says that Mouse & Keyboard Actions only run while the crosshair is locked, which is why Resize on ADS and the hide triggers looked like they did nothing. (#396, #514, #541)
 - The Linux documentation covers dependencies, X11 versus Wayland, Mint compositing, Nobara and Silverblue, and how to recover with a reset. The download page says which macOS build to take. (#523, #524)
 
 ### Fixed
 
-- Portable Windows builds keep their data next to the exe. `userData`, `logs`, and `crashDumps` go to a `data/` folder beside the executable instead of `%APPDATA%\CrossOver`, so a portable copy stays portable. Installer builds are unaffected. (#521)
+- CrossOver starts. Window permission handling waits for the app to finish launching instead of running too early, which on 3.4.5 killed the app before any window appeared. (#529, #535, #546)
+- Portable Windows builds keep their data next to the exe. `userData`, `logs`, and `crashDumps` go to a `data/` folder beside the executable instead of `%APPDATA%\CrossOver`, so a portable copy stays portable. (#521)
 - A hotkey that the operating system or another overlay has already claimed now tells you it failed to register, instead of silently doing nothing. (#517)
 - `--reset` works on Linux launchers that strip Chromium switches, through an argv fallback, so AppImage, Snap, and Flatpak wrappers can recover a broken setup. (#524)
 
-## [3.4.6] - 2026-08-26
+## [3.4.6] - unreleased
 
-### Fixed
-
-- CrossOver starts reliably. Window permission handling waits for the app to finish launching instead of running too early. (#529)
+Built on 2026-08-26 and never published, so nobody ever ran it. Its one fix ships in 3.4.7.
 
 ## [3.4.5] - 2026-08-25
 
@@ -261,7 +268,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - CrossOver. A transparent, always-on-top crosshair you drop over any game, with a settings panel for color and size.
 
-[unreleased]: https://github.com/lacymorrow/crossover/compare/v3.4.6...HEAD
+[unreleased]: https://github.com/lacymorrow/crossover/compare/v3.4.7...HEAD
+[3.4.7]: https://github.com/lacymorrow/crossover/compare/v3.4.5...v3.4.7
 [3.4.6]: https://github.com/lacymorrow/crossover/compare/v3.4.5...v3.4.6
 [3.4.5]: https://github.com/lacymorrow/crossover/compare/v3.4.4...v3.4.5
 [3.4.4]: https://github.com/lacymorrow/crossover/compare/v3.4.2...v3.4.4
