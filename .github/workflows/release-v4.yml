@@ -55,6 +55,11 @@ jobs:
           npm run postinstall
           npm run build
 
+      # pacman/freebsd packages are built with bsdtar
+      - name: Install Linux packaging tools
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libarchive-tools
+
       - name: Import signing certificate
         if: matrix.os == 'macos-latest'
         run: .crossover-ci/.github/scripts/import-signing-cert.sh
@@ -63,6 +68,8 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
 
       - name: Publish pre-release
+        # bash everywhere: PowerShell splits -c.publish.releaseType at the dot
+        shell: bash
         run: npx electron-builder ${{ matrix.target }} --publish always -c.publish.releaseType=prerelease
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
