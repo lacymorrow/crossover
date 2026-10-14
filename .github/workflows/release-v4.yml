@@ -19,6 +19,7 @@ permissions:
 jobs:
   publish:
     strategy:
+      fail-fast: false
       # One at a time so the three jobs don't race to create the release
       max-parallel: 1
       matrix:
@@ -36,6 +37,13 @@ jobs:
           repository: lacymorrow/xover
           ref: ${{ inputs.ref }}
 
+      # Just the signing helper from this repo
+      - uses: actions/checkout@v6
+        if: matrix.os == 'macos-latest'
+        with:
+          path: .crossover-ci
+          sparse-checkout: .github/scripts
+
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -47,13 +55,19 @@ jobs:
           npm run postinstall
           npm run build
 
+      - name: Import signing certificate
+        if: matrix.os == 'macos-latest'
+        run: .crossover-ci/.github/scripts/import-signing-cert.sh
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+
       - name: Publish pre-release
         run: npx electron-builder ${{ matrix.target }} --publish always -c.publish.releaseType=prerelease
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Apple signing applies to the macOS job only
-          CSC_LINK: ${{ matrix.os == 'macos-latest' && secrets.CSC_LINK || '' }}
-          CSC_KEY_PASSWORD: ${{ matrix.os == 'macos-latest' && secrets.CSC_KEY_PASSWORD || '' }}
+          # macOS signs with the identity imported above; Windows/Linux get none
+          CSC_NAME: ${{ matrix.os == 'macos-latest' && 'Lacy Morrow (DPFY6AHP57)' || '' }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}

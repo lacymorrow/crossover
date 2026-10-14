@@ -21,14 +21,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Developer ID signing + notarization. Without these the build is ad-hoc
+      # signed and macOS installs can't auto-update.
+      - name: Import signing certificate
+        run: .github/scripts/import-signing-cert.sh
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+
       - name: Build and publish macOS
         run: npx electron-builder --macos --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Developer ID signing + notarization. Without these secrets the build
-          # is ad-hoc signed and macOS installs can't auto-update.
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_NAME: Lacy Morrow (DPFY6AHP57)
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
 
