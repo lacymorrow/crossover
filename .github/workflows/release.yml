@@ -73,6 +73,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # #535: compiling is not opening. Dispatch only.
+      - name: Smoke test Windows build
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: .github/scripts/windows-smoke.ps1
+
       - name: Upload Windows artifacts for QA
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
@@ -83,6 +89,7 @@ jobs:
           path: |
             dist/*.exe
             dist/latest.yml
+            dist/windows-smoke.png
 
   release-linux:
     runs-on: ubuntu-latest
