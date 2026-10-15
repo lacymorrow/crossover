@@ -422,22 +422,36 @@ const center = options => {
 
 }
 
+// Duplicates are crosshairs too, so the visibility class has to reach every
+// window and not just windows.win. Sending to the main window alone left
+// duplicates on screen through the hide hotkey and Hide on keypress (#560).
+const sendToEveryCrosshair = ( channel, argument ) => {
+
+	each( windows, win => {
+
+		if ( win && !win.isDestroyed() ) {
+
+			win.webContents.send( channel, argument )
+
+		}
+
+	} )
+
+}
+
 const showWindow = () => {
 
 	// Todo: showInactive() can be used in later versions of Electron
 	// each( win => win.showInactive() )
 
-	windows.win.webContents.send( 'remove_class', 'hidden' )
+	sendToEveryCrosshair( 'remove_class', 'hidden' )
 	windows.hidden = false
 
 }
 
 const hideWindow = () => {
 
-	// Previously:
-	// each( win => win.hide() )
-
-	windows.win.webContents.send( 'add_class', 'hidden' )
+	sendToEveryCrosshair( 'add_class', 'hidden' )
 	windows.hidden = true
 
 }

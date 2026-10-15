@@ -589,7 +589,6 @@ const initShadowWindow = async () => {
 	const properties = {
 		// No app-color for shadow windows
 		// No crosshair scaling for shadow windows
-		// No resizing for shadow windows
 		'--crosshair-width': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-height': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-opacity': ( previousPreferences.crosshair?.opacity || 100 ) / 100,
