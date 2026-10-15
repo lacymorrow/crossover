@@ -276,7 +276,7 @@ const preferencesConfig = {
 						label: 'CrossOver Actions (beta)',
 						fields: [
 							{
-								content: '<p><b>Note:</b> CrossOver Actions do not work on Apple Silicon.</p>',
+								content: '<p><b>Note:</b> On macOS these need Accessibility permission (System Settings &gt; Privacy &amp; Security &gt; Accessibility). Games with kernel-level anti-cheat can block them entirely.</p>',
 								type: 'message',
 							},
 						],
