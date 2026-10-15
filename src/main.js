@@ -85,8 +85,18 @@ const { appId } = require( '../package.json' )
 // fall back to scanning argv for `--reset` / `-reset` / `reset`.
 const isResetRequested = () => {
 
-	if ( process.env.CROSSOVER_RESET ) return true
-	if ( app.commandLine.hasSwitch( 'reset' ) ) return true
+	if ( process.env.CROSSOVER_RESET ) {
+
+		return true
+
+	}
+
+	if ( app.commandLine.hasSwitch( 'reset' ) ) {
+
+		return true
+
+	}
+
 	return process.argv.slice( 1 ).some( arg => arg === '--reset' || arg === '-reset' || arg === 'reset' )
 
 }
