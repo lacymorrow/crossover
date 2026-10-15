@@ -44,8 +44,8 @@
 ### Scene 3 — The Library (0:10–0:15)
 
 **Visual:** CrossOver's crosshair chooser UI. Rapid scroll through categories — reticles, dots, chevrons, tactical optics, custom designs. The grid fills the screen.
-**Text Overlay:** "100+ crosshairs built in"
-**Text Style:** Number "100+" emphasized in brand purple (#5500ff) or accent color
+**Text Overlay:** "500+ crosshairs built in"
+**Text Style:** Number "500+" emphasized in brand purple (#5500ff) or accent color
 **Audio:** Quick UI click sounds on each crosshair switch. Music continues.
 
 **OBS Setup:** Screen-record the chooser window. Scroll smoothly through multiple categories. Show variety — thin reticles, fat dots, complex optics, fun shapes.

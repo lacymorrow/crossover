@@ -1,7 +1,10 @@
-# Microsoft Store Listing Optimization — CrossOver v3.4.2
+# Microsoft Store Listing Optimization — CrossOver v3.4.5
 
 > LAC-276: Improve conversion rate from 3.35% to 5%+
 > Store URL: https://apps.microsoft.com/detail/9mtd5zln7nl1
+> Crosshair count verified 2026-10-14: 529 selectable files across 25 sets in `src/static/crosshairs`.
+> `getCrosshairImages()` in `src/main/helpers.js` recurses the whole tree, so every file is pickable.
+> The old copy said "100+" — a 5x undersell of our single biggest differentiator.
 
 ---
 
@@ -12,17 +15,17 @@
 _(Keep current — title already includes primary keywords)_
 
 ### Short Description (max 100 chars)
-Free crosshair overlay with 100+ sights. Drag in your own image. Multi-monitor. Any game.
+Free crosshair overlay with 500+ sights. Drag in your own image. Multi-monitor. Any game.
 
 ### Full Description
 
 Your game's default crosshair is tiny, washed out, or just not there. CrossOver drops a crosshair overlay on top of whatever you're playing so you can actually see where you're aiming.
 
-There are 100+ crosshairs included, from real scope reticles to tournament dots to custom designs. Or just drag in any image you want and use that instead. You can resize it, change the color, dial the opacity up or down, then lock it in place. It sits on top of your game and barely touches your system resources.
+There are over 500 crosshairs included, sorted into 25 sets: real scope reticles, tournament dots, broken crosses, chevrons. Or drag in any image you want and build a custom crosshair out of it. You can resize it, change the color, dial the opacity up or down, then lock it in place. It sits on top of your game and barely touches your system resources.
 
 Here's what it does:
 
-• 100+ built-in crosshairs
+• 500+ built-in crosshairs across 25 sets
 • Drag and drop any image to use as your crosshair
 • Multi-monitor support, hop between displays
 • Put up to 14 duplicate crosshairs on screen at the same time
@@ -32,9 +35,9 @@ Here's what it does:
 • Separate center dot with its own shape and color
 • No FPS drops, no input lag, no injection into game files
 
-Tested and working with Valorant, CS2, Fortnite, Call of Duty Warzone, Apex Legends, Overwatch, Roblox, Destiny 2, Dead by Daylight, The Finals, Rust, Halo MCC, and a lot more. Run your game in Windowed or Borderless Fullscreen for best results.
+The overlay is tested and working with Valorant, CS2, Fortnite, Call of Duty Warzone, Apex Legends, Overwatch, Roblox, Destiny 2, Dead by Daylight, The Finals, Rust, Halo MCC, and a lot more. Run your game in Windowed or Borderless Fullscreen for best results.
 
-If you're colorblind or the default sights in your game are hard to see, this helps. Full control over color, size, and opacity means you can make a crosshair that actually works for your eyes.
+If you're colorblind or the default sights in your game are hard to see, this helps. Full control over color, size, and opacity means you can build a gaming crosshair that actually works for your eyes.
 
 Free, open source, no ads, no data collection. One developer, community supported. Your data doesn't leave your machine. Updates happen automatically.
 
@@ -80,13 +83,23 @@ crosshair overlay; gaming crosshair; aim assist; custom crosshair; fps overlay; 
 ```
 
 ### Keyword Density Notes
-The rewritten description naturally includes these high-value terms:
-- "crosshair" — 14 occurrences
-- "overlay" — 3 occurrences
-- "gaming/gamers/games" — 6 occurrences
-- "custom/customize" — 4 occurrences
-- "crosshair overlay" (exact phrase) — 2 occurrences
-- Game names (Valorant, CS2, Fortnite, etc.) — 13 titles mentioned
+
+Counted against the Full Description above on 2026-10-14. The earlier version of this
+table was inflated (it claimed crosshair 14x, overlay 3x, custom 4x); these are measured.
+
+| Term | Occurrences |
+|------|-------------|
+| "crosshair" | 8 |
+| "overlay" | 2 |
+| "crosshair overlay" (exact phrase) | 1 |
+| "custom crosshair" (exact phrase) | 1 |
+| "gaming crosshair" (exact phrase) | 1 |
+| "game" | 5 |
+| Game titles named | 12 |
+
+All three primary exact-match phrases appear at least once without stuffing. Don't chase
+higher counts here — Microsoft Store ranks the search-terms field separately, and the
+description's job is to convert a reader who already landed on the page.
 
 ---
 
@@ -96,11 +109,11 @@ Microsoft Store supports up to 10 screenshots. Recommended set:
 
 ### Screenshot 1 — Hero Shot (first impression, most critical)
 CrossOver crosshair overlaid on a gameplay scene (Valorant or CS2-style).
-Bold text overlay: "100+ Crosshairs. Any Game. Free."
+Bold text overlay: "500+ Crosshairs. Any Game. Free."
 
 ### Screenshot 2 — Crosshair Chooser
-Show the crosshair picker UI with the grid of 100+ options visible.
-Text: "Pick from 100+ real scope reticles and custom designs"
+Show the crosshair picker UI with the grid of options visible, scrolled to show depth.
+Text: "Pick from 500+ real scope reticles and custom designs"
 
 ### Screenshot 3 — Custom Image Drop
 Show a custom image being dragged onto the crosshair window.
@@ -142,7 +155,7 @@ Text: "Better visibility for colorblind and low-contrast gamers"
 |-----------|-------|-------------|
 | 0:00-0:05 | Problem: gameplay clip with tiny/invisible default crosshair | "Can't see your crosshair?" |
 | 0:05-0:10 | CrossOver appears — bold crosshair locks onto center screen | "CrossOver fixes that." |
-| 0:10-0:15 | Quick montage: scrolling through 100+ crosshairs in the picker | "100+ crosshairs built in" |
+| 0:10-0:15 | Quick montage: fast scroll through the picker, 25 sets blurring past | "500+ crosshairs built in" |
 | 0:15-0:20 | Drag custom image onto window, it becomes the crosshair | "Or use any image" |
 | 0:20-0:25 | Resize, recolor, adjust opacity in real time | "Fully customizable" |
 | 0:25-0:30 | Game compatibility montage — CrossOver over 4-5 different games | "Works with your favorite games" |
@@ -175,7 +188,7 @@ Text: "Better visibility for colorblind and low-contrast gamers"
 
 ### Screenshot Order Test
 - **Variant A:** Hero gameplay shot first
-- **Variant B:** Crosshair chooser (100+ options) first
+- **Variant B:** Crosshair chooser (500+ options) first
 - **Metric:** Install conversion rate
 - **Rationale:** Some users convert on social proof (big library), others on seeing it in action
 

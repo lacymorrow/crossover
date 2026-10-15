@@ -24,18 +24,18 @@
 ### Short Description (max 100 chars)
 
 ```
-Gratis Fadenkreuz-Overlay mit 100+ Visieren. Eigenes Bild reinziehen. Multi-Monitor. Jedes Spiel.
+Gratis Fadenkreuz-Overlay mit 500+ Visieren. Eigenes Bild reinziehen. Multi-Monitor. Jedes Spiel.
 ```
 
 ### Full Description
 
 Das Standard-Fadenkreuz deines Spiels ist winzig, ausgewaschen oder gar nicht vorhanden. CrossOver legt ein Fadenkreuz-Overlay über jedes Spiel, damit du endlich siehst, wohin du zielst.
 
-Über 100 Fadenkreuze sind enthalten — von echten Zielfernrohr-Absehen über Turnier-Dots bis hin zu Custom-Designs. Oder zieh einfach ein eigenes Bild rein und nutze das stattdessen. Du kannst es in der Größe ändern, die Farbe anpassen, die Transparenz hoch- oder runterdrehen und dann fixieren. Es liegt über deinem Spiel und belastet dein System kaum.
+Über 500 Fadenkreuze sind enthalten — von echten Zielfernrohr-Absehen über Turnier-Dots bis hin zu Custom-Designs. Oder zieh einfach ein eigenes Bild rein und nutze das stattdessen. Du kannst es in der Größe ändern, die Farbe anpassen, die Transparenz hoch- oder runterdrehen und dann fixieren. Es liegt über deinem Spiel und belastet dein System kaum.
 
 Das kann es:
 
-• 100+ integrierte Fadenkreuze
+• 500+ integrierte Fadenkreuze
 • Drag & Drop — jedes Bild als Fadenkreuz verwenden
 • Multi-Monitor-Unterstützung, wechsle zwischen Displays
 • Bis zu 14 Fadenkreuz-Duplikate gleichzeitig auf dem Bildschirm
@@ -62,18 +62,18 @@ Läuft auf Windows 10, Windows 11, macOS und Linux.
 ### Short Description (max 100 chars)
 
 ```
-Réticule gratuit avec 100+ viseurs. Glissez votre image. Multi-écran. Tout jeu.
+Réticule gratuit avec 500+ viseurs. Glissez votre image. Multi-écran. Tout jeu.
 ```
 
 ### Full Description
 
 Le réticule par défaut de ton jeu est minuscule, délavé, ou carrément invisible. CrossOver place un réticule en surimpression sur n'importe quel jeu pour que tu voies enfin où tu vises.
 
-Plus de 100 réticules sont inclus — des vraies mires de lunettes de visée aux points de compétition en passant par des designs personnalisés. Ou glisse simplement une image de ton choix et utilise-la à la place. Tu peux la redimensionner, changer la couleur, ajuster l'opacité, puis la verrouiller en place. Elle se superpose à ton jeu et consomme à peine de ressources système.
+Plus de 500 réticules sont inclus — des vraies mires de lunettes de visée aux points de compétition en passant par des designs personnalisés. Ou glisse simplement une image de ton choix et utilise-la à la place. Tu peux la redimensionner, changer la couleur, ajuster l'opacité, puis la verrouiller en place. Elle se superpose à ton jeu et consomme à peine de ressources système.
 
 Voici ce que ça fait :
 
-• 100+ réticules intégrés
+• 500+ réticules intégrés
 • Glisser-déposer n'importe quelle image comme réticule
 • Support multi-écran, passe d'un écran à l'autre
 • Affiche jusqu'à 14 réticules en même temps à l'écran
@@ -100,18 +100,18 @@ Fonctionne sur Windows 10, Windows 11, macOS et Linux.
 ### Short Description (max 100 chars)
 
 ```
-Mira gratis con 100+ retículas. Arrastra tu imagen. Multi-monitor. Cualquier juego.
+Mira gratis con 500+ retículas. Arrastra tu imagen. Multi-monitor. Cualquier juego.
 ```
 
 ### Full Description
 
 La mira predeterminada de tu juego es diminuta, descolorida o directamente no existe. CrossOver coloca una mira superpuesta sobre cualquier juego para que puedas ver de verdad dónde estás apuntando.
 
-Incluye más de 100 miras — desde retículas de mira telescópica reales hasta puntos de torneo y diseños personalizados. O simplemente arrastra cualquier imagen y úsala en su lugar. Puedes cambiar el tamaño, el color, ajustar la opacidad y fijarla en su sitio. Se coloca sobre tu juego y apenas consume recursos del sistema.
+Incluye más de 500 miras — desde retículas de mira telescópica reales hasta puntos de torneo y diseños personalizados. O simplemente arrastra cualquier imagen y úsala en su lugar. Puedes cambiar el tamaño, el color, ajustar la opacidad y fijarla en su sitio. Se coloca sobre tu juego y apenas consume recursos del sistema.
 
 Esto es lo que hace:
 
-• 100+ miras integradas
+• 500+ miras integradas
 • Arrastra y suelta cualquier imagen para usarla como mira
 • Soporte multi-monitor, cambia entre pantallas
 • Coloca hasta 14 miras duplicadas en pantalla a la vez
@@ -138,18 +138,18 @@ Funciona en Windows 10, Windows 11, macOS y Linux.
 ### Short Description (max 100 chars)
 
 ```
-Mira grátis com 100+ retículas. Arraste sua imagem. Multi-monitor. Qualquer jogo.
+Mira grátis com 500+ retículas. Arraste sua imagem. Multi-monitor. Qualquer jogo.
 ```
 
 ### Full Description
 
 A mira padrão do seu jogo é minúscula, desbotada ou simplesmente não existe. O CrossOver coloca uma mira sobre qualquer jogo para que você possa ver de verdade onde está mirando.
 
-São mais de 100 miras incluídas — desde retículas de luneta reais até pontos de torneio e designs personalizados. Ou simplesmente arraste qualquer imagem e use no lugar. Você pode redimensionar, mudar a cor, ajustar a opacidade e travar no lugar. Ela fica por cima do jogo e quase não usa recursos do sistema.
+São mais de 500 miras incluídas — desde retículas de luneta reais até pontos de torneio e designs personalizados. Ou simplesmente arraste qualquer imagem e use no lugar. Você pode redimensionar, mudar a cor, ajustar a opacidade e travar no lugar. Ela fica por cima do jogo e quase não usa recursos do sistema.
 
 Veja o que ele faz:
 
-• 100+ miras integradas
+• 500+ miras integradas
 • Arraste e solte qualquer imagem para usar como mira
 • Suporte multi-monitor, alterne entre telas
 • Coloque até 14 miras duplicadas na tela ao mesmo tempo
@@ -176,18 +176,18 @@ Funciona no Windows 10, Windows 11, macOS e Linux.
 ### Short Description (max 100 chars)
 
 ```
-100種類以上の照準を搭載した無料クロスヘアオーバーレイ。画像ドラッグ対応。マルチモニター。全ゲーム対応。
+500種類以上の照準を搭載した無料クロスヘアオーバーレイ。画像ドラッグ対応。マルチモニター。全ゲーム対応。
 ```
 
 ### Full Description
 
 ゲームのデフォルトのクロスヘアは小さすぎたり、色あせていたり、そもそも表示されないことがあります。CrossOverはプレイ中のゲームの上にクロスヘアオーバーレイを配置し、どこに照準を合わせているかをはっきり確認できるようにします。
 
-100種類以上のクロスヘアが内蔵されています。実際のスコープレティクルからトーナメント用ドットまで、カスタムデザインも含まれています。好きな画像をドラッグ＆ドロップして使うこともできます。サイズ変更、色の変更、透明度の調整をして、位置を固定できます。ゲームの上に表示され、システムリソースをほとんど消費しません。
+500種類以上のクロスヘアが内蔵されています。実際のスコープレティクルからトーナメント用ドットまで、カスタムデザインも含まれています。好きな画像をドラッグ＆ドロップして使うこともできます。サイズ変更、色の変更、透明度の調整をして、位置を固定できます。ゲームの上に表示され、システムリソースをほとんど消費しません。
 
 主な機能：
 
-• 100種類以上の内蔵クロスヘア
+• 500種類以上の内蔵クロスヘア
 • ドラッグ＆ドロップで任意の画像をクロスヘアとして使用
 • マルチモニター対応、ディスプレイ間の切り替え
 • 最大14個のクロスヘアを同時に画面に表示
@@ -214,18 +214,18 @@ Windows 10、Windows 11、macOS、Linuxで動作します。
 ### Short Description (max 100 chars)
 
 ```
-100개 이상의 조준점 포함 무료 크로스헤어 오버레이. 이미지 드래그. 멀티 모니터. 모든 게임.
+500개 이상의 조준점 포함 무료 크로스헤어 오버레이. 이미지 드래그. 멀티 모니터. 모든 게임.
 ```
 
 ### Full Description
 
 게임의 기본 조준점은 너무 작거나, 흐릿하거나, 아예 없는 경우가 있습니다. CrossOver는 플레이 중인 게임 위에 크로스헤어 오버레이를 배치해서 어디를 조준하고 있는지 정확히 볼 수 있게 해줍니다.
 
-100개 이상의 크로스헤어가 내장되어 있습니다 — 실제 스코프 레티클부터 대회용 도트, 커스텀 디자인까지. 원하는 이미지를 드래그 앤 드롭해서 크로스헤어로 사용할 수도 있습니다. 크기 조절, 색상 변경, 투명도 조정 후 위치를 고정할 수 있습니다. 게임 위에 표시되며 시스템 리소스를 거의 사용하지 않습니다.
+500개 이상의 크로스헤어가 내장되어 있습니다 — 실제 스코프 레티클부터 대회용 도트, 커스텀 디자인까지. 원하는 이미지를 드래그 앤 드롭해서 크로스헤어로 사용할 수도 있습니다. 크기 조절, 색상 변경, 투명도 조정 후 위치를 고정할 수 있습니다. 게임 위에 표시되며 시스템 리소스를 거의 사용하지 않습니다.
 
 주요 기능:
 
-• 100개 이상의 내장 크로스헤어
+• 500개 이상의 내장 크로스헤어
 • 드래그 앤 드롭으로 원하는 이미지를 크로스헤어로 사용
 • 멀티 모니터 지원, 디스플레이 간 전환
 • 최대 14개의 크로스헤어를 동시에 화면에 표시
@@ -252,18 +252,18 @@ Windows 10, Windows 11, macOS, Linux에서 작동합니다.
 ### Short Description (max 100 chars)
 
 ```
-免费准星叠加层，100+瞄准镜可选。拖入自定义图片。多显示器支持。适用所有游戏。
+免费准星叠加层，500+瞄准镜可选。拖入自定义图片。多显示器支持。适用所有游戏。
 ```
 
 ### Full Description
 
 游戏自带的准星太小、太模糊，或者干脆没有。CrossOver 在你正在玩的游戏上方放置一个准星叠加层，让你清楚看到自己瞄准的位置。
 
-内置 100 多种准星——从真实瞄准镜十字线到竞赛用准星点和自定义设计。你也可以直接拖入任何图片作为准星使用。可以调整大小、更改颜色、调节透明度，然后锁定位置。它覆盖在游戏上方，几乎不占用系统资源。
+内置 500 多种准星——从真实瞄准镜十字线到竞赛用准星点和自定义设计。你也可以直接拖入任何图片作为准星使用。可以调整大小、更改颜色、调节透明度，然后锁定位置。它覆盖在游戏上方，几乎不占用系统资源。
 
 功能一览：
 
-• 100+ 种内置准星
+• 500+ 种内置准星
 • 拖放任意图片用作准星
 • 多显示器支持，在屏幕间快速切换
 • 最多同时在屏幕上显示 14 个准星副本
@@ -293,27 +293,27 @@ Quick-reference table for screenshot localization. Game names (Valorant, CS2, et
 
 | Language | Text |
 |----------|------|
-| EN | 100+ Crosshairs. Any Game. Free. |
-| DE | 100+ Fadenkreuze. Jedes Spiel. Kostenlos. |
-| FR | 100+ réticules. Tout jeu. Gratuit. |
-| ES | 100+ miras. Cualquier juego. Gratis. |
-| PT | 100+ miras. Qualquer jogo. Grátis. |
-| JA | 100種類以上の照準。全ゲーム対応。無料。 |
-| KO | 100개 이상의 크로스헤어. 모든 게임. 무료. |
-| ZH | 100+准星。适用所有游戏。免费。 |
+| EN | 500+ Crosshairs. Any Game. Free. |
+| DE | 500+ Fadenkreuze. Jedes Spiel. Kostenlos. |
+| FR | 500+ réticules. Tout jeu. Gratuit. |
+| ES | 500+ miras. Cualquier juego. Gratis. |
+| PT | 500+ miras. Qualquer jogo. Grátis. |
+| JA | 500種類以上の照準。全ゲーム対応。無料。 |
+| KO | 500개 이상의 크로스헤어. 모든 게임. 무료. |
+| ZH | 500+准星。适用所有游戏。免费。 |
 
 ### Screenshot 2 — Crosshair Chooser
 
 | Language | Text |
 |----------|------|
-| EN | Pick from 100+ real scope reticles and custom designs |
-| DE | Wähle aus 100+ echten Zielfernrohr-Absehen und Custom-Designs |
-| FR | Choisis parmi 100+ vrais réticules de lunette et designs personnalisés |
-| ES | Elige entre 100+ retículas reales y diseños personalizados |
-| PT | Escolha entre 100+ retículas reais e designs personalizados |
-| JA | 100種類以上の実際のスコープレティクルとカスタムデザインから選択 |
-| KO | 100개 이상의 실제 스코프 레티클과 커스텀 디자인에서 선택 |
-| ZH | 从100+真实瞄准镜十字线和自定义设计中选择 |
+| EN | Pick from 500+ real scope reticles and custom designs |
+| DE | Wähle aus 500+ echten Zielfernrohr-Absehen und Custom-Designs |
+| FR | Choisis parmi 500+ vrais réticules de lunette et designs personnalisés |
+| ES | Elige entre 500+ retículas reales y diseños personalizados |
+| PT | Escolha entre 500+ retículas reais e designs personalizados |
+| JA | 500種類以上の実際のスコープレティクルとカスタムデザインから選択 |
+| KO | 500개 이상의 실제 스코프 레티클과 커스텀 디자인에서 선택 |
+| ZH | 从500+真实瞄准镜十字线和自定义设计中选择 |
 
 ### Screenshot 3 — Custom Image Drop
 
