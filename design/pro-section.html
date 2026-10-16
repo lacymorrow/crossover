@@ -1,0 +1,73 @@
+<!--
+	CrossOver Pro section, designed but NOT published.
+	v4 and Pro are not launched. To launch: paste this block into docs/index.html
+	in place of the "v4 / Pro section" comment (just above #download), point the
+	button at the Polar checkout link, and switch the download buttons to v4.
+	Styles are scoped under .pro and use the tokens from docs/assets/site.css.
+-->
+<style>
+	.pro-card {
+		display: grid; gap: 40px; align-items: center;
+		margin-top: 40px; padding: 28px; border-radius: 20px;
+		border: 1px solid var(--line); background: var(--raised); box-shadow: var(--shadow);
+	}
+	@media (min-width: 900px) { .pro-card { grid-template-columns: 1.05fr 1fr; padding: 48px; gap: 56px; } }
+	.pro-price { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; }
+	.pro-price strong { font-size: 2.5rem; font-weight: 650; letter-spacing: -0.03em; }
+	.pro-price span { color: var(--muted); }
+	.pro .features { margin-top: 28px; }
+	.pro-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 32px; }
+	.pro-cta p { font-size: 0.875rem; color: var(--muted); }
+	.pro-swap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+	.pro-swap .scene { border-radius: 12px; }
+	.pro-swap figcaption { margin-top: 10px; font-size: 0.8125rem; color: var(--muted); text-align: center; }
+	.pro-swap .arrow { display: grid; place-items: center; gap: 6px; color: var(--muted); font-size: 0.75rem; }
+	.pro-swap .arrow svg { width: 22px; height: 22px; }
+</style>
+
+<section class="section pro" id="pro" aria-labelledby="pro-title">
+	<div class="wrap">
+		<div class="section-head">
+			<h2 id="pro-title">CrossOver Pro</h2>
+			<p>Two extras for people who play with CrossOver every day. Everything in the free version stays free.</p>
+		</div>
+		<div class="pro-card">
+			<div>
+				<div class="pro-price"><strong>$4.99</strong><span>once, not a subscription</span></div>
+				<dl class="features">
+					<div>
+						<dt>A second crosshair</dt>
+						<dd>Keep another crosshair loaded and switch to it mid-game with a shortcut. Hipfire dot to scope reticle and back.</dd>
+					</div>
+					<div>
+						<dt>Rotation</dt>
+						<dd>Turn any crosshair to any angle, so an X can become a plus or a chevron can point where you want.</dd>
+					</div>
+				</dl>
+				<div class="pro-cta">
+					<a class="btn btn-primary btn-lg" href="#" data-polar-checkout>Get Pro for $4.99</a>
+					<p>Needs CrossOver 4. Your key arrives right after checkout.</p>
+				</div>
+			</div>
+			<div class="pro-swap" aria-hidden="true">
+				<figure style="margin:0">
+					<div class="scene">
+						<svg class="scene-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+						<img class="reticle" src="assets/crosshairs/crossdot.png" alt="" style="--size:16%">
+					</div>
+					<figcaption>Main</figcaption>
+				</figure>
+				<div class="arrow">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h15m0 0-4-4m4 4-4 4M20 16H5m0 0 4-4m-4 4 4 4"/></svg>
+				</div>
+				<figure style="margin:0">
+					<div class="scene">
+						<svg class="scene-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><use href="#scene"/></svg>
+						<img class="reticle" src="assets/crosshairs/mil-dot.png" alt="" style="--size:46%">
+					</div>
+					<figcaption>Second</figcaption>
+				</figure>
+			</div>
+		</div>
+	</div>
+</section>

@@ -7,8 +7,10 @@ CrossOver puts a customizable crosshair on top of any application. Useful for FP
 
 ## Main
 - [Home](https://crossover.lacy.sh): Overview, features, and download
-- [Features](https://crossover.lacy.sh#features): Customization, sight library, hotkeys
-- [Download](https://crossover.lacy.sh#download): Windows, macOS, Linux installers
+- [How it works](https://crossover.lacy.sh/#how): A transparent, click-through window; never reads or changes game files or memory
+- [Crosshairs](https://crossover.lacy.sh/#crosshairs): 530 built-in crosshairs, plus custom PNG, SVG or GIF
+- [FAQ](https://crossover.lacy.sh/#faq): Bans and anti-cheat, fullscreen, FPS, unsigned-build warnings
+- [Download](https://crossover.lacy.sh/#download): Windows, macOS, Linux installers
 
 ## Resources
 - [GitHub](https://github.com/lacymorrow/crossover): Source code and issues
