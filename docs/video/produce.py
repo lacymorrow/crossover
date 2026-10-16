@@ -4,8 +4,10 @@ CrossOver Promo Video Production — LAC-309
 35-second motion-graphics promo using CrossOver's own crosshair library.
 Pillow handles all frame generation/text; ffmpeg handles video encoding.
 
-Output: docs/video/crossover-promo-{9x16,16x9,1x1}-draft.mp4
+Output: docs/video/crossover-promo-{9x16,16x9,1x1}-final.mp4
+(DRAFT=1 stamps a DRAFT watermark and writes -draft.mp4 instead.)
 """
+import os
 import subprocess
 import sys
 import numpy as np
@@ -190,7 +192,7 @@ for j, (path, cat, lc, solid) in enumerate(gallery):
     draw_text(draw, cat, fnt(36,False), H//2-330, color=lc)
     add_vo(img, [
         ("Swap between real optics, dots,", 64, VO[0]),
-        ("chevrons — or drag in any image.", 64, VO[1]),
+        ("chevrons, or drag in any image.", 64, VO[1]),
         ("Your logo, a pizza emoji, whatever.", 56, VO[2]),
     ])
     clips_s3.append(to_clip(img, f"s3_{j}", 1))
@@ -265,8 +267,11 @@ print("  ✓ Scene 5")
 # ════════════════════════════════════════════════════════════════════════════
 print("Scene 6 — Proof Beat...")
 proof = [
-    ("4.8 stars  /  Microsoft Store",   (255, 204, 0)),
-    ("217K monthly users",              (0, 212, 255)),
+    # Verified 2026-10-16 (LAC-4577). Store rating is 3.7/154, not the 4.8 this
+    # once claimed, and the 217K figure is Store page views rather than users.
+    # Rounded down so the burned-in pixels do not rot the way exact counts do.
+    ("1,200+ stars on GitHub",          (255, 204, 0)),
+    ("217K monthly Store views",        (0, 212, 255)),
     ("530+ crosshairs",                 (255, 107, 53)),
     ("Free. Open source. Not bannable.", (85, 255, 136)),
 ]
@@ -314,31 +319,41 @@ print("\nAssembling master...")
 master_raw = TMP / "master_raw.mp4"
 concat([seg1,seg2,seg3,seg4,seg5,seg6,seg7], master_raw)
 
-# DRAFT watermark
-wm = Image.new("RGBA", (W,H), (0,0,0,0))
-wm_d = ImageDraw.Draw(wm)
-wf = fnt(110)
-bb = wm_d.textbbox((0,0), "DRAFT", font=wf)
-wm_d.text(((W-(bb[2]-bb[0]))//2, (H-(bb[3]-bb[1]))//2), "DRAFT", font=wf, fill=(255,255,255,40))
-wm_path = TMP / "wm.png"
-wm.save(str(wm_path))
+# DRAFT watermark. Opt in with DRAFT=1; a plain run produces publishable files.
+# The watermark is burned into the pixels, so a stamped render can never be
+# un-stamped later. LAC-4577: a stamped render shipped under a "-final" name.
+DRAFT = os.environ.get("DRAFT", "0") == "1"
+SUFFIX = "draft" if DRAFT else "final"
 
-print("Exporting 9:16...")
-out_9x16 = OUT / "crossover-promo-9x16-draft.mp4"
-ff("-i",str(master_raw),"-i",str(wm_path),
-   "-filter_complex","[0:v][1:v]overlay=0:0[out]","-map","[out]",
-   "-c:v","libx264","-pix_fmt","yuv420p","-r",str(FPS), out_9x16)
+if DRAFT:
+    wm = Image.new("RGBA", (W,H), (0,0,0,0))
+    wm_d = ImageDraw.Draw(wm)
+    wf = fnt(110)
+    bb = wm_d.textbbox((0,0), "DRAFT", font=wf)
+    wm_d.text(((W-(bb[2]-bb[0]))//2, (H-(bb[3]-bb[1]))//2), "DRAFT", font=wf, fill=(255,255,255,40))
+    wm_path = TMP / "wm.png"
+    wm.save(str(wm_path))
+
+print(f"Exporting 9:16 ({SUFFIX})...")
+out_9x16 = OUT / f"crossover-promo-9x16-{SUFFIX}.mp4"
+if DRAFT:
+    ff("-i",str(master_raw),"-i",str(wm_path),
+       "-filter_complex","[0:v][1:v]overlay=0:0[out]","-map","[out]",
+       "-c:v","libx264","-pix_fmt","yuv420p","-r",str(FPS), out_9x16)
+else:
+    ff("-i",str(master_raw),
+       "-c:v","libx264","-pix_fmt","yuv420p","-r",str(FPS), out_9x16)
 print(f"  ✓ {out_9x16.name}")
 
 print("Exporting 16:9...")
-out_16x9 = OUT / "crossover-promo-16x9-draft.mp4"
+out_16x9 = OUT / f"crossover-promo-16x9-{SUFFIX}.mp4"
 ff("-i",str(out_9x16),
    "-vf","scale=-2:1080,pad=1920:1080:(ow-iw)/2:0:black",
    "-c:v","libx264","-pix_fmt","yuv420p","-r",str(FPS), out_16x9)
 print(f"  ✓ {out_16x9.name}")
 
 print("Exporting 1:1...")
-out_1x1 = OUT / "crossover-promo-1x1-draft.mp4"
+out_1x1 = OUT / f"crossover-promo-1x1-{SUFFIX}.mp4"
 ff("-i",str(out_9x16),
    "-vf",f"crop={W}:{W}:0:(ih-{W})/2",
    "-c:v","libx264","-pix_fmt","yuv420p","-r",str(FPS), out_1x1)
