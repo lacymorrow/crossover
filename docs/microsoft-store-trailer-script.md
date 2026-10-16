@@ -109,7 +109,7 @@
 ### Scene 8 — Trust Badge (0:35–0:40)
 
 **Visual:** Clean dark/branded background. CrossOver logo centered. Stats cascade in:
-- ★★★★★ 4.8 stars
+- 1,200+ stars on GitHub
 - Free & Open Source
 - No ads. No data collection.
 **Text Overlay:** "Free. No ads. No data collection."

@@ -375,10 +375,14 @@ print("  done")
 # SCENE 8 — Trust Badge (0:35–0:40) — FINAL MOTION GRAPHICS
 # ═══════════════════════════════════════════════════════════════════════════
 print("Scene 8 — Trust badge...")
+# Verified 2026-10-16 (LAC-4591). The Store rating is 3.7 from 154 ratings, not
+# the 4.8 this claimed, so the rating line is replaced with the GitHub star count
+# (actual 1,255, rounded down so burned-in pixels do not rot). The "Open Source"
+# wording is a separate open question — package.json ships FSL-1.1-MIT.
 proof_stages = [
-    (["4.8 stars"], [(255,204,0)]),
-    (["4.8 stars", "Free & Open Source"], [(255,204,0), (0,212,255)]),
-    (["4.8 stars", "Free & Open Source", "No ads. No data collection."],
+    (["1,200+ stars on GitHub"], [(255,204,0)]),
+    (["1,200+ stars on GitHub", "Free & Open Source"], [(255,204,0), (0,212,255)]),
+    (["1,200+ stars on GitHub", "Free & Open Source", "No ads. No data collection."],
      [(255,204,0), (0,212,255), (85,255,136)]),
 ]
 clips_s8 = []
@@ -394,7 +398,8 @@ for pi, (lines, colors) in enumerate(proof_stages):
     start_y = H//2 - (total * 80) // 2
     for li, (line, col) in enumerate(zip(lines, colors)):
         if li == 0:
-            center_text(draw, "★★★★★", fnt(48), start_y + li * 80 - 50, color=col)
+            # No ★★★★★ row: the lead line is a star count, not a Store rating,
+            # and the real Store rating is 3.7 (LAC-4591).
             center_text(draw, line, fnt(52), start_y + li * 80 + 10, color=col)
         else:
             center_text(draw, line, fnt(48), start_y + li * 80 + 10, color=col)
