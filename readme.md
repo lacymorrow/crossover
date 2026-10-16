@@ -5,7 +5,7 @@
 # CrossOver
 
 **A free crosshair overlay for any game on any screen.**
-530+ sights · 217K monthly users · 4.8★ on the Microsoft Store · Windows · macOS · Linux
+530+ sights · 217K monthly Store views · 1,200+ stars on GitHub · Windows · macOS · Linux
 
 [![Latest release](https://img.shields.io/github/v/release/lacymorrow/crossover?label=latest&color=5500ff)](https://github.com/lacymorrow/crossover/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/lacymorrow/crossover/latest/total?label=downloads&color=5500ff)](https://github.com/lacymorrow/crossover/releases/latest)
