@@ -68,6 +68,15 @@ const ensureIOHookAvailable = action => {
 // Keep track of registered shortcuts to remove them later
 const registeredShortcuts = []
 
+// Crosshair appearance has to change on every crosshair window, not just the
+// main one. Duplicates (shadow windows) are crosshairs too, so hiding only
+// windows.win left them on screen while ADS-ing (#536, #539).
+const setCrosshairProperties = properties => {
+
+	windows.each( win => set.rendererProperties( properties, win ) )
+
+}
+
 const unregisterIOHook = () => {
 
 	// Reset any changes to the crosshair
@@ -81,12 +90,12 @@ const unregisterIOHook = () => {
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
 	// If smaller/tilted; move to actual size
-	set.rendererProperties( {
+	setCrosshairProperties( {
 		'--crosshair-opacity': opacity.toString(),
 		'--crosshair-width': `${oldCrosshairSize}px`,
 		'--crosshair-height': `${oldCrosshairSize}px`,
 		'--tilt-angle': '0deg',
-	}, windows.win )
+	} )
 
 	// Reset any changes to the prefs
 	preferences.value( 'hidden.tilted', false )
@@ -258,7 +267,7 @@ const hideOnMouse = async () => {
 	// In inverted mode the crosshair starts hidden; the button reveals it.
 	if ( showOnMouseInvert ) {
 
-		set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
+		setCrosshairProperties( { '--crosshair-opacity': '0' } )
 
 	}
 
@@ -274,7 +283,7 @@ const hideOnMouse = async () => {
 				// In inverted mode, "hidden" state maps to visible (opposite of normal)
 				const showOpacity = showOnMouseInvert ? ( nextHidden ? opacity.toString() : '0' ) : ( nextHidden ? '0' : opacity.toString() )
 
-				set.rendererProperties( { '--crosshair-opacity': showOpacity }, windows.win )
+				setCrosshairProperties( { '--crosshair-opacity': showOpacity } )
 				preferences.value( 'hidden.ADShidden', nextHidden )
 
 			}
@@ -291,7 +300,7 @@ const hideOnMouse = async () => {
 			if ( event.button === mouseButton ) {
 
 				// Normal: hide on press. Inverted: show on press.
-				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? opacity.toString() : '0' }, windows.win )
+				setCrosshairProperties( { '--crosshair-opacity': showOnMouseInvert ? opacity.toString() : '0' } )
 
 			}
 
@@ -305,7 +314,7 @@ const hideOnMouse = async () => {
 			if ( event.button === mouseButton ) {
 
 				// Normal: show on release. Inverted: hide on release.
-				set.rendererProperties( { '--crosshair-opacity': showOnMouseInvert ? '0' : opacity.toString() }, windows.win )
+				setCrosshairProperties( { '--crosshair-opacity': showOnMouseInvert ? '0' : opacity.toString() } )
 
 			}
 
@@ -491,7 +500,6 @@ const resizeOnADS = async () => {
 
 	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 ) || 50
 	const adsToggle = ads === 'toggle'
-	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 	const newCrosshairSize = adsSize
 
@@ -554,10 +562,11 @@ const resizeOnADS = async () => {
 
 			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
+				// Size only. Opacity belongs to Hide on ADS; writing it here
+				// overrode "Show on ADS" and kept the crosshair visible (#539).
 				set.rendererProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,
 					'--crosshair-height': `${oldCrosshairSize}px`,
-					'--crosshair-opacity': opacity.toString(),
 				}, windows.win )
 
 			}
