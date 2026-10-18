@@ -139,11 +139,15 @@ $ sudo pacman -S libxkbcommon-x11 libxtst libnotify nss libsecret
 
 #### X11 vs Wayland
 
-CrossOver's transparent overlay currently works best on **X11**. If you're on Wayland (default on GNOME 40+, KDE Plasma 6, and most modern distros) and see a black or opaque background:
+CrossOver needs X11. Global hotkeys work by asking the X server to grab a key combination, and a native Wayland compositor refuses that by design, so shortcuts would appear to save and then do nothing ([#456](https://github.com/lacymorrow/crossover/issues/456)). The transparent overlay is happier on X11 too.
 
-- Log out and pick **"GNOME on Xorg"** or **"Plasma (X11)"** at the login screen.
-- Or launch with the Wayland-to-X11 shim: `crossover --ozone-platform=x11`.
-- KDE/KWin on Wayland is the most affected combination ([#450](https://github.com/lacymorrow/crossover/issues/450)).
+So on a Wayland session CrossOver now starts itself on XWayland, which does allow the grab. You don't have to pass anything. The log line reads `Wayland session detected: running on XWayland`.
+
+To pick the platform yourself, set `CROSSOVER_OZONE_PLATFORM` (or pass your own `--ozone-platform=...`). `CROSSOVER_OZONE_PLATFORM=wayland` keeps you on native Wayland, where shortcuts, mouse-follow, and hide-on-key all stop working.
+
+A session with no XWayland at all (no `DISPLAY`) can't run hotkeys either way. CrossOver says so on launch instead of failing quietly. Log out and pick **"GNOME on Xorg"** or **"Plasma (X11)"**, or install XWayland.
+
+KDE/KWin on Wayland is the most affected combination ([#450](https://github.com/lacymorrow/crossover/issues/450)).
 
 #### Linux Mint 22 Cinnamon
 

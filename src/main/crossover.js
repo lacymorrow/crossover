@@ -8,6 +8,7 @@ const log = require( './log' )
 const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
+const wayland = require( './wayland' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
@@ -180,11 +181,15 @@ const keyboardShortcuts = () => {
 
 }
 
+// One-shot so the Wayland notice doesn't repeat on every preference save.
+let waylandNoticeShown = false
+
 const registerKeyboardShortcuts = () => {
 
 	// Register all shortcuts
 	const { keybinds } = Preferences.getDefaults()
 	const custom = preferences.value( 'keybinds' ) // Defaults
+	const registeredShortcuts = []
 	const failed = []
 
 	for ( const shortcut of keyboardShortcuts() ) {
@@ -224,21 +229,58 @@ const registerKeyboardShortcuts = () => {
 
 			failed.push( accelerator )
 
+		} else if ( accelerator && registered ) {
+
+			registeredShortcuts.push( `${shortcut.action}: ${accelerator}` )
+
 		}
+
+	}
+
+	// Diagnostics: the log is the only place a user can see what actually bound.
+	log.info( `Shortcuts registered (${registeredShortcuts.length}): ${registeredShortcuts.join( ', ' ) || 'none'}` )
+	log.info( wayland.debugInfo() )
+
+	// Returns true when the notice was handed to the renderer.
+	const notify = options => {
+
+		// Only notify when the renderer window is ready to receive it
+		if ( !windows.win || windows.win.isDestroyed() ) {
+
+			return false
+
+		}
+
+		const notification = require( './notification' )
+		notification( options )
+
+		return true
 
 	}
 
 	if ( failed.length > 0 ) {
 
 		log.warn( `Shortcut registration failed for: ${failed.join( ', ' )}` )
+		notify( {
+			title: 'Keyboard Shortcut Conflict',
+			body: `Could not register: ${failed.join( ', ' )}. Another app may be using this combo. Try rebinding in Settings.`,
+		} )
 
-		// Notify the user — only if the renderer window is ready
-		if ( windows.win && !windows.win.isDestroyed() ) {
+	}
 
-			const notification = require( './notification' )
-			notification( {
-				title: 'Keyboard Shortcut Conflict',
-				body: `Could not register: ${failed.join( ', ' )}. Another app may be using this combo. Try rebinding in Settings.`,
+	// A native Wayland compositor accepts the registration and then never
+	// delivers the key, so nothing above can catch it. Say so plainly. (#456)
+	// Shortcuts re-register on every preference save, so only say it once.
+	const blocked = wayland.shortcutsBlockedReason()
+	if ( blocked ) {
+
+		log.warn( `Shortcuts cannot fire: ${blocked}` )
+
+		if ( !waylandNoticeShown ) {
+
+			waylandNoticeShown = notify( {
+				title: 'Shortcuts Won\'t Work Here',
+				body: blocked,
 			} )
 
 		}
