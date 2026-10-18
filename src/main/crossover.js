@@ -184,6 +184,66 @@ const keyboardShortcuts = () => {
 // One-shot so the Wayland notice doesn't repeat on every preference save.
 let waylandNoticeShown = false
 
+// Kept alive when all keybinds are disabled, so a locked app is never stranded (#299)
+const SAFETY_ACTIONS = new Set( [ 'lock', 'reset' ] )
+
+const keybindsDisabled = () => checkboxTrue( preferences.value( 'keybinds.disableAll' ), 'disableAll' )
+
+// `previousPreferences` can alias the live store, so the menu rebuild tracks the
+// last value it actually applied instead of diffing the snapshot.
+let keybindsDisabledApplied = keybindsDisabled()
+
+// Returns true when the notice was handed to the renderer.
+const notify = options => {
+
+	// Only notify when the renderer window is ready to receive it
+	if ( !windows.win || windows.win.isDestroyed() ) {
+
+		return false
+
+	}
+
+	const notification = require( './notification' )
+	notification( options )
+
+	return true
+
+}
+
+// A native Wayland compositor accepts the registration and then never delivers
+// the key, so no registration result can catch it. Say so plainly. (#456)
+// Shortcuts re-register on every preference save, so only say it once.
+const warnIfShortcutsBlocked = () => {
+
+	// Nothing was asked to fire when the master switch took everything, so a
+	// notice about shortcuts not firing would be noise. (#299)
+	if ( keybindsDisabled() && preferences.value( 'hidden.disableSafetyKeybinds' ) === true ) {
+
+		return
+
+	}
+
+	const blocked = wayland.shortcutsBlockedReason()
+
+	if ( !blocked ) {
+
+		return
+
+	}
+
+	log.warn( `Shortcuts cannot fire: ${blocked}` )
+
+	if ( !waylandNoticeShown ) {
+
+		waylandNoticeShown = notify( {
+			title: 'Shortcuts Won\'t Work Here',
+			body: blocked,
+		} )
+
+	}
+
+}
+
 const registerKeyboardShortcuts = () => {
 
 	// Register all shortcuts
@@ -192,7 +252,24 @@ const registerKeyboardShortcuts = () => {
 	const registeredShortcuts = []
 	const failed = []
 
+	// #299: master switch. Lock and Reset survive it unless the hidden
+	// preference opts out of them too.
+	const disableAll = keybindsDisabled()
+	const disableSafety = preferences.value( 'hidden.disableSafetyKeybinds' ) === true
+
+	if ( disableAll ) {
+
+		log.info( disableSafety ? 'All keybinds disabled' : 'All keybinds disabled except Lock and Reset' )
+
+	}
+
 	for ( const shortcut of keyboardShortcuts() ) {
+
+		if ( disableAll && ( disableSafety || !SAFETY_ACTIONS.has( shortcut.action ) ) ) {
+
+			continue
+
+		}
 
 		let accelerator
 		let registered
@@ -241,23 +318,6 @@ const registerKeyboardShortcuts = () => {
 	log.info( `Shortcuts registered (${registeredShortcuts.length}): ${registeredShortcuts.join( ', ' ) || 'none'}` )
 	log.info( wayland.debugInfo() )
 
-	// Returns true when the notice was handed to the renderer.
-	const notify = options => {
-
-		// Only notify when the renderer window is ready to receive it
-		if ( !windows.win || windows.win.isDestroyed() ) {
-
-			return false
-
-		}
-
-		const notification = require( './notification' )
-		notification( options )
-
-		return true
-
-	}
-
 	if ( failed.length > 0 ) {
 
 		log.warn( `Shortcut registration failed for: ${failed.join( ', ' )}` )
@@ -268,24 +328,7 @@ const registerKeyboardShortcuts = () => {
 
 	}
 
-	// A native Wayland compositor accepts the registration and then never
-	// delivers the key, so nothing above can catch it. Say so plainly. (#456)
-	// Shortcuts re-register on every preference save, so only say it once.
-	const blocked = wayland.shortcutsBlockedReason()
-	if ( blocked ) {
-
-		log.warn( `Shortcuts cannot fire: ${blocked}` )
-
-		if ( !waylandNoticeShown ) {
-
-			waylandNoticeShown = notify( {
-				title: 'Shortcuts Won\'t Work Here',
-				body: blocked,
-			} )
-
-		}
-
-	}
+	warnIfShortcutsBlocked()
 
 }
 
@@ -497,6 +540,16 @@ const syncSettings = ( options = preferences.preferences ) => {
 	}
 
 	registerKeyboardShortcuts()
+
+	// #299: the Preferences accelerator lives in the app menu, so the menu has to
+	// be rebuilt when the master switch flips. Lazy require avoids a cycle.
+	if ( keybindsDisabled() !== keybindsDisabledApplied ) {
+
+		keybindsDisabledApplied = keybindsDisabled()
+		require( './menu' ).init()
+		require( './tray' ).refreshMenu()
+
+	}
 
 	previousPreferences = options
 
@@ -711,6 +764,7 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 const crossover = {
 	changeCrosshair,
 	initShadowWindow,
+	keybindsDisabled,
 	lockWindow,
 	openChooserWindow,
 	openSettingsWindow,

@@ -32,6 +32,31 @@ const getIconPath = () => path.join(
 	systemIcon(),
 )
 
+const buildContextMenu = () => Menu.buildFromTemplate( [
+	aboutMenuItem(),
+	showAppMenuItem,
+	...preferencesMenuItems(),
+	openCustomImageMenuItem,
+	{ type: 'separator' },
+	resetMenuItem,
+	{ type: 'separator' },
+	{ role: 'quit' },
+] )
+
+// The Preferences item shows an accelerator that the keybind master switch can
+// turn off (#299), so the tray menu has to be rebuilt when that changes.
+const refreshMenu = () => {
+
+	if ( !tray.instance ) {
+
+		return
+
+	}
+
+	tray.instance.setContextMenu( buildContextMenu() )
+
+}
+
 const init = () => {
 
 	if ( tray.instance ) {
@@ -41,19 +66,8 @@ const init = () => {
 	}
 
 	tray.instance = new Tray( getIconPath() )
-
-	const contextMenu = Menu.buildFromTemplate( [
-		aboutMenuItem(),
-		showAppMenuItem,
-		...preferencesMenuItems,
-		openCustomImageMenuItem,
-		{ type: 'separator' },
-		resetMenuItem,
-		{ type: 'separator' },
-		{ role: 'quit' },
-	] )
 	tray.instance.setToolTip( `${productName} Control` )
-	tray.instance.setContextMenu( contextMenu )
+	tray.instance.setContextMenu( buildContextMenu() )
 
 	return tray.instance
 
@@ -70,6 +84,7 @@ const setIcon = () => {
 const tray = {
 	init,
 	instance: null,
+	refreshMenu,
 	setIcon,
 }
 
