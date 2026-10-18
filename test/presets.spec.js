@@ -132,20 +132,70 @@ test( 'The hotkey cycles through presets and wraps around', async () => {
 
 } )
 
-test( 'Deleting the active preset falls back to the first one left', async () => {
+test( 'The first preset picked after a launch is not swallowed', async () => {
+
+	// Sniper holds size 40, Preset 2 holds size 120
+	const result = await main( ( load, arg ) => {
+
+		const preferences = load( 'preferences' ).init()
+		const Module = process.mainModule.constructor
+		const key = Object.keys( Module._cache ).find( file => file.endsWith( arg.file ) )
+		const cached = Module._cache[key]
+
+		// Sniper was the active preset when the app last shut down
+		preferences.value( 'presets.active', 'Sniper' )
+		delete Module._cache[key]
+
+		// A cold load is the only moment the store still holds the name that was
+		// active before a pick, so that is where the module has to read it
+		const fresh = process.mainModule.require( key )
+
+		// electron-preferences writes the picked value into its store before it
+		// emits 'save', so the handler always sees the new name already in place
+		preferences.value( 'presets.active', 'Preset 2' )
+
+		const applied = fresh.handleSelection( 'Preset 2' )
+
+		// Put the original instance back: register.js' save handler closed over it
+		Module._cache[key] = cached
+
+		return { applied, size: preferences.value( 'crosshair.size' ) }
+
+	}, { file: '/presets.js' } )
+
+	expect( result.applied ).toBe( 'Preset 2' )
+	expect( result.size ).toBe( 120 )
+
+} )
+
+test( 'Deleting the active preset clears the selection and leaves the crosshair alone', async () => {
 
 	const result = await main( load => {
 
+		const preferences = load( 'preferences' ).init()
 		const presets = load( 'presets' )
+
+		// Preset 2 holds size 120
 		presets.apply( 'Preset 2' )
 		presets.remove( 'Preset 2' )
 
-		return { list: presets.list().map( preset => preset.name ), active: presets.activeName() }
+		return {
+			list: presets.list().map( preset => preset.name ),
+			active: presets.activeName(),
+			size: preferences.value( 'crosshair.size' ),
+		}
 
 	} )
 
 	expect( result.list ).toEqual( [ 'Sniper' ] )
-	expect( result.active ).toBe( 'Sniper' )
+
+	// Deliberately not 'Sniper'. Promoting the leftover preset would advertise
+	// settings that were never applied, and because the dropdown would already be
+	// displaying that name it could never fire a change event to correct itself.
+	expect( result.active ).toBe( '' )
+
+	// Deleting a preset is not a reason to change the crosshair on screen
+	expect( result.size ).toBe( 120 )
 
 } )
 
@@ -305,5 +355,50 @@ test( 'The Delete button removes the active preset', async () => {
 
 	expect( await main( load => load( 'presets' ).list().map( preset => preset.name ) ) )
 		.toEqual( [ 'Sniper', 'Hipfire' ] )
+
+} )
+
+test( 'Picking a preset from the dropdown applies it, and the next edit cannot revert it', async () => {
+
+	test.setTimeout( 60_000 )
+
+	await main( load => {
+
+		const preferences = load( 'preferences' ).init()
+		const presets = load( 'presets' )
+
+		preferences.value( 'hidden.presets', [] )
+
+		preferences.value( 'crosshair.size', 120 )
+		presets.save( 'Sniper' )
+		preferences.value( 'crosshair.size', 40 )
+		presets.save( 'Hipfire' )
+
+		// Park the crosshair on a size neither preset holds, so an apply is visible
+		preferences.value( 'crosshair.size', 80 )
+		presets.refreshOptions()
+
+	} )
+
+	const settings = await openSettings()
+
+	await settings.locator( 'select' ).first().selectOption( 'Sniper' )
+
+	// Applying from the dropdown reloads the window, which is what discards the
+	// renderer's snapshot of the store
+	await wait( delays.long )
+
+	const size = () => main( load => load( 'preferences' ).init().value( 'crosshair.size' ) )
+
+	expect( await size() ).toBe( 120 )
+
+	// The regression: the renderer ships its whole snapshot on every field write.
+	// Without the reload above, this keystroke replayed the pre-preset snapshot
+	// and put the crosshair back to 80.
+	await settings.waitForSelector( 'input[type="text"]:visible' )
+	await settings.locator( 'input[type="text"]:visible' ).first().fill( 'Scratch' )
+	await wait( delays.medium )
+
+	expect( await size() ).toBe( 120 )
 
 } )

@@ -20,7 +20,13 @@ const MAX_PRESETS = 10
 // The preset we last pushed into preferences. Used to tell a preset change
 // apart from an ordinary settings save, so editing the crosshair size doesn't
 // snap straight back to the active preset.
-let applied = null
+//
+// Seeded at load rather than on first use. electron-preferences overwrites its
+// store before it emits 'save', so once the handler runs the store can no
+// longer say which preset was active beforehand. Seeding late would read back
+// the name the user just picked, mistake it for the old one, and swallow the
+// first pick of every launch.
+let applied = preferences.value( 'presets.active' ) || ''
 
 const list = () => preferences.value( 'hidden.presets' ) || []
 
@@ -188,10 +194,14 @@ const remove = name => {
 
 	log.info( `Delete preset: ${name}` )
 
-	applied = remaining[0]?.name || ''
+	// Clear the selection instead of promoting whatever preset is left. Naming a
+	// preset active without applying its settings leaves the dropdown lying about
+	// the crosshair on screen, and since the dropdown would already be showing
+	// that name it can never fire a change event, so the user cannot pick it back.
+	applied = ''
 	preferences.value( [
 		{ key: 'hidden.presets', value: remaining },
-		{ key: 'presets.active', value: applied },
+		{ key: 'presets.active', value: '' },
 	] )
 
 	notify( 'Preset Deleted', `${name} is gone.` )
@@ -262,12 +272,6 @@ const refreshOptions = () => {
  * save, so it has to ignore saves that didn't change the active preset.
  */
 const handleSelection = active => {
-
-	if ( applied === null ) {
-
-		applied = activeName()
-
-	}
 
 	if ( !active || active === applied ) {
 

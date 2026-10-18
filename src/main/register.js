@@ -136,6 +136,10 @@ const appEvents = () => {
 
 }
 
+// How long the preferences renderer debounces a field write before it ships the
+// value to the main process. Matches the debounce in electron-preferences' bundle.
+const RENDERER_SAVE_DEBOUNCE = 300
+
 /**
  * The preferences window reads its section config once per load, so the preset
  * dropdown only picks up a new or deleted preset after a reload. Land the user
@@ -168,8 +172,14 @@ const events = () => {
 	// Sync preferences to renderer
 	preferences.on( 'save', options => {
 
-		// Picking a preset from the dropdown applies it, which syncs on its own
+		// Picking a preset from the dropdown applies it, which syncs on its own.
+		// The window still has to be refreshed: the preferences renderer snapshots
+		// the whole store once per load and replays that snapshot on every later
+		// field edit, so without a reload the next keystroke in Preset Name would
+		// write the pre-preset settings back over the preset that was just applied.
 		if ( presets.handleSelection( options.presets?.active ) ) {
+
+			refreshPresetsSection()
 
 			return
 
@@ -188,8 +198,17 @@ const events = () => {
 			crossover.openChooserWindow()
 			break
 		case 'savePreset':
-			presets.save( preferences.value( 'presets.name' ) )
-			refreshPresetsSection()
+
+			// The name field only reaches the store after the renderer's debounce, and
+			// the click arrives on its own channel without waiting for it. Reading the
+			// name immediately can miss it and auto-name a preset the user just named.
+			setTimeout( () => {
+
+				presets.save( preferences.value( 'presets.name' ) )
+				refreshPresetsSection()
+
+			}, RENDERER_SAVE_DEBOUNCE )
+
 			break
 		case 'deletePreset':
 			presets.remove( presets.activeName() )
