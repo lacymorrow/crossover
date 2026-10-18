@@ -209,10 +209,27 @@ const followMouse = async () => {
 
 	}
 
+	// uiohook-napi has no named event for drag motion (libuiohook
+	// EVENT_MOUSE_DRAGGED, type 10): mousemove goes silent while a mouse
+	// button is held. Drags only surface on the raw "input" event, so
+	// listen there too or the crosshair freezes during click-hold (#541).
+	const EVENT_MOUSE_DRAGGED = 10
+	const dragListener = event => {
+
+		if ( event.type === EVENT_MOUSE_DRAGGED ) {
+
+			listener( event )
+
+		}
+
+	}
+
 	try {
 
 		uIOhook.on( 'mousemove', listener )
 		registeredShortcuts.push( { event: 'mousemove', listener } )
+		uIOhook.on( 'input', dragListener )
+		registeredShortcuts.push( { event: 'input', listener: dragListener } )
 		uIOhook.start()
 
 	} catch ( error ) {
