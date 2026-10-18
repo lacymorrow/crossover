@@ -2,6 +2,7 @@ const { app } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
+const presets = require( './presets' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
@@ -135,10 +136,44 @@ const appEvents = () => {
 
 }
 
+/**
+ * The preferences window reads its section config once per load, so the preset
+ * dropdown only picks up a new or deleted preset after a reload. Land the user
+ * back on the Presets tab so the reload reads as a refresh, not a reset.
+ */
+const refreshPresetsSection = () => {
+
+	presets.refreshOptions()
+
+	const window_ = windows.preferencesWindow
+
+	if ( !window_ || window_.isDestroyed() ) {
+
+		return
+
+	}
+
+	window_.webContents.once( 'did-finish-load', () => {
+
+		window_.webContents.executeJavaScript( 'document.getElementById( "tab-presets" )?.click();0' )
+
+	} )
+
+	window_.reload()
+
+}
+
 const events = () => {
 
 	// Sync preferences to renderer
 	preferences.on( 'save', options => {
+
+		// Picking a preset from the dropdown applies it, which syncs on its own
+		if ( presets.handleSelection( options.presets?.active ) ) {
+
+			return
+
+		}
 
 		crossover.syncSettings( options )
 
@@ -151,6 +186,14 @@ const events = () => {
 
 		case 'chooseCrosshair':
 			crossover.openChooserWindow()
+			break
+		case 'savePreset':
+			presets.save( preferences.value( 'presets.name' ) )
+			refreshPresetsSection()
+			break
+		case 'deletePreset':
+			presets.remove( presets.activeName() )
+			refreshPresetsSection()
 			break
 		case 'resetPreferences':
 			reset.allPreferences()

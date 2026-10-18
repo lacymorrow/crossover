@@ -6,6 +6,7 @@ const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
 const { ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
+const presets = require( './presets' )
 const accessibility = require( './accessibility' )
 const banner = require( './banner' )
 const reviewPrompt = require( './review-prompt' )
@@ -55,6 +56,9 @@ const init = async options => {
 
 	await windows.init()
 	// Log.info( windows.win.getNativeWindowHandle() )
+
+	// Fill the preset dropdown from the saved presets before Preferences opens
+	presets.refreshOptions()
 
 	// Sync Settings
 	crossover.syncSettings()
