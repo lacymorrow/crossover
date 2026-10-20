@@ -86,8 +86,18 @@ const { appId } = require( '../package.json' )
 // fall back to scanning argv for `--reset` / `-reset` / `reset`.
 const isResetRequested = () => {
 
-	if ( process.env.CROSSOVER_RESET ) return true
-	if ( app.commandLine.hasSwitch( 'reset' ) ) return true
+	if ( process.env.CROSSOVER_RESET ) {
+
+		return true
+
+	}
+
+	if ( app.commandLine.hasSwitch( 'reset' ) ) {
+
+		return true
+
+	}
+
 	return process.argv.slice( 1 ).some( arg => arg === '--reset' || arg === '-reset' || arg === 'reset' )
 
 }
@@ -240,6 +250,20 @@ module.exports = async () => {
 
 	// wait for app.on('ready')
 	await app.whenReady()
+
+	// Where a native Wayland backend can never grab a hotkey, come back on
+	// Ozone/X11 rather than asking the user to relaunch by hand. Nothing has a
+	// window yet, so this is the last quiet moment to replace the process. (#456)
+	//
+	// Deliberately after whenReady(): app.exit() before the message loop is up
+	// quits without running the relaunch, which would leave CrossOver unable to
+	// start at all. And never from a second instance, which is already quitting.
+	if ( app.hasSingleInstanceLock() && wayland.relaunchOnX11() ) {
+
+		return
+
+	}
+
 	//  Remove tray in Linux to fully quit
 
 	console.timeLog( 'init' )
