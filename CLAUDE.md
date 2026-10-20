@@ -10,7 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run css` - Compile SCSS styles
 
 ### Testing
-- `npm test` - Run Playwright tests
+**Never launch CrossOver on zero** (no `npm start`, `npm test`, Playwright, Electron, or a packaged `CrossOver.app`). Lacy works on zero and the windows take over the desktop. All app runs and UI QA happen on graphite, same as Juno:
+`ssh graphite 'zsh -lc "cd ~/repo/crossover && git fetch && git checkout <branch> && npm ci && npx playwright test ..."'`
+(`zsh -lc` puts node on PATH.) Editing, lint, and git on zero are fine. A hook on zero stops launches with this reminder; prefix `CROSSOVER_ON_ZERO=1` only if it truly must run there.
+
+- `npm test` - Run Playwright tests (graphite only)
 - `npm run lint` - Run ESLint on all source files
 - `npm run lint:src` - Lint only source directory
 - `npm run depcheck` - Check for unused dependencies and circular dependencies
