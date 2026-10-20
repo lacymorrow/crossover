@@ -78,6 +78,7 @@ const register = require( './main/register.js' )
 const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
 const tray = require( './main/tray.js' )
+const wayland = require( './main/wayland.js' )
 const { appId } = require( '../package.json' )
 
 // Detect `--reset` from env, Electron switch, or raw argv.
@@ -135,6 +136,10 @@ const start = async () => {
 
 	/* LINUX FIXES */
 	// More flags: https://www.electronjs.org/docs/latest/api/command-line-switches/
+
+	// Global hotkeys need an X11 input grab, which native Wayland refuses. Work out
+	// whether this session can grab a key at all, so we can say so. (#456)
+	wayland.detect()
 
 	// When resetting, force safe GPU settings so the GPU process doesn't crash
 	// before the reset logic can run. (#450)

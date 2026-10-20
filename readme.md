@@ -139,11 +139,22 @@ $ sudo pacman -S libxkbcommon-x11 libxtst libnotify nss libsecret
 
 #### X11 vs Wayland
 
-CrossOver's transparent overlay currently works best on **X11**. If you're on Wayland (default on GNOME 40+, KDE Plasma 6, and most modern distros) and see a black or opaque background:
+Global hotkeys need X11. A shortcut works by asking the X server to grab a key combination, and a native Wayland compositor refuses that by design, so shortcuts look like they saved and then do nothing ([#456](https://github.com/lacymorrow/crossover/issues/456)). The transparent overlay is happier on X11 too.
+
+The windowing backend is chosen before CrossOver starts, so the app can't switch for you. Two ways to get hotkeys back on a Wayland desktop:
 
 - Log out and pick **"GNOME on Xorg"** or **"Plasma (X11)"** at the login screen.
-- Or launch with the Wayland-to-X11 shim: `crossover --ozone-platform=x11`.
-- KDE/KWin on Wayland is the most affected combination ([#450](https://github.com/lacymorrow/crossover/issues/450)).
+- Or stay in your session and run CrossOver through XWayland:
+
+```bash
+$ crossover --enable-features=UseOzonePlatform --ozone-platform=x11
+```
+
+The builds on our releases page go through XWayland already, because they bundle Electron 14, which has no Wayland backend. If you installed CrossOver from a distro package built against a newer Electron, you probably need those flags. Either way CrossOver now tells you at launch when it's on a backend where no hotkey can fire, instead of letting shortcuts fail silently.
+
+A session with no X server at all (no `DISPLAY`, so no XWayland) can't run hotkeys either way. Install XWayland, or log in to an X11 session.
+
+KDE/KWin on Wayland is the most affected combination ([#450](https://github.com/lacymorrow/crossover/issues/450)).
 
 #### Linux Mint 22 Cinnamon
 
