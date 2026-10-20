@@ -65,8 +65,15 @@ const ensureIOHookAvailable = action => {
 
 }
 
+// Right mouse button (MOUSE_BUTTON2 = 2 in uiohook-napi)
+const RIGHT_MOUSE_BUTTON = 2
+
 // Keep track of registered shortcuts to remove them later
 const registeredShortcuts = []
+
+// Set when the keyboard hide key is what put the crosshair away, so unlocking
+// can't leave the user staring at an empty screen hunting for their crosshair.
+let hiddenByKey = false
 
 const unregisterIOHook = () => {
 
@@ -87,6 +94,15 @@ const unregisterIOHook = () => {
 		'--crosshair-height': `${oldCrosshairSize}px`,
 		'--tilt-angle': '0deg',
 	}, windows.win )
+
+	// Unlocking shouldn't leave the crosshair invisible because the hide key was
+	// still down (or latched) at the time.
+	if ( hiddenByKey ) {
+
+		windows.showWindow()
+		hiddenByKey = false
+
+	}
 
 	// Reset any changes to the prefs
 	preferences.value( 'hidden.tilted', false )
@@ -338,19 +354,76 @@ const hideOnKey = async () => {
 
 	}
 
-	const isEnabled = preferences.value( 'actions.hideOnKey' )
-	log.info( 'Setting: Keyboard Hold/Toggle' )
+	const key = preferences.value( 'actions.hideOnKey' )
+	const mode = preferences.value( 'actions.hideOnKeyMode' ) || 'hold'
 
-	if ( UiohookKey[isEnabled] ) {
+	if ( !UiohookKey[key] ) {
 
-		registerShortcut(
-			[ isEnabled ],
-			() => windows.hideWindow(),
-			() => windows.showWindow(),
-		)
-		uIOhook.start()
+		return
 
 	}
+
+	log.info( `Setting: Hide on Key (${mode})` )
+
+	const hide = () => {
+
+		windows.hideWindow()
+		hiddenByKey = true
+
+	}
+
+	const show = () => {
+
+		windows.showWindow()
+		hiddenByKey = false
+
+	}
+
+	switch ( mode ) {
+
+	case 'toggle': {
+
+		registerShortcut( [ key ], () => ( windows.hidden ? show() : hide() ) )
+
+		break
+
+	}
+
+	// Hide now, and let the next ADS click bring the crosshair back. Lets you
+	// drop into first-person without holding a key the whole time.
+	case 'press': {
+
+		const adsButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+		const revealButton = adsButton > 0 ? adsButton : RIGHT_MOUSE_BUTTON
+
+		registerShortcut( [ key ], () => hide() )
+
+		const listener = event => {
+
+			if ( event.button === revealButton && hiddenByKey ) {
+
+				show()
+
+			}
+
+		}
+
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
+
+		break
+
+	}
+
+	default: {
+
+		registerShortcut( [ key ], hide, show )
+
+	}
+
+	}
+
+	uIOhook.start()
 
 }
 
@@ -496,9 +569,6 @@ const resizeOnADS = async () => {
 	const newCrosshairSize = adsSize
 
 	log.info( 'Setting: ADS Resize' )
-
-	// Right mouse button (MOUSE_BUTTON2 = 2 in uiohook-napi)
-	const RIGHT_MOUSE_BUTTON = 2
 
 	if ( adsToggle ) {
 

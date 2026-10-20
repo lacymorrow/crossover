@@ -43,6 +43,7 @@ const getDefaults = () => ( {
 		tiltToggle: [],
 		tiltAngle: 25,
 		hideOnKey: '',
+		hideOnKeyMode: 'hold',
 		tiltLeft: '',
 		tiltRight: '',
 	},
@@ -338,8 +339,19 @@ const preferencesConfig = {
 								label: 'Hide on keypress',
 								key: 'hideOnKey',
 								type: 'accelerator',
-								help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
+								help: 'Hides the crosshair with the above key. Single key only. Delete/Backspace to disable.',
 								allowOnlyModifier: true,
+							},
+							{
+								label: 'Keypress behavior',
+								key: 'hideOnKeyMode',
+								type: 'radio',
+								options: [
+									{ label: 'Hold the key to hide', value: 'hold' },
+									{ label: 'Press to hide, press again to show', value: 'toggle' },
+									{ label: 'Press to hide until the next ADS click', value: 'press' },
+								],
+								help: 'How the key above behaves. "Until the next ADS click" drops the crosshair for first-person view and brings it back the next time you aim.',
 							},
 							{
 								heading: 'Crosshair Tilt Left/Right',
