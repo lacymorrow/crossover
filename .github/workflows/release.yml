@@ -6,8 +6,9 @@ on:
       - 'v*'
   # QA verification build (LAC-4450). Builds and signs exactly what a tag push
   # would build, but publishes nothing: artifacts are uploaded to the workflow
-  # run only, no GitHub release is created or touched. spctl and stapler can only be run against a real built app, so
-  # QA needs a way to get one without creating a release object first.
+  # run only, no GitHub release is created or touched. spctl and stapler can
+  # only be run against a real built app, so QA needs a way to get one without
+  # creating a release object first.
   workflow_dispatch:
 
 permissions:
