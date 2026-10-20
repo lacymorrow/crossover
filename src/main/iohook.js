@@ -140,8 +140,14 @@ const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
 
 		if ( keyCodes.includes( e.keycode ) ) {
 
+			// The OS repeats keydown for as long as a key is held. Fire only on
+			// the press that completes the combo and stay latched until release,
+			// or a toggle flips several times per press.
+			const wasComplete = pressed.size === keyCodes.length
+
 			pressed.add( e.keycode )
-			if ( pressed.size === keyCodes.length ) {
+
+			if ( !wasComplete && pressed.size === keyCodes.length ) {
 
 				keyDownCallback( e )
 
@@ -154,28 +160,26 @@ const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
 	uIOhook.on( 'keydown', keyDownListener )
 	registeredShortcuts.push( { event: 'keydown', listener: keyDownListener } )
 
-	if ( keyUpCallback ) {
+	// Listen for keyup even with no callback: releasing the key is what arms the
+	// latch above for the next press.
+	const keyUpListener = e => {
 
-		const keyUpListener = e => {
+		if ( keyCodes.includes( e.keycode ) ) {
 
-			if ( keyCodes.includes( e.keycode ) ) {
+			if ( keyUpCallback && pressed.size === keyCodes.length ) {
 
-				if ( pressed.size === keyCodes.length ) {
-
-					keyUpCallback( e )
-
-				}
-
-				pressed.delete( e.keycode )
+				keyUpCallback( e )
 
 			}
 
+			pressed.delete( e.keycode )
+
 		}
 
-		uIOhook.on( 'keyup', keyUpListener )
-		registeredShortcuts.push( { event: 'keyup', listener: keyUpListener } )
-
 	}
+
+	uIOhook.on( 'keyup', keyUpListener )
+	registeredShortcuts.push( { event: 'keyup', listener: keyUpListener } )
 
 }
 

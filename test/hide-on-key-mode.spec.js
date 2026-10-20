@@ -118,6 +118,38 @@ test.describe( 'Hide on keypress modes (#340)', () => {
 
 	} )
 
+	// The OS fires keydown over and over while the key is held down.
+	test( 'toggle: holding the key flips once, not once per repeat', async () => {
+
+		const states = await replay( { mode: 'toggle', events: [
+			{ type: 'keydown' },
+			{ type: 'keydown' },
+			{ type: 'keydown' },
+			{ type: 'keyup' },
+		] } )
+
+		expect( states ).toEqual( [
+			true, true, true, true,
+		] )
+
+	} )
+
+	test( 'press: repeats do not break the next press after a reveal', async () => {
+
+		const states = await replay( { mode: 'press', events: [
+			{ type: 'keydown' },
+			{ type: 'keydown' },
+			{ type: 'keyup' },
+			{ type: 'mousedown', button: RIGHT_MOUSE_BUTTON },
+			{ type: 'keydown' },
+		] } )
+
+		expect( states ).toEqual( [
+			true, true, true, false, true,
+		] )
+
+	} )
+
 	test( 'press: stays hidden after release, the next ADS click brings it back', async () => {
 
 		const states = await replay( { mode: 'press', events: [
