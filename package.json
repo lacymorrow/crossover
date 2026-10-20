@@ -82,7 +82,7 @@
     "build:release:snap": "electron-builder --linux snap && npm run snap:release",
     "build:release:windows": "npm run build:win && npm run sh:copyexe",
     "snap:login:export": "snapcraft export-login --snaps crossover --channels edge,stable -",
-    "snap:release": "snapcraft upload --release=stable dist/*.snap",
+    "snap:release": "snapcraft upload --release=candidate dist/*.snap",
     "upgrade:interactive": "npm run upgrade-interactive --latest"
   },
   "dependencies": {

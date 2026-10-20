@@ -6,9 +6,9 @@ on:
       - 'v*'
   # QA verification build (LAC-4450). Builds and signs exactly what a tag push
   # would build, but publishes nothing: artifacts are uploaded to the workflow
-  # run only, no GitHub release is created or touched, and the Snap Store step
-  # is skipped. spctl and stapler can only be run against a real built app, so
-  # QA needs a way to get one without creating a release object first.
+  # run only, no GitHub release is created or touched. spctl and stapler can
+  # only be run against a real built app, so QA needs a way to get one without
+  # creating a release object first.
   workflow_dispatch:
 
 permissions:
@@ -122,35 +122,3 @@ jobs:
             dist/*.AppImage
             dist/*.deb
             dist/latest-linux.yml
-
-  release-snap:
-    # Skipped on a verification build: this job is the one path in the release
-    # that publishes straight to end users (snapcraft upload --release=stable).
-    if: github.event_name != 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    needs: release-linux
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install snapcraft
-        run: sudo snap install snapcraft --classic
-
-      - name: Build snap and attach to GitHub release
-        run: npx electron-builder --linux snap --publish always
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # app-builder-bin still runs the removed `snapcraft push` (exit 64 on
-      # snapcraft >=8), so upload to the Snap Store directly instead of via
-      # electron-builder's snapStore publisher.
-      - name: Publish snap to Snap Store
-        run: snapcraft upload --release=stable dist/*.snap
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
