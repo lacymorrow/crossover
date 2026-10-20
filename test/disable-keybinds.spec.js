@@ -128,3 +128,49 @@ test( 'turning the switch back off restores keybinds', async () => {
 	expect( preferencesAccelerator ).toBe( 'CommandOrControl+,' )
 
 } )
+
+// The pane has to admit when the list below it is inert. Fields stay editable:
+// the switch is meant to be flipped back on, so hiding your bindings would
+// mean toggling twice to read them.
+test( 'the settings pane says the keybinds are off and keeps the fields', async () => {
+
+	await applySwitch( { disableAll: false, disableSafety: false } )
+
+	await electronApp.evaluate( ( _electron, crossoverPath ) => {
+
+		process.mainModule.require( crossoverPath ).openSettingsWindow()
+
+	}, CROSSOVER_PATH )
+
+	await wait( delays.long )
+
+	const settings = electronApp.windows().find( page => page.url().includes( 'electron-preferences/build' ) )
+
+	if ( !settings ) {
+
+		throw new Error( 'Preferences window never opened' )
+
+	}
+
+	await settings.click( 'text=Keybinds' )
+	await wait( delays.medium )
+
+	const notice = settings.locator( 'text=These keybinds are turned off.' )
+	const moveUp = settings.locator( 'text=Move Up' ).first()
+	const masterSwitch = 'text=Turn off every keybind, including Preferences'
+
+	await expect( moveUp ).toBeVisible()
+	await expect( notice ).toHaveCount( 0 )
+
+	await settings.click( masterSwitch )
+	await wait( delays.medium )
+
+	await expect( notice ).toBeVisible()
+	await expect( moveUp ).toBeVisible()
+
+	// Put the pane back the way we found it.
+	await settings.click( masterSwitch )
+	await wait( delays.medium )
+	await expect( notice ).toHaveCount( 0 )
+
+} )

@@ -99,6 +99,11 @@ const getDefaults = () => ( {
 	},
 } )
 
+// #299: the master switch leaves these fields editable but inert, so say so
+// instead of letting the list look like it still works. Serialized to the
+// preferences renderer, so it cannot reference anything outside itself.
+const showWhenKeybindsDisabled = allPreferences => !allPreferences?.keybinds?.disableAll?.includes( 'disableAll' )
+
 const preferencesConfig = {
 	browserWindowOverrides,
 	// Custom styles
@@ -411,6 +416,11 @@ const preferencesConfig = {
 					{
 						label: 'Custom Keybinds',
 						fields: [
+							{
+								content: '<p><strong>These keybinds are turned off.</strong> They still save, and they fire again when you turn the switch back on.</p>',
+								type: 'message',
+								hideFunction: showWhenKeybindsDisabled,
+							},
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',
