@@ -44,6 +44,19 @@ build_variant() {
 build_variant uiaccess
 build_variant plain
 
+# The adversary needs no manifest: it is deliberately an ordinary topmost
+# window, which is the thing a UIAccess window is supposed to outrank.
+echo "building adversary..."
+"$CC" \
+	-O2 \
+	-Wall \
+	-Wextra \
+	-o dist/crossover-overlay-adversary.exe \
+	src/adversary.c \
+	-mwindows \
+	-lgdi32 \
+	-luser32
+
 echo
 echo "built:"
 ls -la dist/*.exe
