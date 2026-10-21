@@ -27,10 +27,12 @@ const closeWindowMenuItem = {
 	},
 }
 
-const preferencesMenuItems = [
+// #299: the Preferences accelerator is the one keybind users can't clear
+// individually, so the master switch has to reach it.
+const preferencesMenuItems = () => [
 	{
 		label: 'Preferences...',
-		accelerator: 'CommandOrControl+,',
+		...crossover.keybindsDisabled() ? {} : { accelerator: 'CommandOrControl+,' },
 		click() {
 
 			crossover.openSettingsWindow()
@@ -186,8 +188,8 @@ const debugSubmenu = [
 ]
 
 /* TEMPLATES */
-const macosTemplate = [
-	appMenu( [ ...preferencesMenuItems ] ),
+const macosTemplate = () => [
+	appMenu( [ ...preferencesMenuItems() ] ),
 	{
 		role: 'fileMenu',
 		submenu: [
@@ -208,11 +210,11 @@ const macosTemplate = [
 ]
 
 // Linux and Windows
-const otherTemplate = [
+const otherTemplate = () => [
 	{
 		role: 'fileMenu',
 		submenu: [
-			...preferencesMenuItems,
+			...preferencesMenuItems(),
 			openCustomImageMenuItem,
 			{
 				type: 'separator',
@@ -231,7 +233,7 @@ const otherTemplate = [
 
 const init = () => {
 
-	const template = is.macos ? macosTemplate : otherTemplate
+	const template = is.macos ? macosTemplate() : otherTemplate()
 
 	if ( is.development ) {
 

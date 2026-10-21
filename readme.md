@@ -205,6 +205,8 @@ $ rm -rf ~/.config/CrossOver    # nuclear option — delete the config dir direc
 
 On macOS, <kbd>⌥</kbd> replaces <kbd>Alt</kbd>. All keybinds (except reset) can be remapped or cleared in Settings — click the input and press your new combo, or hit <kbd>Backspace</kbd> to disable.
 
+To switch every keybind off at once, tick **Disable All Keybinds** in Settings under Keybinds. Lock and Reset survive it, so a locked crosshair is never stranded. If you want those two gone as well, set `"disableSafetyKeybinds": true` inside the `hidden` block of `preferences.json` ([#299](https://github.com/lacymorrow/crossover/issues/299)).
+
 ## Settings
 
 | Setting | What it does |
@@ -214,6 +216,7 @@ On macOS, <kbd>⌥</kbd> replaces <kbd>Alt</kbd>. All keybinds (except reset) ca
 | **Hide on ADS** | Bind a mouse button; the crosshair hides while it's held. |
 | **Hardware acceleration** | A handful of users see FPS drops with certain games ([#70](https://github.com/lacymorrow/crossover/issues/70)). CrossOver shouldn't add latency — if it does, toggle this and disable Hide on ADS. |
 | **Start on boot** | Auto-launch CrossOver when your system starts. |
+| **Disable All Keybinds** | Turns off every keybind, including <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>,</kbd> for Preferences. Lock and Reset keep working. |
 | **Automatic updates** | On by default. Disable to prevent all network requests. CrossOver only talks to GitHub. |
 
 ### Duplicate crosshairs

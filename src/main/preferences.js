@@ -61,6 +61,7 @@ const getDefaults = () => ( {
 		appSize: 'normal',
 	},
 	keybinds: {
+		disableAll: [],
 		reset: 'Control+Shift+Alt+R',
 		lock: 'Control+Shift+Alt+X',
 		center: 'Control+Shift+Alt+C',
@@ -92,8 +93,16 @@ const getDefaults = () => ( {
 		reviewPromptLaterDate: null,
 		bannerDismissedId: null,
 		updateChannel: null,
+		// Not exposed in the UI (#299): when true, "Disable All Keybinds" also
+		// clears Lock and Reset. Edit preferences.json by hand to opt in.
+		disableSafetyKeybinds: false,
 	},
 } )
+
+// #299: the master switch leaves these fields editable but inert, so say so
+// instead of letting the list look like it still works. Serialized to the
+// preferences renderer, so it cannot reference anything outside itself.
+const showWhenKeybindsDisabled = allPreferences => !allPreferences?.keybinds?.disableAll?.includes( 'disableAll' )
 
 const preferencesConfig = {
 	browserWindowOverrides,
@@ -395,11 +404,23 @@ const preferencesConfig = {
 								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete.</p><p>Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
 								type: 'message',
 							},
+							{
+								label: 'Disable All Keybinds',
+								key: 'disableAll',
+								type: 'checkbox',
+								options: [ { label: 'Turn off every keybind, including Preferences', value: 'disableAll' } ],
+								help: 'Lock and Reset keep working so you can always unlock the app. To drop those two as well, set "disableSafetyKeybinds" to true in preferences.json.',
+							},
 						],
 					},
 					{
 						label: 'Custom Keybinds',
 						fields: [
+							{
+								content: '<p><strong>These keybinds are turned off.</strong> They still save, and they fire again when you turn the switch back on.</p>',
+								type: 'message',
+								hideFunction: showWhenKeybindsDisabled,
+							},
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',
