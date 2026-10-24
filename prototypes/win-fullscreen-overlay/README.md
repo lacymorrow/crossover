@@ -18,12 +18,29 @@ and it breaks the "never touches the game" promise.
 ## Layout
 
 ```
+RUNBOOK.md          the hands-on pass at the test box, start here
 src/overlay.c       crosshair overlay, built twice (uiaccess + plain control)
+src/probe-args.h    probe options: tint and offset, kept free of windows.h
 src/adversary.c     opaque fullscreen topmost window, stands in for a game
 src/*.manifest      the only difference between the two overlay builds
 build.sh            cross-compiles for Windows x64 from macOS or Linux
+test/run.sh         the parts that can be checked without a Windows box
 scripts/            deploy, sign, launch, capture and teardown on the test box
+scripts/matrix-run.ps1  drives the matrix one trial at a time, at the machine
+scripts/fso.ps1     reads and flips fullscreen optimizations per game exe
 ```
+
+## Test
+
+```sh
+./test/run.sh
+```
+
+Covers the probe's option parsing (compiled and run on the dev machine, no
+Windows needed) and a parse check of every PowerShell script if `pwsh` is on
+PATH. `build.sh` runs it first. The parse check is worth its keep: these scripts
+are run by hand at the test box, often with a game open, so a syntax error found
+there costs a trip to the machine.
 
 ## Build
 
@@ -132,31 +149,67 @@ Requirements and constraints:
 
 ## What still needs hands
 
-Neither track can be finished remotely. Blocking items:
+Decided by the board on 2026-10-24: finish the matrix for **both** tracks, with
+**Quake II RTX** (free, Vulkan, covers #416) and **Fortnite** (already installed,
+EAC) added to what otto already has, and Lacy running the pass at the machine
+with phone photos as the evidence.
 
-1. **Games.** None of the titles from the reports are installed on otto.
-   #64 is Escape from Tarkov (paid, BattlEye, online only) and #351 is Fortnite
-   (free, EAC). otto currently has Jet Set Radio, The Sims 4, ARC Raiders,
-   WARDOGS, Uncrashed FPV and Firehawk FPV. Quake II RTX is free and is a
-   genuine Vulkan exclusive-fullscreen title, which would cover #416 without
-   buying anything.
-2. **A person at the machine.** Pinning a Game Bar widget and enabling
-   click-through are clicks inside the Game Bar UI, and taking a game from its
-   menu into exclusive fullscreen is in-game navigation. Neither is reachable
-   over SSH.
-3. **A camera or ShadowPlay**, per the capture finding above.
-4. **A compiler on otto** if we want our own widget rather than a competitor's.
+So the one remaining step is that pass, and everything around it is automated:
+see [RUNBOOK.md](./RUNBOOK.md). Nothing here needs a compiler on otto, because
+track A is measured with a third-party widget already installed rather than one
+we build.
+
+Two things stay out of reach and are deliberately not in the matrix:
+
+- **Escape from Tarkov** (#64) is paid and BattlEye-protected with no offline
+  mode, so it is not testable under the "no anti-cheat-protected play" rule.
+- **Our own Game Bar widget.** It needs Visual Studio 2022 with the UWP
+  workload, which otto does not have. Only worth installing if track A wins on
+  the matrix, and the findings above already argue against it.
 
 ## Test matrix to fill in
 
-Record per game. "Visible" means the crosshair is actually on screen over the
-game, confirmed by photo or ShadowPlay rather than by screenshot.
+Five games, three display modes, fifteen trials. `matrix-run.ps1` walks them in
+this order and writes the rows itself; this table is here so the shape is
+reviewable without running anything.
 
-| Game | API | Mode | Plain topmost | UIAccess | Game Bar widget | Widget survives Game Bar closing | Anti-cheat warning |
-|---|---|---|---|---|---|---|---|
-| | | exclusive fullscreen | | | | | |
-| | | fullscreen, FSO on | | | | | |
-| | | borderless | | | | | |
+"Visible" means the crosshair is actually on screen over the game, confirmed by
+photo. Not by screenshot: a screenshot cannot see a Game Bar widget at all, and
+does not reliably see a true exclusive-fullscreen game either.
 
-Keep to offline or practice modes. No anti-cheat-protected ranked play with
-either overlay running.
+| Game | API | Covers | Anti-cheat |
+|---|---|---|---|
+| Quake II RTX | Vulkan | #416, the Vulkan request | none |
+| Fortnite | DX11/DX12 | #351 | Easy Anti-Cheat |
+| ARC Raiders | DX12 | a second anti-cheat DX12 title | Easy Anti-Cheat |
+| The Sims 4 | DX9/DX11 | the control: no anti-cheat at all | none |
+| Uncrashed FPV | Unreal/DX12 | the FPV-sim audience CrossOver actually has | none |
+
+Per trial, all three overlays are on screen at once and one photo answers all
+three columns:
+
+| | |
+|---|---|
+| green crosshair, left of centre | UIAccess probe (track B) |
+| magenta crosshair, right of centre | plain topmost probe, which is what v4 does today |
+| the widget's crosshair | pinned Game Bar widget (track A) |
+
+| Game | Mode | Plain topmost | UIAccess | Game Bar widget | Widget survives Game Bar closing | Anti-cheat warning |
+|---|---|---|---|---|---|---|
+| | exclusive fullscreen | | | | | |
+| | fullscreen, FSO on | | | | | |
+| | borderless | | | | | |
+
+The two fullscreen rows are a real distinction, not padding. With fullscreen
+optimizations on, the Windows default, a DX game asking for exclusive fullscreen
+is quietly handed a borderless flip-model window instead and an ordinary topmost
+overlay still draws over it. Testing only the default would measure the easy
+case and report a pass CrossOver users never see. `fso.ps1` flips the per-exe
+compat flag that controls it.
+
+Reading a row honestly needs one check: if the trial's screenshot shows the game
+normally, DWM was still compositing, so that row was not exclusive fullscreen
+whatever the game's menu said. See RUNBOOK.md.
+
+Keep to offline, practice, lobby or Creative modes. No anti-cheat-protected
+ranked play with either overlay running.

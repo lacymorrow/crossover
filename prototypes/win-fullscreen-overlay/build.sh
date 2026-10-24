@@ -20,6 +20,10 @@ if ! command -v "$CC" >/dev/null 2>&1; then
 	exit 1
 fi
 
+# The probe's option parsing is the one part that can be checked without a
+# Windows box, so it runs before anything is built.
+./test/run.sh
+
 mkdir -p dist
 
 build_variant() {
@@ -37,7 +41,8 @@ build_variant() {
 		"dist/overlay-$name.res.o" \
 		-mwindows \
 		-lgdi32 \
-		-luser32
+		-luser32 \
+		-lshell32
 	rm -f "dist/overlay-$name.res.o"
 }
 
