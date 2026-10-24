@@ -295,7 +295,11 @@ foreach ($gameKey in $Games) {
 }
 
 Write-Host ''
-Write-Host "$($trials.Count) trials queued."
+if ($trials.Count -eq 1) {
+	Write-Host '1 trial queued.'
+} else {
+	Write-Host "$($trials.Count) trials queued."
+}
 
 $index = 0
 foreach ($trial in $trials) {
@@ -351,6 +355,8 @@ foreach ($trial in $trials) {
 	Write-Host '  in the photo:  green crosshair, left  = UIAccess probe'
 	Write-Host '                 magenta crosshair, right = plain topmost (what v4 does today)'
 	Write-Host '                 the widget crosshair     = Game Bar / track A'
+	Write-Host ''
+	Write-Host '  stuck crosshair? ctrl+alt+shift+Q kills green, ctrl+alt+shift+W kills magenta.'
 	Write-Host ''
 	Read-Host 'Enter once the photo is taken' | Out-Null
 
@@ -427,7 +433,7 @@ if (Test-Path $csvPath) {
 }
 Write-Host 'Next: copy the phone photos into prototypes/win-fullscreen-overlay/evidence/matrix/'
 Write-Host 'using the filenames above, and pull the results folder back:'
-Write-Host "  scp -r otto:$resultsDir ./evidence/matrix/"
+Write-Host "  scp -r otto:$($resultsDir -replace '\\', '/') ./evidence/matrix/"
 Write-Host ''
 Write-Host 'When the matrix is finished, run remove-probe.ps1. It deletes the self-signed'
 Write-Host 'cert this testing trusted in LocalMachine\Root, which should not outlive the test.'

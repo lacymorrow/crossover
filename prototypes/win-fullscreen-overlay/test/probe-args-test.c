@@ -59,6 +59,31 @@ int main( void )
 	check( options.b == 255 && options.g == 255 && options.r == 0, "cyan is cyan" );
 	check( options.offset_x == 120, "offset survives alongside tint" );
 
+	/* Each variant needs its own quit hotkey. RegisterHotKey is global, so two
+	   probes asking for the same combination means the second one silently gets
+	   no hotkey at all (observed on otto: err=1409), leaving a crosshair that
+	   cannot be dismissed from inside a fullscreen game. */
+	probe_options_default( &options );
+	check( options.quit_vk == 'Q', "default quit key is Q" );
+
+	wchar_t *quit_w[] = { L"probe.exe", L"--quit-key", L"W" };
+	check( parse( &options, 3, quit_w ) == 0, "quit key parses" );
+	check( options.quit_vk == 'W', "quit key is W" );
+
+	wchar_t *quit_lower[] = { L"probe.exe", L"--quit-key", L"w" };
+	check( parse( &options, 3, quit_lower ) == 0, "lowercase quit key parses" );
+	check( options.quit_vk == 'W', "lowercase quit key is upcased to W" );
+
+	wchar_t *quit_digit[] = { L"probe.exe", L"--quit-key", L"1" };
+	check( parse( &options, 3, quit_digit ) == 0, "digit quit key parses" );
+	check( options.quit_vk == '1', "digit quit key is 1" );
+
+	wchar_t *quit_long[] = { L"probe.exe", L"--quit-key", L"QQ" };
+	check( parse( &options, 3, quit_long ) != 0, "multi-character quit key is rejected" );
+
+	wchar_t *quit_punct[] = { L"probe.exe", L"--quit-key", L"-" };
+	check( parse( &options, 3, quit_punct ) != 0, "non-alphanumeric quit key is rejected" );
+
 	/* Bad input must fail loudly. A probe that silently ignores --tint would
 	   produce two identical crosshairs and a photo that proves nothing. */
 	wchar_t *unknown[] = { L"probe.exe", L"--colour", L"green" };
