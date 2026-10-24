@@ -38,6 +38,12 @@ param(
 
 	[int] $OffsetY = 0,
 
+	# RegisterHotKey is global, so the two variants cannot share a quit key: the
+	# second claim fails with ERROR_HOTKEY_ALREADY_REGISTERED and that probe ends
+	# up with no hotkey at all. -Variant both gives uiaccess Q and plain W.
+	[ValidatePattern( '^[A-Za-z0-9]$' )]
+	[string] $QuitKey,
+
 	# Horizontal separation used by -Variant both: UIAccess goes left of centre
 	# in green, plain goes right of centre in magenta. A photo of the monitor
 	# then answers both matrix columns at once, and tells which one drew.
@@ -80,7 +86,8 @@ function Start-Probe {
 		[string] $Which,
 		[string] $ProbeTint,
 		[int] $ProbeOffsetX,
-		[int] $ProbeOffsetY
+		[int] $ProbeOffsetY,
+		[string] $ProbeQuitKey
 	)
 
 	$exeName = "crossover-overlay-$Which"
@@ -91,7 +98,7 @@ function Start-Probe {
 		throw "probe not installed: $exePath (run deploy-probe.ps1 first)"
 	}
 
-	$probeArgs = "--tint $ProbeTint --offset-x $ProbeOffsetX --offset-y $ProbeOffsetY"
+	$probeArgs = "--tint $ProbeTint --offset-x $ProbeOffsetX --offset-y $ProbeOffsetY --quit-key $ProbeQuitKey"
 	$launcher = "Start-Process -FilePath '$exePath' -ArgumentList '$probeArgs'"
 	$taskAction = New-ScheduledTaskAction `
 		-Execute 'powershell.exe' `
@@ -106,7 +113,7 @@ function Start-Probe {
 
 	$process = Get-Process $exeName -ErrorAction SilentlyContinue
 	if ($process) {
-		Write-Host "started $exeName pid=$($process.Id) session=$($process.SessionId) tint=$ProbeTint offset=$ProbeOffsetX,$ProbeOffsetY"
+		Write-Host "started $exeName pid=$($process.Id) session=$($process.SessionId) tint=$ProbeTint offset=$ProbeOffsetX,$ProbeOffsetY quit=ctrl+alt+shift+$ProbeQuitKey"
 	} else {
 		$info = Get-ScheduledTaskInfo -TaskName $taskName
 		Write-Warning "process not running. Task last result: 0x$('{0:X8}' -f $info.LastTaskResult)"
@@ -114,15 +121,19 @@ function Start-Probe {
 }
 
 if ($Variant -eq 'both') {
-	Start-Probe -Which 'uiaccess' -ProbeTint 'green'   -ProbeOffsetX ( $OffsetX - $Separation ) -ProbeOffsetY $OffsetY
-	Start-Probe -Which 'plain'    -ProbeTint 'magenta' -ProbeOffsetX ( $OffsetX + $Separation ) -ProbeOffsetY $OffsetY
+	Start-Probe -Which 'uiaccess' -ProbeTint 'green'   -ProbeOffsetX ( $OffsetX - $Separation ) -ProbeOffsetY $OffsetY -ProbeQuitKey 'Q'
+	Start-Probe -Which 'plain'    -ProbeTint 'magenta' -ProbeOffsetX ( $OffsetX + $Separation ) -ProbeOffsetY $OffsetY -ProbeQuitKey 'W'
 	Write-Host ''
-	Write-Host 'green crosshair  = UIAccess probe   (left of centre)'
-	Write-Host 'magenta crosshair = plain topmost   (right of centre)'
+	Write-Host 'green crosshair   = UIAccess probe (left of centre),  quit: ctrl+alt+shift+Q'
+	Write-Host 'magenta crosshair = plain topmost  (right of centre), quit: ctrl+alt+shift+W'
 } else {
 	if (-not $Tint) {
-		$Tint = if ($Variant -eq 'uiaccess') { 'green' } else { 'magenta' }
+		if ($Variant -eq 'uiaccess') { $Tint = 'green' } else { $Tint = 'magenta' }
 	}
 
-	Start-Probe -Which $Variant -ProbeTint $Tint -ProbeOffsetX $OffsetX -ProbeOffsetY $OffsetY
+	if (-not $QuitKey) {
+		if ($Variant -eq 'uiaccess') { $QuitKey = 'Q' } else { $QuitKey = 'W' }
+	}
+
+	Start-Probe -Which $Variant -ProbeTint $Tint -ProbeOffsetX $OffsetX -ProbeOffsetY $OffsetY -ProbeQuitKey $QuitKey
 }

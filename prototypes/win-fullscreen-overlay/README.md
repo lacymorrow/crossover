@@ -78,10 +78,11 @@ Measured on otto: Windows 10 Pro 22H2 build 19045, RTX 3090, Game Bar
 | Self-signed cert is enough for UIAccess | Confirmed | Cert trusted in `LocalMachine\Root` + signed exe + `%ProgramFiles%` install. No production signing certificate needed to test. |
 | UIAccess outranks an ordinary topmost window | Confirmed | Against `adversary.exe` (fullscreen `WS_EX_TOPMOST`): UIAccess probe visible, plain probe fully hidden. |
 | CrossOver v4 today loses to a topmost window | Confirmed | In the same capture, v4's crosshair is hidden exactly like the plain probe. |
+| Two probes distinguishable in one shot | Confirmed | Green left, magenta right, drawn at once, so one photo answers both matrix columns. ![both probes](./evidence/both-probes.png) |
 | UIAccess over real exclusive fullscreen | **Not tested** | Needs real games. See below. |
 | Game Bar widget over real exclusive fullscreen | **Not tested** | Needs a pinned widget and a person at the machine. |
 
-Two findings that change how this gets tested, both learned the hard way:
+Three findings that change how this gets tested, all learned the hard way:
 
 **A UIAccess binary cannot be started with `CreateProcess`.** It fails with
 `ERROR_ELEVATION_REQUIRED` (0x800702E4), because granting UIAccess is the
@@ -89,6 +90,12 @@ AppInfo/UAC broker's job and only `ShellExecute` routes through it. This is not
 just a test-harness detail: Electron's `child_process.spawn` is also
 `CreateProcess`, so if v4 ever launches a UIAccess helper it has to use
 `ShellExecute`.
+
+**Two probes cannot share a quit hotkey.** `RegisterHotKey` is global, so the
+second probe to claim `ctrl+alt+shift+Q` gets nothing and fails with
+`ERROR_HOTKEY_ALREADY_REGISTERED` (1409). A matrix trial runs both at once, which
+left a crosshair on screen with no way to dismiss it from inside a fullscreen
+game. Each variant now takes its own key: `Q` for UIAccess, `W` for plain.
 
 **Game Bar is invisible to screen capture.** `GameBar.exe` was confirmed
 running in the interactive session while a GDI `BitBlt` capture of that same
@@ -154,10 +161,15 @@ Decided by the board on 2026-10-24: finish the matrix for **both** tracks, with
 EAC) added to what otto already has, and Lacy running the pass at the machine
 with phone photos as the evidence.
 
-So the one remaining step is that pass, and everything around it is automated:
-see [RUNBOOK.md](./RUNBOOK.md). Nothing here needs a compiler on otto, because
-track A is measured with a third-party widget already installed rather than one
-we build.
+otto is staged as of 2026-10-24: probes signed and installed, UIAccess confirmed
+granted on the box, both crosshairs confirmed rendering distinctly, Quake II RTX
+installed, the crosshair widget present, and all five game exe paths pre-resolved
+into `games.json` so no trial has to stop and ask. `matrix-run.ps1` was
+smoke-run there end to end.
+
+So the one remaining step is the pass itself, plus pinning the widget: see
+[RUNBOOK.md](./RUNBOOK.md). Nothing here needs a compiler on otto, because track A
+is measured with a third-party widget already installed rather than one we build.
 
 Two things stay out of reach and are deliberately not in the matrix:
 

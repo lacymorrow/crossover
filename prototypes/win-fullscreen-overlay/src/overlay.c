@@ -312,11 +312,11 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 
 	if ( !args_ok )
 	{
-		probe_log( "bad arguments. usage: --tint <green|magenta|cyan|yellow|red|white> --offset-x <n> --offset-y <n>" );
+		probe_log( "bad arguments. usage: --tint <green|magenta|cyan|yellow|red|white> --offset-x <n> --offset-y <n> --quit-key <A-Z|0-9>" );
 		return 2;
 	}
 
-	probe_log( "options tint=%u,%u,%u offset=%d,%d", options.r, options.g, options.b, options.offset_x, options.offset_y );
+	probe_log( "options tint=%u,%u,%u offset=%d,%d quit=ctrl+alt+shift+%c", options.r, options.g, options.b, options.offset_x, options.offset_y, (char) options.quit_vk );
 
 	WNDCLASSEXW wc;
 	ZeroMemory( &wc, sizeof( wc ) );
@@ -368,9 +368,16 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 	assert_topmost( hwnd );
 	SetTimer( hwnd, TOPMOST_TIMER_ID, TOPMOST_TIMER_MS, NULL );
 
-	if ( !RegisterHotKey( hwnd, QUIT_HOTKEY_ID, MOD_CONTROL | MOD_ALT | MOD_SHIFT, 'Q' ) )
+	/* Two probes run at once during a matrix trial, so each needs its own key:
+	   RegisterHotKey is global and the second claim on a combination fails with
+	   ERROR_HOTKEY_ALREADY_REGISTERED (1409). */
+	if ( !RegisterHotKey( hwnd, QUIT_HOTKEY_ID, MOD_CONTROL | MOD_ALT | MOD_SHIFT, (UINT) options.quit_vk ) )
 	{
-		probe_log( "quit hotkey unavailable, err=%lu (use taskkill)", GetLastError() );
+		probe_log( "quit hotkey ctrl+alt+shift+%c unavailable, err=%lu (use run-probe.ps1 -Action stop)", (char) options.quit_vk, GetLastError() );
+	}
+	else
+	{
+		probe_log( "quit hotkey: ctrl+alt+shift+%c", (char) options.quit_vk );
 	}
 
 	probe_log( "overlay up at %d,%d size %d", x, y, OVERLAY_SIZE );

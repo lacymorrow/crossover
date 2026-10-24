@@ -28,6 +28,7 @@ typedef struct
 	unsigned char b;
 	int offset_x;
 	int offset_y;
+	int quit_vk;
 } probe_options;
 
 typedef struct
@@ -54,6 +55,36 @@ static void probe_options_default( probe_options *options )
 	options->b = 0;
 	options->offset_x = 0;
 	options->offset_y = 0;
+	options->quit_vk = 'Q';
+}
+
+/*
+ * RegisterHotKey is global, so two probes asking for the same combination means
+ * the second one silently gets none (err=1409 on otto). That would leave a
+ * crosshair on screen that cannot be dismissed from inside a fullscreen game,
+ * so each variant takes its own key.
+ */
+static int probe_parse_quit_key( const wchar_t *text, int *out )
+{
+	if ( !text[ 0 ] || text[ 1 ] )
+	{
+		return -1;
+	}
+
+	wchar_t key = text[ 0 ];
+
+	if ( key >= L'a' && key <= L'z' )
+	{
+		key = (wchar_t) ( key - L'a' + L'A' );
+	}
+
+	if ( ( key < L'A' || key > L'Z' ) && ( key < L'0' || key > L'9' ) )
+	{
+		return -1;
+	}
+
+	*out = (int) key;
+	return 0;
 }
 
 static int probe_parse_tint( const wchar_t *name, probe_options *options )
@@ -124,6 +155,13 @@ static int probe_options_parse( int argc, wchar_t **argv, probe_options *options
 		else if ( wcscmp( flag, L"--offset-y" ) == 0 )
 		{
 			if ( !has_value || probe_parse_offset( argv[ ++i ], &options->offset_y ) != 0 )
+			{
+				return -1;
+			}
+		}
+		else if ( wcscmp( flag, L"--quit-key" ) == 0 )
+		{
+			if ( !has_value || probe_parse_quit_key( argv[ ++i ], &options->quit_vk ) != 0 )
 			{
 				return -1;
 			}
