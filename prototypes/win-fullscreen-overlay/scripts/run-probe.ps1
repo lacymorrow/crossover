@@ -15,12 +15,13 @@
 
 .EXAMPLE
   run-probe.ps1 -Variant uiaccess
+  run-probe.ps1 -Variant both      # both at once, side by side, for one photo
   run-probe.ps1 -Action stop
 #>
 
 [CmdletBinding()]
 param(
-	[ValidateSet('uiaccess', 'plain')]
+	[ValidateSet('uiaccess', 'plain', 'both')]
 	[string] $Variant = 'uiaccess',
 
 	[ValidateSet('start', 'stop')]
@@ -28,14 +29,22 @@ param(
 
 	[string] $InstallDir = "$env:ProgramFiles\CrossOver Overlay Probe",
 
-	[string] $UserId = $env:USERNAME
+	[string] $UserId = $env:USERNAME,
+
+	[ValidateSet('green', 'magenta', 'cyan', 'yellow', 'red', 'white')]
+	[string] $Tint,
+
+	[int] $OffsetX = 0,
+
+	[int] $OffsetY = 0,
+
+	# Horizontal separation used by -Variant both: UIAccess goes left of centre
+	# in green, plain goes right of centre in magenta. A photo of the monitor
+	# then answers both matrix columns at once, and tells which one drew.
+	[int] $Separation = 260
 )
 
 $ErrorActionPreference = 'Stop'
-
-$taskName = "CrossOverProbe_$Variant"
-$exeName = "crossover-overlay-$Variant"
-$exePath = Join-Path $InstallDir "$exeName.exe"
 
 function Stop-Probe {
 	foreach ($name in 'crossover-overlay-uiaccess', 'crossover-overlay-plain') {
@@ -54,10 +63,6 @@ if ($Action -eq 'stop') {
 	return
 }
 
-if (-not (Test-Path $exePath)) {
-	throw "probe not installed: $exePath (run deploy-probe.ps1 first)"
-}
-
 Stop-Probe
 
 # A uiAccess="true" binary cannot be started with CreateProcess: that path fails
@@ -70,22 +75,54 @@ Stop-Probe
 #
 # This matters beyond the probe: if v4 ever ships a UIAccess helper, Electron's
 # child_process.spawn is also CreateProcess and would hit the same error.
-$launcher = "Start-Process -FilePath '$exePath'"
-$taskAction = New-ScheduledTaskAction `
-	-Execute 'powershell.exe' `
-	-Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"$launcher`""
-$principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+function Start-Probe {
+	param(
+		[string] $Which,
+		[string] $ProbeTint,
+		[int] $ProbeOffsetX,
+		[int] $ProbeOffsetY
+	)
 
-Register-ScheduledTask -TaskName $taskName -Action $taskAction -Principal $principal -Settings $settings -Force | Out-Null
-Start-ScheduledTask -TaskName $taskName
+	$exeName = "crossover-overlay-$Which"
+	$exePath = Join-Path $InstallDir "$exeName.exe"
+	$taskName = "CrossOverProbe_$Which"
 
-Start-Sleep -Seconds 3
+	if (-not (Test-Path $exePath)) {
+		throw "probe not installed: $exePath (run deploy-probe.ps1 first)"
+	}
 
-$process = Get-Process $exeName -ErrorAction SilentlyContinue
-if ($process) {
-	Write-Host "started $exeName pid=$($process.Id) session=$($process.SessionId)"
+	$probeArgs = "--tint $ProbeTint --offset-x $ProbeOffsetX --offset-y $ProbeOffsetY"
+	$launcher = "Start-Process -FilePath '$exePath' -ArgumentList '$probeArgs'"
+	$taskAction = New-ScheduledTaskAction `
+		-Execute 'powershell.exe' `
+		-Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"$launcher`""
+	$principal = New-ScheduledTaskPrincipal -UserId $UserId -LogonType Interactive
+	$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+
+	Register-ScheduledTask -TaskName $taskName -Action $taskAction -Principal $principal -Settings $settings -Force | Out-Null
+	Start-ScheduledTask -TaskName $taskName
+
+	Start-Sleep -Seconds 3
+
+	$process = Get-Process $exeName -ErrorAction SilentlyContinue
+	if ($process) {
+		Write-Host "started $exeName pid=$($process.Id) session=$($process.SessionId) tint=$ProbeTint offset=$ProbeOffsetX,$ProbeOffsetY"
+	} else {
+		$info = Get-ScheduledTaskInfo -TaskName $taskName
+		Write-Warning "process not running. Task last result: 0x$('{0:X8}' -f $info.LastTaskResult)"
+	}
+}
+
+if ($Variant -eq 'both') {
+	Start-Probe -Which 'uiaccess' -ProbeTint 'green'   -ProbeOffsetX ( $OffsetX - $Separation ) -ProbeOffsetY $OffsetY
+	Start-Probe -Which 'plain'    -ProbeTint 'magenta' -ProbeOffsetX ( $OffsetX + $Separation ) -ProbeOffsetY $OffsetY
+	Write-Host ''
+	Write-Host 'green crosshair  = UIAccess probe   (left of centre)'
+	Write-Host 'magenta crosshair = plain topmost   (right of centre)'
 } else {
-	$info = Get-ScheduledTaskInfo -TaskName $taskName
-	Write-Warning "process not running. Task last result: 0x$('{0:X8}' -f $info.LastTaskResult)"
+	if (-not $Tint) {
+		$Tint = if ($Variant -eq 'uiaccess') { 'green' } else { 'magenta' }
+	}
+
+	Start-Probe -Which $Variant -ProbeTint $Tint -ProbeOffsetX $OffsetX -ProbeOffsetY $OffsetY
 }

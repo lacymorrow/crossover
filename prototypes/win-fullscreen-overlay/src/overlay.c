@@ -12,7 +12,10 @@
  */
 
 #include <windows.h>
+#include <shellapi.h>
 #include <stdio.h>
+
+#include "probe-args.h"
 
 #define PROBE_CLASS L"CrossOverOverlayProbe"
 #define OVERLAY_SIZE 160
@@ -92,6 +95,21 @@ static void log_uiaccess_state( void )
 	CloseHandle( token );
 }
 
+static int clamp( int value, int low, int high )
+{
+	if ( value < low )
+	{
+		return low;
+	}
+
+	if ( value > high )
+	{
+		return high;
+	}
+
+	return value;
+}
+
 static void set_pixel( unsigned char *bits, int stride, int x, int y, unsigned char r, unsigned char g, unsigned char b )
 {
 	if ( x < 0 || y < 0 || x >= OVERLAY_SIZE || y >= OVERLAY_SIZE )
@@ -148,7 +166,7 @@ static int collect_crosshair_points( POINT *points, int capacity )
 	return count;
 }
 
-static void draw_crosshair( unsigned char *bits, int stride )
+static void draw_crosshair( unsigned char *bits, int stride, const probe_options *options )
 {
 	POINT points[ MAX_CROSSHAIR_POINTS ];
 	int count = collect_crosshair_points( points, MAX_CROSSHAIR_POINTS );
@@ -165,14 +183,15 @@ static void draw_crosshair( unsigned char *bits, int stride )
 		}
 	}
 
-	/* Pass 2: the green fill, now that no halo can land on top of it. */
+	/* Pass 2: the tinted fill, now that no halo can land on top of it. The
+	   tint is what tells the two probe variants apart in a photo. */
 	for ( int i = 0; i < count; i++ )
 	{
-		set_pixel( bits, stride, points[ i ].x, points[ i ].y, 0, 255, 0 );
+		set_pixel( bits, stride, points[ i ].x, points[ i ].y, options->r, options->g, options->b );
 	}
 }
 
-static BOOL paint_overlay( HWND hwnd )
+static BOOL paint_overlay( HWND hwnd, const probe_options *options )
 {
 	BITMAPINFO bmi;
 	ZeroMemory( &bmi, sizeof( bmi ) );
@@ -198,7 +217,7 @@ static BOOL paint_overlay( HWND hwnd )
 	}
 
 	ZeroMemory( bits, (size_t) OVERLAY_SIZE * OVERLAY_SIZE * 4 );
-	draw_crosshair( (unsigned char *) bits, OVERLAY_SIZE * 4 );
+	draw_crosshair( (unsigned char *) bits, OVERLAY_SIZE * 4, options );
 
 	HDC mem_dc = CreateCompatibleDC( screen_dc );
 	HGDIOBJ previous = SelectObject( mem_dc, bitmap );
@@ -274,6 +293,31 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 	probe_log( "---- probe start (build=%s) ----", PROBE_BUILD_NAME );
 	log_uiaccess_state();
 
+	/* GetCommandLineW rather than the ANSI command_line WinMain was handed:
+	   the parser is wide so the same code can be tested off-Windows. */
+	probe_options options;
+	probe_options_default( &options );
+
+	int argc = 0;
+	wchar_t **argv = CommandLineToArgvW( GetCommandLineW(), &argc );
+
+	if ( !argv )
+	{
+		probe_log( "CommandLineToArgvW failed, err=%lu", GetLastError() );
+		return 1;
+	}
+
+	int args_ok = probe_options_parse( argc, argv, &options ) == 0;
+	LocalFree( argv );
+
+	if ( !args_ok )
+	{
+		probe_log( "bad arguments. usage: --tint <green|magenta|cyan|yellow|red|white> --offset-x <n> --offset-y <n>" );
+		return 2;
+	}
+
+	probe_log( "options tint=%u,%u,%u offset=%d,%d", options.r, options.g, options.b, options.offset_x, options.offset_y );
+
 	WNDCLASSEXW wc;
 	ZeroMemory( &wc, sizeof( wc ) );
 	wc.cbSize = sizeof( wc );
@@ -292,8 +336,14 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 	   not something this probe needs to answer. */
 	int screen_w = GetSystemMetrics( SM_CXSCREEN );
 	int screen_h = GetSystemMetrics( SM_CYSCREEN );
-	int x = ( screen_w - OVERLAY_SIZE ) / 2;
-	int y = ( screen_h - OVERLAY_SIZE ) / 2;
+	int x = ( ( screen_w - OVERLAY_SIZE ) / 2 ) + options.offset_x;
+	int y = ( ( screen_h - OVERLAY_SIZE ) / 2 ) + options.offset_y;
+
+	/* An offset that walked the crosshair off screen would read in a photo as
+	   "the overlay lost", which is the one wrong answer this test must not
+	   produce. Clamp instead. */
+	x = clamp( x, 0, screen_w - OVERLAY_SIZE );
+	y = clamp( y, 0, screen_h - OVERLAY_SIZE );
 
 	HWND hwnd = CreateWindowExW(
 		WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW,
@@ -309,7 +359,7 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 		return 1;
 	}
 
-	if ( !paint_overlay( hwnd ) )
+	if ( !paint_overlay( hwnd, &options ) )
 	{
 		probe_log( "initial paint failed" );
 	}
