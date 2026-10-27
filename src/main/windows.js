@@ -163,13 +163,18 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	}
 
+	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
+	// Must run BEFORE the window exists (#546): hiding the dock transforms the
+	// process into a UIElement app, and macOS only lets windows created while the
+	// process is already a UIElement float over another app's fullscreen Space.
+	// Transforming afterwards leaves the existing window stuck on the desktop space.
+	dock.setVisible( false )
+
 	const win = new BrowserWindow( options )
 
 	// Maintain aspect ratio
 	win.setAspectRatio( APP_ASPECT_RATIO )
 
-	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
-	dock.setVisible( false )
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
