@@ -5,6 +5,7 @@ const dock = require( './dock' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
+const presets = require( './presets' )
 const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
@@ -103,6 +104,17 @@ const keyboardShortcuts = () => {
 					syncSettings()
 
 				}
+
+			},
+		},
+
+		// Switch to the next saved preset
+		{
+			action: 'cyclePreset',
+			keybind: `${accelerator}+P`,
+			fn() {
+
+				presets.cycle()
 
 			},
 		},

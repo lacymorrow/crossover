@@ -47,6 +47,10 @@ const getDefaults = () => ( {
 		tiltLeft: '',
 		tiltRight: '',
 	},
+	presets: {
+		active: '',
+		name: '',
+	},
 	app: {
 		theme: DEFAULT_THEME || 'system',
 		appBgColor: 'unset',
@@ -77,9 +81,11 @@ const getDefaults = () => ( {
 		about: 'Control+Shift+Alt+A',
 		quit: 'Control+Shift+Alt+Q',
 		hideReticle: 'Control+Shift+Alt+S',
+		cyclePreset: 'Control+Shift+Alt+P',
 
 	},
 	hidden: {
+		presets: [],
 		frame: false,
 		locked: false,
 		onboardingCompleted: false,
@@ -404,6 +410,56 @@ const preferencesConfig = {
 			},
 		},
 		{
+			id: 'presets',
+			label: 'Presets',
+			icon: 'layers-3',
+			form: {
+				groups: [
+					{
+						label: 'Crosshair Presets',
+						fields: [
+							{
+								content: '<p>A preset remembers your crosshair and action settings so you can keep one per game.</p><p>Press <code>CTRL+ALT+SHIFT+P</code> to switch to the next preset without opening this window.</p>',
+								type: 'message',
+							},
+							{
+								label: 'Active Preset',
+								key: 'active',
+								type: 'dropdown',
+								help: 'Save your first preset below and it shows up here.',
+								// Options and help are filled in at runtime, see main/presets.js
+								options: [],
+							},
+							{
+								label: 'Preset Name',
+								key: 'name',
+								type: 'text',
+								help: 'Leave this blank and CrossOver names the preset for you.',
+							},
+							{
+								label: 'Save Preset',
+								// electron-preferences compares this against the string 'true'
+								hideLabel: 'true',
+								buttonLabel: 'Save Current Settings',
+								key: 'savePreset',
+								type: 'button',
+								help: 'Saving over a name you already used replaces that preset.',
+							},
+							{
+								label: 'Delete Preset',
+								// electron-preferences compares this against the string 'true'
+								hideLabel: 'true',
+								buttonLabel: 'Delete Active Preset',
+								key: 'deletePreset',
+								type: 'button',
+								help: 'Removes the preset shown above.',
+							},
+						],
+					},
+				],
+			},
+		},
+		{
 			id: 'keybinds',
 			label: 'Keybinds',
 			icon: 'handout',
@@ -508,6 +564,13 @@ const preferencesConfig = {
 								key: 'moveRight',
 								type: 'accelerator',
 								help: 'Move the crosshair right 1 pixel.',
+								modifierRequired: true,
+							},
+							{
+								label: 'Next Preset',
+								key: 'cyclePreset',
+								type: 'accelerator',
+								help: 'Switch to the next saved preset.',
 								modifierRequired: true,
 							},
 							// Allowing users to change the Reset shortcut may end poorly
