@@ -459,15 +459,8 @@ const hideOnKey = async () => {
 
 const tiltCrosshair = angle => {
 
-	if ( angle && windows.win ) {
-
-		set.rendererProperties( { '--tilt-angle': `${angle}deg` }, windows.win )
-
-	} else {
-
-		set.rendererProperties( { '--tilt-angle': '0deg' }, windows.win )
-
-	}
+	// Every crosshair tilts, not just the main one (#561).
+	setCrosshairProperties( { '--tilt-angle': `${angle || 0}deg` } )
 
 }
 
@@ -606,21 +599,12 @@ const resizeOnADS = async () => {
 			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
 				const adsed = preferences.value( 'hidden.ADSed' )
-				if ( adsed ) {
+				const size = adsed ? oldCrosshairSize : newCrosshairSize
 
-					set.rendererProperties( {
-						'--crosshair-width': `${oldCrosshairSize}px`,
-						'--crosshair-height': `${oldCrosshairSize}px`,
-					}, windows.win )
-
-				} else {
-
-					set.rendererProperties( {
-						'--crosshair-width': `${newCrosshairSize}px`,
-						'--crosshair-height': `${newCrosshairSize}px`,
-					}, windows.win )
-
-				}
+				setCrosshairProperties( {
+					'--crosshair-width': `${size}px`,
+					'--crosshair-height': `${size}px`,
+				} )
 
 				preferences.value( 'hidden.ADSed', !adsed )
 
@@ -637,10 +621,10 @@ const resizeOnADS = async () => {
 
 			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
-				set.rendererProperties( {
+				setCrosshairProperties( {
 					'--crosshair-width': `${newCrosshairSize}px`,
 					'--crosshair-height': `${newCrosshairSize}px`,
-				}, windows.win )
+				} )
 
 			}
 
@@ -655,10 +639,10 @@ const resizeOnADS = async () => {
 
 				// Size only. Opacity belongs to Hide on ADS; writing it here
 				// overrode "Show on ADS" and kept the crosshair visible (#539).
-				set.rendererProperties( {
+				setCrosshairProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,
 					'--crosshair-height': `${oldCrosshairSize}px`,
-				}, windows.win )
+				} )
 
 			}
 
