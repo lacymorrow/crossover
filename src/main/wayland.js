@@ -23,12 +23,23 @@ const log = require( './log.js' )
 	the command line, from the user or from the launcher. So this module works out
 	which backend we are actually on, and when it is one where no hotkey can ever
 	fire it hands the user a reason instead of silence.
+
+	A switch cannot help, but a new process can: `relaunchOnX11()` restarts
+	CrossOver with the backend on its command line from the start. The affected
+	users run distro repackages against system Electron, so we do not own their
+	`Exec` line and `linux.executableArgs` cannot reach them. That makes an in-app
+	relaunch the only mechanism left. It is deliberately narrow: see the guards on
+	`relaunchOnX11()` for every session it refuses to touch.
 */
 
 const OZONE_SWITCH = 'ozone-platform'
 const FEATURES_SWITCH = 'enable-features'
 const OZONE_FEATURE = 'UseOzonePlatform'
 const HINT_ENV = 'ELECTRON_OZONE_PLATFORM_HINT'
+
+// Set on the process we relaunch, so a switch that does not take effect leaves us
+// with one wasted start instead of a relaunch loop.
+const RELAUNCHED_ENV = 'CROSSOVER_RELAUNCHED_X11'
 
 // Electron 14 (Chromium 93) has no Ozone unless UseOzonePlatform is enabled on
 // the command line. Its one backend is legacy X11, which runs through XWayland in
@@ -155,6 +166,102 @@ const detect = () => {
 
 }
 
+// We have had our one attempt once either of these is true: the env var we set on
+// the relaunched process, or an `--ozone-platform=x11` already sitting in argv.
+// The second covers launchers that hand Chromium a stripped command line, the same
+// reason `--reset` is read off argv in main.js. Without it, a switch that never
+// arrives would relaunch forever.
+const alreadyRelaunched = () => Boolean( process.env[RELAUNCHED_ENV] )
+	|| process.argv.slice( 1 ).includes( `--${OZONE_SWITCH}=x11` )
+
+// The command line to come back with: our own arguments, minus the backend
+// switches we are replacing, plus Ozone/X11. UseOzonePlatform is merged into any
+// existing --enable-features rather than overwriting it, since Chromium keeps only
+// the last copy of a switch.
+const x11Args = () => {
+
+	const features = switchValue( FEATURES_SWITCH ).split( ',' ).filter( Boolean )
+	if ( !features.includes( OZONE_FEATURE ) ) {
+
+		features.push( OZONE_FEATURE )
+
+	}
+
+	const forwarded = process.argv.slice( 1 )
+		.filter( argument => !argument.startsWith( `--${OZONE_SWITCH}` ) && !argument.startsWith( `--${FEATURES_SWITCH}` ) )
+
+	return [
+		...forwarded,
+		`--${FEATURES_SWITCH}=${features.join( ',' )}`,
+		`--${OZONE_SWITCH}=x11`,
+	]
+
+}
+
+/**
+ * Restart on the Ozone/X11 backend when we are on a native Wayland backend that
+ * can never grab a hotkey.
+ *
+ * Must run before any window exists: it replaces this process. Returns true when
+ * the relaunch is under way, so the caller can stop starting up.
+ */
+const relaunchOnX11 = () => {
+
+	// The only backend that cannot grab a key. Read live rather than off state, so
+	// this does not depend on detect() having run first.
+	if ( process.platform !== 'linux' || activeBackend() !== 'wayland' ) {
+
+		return false
+
+	}
+
+	// Ozone/X11 was experimental in Chromium 93 and is the backend #450 lives on,
+	// so an Electron 14 build is never moved. From the line where Ozone is the
+	// Linux default, x11 is simply the other supported backend.
+	if ( electronMajor() < OZONE_DEFAULT_ELECTRON ) {
+
+		return false
+
+	}
+
+	// `--ozone-platform=wayland` is a choice, not an accident: someone asked for
+	// this backend, possibly for the transparency in #450. Leave them on it and let
+	// the notice explain what it costs.
+	if ( switchValue( OZONE_SWITCH ) === 'wayland' ) {
+
+		return false
+
+	}
+
+	// x11 with no X server has no windows at all, which is worse than no hotkeys.
+	if ( !hasXServer() ) {
+
+		return false
+
+	}
+
+	if ( alreadyRelaunched() ) {
+
+		log.warn( 'Already relaunched for Ozone/X11 and still on the Wayland backend: staying here so this cannot loop' )
+
+		return false
+
+	}
+
+	const args = x11Args()
+
+	log.info( `Native Wayland backend cannot grab global hotkeys. Relaunching on Ozone/X11: ${args.join( ' ' )}` )
+
+	// Inherited by the relaunched process. This is what stops a second attempt.
+	process.env[RELAUNCHED_ENV] = '1'
+
+	app.relaunch( { args } )
+	app.exit( 0 )
+
+	return true
+
+}
+
 // Why global hotkeys cannot work here, or null when nothing is blocking them.
 const shortcutsBlockedReason = () => state.shortcutsBlockedReason
 
@@ -173,6 +280,7 @@ const debugInfo = () => {
 const wayland = {
 	debugInfo,
 	detect,
+	relaunchOnX11,
 	shortcutsBlockedReason,
 }
 

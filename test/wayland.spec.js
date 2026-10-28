@@ -11,6 +11,11 @@ const { expect, test } = require( '@playwright/test' )
 // does, because Chromium has already locked its backend in by the time our main
 // script runs. Appending a switch at that point is a no-op, so every case also
 // asserts that we never append one.
+//
+// relaunchOnX11() is the other half (LAC-5118): where a switch cannot help, come
+// back as a new process that was launched on Ozone/X11 from the start. Every case
+// below also records whether it fired, since firing it in the wrong session is
+// worse than the bug it fixes.
 
 const WAYLAND_PATH = require.resolve( path.join( __dirname, '../src/main/wayland.js' ) )
 const LOG_PATH = require.resolve( path.join( __dirname, '../src/main/log.js' ) )
@@ -19,6 +24,7 @@ const SESSION_VARS = [
 	'WAYLAND_DISPLAY',
 	'DISPLAY',
 	'ELECTRON_OZONE_PLATFORM_HINT',
+	'CROSSOVER_RELAUNCHED_X11',
 ]
 
 const WAYLAND_WITH_XWAYLAND = { XDG_SESSION_TYPE: 'wayland', WAYLAND_DISPLAY: 'wayland-0', DISPLAY: ':0' }
@@ -37,10 +43,12 @@ const ELECTRON_41 = '41.10.6'
  * Chromium parses it, so `app.commandLine` answers about real arguments rather
  * than ones the module appended.
  */
-const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14 } = {}, run ) => {
+const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14, switchesStripped = false } = {}, run ) => {
 
+	// `switchesStripped` is the AppImage/Snap/Flatpak case main.js already works
+	// around for `--reset`: the arguments reach argv but never reach Chromium.
 	const switches = {}
-	for ( const arg of argv ) {
+	for ( const arg of switchesStripped ? [] : argv ) {
 
 		const [ key, value ] = arg.replace( /^--/, '' ).split( '=' )
 		switches[key] = value ?? ''
@@ -48,6 +56,9 @@ const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14 } = {}
 	}
 
 	const appended = []
+	// What a relaunch would do, instead of actually replacing the test process.
+	const relaunches = []
+	const exits = []
 	const electronStub = {
 		app: {
 			commandLine: {
@@ -59,6 +70,16 @@ const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14 } = {}
 					appended.push( value === undefined ? `--${key}` : `--${key}=${value}` )
 
 				},
+			},
+			relaunch( options ) {
+
+				relaunches.push( options )
+
+			},
+			exit( code ) {
+
+				exits.push( code )
+
 			},
 		},
 	}
@@ -83,7 +104,8 @@ const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14 } = {}
 	Object.defineProperty( process, 'platform', { value: platform, configurable: true } )
 	Object.defineProperty( process.versions, 'electron', { value: electron, configurable: true, enumerable: true, writable: true } )
 
-	// Run detect() against a set of session variables and report what it decided.
+	// Run detect() against a set of session variables and report what it decided,
+	// then run the relaunch decision the same way main.js does.
 	const inSession = env => {
 
 		for ( const key of SESSION_VARS ) {
@@ -93,15 +115,25 @@ const sandbox = ( { argv = [], platform = 'linux', electron = ELECTRON_14 } = {}
 		}
 
 		Object.assign( process.env, env )
+		relaunches.length = 0
+		exits.length = 0
 
 		const wayland = require( WAYLAND_PATH )
 		const state = wayland.detect()
+		const relaunched = wayland.relaunchOnX11()
+		// Called twice on purpose: no session may ever relaunch more than once.
+		const relaunchedAgain = wayland.relaunchOnX11()
 
 		return {
 			appended,
 			backend: state.backend,
 			blocked: wayland.shortcutsBlockedReason(),
 			debugInfo: wayland.debugInfo(),
+			exits: [ ...exits ],
+			relaunchArgs: relaunches[0]?.args ?? null,
+			relaunched,
+			relaunchedAgain,
+			relaunches: relaunches.length,
 			usingX11: state.usingX11,
 			wayland: state.wayland,
 		}
@@ -176,6 +208,11 @@ test( 'Native Wayland backend says how to get hotkeys back', () => {
 	expect( result.usingX11 ).toBe( false )
 	expect( result.blocked ).toContain( '--ozone-platform=x11' )
 	expect( result.debugInfo ).toContain( 'cannot be grabbed here' )
+
+	// Chromium 93's Ozone/X11 was experimental and is where #450 lives, so the
+	// notice is all Electron 14 gets. See the relaunch tests below.
+	expect( result.relaunched ).toBe( false )
+	expect( result.relaunches ).toBe( 0 )
 
 } )
 
@@ -275,5 +312,134 @@ test( 'Both reasons fit in a notification body', () => {
 		expect( result.blocked.length, result.blocked ).toBeLessThan( 110 )
 
 	}
+
+} )
+
+// relaunchOnX11(): a switch cannot move the backend, so come back as a process
+// that was launched on x11 to begin with. (LAC-5118)
+
+test( 'Native Wayland on a modern Electron relaunches onto Ozone/X11', () => {
+
+	// The #456 report: a distro build on Electron 38+, no flags, XWayland present.
+	const result = detectIn( WAYLAND_WITH_XWAYLAND, { electron: ELECTRON_41, argv: [ '--some-user-flag' ] } )
+
+	expect( result.backend ).toBe( 'wayland' )
+	expect( result.relaunched ).toBe( true )
+	expect( result.relaunches ).toBe( 1 )
+	expect( result.exits ).toEqual( [ 0 ] )
+
+	// The user's own arguments survive, and the backend arrives on the new one.
+	expect( result.relaunchArgs ).toEqual( [
+		'--some-user-flag',
+		'--enable-features=UseOzonePlatform',
+		'--ozone-platform=x11',
+	] )
+
+	// Still a no-op path for appendSwitch: this process is not being fixed, replaced.
+	expect( result.appended ).toEqual( [] )
+
+	// And it never fires a second time in the same process.
+	expect( result.relaunchedAgain ).toBe( false )
+
+} )
+
+test( 'Relaunching keeps features the user already asked for', () => {
+
+	// Chromium keeps only the last copy of a switch, so --enable-features has to be
+	// merged. Overwriting it would silently drop whatever was there.
+	const result = detectIn( WAYLAND_WITH_XWAYLAND, { electron: ELECTRON_41, argv: [ '--enable-features=WaylandWindowDecorations' ] } )
+
+	expect( result.relaunched ).toBe( true )
+	expect( result.relaunchArgs ).toEqual( [
+		'--enable-features=WaylandWindowDecorations,UseOzonePlatform',
+		'--ozone-platform=x11',
+	] )
+
+} )
+
+test( 'Electron 14 is never relaunched', () => {
+
+	// Chromium 93's Ozone/X11 is experimental and is the backend #450 lives on.
+	// Our own builds must behave exactly as they did before this landed.
+	const onWaylandBackend = detectIn( WAYLAND_WITH_XWAYLAND, { argv: [ '--enable-features=UseOzonePlatform', '--ozone-platform=wayland' ] } )
+	expect( onWaylandBackend.backend ).toBe( 'wayland' )
+	expect( onWaylandBackend.relaunched ).toBe( false )
+	expect( onWaylandBackend.relaunches ).toBe( 0 )
+	expect( onWaylandBackend.exits ).toEqual( [] )
+
+	// And with no flags it is on legacy X11, where hotkeys already work.
+	const plain = detectIn( WAYLAND_WITH_XWAYLAND )
+	expect( plain.relaunched ).toBe( false )
+	expect( plain.relaunches ).toBe( 0 )
+
+} )
+
+test( 'Sessions that already work are left where they are', () => {
+
+	// An X11 session is never on the wayland backend, so it is never moved.
+	expect( detectIn( X11_SESSION, { electron: ELECTRON_41 } ).relaunched ).toBe( false )
+
+	// Neither is a Wayland session already running through XWayland.
+	const viaXWayland = detectIn( WAYLAND_WITH_XWAYLAND, { electron: ELECTRON_41, argv: [ '--ozone-platform=x11' ] } )
+	expect( viaXWayland.usingX11 ).toBe( true )
+	expect( viaXWayland.relaunched ).toBe( false )
+
+	// macOS and Windows have no backend to switch.
+	for ( const platform of [ 'darwin', 'win32' ] ) {
+
+		const result = detectIn( WAYLAND_WITH_XWAYLAND, { electron: ELECTRON_41, platform } )
+		expect( result.relaunched, `${platform} must not relaunch` ).toBe( false )
+		expect( result.exits ).toEqual( [] )
+
+	}
+
+} )
+
+test( 'No X server means no relaunch, just the notice', () => {
+
+	// Relaunching into x11 without an X server trades missing hotkeys for a window
+	// that never appears.
+	const result = detectIn( WAYLAND_NO_XWAYLAND, { electron: ELECTRON_41 } )
+
+	expect( result.relaunched ).toBe( false )
+	expect( result.exits ).toEqual( [] )
+
+	// So the #456 notice stands, and it is the one for a native Wayland backend:
+	// the session is on wayland, it just has no XWayland to move to.
+	expect( result.backend ).toBe( 'wayland' )
+	expect( result.blocked ).toContain( 'X11 session' )
+
+} )
+
+test( 'An explicit --ozone-platform=wayland is honored', () => {
+
+	// Someone asked for this backend, possibly for the transparency in #450.
+	// Leave them on it; the notice says what it costs.
+	const result = detectIn( WAYLAND_WITH_XWAYLAND, { electron: ELECTRON_41, argv: [ '--ozone-platform=wayland' ] } )
+
+	expect( result.backend ).toBe( 'wayland' )
+	expect( result.relaunched ).toBe( false )
+	expect( result.blocked ).toContain( '--ozone-platform=x11' )
+
+} )
+
+test( 'A relaunch that did not take effect does not loop', () => {
+
+	// Guard one: the env var we set on the process we spawn.
+	const guarded = detectIn( { ...WAYLAND_WITH_XWAYLAND, CROSSOVER_RELAUNCHED_X11: '1' }, { electron: ELECTRON_41 } )
+	expect( guarded.backend ).toBe( 'wayland' )
+	expect( guarded.relaunched ).toBe( false )
+	expect( guarded.exits ).toEqual( [] )
+
+	// Guard two: our own switch sitting in argv on a launcher that strips arguments
+	// before Chromium parses them, where the env var may not survive either.
+	const stripped = detectIn( WAYLAND_WITH_XWAYLAND, {
+		electron: ELECTRON_41,
+		argv: [ '--enable-features=UseOzonePlatform', '--ozone-platform=x11' ],
+		switchesStripped: true,
+	} )
+	expect( stripped.backend ).toBe( 'wayland' )
+	expect( stripped.relaunched ).toBe( false )
+	expect( stripped.exits ).toEqual( [] )
 
 } )
