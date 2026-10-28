@@ -1,4 +1,4 @@
-const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
+const { globalShortcut, ipcMain, nativeTheme, shell, app } = require( 'electron' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, SETTINGS_WINDOW_DEVTOOLS, APP_BACKGROUND_OPACITY } = require( '../config/config' )
 const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
 const dock = require( './dock' )
@@ -554,12 +554,20 @@ const syncSettings = ( options = preferences.preferences ) => {
 	registerKeyboardShortcuts()
 
 	// #299: the Preferences accelerator lives in the app menu, so the menu has to
-	// be rebuilt when the master switch flips. Lazy require avoids a cycle.
+	// be rebuilt when the master switch flips. ipc.js owns the rebuild so this
+	// file never reaches menu.js or tray.js, which both reach back here. A lazy
+	// require is not enough: madge counts requires inside function bodies.
 	if ( keybindsDisabled() !== keybindsDisabledApplied ) {
 
 		keybindsDisabledApplied = keybindsDisabled()
-		require( './menu' ).init()
-		require( './tray' ).refreshMenu()
+
+		// emit() returns false when nothing is listening. Without this the menus
+		// would silently stop rebuilding if ipc.init() ever stopped running.
+		if ( !ipcMain.emit( 'refresh_menus' ) ) {
+
+			log.warn( 'refresh_menus has no listener: the app menu was not rebuilt' )
+
+		}
 
 	}
 

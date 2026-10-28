@@ -170,6 +170,29 @@ const init = () => {
 
 	} )
 
+	/* Internal main-process events */
+
+	// Rebuild the app menu and the tray menu. crossover.js fires this when the
+	// keybinds master switch flips (#299); it cannot call menu.init() itself
+	// because menu.js and tray.js both require crossover.js. Required lazily so
+	// the load order is the same as before: menu.js builds its items at module
+	// load and ipc.init() runs before the first window exists.
+	ipcMain.on( 'refresh_menus', () => {
+
+		require( './menu' ).init()
+		require( './tray' ).refreshMenu()
+
+	} )
+
+	// Re-apply the whole preference set. presets.js fires this after applying a
+	// loadout; crossover.js requires presets for the cycle shortcut, so presets
+	// must not require crossover back.
+	ipcMain.on( 'sync_settings', () => {
+
+		crossover.syncSettings()
+
+	} )
+
 	// ipcMain.handle( 'invoke_test', async ( event, arg ) => {
 	// 	console.log( 'invoke_test', arg )
 	// 	return 'ok'
