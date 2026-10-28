@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - CrossOver starts. Window permission handling waits for the app to finish launching instead of running too early, which on 3.4.5 killed the app before any window appeared. (#529, #535, #546)
+- Hide on ADS hides every crosshair. Duplicate crosshairs stayed on screen while you held the button, so the feature looked broken for anyone using more than one. (#536, #539)
+- Show on ADS works when Resize on ADS is on too. Releasing the button brought the crosshair back instead of leaving it hidden. (#539)
+- The Crosshair Actions settings note no longer claims these features do not work on Apple Silicon. They do. It now says what actually stops them: macOS Accessibility permission, and games with kernel-level anti-cheat. (#539)
 - Portable Windows builds keep their data next to the exe. `userData`, `logs`, and `crashDumps` go to a `data/` folder beside the executable instead of `%APPDATA%\CrossOver`, so a portable copy stays portable. (#521)
 - A hotkey that the operating system or another overlay has already claimed now tells you it failed to register, instead of silently doing nothing. (#517)
 - `--reset` works on Linux launchers that strip Chromium switches, through an argv fallback, so AppImage, Snap, and Flatpak wrappers can recover a broken setup. (#524)
