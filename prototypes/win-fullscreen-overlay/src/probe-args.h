@@ -29,6 +29,7 @@ typedef struct
 	int offset_x;
 	int offset_y;
 	int quit_vk;
+	int reassert;
 } probe_options;
 
 typedef struct
@@ -48,6 +49,20 @@ static const probe_tint probe_tints[] = {
 	{ L"white",   255, 255, 255 }
 };
 
+/*
+ * reassert defaults on, which is deliberately NOT what CrossOver v4 does.
+ *
+ * The probe re-applies HWND_TOPMOST on a 1 Hz timer. v4 calls Electron's
+ * setAlwaysOnTop once at window creation (src/main/windows.js) and never again.
+ * So the "plain topmost" probe is strictly stronger than the product it was
+ * introduced to stand in for, and the 2026-10-24 pass could not have told the
+ * two apart: it read "plain topmost wins" in all five games and concluded the
+ * games were not exclusive fullscreen, when a one-shot topmost window might
+ * well have lost in the same trial.
+ *
+ * --no-reassert is the v4-parity build. Running it as a third crosshair is what
+ * separates "Windows beat us" from "we stopped asking".
+ */
 static void probe_options_default( probe_options *options )
 {
 	options->r = 0;
@@ -56,6 +71,7 @@ static void probe_options_default( probe_options *options )
 	options->offset_x = 0;
 	options->offset_y = 0;
 	options->quit_vk = 'Q';
+	options->reassert = 1;
 }
 
 /*
@@ -165,6 +181,10 @@ static int probe_options_parse( int argc, wchar_t **argv, probe_options *options
 			{
 				return -1;
 			}
+		}
+		else if ( wcscmp( flag, L"--no-reassert" ) == 0 )
+		{
+			options->reassert = 0;
 		}
 		else
 		{

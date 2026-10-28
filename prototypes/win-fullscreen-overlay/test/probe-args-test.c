@@ -84,6 +84,22 @@ int main( void )
 	wchar_t *quit_punct[] = { L"probe.exe", L"--quit-key", L"-" };
 	check( parse( &options, 3, quit_punct ) != 0, "non-alphanumeric quit key is rejected" );
 
+	/* The v4-parity build. Re-asserting topmost at 1 Hz is what the probe does
+	   and what v4 does NOT do, so the default has to stay on and the opt-out
+	   has to be explicit: a --no-reassert that silently did nothing would read
+	   in a photo as "v4's own approach works here" and close this issue wrong. */
+	probe_options_default( &options );
+	check( options.reassert == 1, "topmost re-assertion is on by default" );
+
+	wchar_t *once[] = { L"probe.exe", L"--no-reassert" };
+	check( parse( &options, 2, once ) == 0, "--no-reassert parses" );
+	check( options.reassert == 0, "--no-reassert turns re-assertion off" );
+
+	probe_options_default( &options );
+	wchar_t *once_tinted[] = { L"probe.exe", L"--no-reassert", L"--tint", L"cyan" };
+	check( parse( &options, 4, once_tinted ) == 0, "--no-reassert combines with --tint" );
+	check( options.reassert == 0 && options.g == 255 && options.b == 255, "valueless flag does not eat the next argument" );
+
 	/* Bad input must fail loudly. A probe that silently ignores --tint would
 	   produce two identical crosshairs and a photo that proves nothing. */
 	wchar_t *unknown[] = { L"probe.exe", L"--colour", L"green" };

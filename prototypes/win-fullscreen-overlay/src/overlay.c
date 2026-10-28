@@ -45,7 +45,23 @@ static void probe_log( const char *fmt, ... )
 	fflush( g_log );
 }
 
-static void open_log( void )
+#define PROBE_WIDEN2( x ) L##x
+#define PROBE_WIDEN( x ) PROBE_WIDEN2( x )
+
+/*
+ * One log file per probe on screen, never one shared between them. Every probe
+ * in a trial runs at the same time, so a shared log cannot be read back per
+ * variant: whichever process wrote last owns the final "uiaccess=" line. That
+ * is not theoretical. The 2026-10-24 pass recorded uiaccess=DENIED for both
+ * probes in all five trials because the reader took the last line of the shared
+ * file, while the log itself showed the UIAccess build reporting GRANTED every
+ * time.
+ *
+ * The build name alone is not enough to separate them: plain and v4parity are
+ * the same binary, started twice, once re-asserting topmost and once not. The
+ * suffix is what keeps those two apart.
+ */
+static void open_log( const wchar_t *suffix )
 {
 	wchar_t path[ MAX_PATH ];
 	DWORD len = GetEnvironmentVariableW( L"CROSSOVER_PROBE_LOG", path, MAX_PATH );
@@ -58,7 +74,8 @@ static void open_log( void )
 			return;
 		}
 
-		_snwprintf( path, MAX_PATH, L"%scrossover-overlay-probe.log", temp );
+		_snwprintf( path, MAX_PATH, L"%scrossover-overlay-probe-%s%s.log", temp,
+			PROBE_WIDEN( PROBE_BUILD_NAME ), suffix );
 		path[ MAX_PATH - 1 ] = L'\0';
 	}
 
@@ -289,34 +306,44 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 	(void) command_line;
 	(void) show;
 
-	open_log();
-	probe_log( "---- probe start (build=%s) ----", PROBE_BUILD_NAME );
-	log_uiaccess_state();
-
-	/* GetCommandLineW rather than the ANSI command_line WinMain was handed:
-	   the parser is wide so the same code can be tested off-Windows. */
+	/* Arguments are parsed before the log is opened, because --no-reassert
+	   decides which log file this process owns. GetCommandLineW rather than the
+	   ANSI command_line WinMain was handed: the parser is wide so the same code
+	   can be tested off-Windows. */
 	probe_options options;
 	probe_options_default( &options );
 
 	int argc = 0;
 	wchar_t **argv = CommandLineToArgvW( GetCommandLineW(), &argc );
 
+	/* Captured here: opening the log and querying the token below both clobber
+	   the thread's last-error value before it could otherwise be reported. */
+	DWORD argv_err = argv ? 0 : GetLastError();
+	int args_ok = 0;
+
+	if ( argv )
+	{
+		args_ok = probe_options_parse( argc, argv, &options ) == 0;
+		LocalFree( argv );
+	}
+
+	open_log( options.reassert ? L"" : L"-once" );
+	probe_log( "---- probe start (build=%s) ----", PROBE_BUILD_NAME );
+	log_uiaccess_state();
+
 	if ( !argv )
 	{
-		probe_log( "CommandLineToArgvW failed, err=%lu", GetLastError() );
+		probe_log( "CommandLineToArgvW failed, err=%lu", argv_err );
 		return 1;
 	}
 
-	int args_ok = probe_options_parse( argc, argv, &options ) == 0;
-	LocalFree( argv );
-
 	if ( !args_ok )
 	{
-		probe_log( "bad arguments. usage: --tint <green|magenta|cyan|yellow|red|white> --offset-x <n> --offset-y <n> --quit-key <A-Z|0-9>" );
+		probe_log( "bad arguments. usage: --tint <green|magenta|cyan|yellow|red|white> --offset-x <n> --offset-y <n> --quit-key <A-Z|0-9> [--no-reassert]" );
 		return 2;
 	}
 
-	probe_log( "options tint=%u,%u,%u offset=%d,%d quit=ctrl+alt+shift+%c", options.r, options.g, options.b, options.offset_x, options.offset_y, (char) options.quit_vk );
+	probe_log( "options tint=%u,%u,%u offset=%d,%d quit=ctrl+alt+shift+%c reassert=%s", options.r, options.g, options.b, options.offset_x, options.offset_y, (char) options.quit_vk, options.reassert ? "1hz" : "once (v4 parity)" );
 
 	WNDCLASSEXW wc;
 	ZeroMemory( &wc, sizeof( wc ) );
@@ -366,7 +393,13 @@ int WINAPI WinMain( HINSTANCE instance, HINSTANCE previous, LPSTR command_line, 
 
 	ShowWindow( hwnd, SW_SHOWNA );
 	assert_topmost( hwnd );
-	SetTimer( hwnd, TOPMOST_TIMER_ID, TOPMOST_TIMER_MS, NULL );
+
+	/* With --no-reassert the window asks for topmost once and then lets the
+	   system do what it likes, which is v4's actual behaviour. See probe-args.h. */
+	if ( options.reassert )
+	{
+		SetTimer( hwnd, TOPMOST_TIMER_ID, TOPMOST_TIMER_MS, NULL );
+	}
 
 	/* Two probes run at once during a matrix trial, so each needs its own key:
 	   RegisterHotKey is global and the second claim on a combination fails with

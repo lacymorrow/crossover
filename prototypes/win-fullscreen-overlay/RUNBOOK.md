@@ -11,16 +11,23 @@ photograph: it is the one capture path that reportedly does see Game Bar.
 **Time:** about 20 minutes for the `exclusive` pass across all five games, which
 is the pass that actually decides this. Another 40 for the other two modes.
 
-**The question each trial answers:** with a game fullscreen, which of these three
+**The question each trial answers:** with a game fullscreen, which of these four
 overlays is still on screen?
 
 | in the photo | what it is |
 |---|---|
 | green crosshair, left of centre | UIAccess probe, track B |
-| magenta crosshair, right of centre | plain topmost probe. This is what v4 does today |
+| magenta crosshair, right of centre | plain topmost, re-asserted at 1 Hz |
+| cyan crosshair, below centre | v4 parity: topmost asked for once, then never again |
 | the widget's crosshair | pinned Game Bar widget, track A |
 
-One photo answers all three columns, and tells them apart without notes.
+One photo answers all four columns, and tells them apart without notes.
+
+**Magenta is not v4.** It re-applies `HWND_TOPMOST` every second; v4 calls
+`setAlwaysOnTop` once at window creation and never again. The cyan crosshair is
+the one that behaves like the shipping product. The 2026-10-24 pass ran without
+it and could not tell "the game was never exclusive fullscreen" apart from "v4
+simply stopped asking" — see [RESULTS.md](./RESULTS.md).
 
 ## One-time setup
 
@@ -86,10 +93,11 @@ and so on. `-Games` and `-Modes` both filter, so you can stop anywhere and pick
 up later.
 
 If a crosshair gets stuck on screen, each probe has its own quit hotkey:
-`ctrl+alt+shift+Q` kills the green UIAccess one, `ctrl+alt+shift+W` kills the
-magenta plain one. They need separate keys because `RegisterHotKey` is global,
-so two probes claiming one combination leaves the second with no hotkey at all.
-`matrix-run.ps1` also stops both between trials, so this is only a safety valve.
+`ctrl+alt+shift+Q` kills the green UIAccess one, `W` the magenta plain one, `E`
+the cyan v4-parity one. They need separate keys because `RegisterHotKey` is
+global, so two probes claiming one combination leaves the second with no hotkey
+at all. `matrix-run.ps1` also stops all three between trials, so this is only a
+safety valve.
 
 ### Rules while you are in there
 
@@ -133,7 +141,14 @@ display at all.
 is Vulkan and ignores it; for that title the in-game setting is the only
 control, and the `exclusive` and `fso` rows should come out identical.
 
-A row where plain loses and UIAccess wins is the result that would justify
-wiring track B into v4. A row where both lose means the z-band is not enough and
-exclusive fullscreen stays out of reach without touching the game, which we are
-not willing to do.
+How to read a row:
+
+| photo shows | means |
+|---|---|
+| cyan missing, magenta present | v4 loses because it stops asking, not because of the z-band. Fix is in `src/main/windows.js`; neither track here is needed. |
+| cyan and magenta both present | v4's approach works in that game. The user reports have some other cause. |
+| cyan and magenta missing, green present | the z-band case this issue was opened for. Justifies wiring track B into v4. |
+| all four missing | exclusive fullscreen beats every hook-free approach, Game Bar included. Close both tracks. |
+
+Only the third row justifies shipping any of this. The 2026-10-24 pass did not
+produce it once; every readable trial came out in the second row.

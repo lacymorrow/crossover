@@ -15,13 +15,21 @@
 
 .EXAMPLE
   run-probe.ps1 -Variant uiaccess
-  run-probe.ps1 -Variant both      # both at once, side by side, for one photo
+  run-probe.ps1 -Variant all       # all three at once, for one photo
   run-probe.ps1 -Action stop
+
+.NOTES
+  Three variants, not two. "plain" and "v4parity" are the same binary; the only
+  difference is that v4parity passes --no-reassert, so it asks for topmost once
+  and never again, which is what CrossOver v4 actually does. "plain" re-asserts
+  at 1 Hz and is therefore stronger than the shipping product. The 2026-10-24
+  pass had no v4parity crosshair, which is why it could not distinguish "the
+  game was never exclusive fullscreen" from "v4 simply stopped asking".
 #>
 
 [CmdletBinding()]
 param(
-	[ValidateSet('uiaccess', 'plain', 'both')]
+	[ValidateSet('uiaccess', 'plain', 'v4parity', 'both', 'all')]
 	[string] $Variant = 'uiaccess',
 
 	[ValidateSet('start', 'stop')]
@@ -38,16 +46,21 @@ param(
 
 	[int] $OffsetY = 0,
 
-	# RegisterHotKey is global, so the two variants cannot share a quit key: the
+	# RegisterHotKey is global, so the variants cannot share a quit key: the
 	# second claim fails with ERROR_HOTKEY_ALREADY_REGISTERED and that probe ends
-	# up with no hotkey at all. -Variant both gives uiaccess Q and plain W.
+	# up with no hotkey at all. Q = uiaccess, W = plain, E = v4parity.
 	[ValidatePattern( '^[A-Za-z0-9]$' )]
 	[string] $QuitKey,
 
-	# Horizontal separation used by -Variant both: UIAccess goes left of centre
-	# in green, plain goes right of centre in magenta. A photo of the monitor
-	# then answers both matrix columns at once, and tells which one drew.
-	[int] $Separation = 260
+	# Horizontal separation used by -Variant both/all: UIAccess goes left of
+	# centre in green, plain goes right of centre in magenta. A photo of the
+	# monitor then answers the matrix columns at once, and tells which one drew.
+	[int] $Separation = 260,
+
+	# v4parity sits below the other two rather than beside them: the pinned Game
+	# Bar widget occupies the centre of the row, and a cyan crosshair drawn on
+	# top of a white one is not a photo anybody can read.
+	[int] $ParityDrop = 220
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,7 +70,7 @@ function Stop-Probe {
 		Get-Process $name -ErrorAction SilentlyContinue | Stop-Process -Force
 	}
 
-	foreach ($task in 'CrossOverProbe_uiaccess', 'CrossOverProbe_plain') {
+	foreach ($task in 'CrossOverProbe_uiaccess', 'CrossOverProbe_plain', 'CrossOverProbe_v4parity') {
 		Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction SilentlyContinue
 	}
 
@@ -87,10 +100,15 @@ function Start-Probe {
 		[string] $ProbeTint,
 		[int] $ProbeOffsetX,
 		[int] $ProbeOffsetY,
-		[string] $ProbeQuitKey
+		[string] $ProbeQuitKey,
+		[switch] $NoReassert
 	)
 
-	$exeName = "crossover-overlay-$Which"
+	# v4parity is not its own binary: it is the plain build with the 1 Hz
+	# topmost timer turned off. Only the task name distinguishes them, so that
+	# -Variant all can register both without one clobbering the other.
+	$exeVariant = if ($Which -eq 'v4parity') { 'plain' } else { $Which }
+	$exeName = "crossover-overlay-$exeVariant"
 	$exePath = Join-Path $InstallDir "$exeName.exe"
 	$taskName = "CrossOverProbe_$Which"
 
@@ -99,6 +117,9 @@ function Start-Probe {
 	}
 
 	$probeArgs = "--tint $ProbeTint --offset-x $ProbeOffsetX --offset-y $ProbeOffsetY --quit-key $ProbeQuitKey"
+	if ($NoReassert) {
+		$probeArgs += ' --no-reassert'
+	}
 	$launcher = "Start-Process -FilePath '$exePath' -ArgumentList '$probeArgs'"
 	$taskAction = New-ScheduledTaskAction `
 		-Execute 'powershell.exe' `
@@ -111,29 +132,61 @@ function Start-Probe {
 
 	Start-Sleep -Seconds 3
 
-	$process = Get-Process $exeName -ErrorAction SilentlyContinue
+	# plain and v4parity share a process name, so take the newest rather than
+	# assuming a single match (Get-Process returns an array and $process.Id
+	# would then be an array too, printing "started ... pid=1234 5678").
+	#
+	# StartTime is read defensively: it throws on a process this session cannot
+	# open, and with $ErrorActionPreference = 'Stop' at the top of this script
+	# that would abort the trial over a line of diagnostic output.
+	$running = @( Get-Process $exeName -ErrorAction SilentlyContinue )
+	$process = try {
+		$running | Sort-Object StartTime -ErrorAction Stop | Select-Object -Last 1
+	} catch {
+		$running | Select-Object -Last 1
+	}
+
 	if ($process) {
-		Write-Host "started $exeName pid=$($process.Id) session=$($process.SessionId) tint=$ProbeTint offset=$ProbeOffsetX,$ProbeOffsetY quit=ctrl+alt+shift+$ProbeQuitKey"
+		Write-Host "started $Which ($exeName) pid=$($process.Id) session=$($process.SessionId) tint=$ProbeTint offset=$ProbeOffsetX,$ProbeOffsetY quit=ctrl+alt+shift+$ProbeQuitKey reassert=$(if ($NoReassert) { 'once (v4 parity)' } else { '1hz' })"
 	} else {
 		$info = Get-ScheduledTaskInfo -TaskName $taskName
 		Write-Warning "process not running. Task last result: 0x$('{0:X8}' -f $info.LastTaskResult)"
 	}
 }
 
-if ($Variant -eq 'both') {
+if ($Variant -eq 'both' -or $Variant -eq 'all') {
 	Start-Probe -Which 'uiaccess' -ProbeTint 'green'   -ProbeOffsetX ( $OffsetX - $Separation ) -ProbeOffsetY $OffsetY -ProbeQuitKey 'Q'
 	Start-Probe -Which 'plain'    -ProbeTint 'magenta' -ProbeOffsetX ( $OffsetX + $Separation ) -ProbeOffsetY $OffsetY -ProbeQuitKey 'W'
+
+	if ($Variant -eq 'all') {
+		Start-Probe -Which 'v4parity' -ProbeTint 'cyan' -ProbeOffsetX $OffsetX -ProbeOffsetY ( $OffsetY + $ParityDrop ) -ProbeQuitKey 'E' -NoReassert
+	}
+
 	Write-Host ''
 	Write-Host 'green crosshair   = UIAccess probe (left of centre),  quit: ctrl+alt+shift+Q'
-	Write-Host 'magenta crosshair = plain topmost  (right of centre), quit: ctrl+alt+shift+W'
+	Write-Host 'magenta crosshair = plain topmost, re-asserted at 1 Hz (right of centre), quit: ctrl+alt+shift+W'
+
+	if ($Variant -eq 'all') {
+		Write-Host 'cyan crosshair    = v4 parity: topmost asked for once only (below centre), quit: ctrl+alt+shift+E'
+		Write-Host ''
+		Write-Host 'cyan missing while magenta is present = v4 loses because it stops asking, not because of the z-band.'
+	}
 } else {
 	if (-not $Tint) {
-		if ($Variant -eq 'uiaccess') { $Tint = 'green' } else { $Tint = 'magenta' }
+		$Tint = switch ($Variant) {
+			'uiaccess' { 'green' }
+			'v4parity' { 'cyan' }
+			default    { 'magenta' }
+		}
 	}
 
 	if (-not $QuitKey) {
-		if ($Variant -eq 'uiaccess') { $QuitKey = 'Q' } else { $QuitKey = 'W' }
+		$QuitKey = switch ($Variant) {
+			'uiaccess' { 'Q' }
+			'v4parity' { 'E' }
+			default    { 'W' }
+		}
 	}
 
-	Start-Probe -Which $Variant -ProbeTint $Tint -ProbeOffsetX $OffsetX -ProbeOffsetY $OffsetY -ProbeQuitKey $QuitKey
+	Start-Probe -Which $Variant -ProbeTint $Tint -ProbeOffsetX $OffsetX -ProbeOffsetY $OffsetY -ProbeQuitKey $QuitKey -NoReassert:( $Variant -eq 'v4parity' )
 }

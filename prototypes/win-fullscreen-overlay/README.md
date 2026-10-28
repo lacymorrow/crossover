@@ -18,9 +18,11 @@ and it breaks the "never touches the game" promise.
 ## Layout
 
 ```
+RESULTS.md          the 2026-10-24 pass: table, photos, recommendation
 RUNBOOK.md          the hands-on pass at the test box, start here
+evidence/matrix/    the monitor photographs the results table is read from
 src/overlay.c       crosshair overlay, built twice (uiaccess + plain control)
-src/probe-args.h    probe options: tint and offset, kept free of windows.h
+src/probe-args.h    probe options: tint, offset, quit key, topmost re-assertion
 src/adversary.c     opaque fullscreen topmost window, stands in for a game
 src/*.manifest      the only difference between the two overlay builds
 build.sh            cross-compiles for Windows x64 from macOS or Linux
@@ -78,7 +80,7 @@ Measured on otto: Windows 10 Pro 22H2 build 19045, RTX 3090, Game Bar
 | Self-signed cert is enough for UIAccess | Confirmed | Cert trusted in `LocalMachine\Root` + signed exe + `%ProgramFiles%` install. No production signing certificate needed to test. |
 | UIAccess outranks an ordinary topmost window | Confirmed | Against `adversary.exe` (fullscreen `WS_EX_TOPMOST`): UIAccess probe visible, plain probe fully hidden. |
 | CrossOver v4 today loses to a topmost window | Confirmed | In the same capture, v4's crosshair is hidden exactly like the plain probe. |
-| Two probes distinguishable in one shot | Confirmed | Green left, magenta right, drawn at once, so one photo answers both matrix columns. ![both probes](./evidence/both-probes.png) |
+| Probes distinguishable in one shot | Confirmed | Green left, magenta right, drawn at once, so one photo answers several matrix columns. ![both probes](./evidence/both-probes.png) |
 | UIAccess over real exclusive fullscreen | **Not tested** | Needs real games. See below. |
 | Game Bar widget over real exclusive fullscreen | **Not tested** | Needs a pinned widget and a person at the machine. |
 
@@ -154,6 +156,16 @@ Requirements and constraints:
   do not work in Vulkan or OpenGL fullscreen. Track A will not fix the Vulkan
   request. Only track B could.
 
+## Results so far
+
+The first pass ran on 2026-10-24. **[RESULTS.md](./RESULTS.md) is the write-up**:
+the table, the photos, three defects the pass exposed, and the recommendation.
+
+Short version: no trial reached true exclusive fullscreen, so nothing separated
+the tracks, and the "plain topmost" control turned out to be stronger than v4
+itself (it re-asserts topmost at 1 Hz; v4 asks once). The next pass runs a
+fourth crosshair, cyan, that matches v4's real behaviour.
+
 ## What still needs hands
 
 Decided by the board on 2026-10-24: finish the matrix for **both** tracks, with
@@ -197,20 +209,24 @@ does not reliably see a true exclusive-fullscreen game either.
 | The Sims 4 | DX9/DX11 | the control: no anti-cheat at all | none |
 | Uncrashed FPV | Unreal/DX12 | the FPV-sim audience CrossOver actually has | none |
 
-Per trial, all three overlays are on screen at once and one photo answers all
-three columns:
+Per trial, all four overlays are on screen at once and one photo answers every
+column:
 
 | | |
 |---|---|
 | green crosshair, left of centre | UIAccess probe (track B) |
-| magenta crosshair, right of centre | plain topmost probe, which is what v4 does today |
+| magenta crosshair, right of centre | plain topmost, re-asserted at 1 Hz |
+| cyan crosshair, below centre | v4 parity: topmost asked for once only |
 | the widget's crosshair | pinned Game Bar widget (track A) |
 
-| Game | Mode | Plain topmost | UIAccess | Game Bar widget | Widget survives Game Bar closing | Anti-cheat warning |
-|---|---|---|---|---|---|---|
-| | exclusive fullscreen | | | | | |
-| | fullscreen, FSO on | | | | | |
-| | borderless | | | | | |
+Magenta is deliberately *not* v4. See [RESULTS.md](./RESULTS.md) for why the
+distinction decides the outcome.
+
+| Game | Mode | Plain topmost | v4 parity | UIAccess | Game Bar widget | Widget survives Game Bar closing | Anti-cheat warning |
+|---|---|---|---|---|---|---|---|
+| | exclusive fullscreen | | | | | | |
+| | fullscreen, FSO on | | | | | | |
+| | borderless | | | | | | |
 
 The two fullscreen rows are a real distinction, not padding. With fullscreen
 optimizations on, the Windows default, a DX game asking for exclusive fullscreen

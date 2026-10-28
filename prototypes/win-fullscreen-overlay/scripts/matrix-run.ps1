@@ -176,10 +176,21 @@ function Get-ForegroundProcess {
 function Get-ProbeFacts {
 	$facts = @{}
 
-	foreach ($variant in 'uiaccess', 'plain') {
-		$name = "crossover-overlay-$variant"
-		$process = Get-Process $name -ErrorAction SilentlyContinue
-		$logPath = Join-Path $env:TEMP 'crossover-overlay-probe.log'
+	# v4parity is the plain binary run with --no-reassert, so it shares a process
+	# name and is told apart only by its "-once" log. Keyed by the matrix column
+	# rather than the exe for that reason.
+	$variants = [ordered] @{
+		uiaccess = @{ Exe = 'crossover-overlay-uiaccess'; Log = 'crossover-overlay-probe-uiaccess.log' }
+		plain    = @{ Exe = 'crossover-overlay-plain';    Log = 'crossover-overlay-probe-plain.log' }
+		v4parity = @{ Exe = 'crossover-overlay-plain';    Log = 'crossover-overlay-probe-plain-once.log' }
+	}
+
+	foreach ($variant in $variants.Keys) {
+		$name = $variants[$variant].Exe
+		$process = Get-Process $name -ErrorAction SilentlyContinue | Select-Object -First 1
+		# per-variant log: the probes run at once, so a shared log would always
+		# report whichever one started last for every column.
+		$logPath = Join-Path $env:TEMP $variants[$variant].Log
 		$token = 'unknown'
 
 		if (Test-Path $logPath) {
@@ -334,8 +345,8 @@ foreach ($trial in $trials) {
 	}
 
 	Write-Host ''
-	Write-Host 'starting both probes...'
-	& (Join-Path $scriptDir 'run-probe.ps1') -Variant both -InstallDir $InstallDir | Out-Host
+	Write-Host 'starting all three probes...'
+	& (Join-Path $scriptDir 'run-probe.ps1') -Variant all -InstallDir $InstallDir | Out-Host
 
 	$screenshot = Join-Path $resultsDir "$stem-screen.png"
 	$captureJob = Start-Job -ScriptBlock {
@@ -352,20 +363,31 @@ foreach ($trial in $trials) {
 	Write-Host "     save it later as evidence/matrix/$stem.jpg"
 	Write-Host '  4. alt-tab back here'
 	Write-Host ''
-	Write-Host '  in the photo:  green crosshair, left  = UIAccess probe'
-	Write-Host '                 magenta crosshair, right = plain topmost (what v4 does today)'
+	Write-Host '  in the photo:  green crosshair, left     = UIAccess probe (track B)'
+	Write-Host '                 magenta crosshair, right = plain topmost, re-asserted at 1 Hz'
+	Write-Host '                 cyan crosshair, below    = v4 parity: topmost asked for once'
 	Write-Host '                 the widget crosshair     = Game Bar / track A'
 	Write-Host ''
-	Write-Host '  stuck crosshair? ctrl+alt+shift+Q kills green, ctrl+alt+shift+W kills magenta.'
+	Write-Host '  stuck crosshair? ctrl+alt+shift+Q kills green, W kills magenta, E kills cyan.'
 	Write-Host ''
 	Read-Host 'Enter once the photo is taken' | Out-Null
 
-	$foreground = Get-ForegroundProcess
 	Receive-Job $captureJob -Wait -AutoRemoveJob -ErrorAction SilentlyContinue | Out-Host
+
+	# from the capture job, not from here: by now the operator has alt-tabbed back
+	# and this console is the foreground window, which tells us nothing about the
+	# game. capture.ps1 records it at the instant of the screenshot instead.
+	$foregroundPath = "$screenshot.foreground.json"
+	if (Test-Path $foregroundPath) {
+		$foreground = Get-Content -Raw -Path $foregroundPath | ConvertFrom-Json
+	} else {
+		$foreground = [pscustomobject] @{ Note = 'capture job wrote no foreground sidecar' }
+	}
 
 	Write-Host ''
 	$uiaccessVisible = Read-Choice '  green (UIAccess) crosshair visible over the game?' @( 'y', 'n', 'partial' )
-	$plainVisible = Read-Choice '  magenta (plain topmost) crosshair visible over the game?' @( 'y', 'n', 'partial' )
+	$plainVisible = Read-Choice '  magenta (plain topmost, re-asserted) crosshair visible over the game?' @( 'y', 'n', 'partial' )
+	$parityVisible = Read-Choice '  cyan (v4 parity, topmost asked once) crosshair visible over the game?' @( 'y', 'n', 'partial' )
 
 	if ($widgetPinned -eq 'y') {
 		$widgetVisible = Read-Choice '  Game Bar widget crosshair visible over the game?' @( 'y', 'n', 'partial' )
@@ -396,6 +418,7 @@ foreach ($trial in $trials) {
 		Answers = [pscustomobject] @{
 			UIAccessVisible = $uiaccessVisible
 			PlainVisible = $plainVisible
+			V4ParityVisible = $parityVisible
 			WidgetVisible = $widgetVisible
 			WidgetSurvivedGameBarClose = $widgetSurvived
 			AntiCheatWarning = $antiCheatWarning
@@ -412,6 +435,7 @@ foreach ($trial in $trials) {
 		Mode = $mode
 		FSO = $facts.FsoState
 		PlainTopmost = $plainVisible
+		V4Parity = $parityVisible
 		UIAccess = $uiaccessVisible
 		GameBarWidget = $widgetVisible
 		WidgetSurvivesClose = $widgetSurvived

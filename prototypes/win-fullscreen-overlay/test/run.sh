@@ -23,5 +23,5 @@ if command -v pwsh >/dev/null 2>&1; then
 else
 	echo
 	echo "note: pwsh not on PATH, skipping the PowerShell parse check."
-	echo "      brew install --cask powershell  (or run test/lint-scripts.ps1 on the test box)"
+	echo "      brew install powershell  (or run test/lint-scripts.ps1 on the test box)"
 fi
