@@ -1,3 +1,4 @@
+const { ipcMain } = require( 'electron' )
 const log = require( './log' )
 const preferences = require( './preferences' ).init()
 const sound = require( './sound' )
@@ -170,8 +171,14 @@ const apply = name => {
 	applied = preset.name
 	preferences.value( values )
 
-	// Required lazily: crossover requires presets for its keyboard shortcut.
-	require( './crossover' ).syncSettings()
+	// ipc.js calls crossover.syncSettings. Going through it keeps this file off
+	// crossover.js, which requires presets for the cycle shortcut. A lazy
+	// require is not enough: madge counts requires inside function bodies.
+	if ( !ipcMain.emit( 'sync_settings' ) ) {
+
+		log.warn( 'sync_settings has no listener: the preset was not synced' )
+
+	}
 
 	notify( 'Preset Applied', preset.name )
 
