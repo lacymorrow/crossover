@@ -36,5 +36,5 @@
   <rect x="110" y="510" width="1060" height="1.5" fill="url(#hairline)"/>
 
   <!-- Footer stats -->
-  <text x="110" y="562" font-size="24" font-weight="600" fill="#e6e4ec" letter-spacing="0.2">530+ sights  ·  217K monthly users  ·  4.8★ Microsoft Store  ·  Windows · macOS · Linux</text>
+  <text x="110" y="562" font-size="24" font-weight="600" fill="#e6e4ec" letter-spacing="0.2">530+ sights  ·  217K monthly Store views  ·  1,200+ stars on GitHub  ·  Windows · macOS · Linux</text>
 </svg>
