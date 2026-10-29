@@ -55,8 +55,6 @@
 
 console.time( 'init' )
 
-const process = require( 'process' )
-
 const { app } = require( 'electron' )
 
 // Portable-mode path override MUST run before any module that reads
@@ -77,30 +75,10 @@ const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
 const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
+const { isResetRequested } = require( './main/reset-flag.js' )
 const tray = require( './main/tray.js' )
 const wayland = require( './main/wayland.js' )
 const { appId } = require( '../package.json' )
-
-// Detect `--reset` from env, Electron switch, or raw argv.
-// Some Linux launchers (AppImage/Snap/Flatpak) can strip Chromium switches, so
-// fall back to scanning argv for `--reset` / `-reset` / `reset`.
-const isResetRequested = () => {
-
-	if ( process.env.CROSSOVER_RESET ) {
-
-		return true
-
-	}
-
-	if ( app.commandLine.hasSwitch( 'reset' ) ) {
-
-		return true
-
-	}
-
-	return process.argv.slice( 1 ).some( arg => arg === '--reset' || arg === '-reset' || arg === 'reset' )
-
-}
 
 const start = async () => {
 
