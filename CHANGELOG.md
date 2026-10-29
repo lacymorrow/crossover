@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.4.8] - 2026-10-29
+
+### Added
+
+- Crosshair presets. Save the crosshair you tuned under a name, then switch between saved presets with a hotkey instead of rebuilding each setup by hand. (#334, #110, #219, #286)
+- The keyboard hide key has three behaviors: hold it to hide while it is down, toggle to hide until you press it again, or press to hide until the next time you aim. Hold stays the default. (#340)
+- One switch in Keybinds turns off every global hotkey at once. Lock and Reset keep working, so a locked crosshair is never stranded. (#299)
+
+### Fixed
+
+- The crosshair draws over fullscreen games on macOS again. It was created on the desktop Space and left there, so it disappeared the moment a game went fullscreen. (#546)
+- Follow Mouse keeps tracking while you hold a mouse button down, instead of freezing the crosshair in place for as long as you hold it. (#542)
+- Wayland sessions say why no global hotkey fires, instead of leaving every key silently dead. Packages built against a current Electron also restart themselves on X11, where hotkeys can register; the official builds ship Electron 14 and still need that relaunch done by hand. (#456)
+- Hide on ADS hides every crosshair. Duplicate crosshairs stayed on screen while you held the button, so the feature looked broken for anyone using more than one. (#536, #539)
+- Show on ADS works when Resize on ADS is on too. Releasing the button brought the crosshair back instead of leaving it hidden. (#539)
+- The hide hotkey, Hide on keypress, Resize on ADS and tilt reach every crosshair. Duplicates ignored all four and stayed put while the main crosshair reacted. (#560, #561)
+- The Crosshair Actions settings note no longer claims these features do not work on Apple Silicon. They do. It now says what actually stops them: macOS Accessibility permission, and games with kernel-level anti-cheat. (#539)
+
 ## [3.4.7] - 2026-10-17
 
 ### Added
@@ -21,10 +39,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - CrossOver starts. Window permission handling waits for the app to finish launching instead of running too early, which on 3.4.5 killed the app before any window appeared. (#529, #535, #546)
-- Hide on ADS hides every crosshair. Duplicate crosshairs stayed on screen while you held the button, so the feature looked broken for anyone using more than one. (#536, #539)
-- Show on ADS works when Resize on ADS is on too. Releasing the button brought the crosshair back instead of leaving it hidden. (#539)
-- The hide hotkey, Hide on keypress, Resize on ADS and tilt reach every crosshair. Duplicates ignored all four and stayed put while the main crosshair reacted. (#560, #561)
-- The Crosshair Actions settings note no longer claims these features do not work on Apple Silicon. They do. It now says what actually stops them: macOS Accessibility permission, and games with kernel-level anti-cheat. (#539)
 - Portable Windows builds keep their data next to the exe. `userData`, `logs`, and `crashDumps` go to a `data/` folder beside the executable instead of `%APPDATA%\CrossOver`, so a portable copy stays portable. (#521)
 - A hotkey that the operating system or another overlay has already claimed now tells you it failed to register, instead of silently doing nothing. (#517)
 - `--reset` works on Linux launchers that strip Chromium switches, through an argv fallback, so AppImage, Snap, and Flatpak wrappers can recover a broken setup. (#524)
@@ -272,7 +286,8 @@ Built on 2026-08-26 and never published, so nobody ever ran it. Its one fix ship
 
 - CrossOver. A transparent, always-on-top crosshair you drop over any game, with a settings panel for color and size.
 
-[unreleased]: https://github.com/lacymorrow/crossover/compare/v3.4.7...HEAD
+[unreleased]: https://github.com/lacymorrow/crossover/compare/v3.4.8...HEAD
+[3.4.8]: https://github.com/lacymorrow/crossover/compare/v3.4.7...v3.4.8
 [3.4.7]: https://github.com/lacymorrow/crossover/compare/v3.4.5...v3.4.7
 [3.4.6]: https://github.com/lacymorrow/crossover/compare/v3.4.5...v3.4.6
 [3.4.5]: https://github.com/lacymorrow/crossover/compare/v3.4.4...v3.4.5
