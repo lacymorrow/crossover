@@ -26,7 +26,8 @@
 &nbsp;
 <a href="https://snapcraft.io/crossover"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" height="56" alt="Get it on the Snap Store" /></a>
 
-[**Download for Windows**](https://github.com/lacymorrow/crossover/releases/latest/download/CrossOver.exe) · [All downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest)
+[**Download for Windows**](https://github.com/lacymorrow/crossover/releases/download/v3.4.7/crossover-3.4.7.exe) · [All downloads (Mac, Linux, Windows)](https://github.com/lacymorrow/crossover/releases/latest)
+
 
 </div>
 
