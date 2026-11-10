@@ -50,6 +50,10 @@ parts:
     source: dist/linux-unpacked
     organize:
       '*': crossover/
+
+  # Separate part so `organize` above can't move these out of usr/lib.
+  libs:
+    plugin: nil
     stage-packages:
       # uiohook-napi (mouse/keyboard hooks)
       - libxt6
