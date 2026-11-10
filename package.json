@@ -212,6 +212,15 @@
         "default",
         "removable-media"
       ],
+      "stagePackages": [
+        "default",
+        "libxt6",
+        "libxtst6",
+        "libxkbfile1",
+        "libxinerama1",
+        "libxrandr2",
+        "libxkbcommon-x11-0"
+      ],
       "publish": [
         "github"
       ]

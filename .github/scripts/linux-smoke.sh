@@ -91,11 +91,10 @@ start_display() {
 }
 
 windows() {
-	if [[ $SESSION == x11 ]]; then
-		xwininfo -root -tree 2>/dev/null | grep -i crossover || true
-	else
-		swaymsg -t get_tree 2>/dev/null | grep -iE '"(app_id|class|title)": "[^"]*crossover' || true
-	fi
+	# CrossOver is an X11 client in both sessions (on Wayland it runs through
+	# XWayland, #456), so ask the X server. Headless sway can't prove the
+	# crosshair is drawn on a real compositor; the library VMs cover that.
+	xwininfo -root -tree 2>/dev/null | grep -i crossover || true
 }
 
 screenshot() {
@@ -122,5 +121,9 @@ say "App log (tail)"; tail -40 "$LOG" || true
 
 if [[ $ALIVE == 0 ]]; then echo "FAIL: app exited"; exit 1; fi
 if [[ -z $WIN ]]; then echo "FAIL: no CrossOver window"; exit 1; fi
+# Hide-on-ADS, follow-mouse and hide-key modes all ride on uiohook-napi.
+if grep -q 'Failed to load uiohook-napi' "$LOG"; then
+	echo "FAIL: mouse/keyboard hooks did not load"; grep -A1 'Failed to load uiohook-napi' "$LOG"; exit 1
+fi
 echo "PASS: $KIND on $(distro) $SESSION"
 kill "$PID" 2>/dev/null || true
