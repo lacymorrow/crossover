@@ -24,18 +24,18 @@ install_tools() {
 			export DEBIAN_FRONTEND=noninteractive
 			apt-get update -qq
 			local pkgs=(xvfb x11-utils imagemagick procps)
-			[[ $SESSION == wayland ]] && pkgs+=(sway grim xwayland)
+			if [[ $SESSION == wayland ]]; then pkgs+=(sway grim xwayland); fi
 			apt-get install -y -qq "${pkgs[@]}" >/dev/null
 			;;
 		fedora)
 			local pkgs=(xorg-x11-server-Xvfb xwininfo ImageMagick procps-ng
 				gtk3 nss alsa-lib libXScrnSaver libXtst at-spi2-core libdrm mesa-libgbm)
-			[[ $SESSION == wayland ]] && pkgs+=(sway grim xorg-x11-server-Xwayland)
+			if [[ $SESSION == wayland ]]; then pkgs+=(sway grim xorg-x11-server-Xwayland); fi
 			dnf install -y -q "${pkgs[@]}" >/dev/null
 			;;
 		arch)
 			pacman -Syu --noconfirm --needed -q xorg-server-xvfb xorg-xwininfo imagemagick procps-ng >/dev/null
-			[[ $SESSION == wayland ]] && pacman -S --noconfirm --needed -q sway grim xorg-xwayland >/dev/null
+			if [[ $SESSION == wayland ]]; then pacman -S --noconfirm --needed -q sway grim xorg-xwayland >/dev/null; fi
 			;;
 		*) echo "unknown distro $(distro)"; exit 2 ;;
 	esac
@@ -56,7 +56,8 @@ install_app() {
 }
 
 start_display() {
-	export XDG_RUNTIME_DIR=/tmp/xdg-runtime; mkdir -p -m 700 "$XDG_RUNTIME_DIR"
+	# Snaps insist on /run/user/<uid>, so use it everywhere.
+	export XDG_RUNTIME_DIR=/run/user/$(id -u); mkdir -p -m 700 "$XDG_RUNTIME_DIR"
 	if [[ $SESSION == x11 ]]; then
 		say "Start Xvfb"
 		Xvfb :99 -screen 0 1920x1080x24 >"$OUT/display.log" 2>&1 &
@@ -66,8 +67,11 @@ start_display() {
 		say "Start headless sway (Wayland + XWayland)"
 		mkdir -p ~/.config/sway
 		printf 'xwayland enable\noutput HEADLESS-1 resolution 1920x1080\n' >~/.config/sway/config
+		# Fedora ships sway with file capabilities, which containers refuse to
+		# exec. A plain copy drops them.
+		cp "$(command -v sway)" /usr/local/bin/sway-plain
 		WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1 \
-			sway --unsupported-gpu >"$OUT/display.log" 2>&1 &
+			sway-plain --unsupported-gpu >"$OUT/display.log" 2>&1 &
 		for _ in $(seq 20); do
 			WAYLAND_DISPLAY=$(ls "$XDG_RUNTIME_DIR" 2>/dev/null | grep -m1 '^wayland-[0-9]$' || true)
 			[[ -n $WAYLAND_DISPLAY ]] && break; sleep 0.5
