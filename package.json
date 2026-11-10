@@ -77,7 +77,7 @@
     "build:mw": "electron-builder -wm --arm64 --x64",
     "build:deb": "electron-builder --linux deb",
     "build:rpm": "electron-builder --linux rpm",
-    "build:snap": "electron-builder --linux snap",
+    "build:snap": ".github/scripts/build-snap.sh",
     "build:release": "rm -rf dist && npm run build:mac && npm run build:wl && npm run build:snap && npm run sh:copyexe",
     "build:release:snap": "electron-builder --linux snap && npm run snap:release",
     "build:release:windows": "npm run build:win && npm run sh:copyexe",

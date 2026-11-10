@@ -1,16 +1,80 @@
+# CrossOver snap. Built by .github/workflows/release-snap.yml and linux-smoke:
+#   npx electron-builder --linux dir --x64     -> dist/linux-unpacked
+#   snapcraft pack --destructive-mode          (on an Ubuntu 22.04 runner)
+# CI writes the version from package.json before packing.
+#
+# Why not electron-builder's snap target (#598): its template base had no
+# libXt, so uiohook-napi never loaded and hide-on-ADS, follow-mouse and the
+# hide keys were dead. Adding stage packages there forces a core20 snapcraft
+# build that current snapcraft can't run.
+name: crossover
+title: CrossOver
+version: '0.0.0'
+summary: A crosshair overlay for any screen
+description: |
+  CrossOver places a customizable crosshair overlay above any application
+  window. Pick from 50+ crosshairs or use your own image, change color and
+  size, and hide it on aim-down-sights.
+website: https://github.com/lacymorrow/crossover
+license: GPL-3.0
+base: core22
+grade: stable
+confinement: strict
+icon: snap/gui/crossover.png
 
-  # After registering a name on build.snapcraft.io, commit an uncommented line:
-  # name: crossover
-  version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-  summary: Snap build for lacymorrow/crossover 
-  description: |
-    CrossOver: Crosshair Overlay
+apps:
+  crossover:
+    # Same flag electron-builder's snap used: the setuid sandbox can't run
+    # under strict confinement; snapd's confinement stands in for it.
+    command: crossover/crossover --no-sandbox
+    desktop: crossover/crossover.desktop
+    extensions: [gnome]
+    plugs:
+      - home
+      - removable-media
+      - network
+      - browser-support
+      - audio-playback
+      - opengl
+      - x11
+      - wayland
+      - desktop
+      - desktop-legacy
+      - unity7
+      - gsettings
+    environment:
+      TMPDIR: $XDG_RUNTIME_DIR
 
-  grade: devel # must be 'stable' to release into candidate/stable channels
-  confinement: devmode # use 'strict' once you have the right plugs and slots
-
-  parts:
-    my-part:
-      # See 'snapcraft plugins'
-      plugin: nil
-  
+parts:
+  crossover:
+    plugin: dump
+    source: dist/linux-unpacked
+    organize:
+      '*': crossover/
+    override-build: |
+      craftctl default
+      cat > "$CRAFT_PART_INSTALL/crossover/crossover.desktop" <<'EOF'
+      [Desktop Entry]
+      Name=CrossOver
+      Comment=A crosshair overlay for any screen
+      Exec=crossover %U
+      Icon=${SNAP}/meta/gui/crossover.png
+      Type=Application
+      Categories=Game;Shooter;
+      StartupWMClass=CrossOver
+      EOF
+    stage-packages:
+      # uiohook-napi (mouse/keyboard hooks)
+      - libxt6
+      - libxtst6
+      - libxkbfile1
+      - libxinerama1
+      - libxrandr2
+      - libxkbcommon-x11-0
+      # Electron runtime libs the gnome extension doesn't carry
+      - libnss3
+      - libnspr4
+      - libxss1
+      - libsecret-1-0
+      - libasound2
+      - libgbm1
