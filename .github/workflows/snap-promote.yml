@@ -1,0 +1,29 @@
+name: snap-promote
+
+# Move a snap revision that's already in the store to another channel, e.g.
+# a candidate build that passed linux-smoke to stable. No build.
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Snap revision number (see snapcraft.io/crossover/releases)'
+        required: true
+        type: string
+      channel:
+        description: 'Channel to release it to'
+        required: true
+        type: choice
+        options: [stable, candidate, beta, edge]
+        default: stable
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo snap install snapcraft --classic
+      - run: snapcraft release crossover "${{ inputs.revision }}" "${{ inputs.channel }}"
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
