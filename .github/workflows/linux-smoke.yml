@@ -13,7 +13,9 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['src/**', 'package.json', 'package-lock.json', '.github/workflows/linux-smoke.yml', '.github/scripts/linux-smoke.sh']
+    paths: &smoke-paths ['src/**', 'package.json', 'package-lock.json', '.github/workflows/linux-smoke.yml', '.github/scripts/linux-smoke.sh']
+  pull_request:
+    paths: *smoke-paths
 
 permissions:
   contents: read
