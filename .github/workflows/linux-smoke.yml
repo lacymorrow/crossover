@@ -13,7 +13,7 @@ on:
         type: string
   push:
     branches: [main]
-    paths: &smoke-paths ['src/**', 'package.json', 'package-lock.json', '.github/workflows/linux-smoke.yml', '.github/scripts/linux-smoke.sh']
+    paths: &smoke-paths ['src/**', 'package.json', 'package-lock.json', '.github/workflows/linux-smoke.yml', '.github/scripts/linux-smoke.sh', '.github/scripts/build-snap.sh', 'snap/**']
   pull_request:
     paths: *smoke-paths
 
@@ -22,7 +22,8 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # The core22 snap builds on the host, so this must be 22.04.
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6
         with:
@@ -36,12 +37,15 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq libarchive-tools >/dev/null
-          sudo snap install snapcraft --classic
 
       - run: npm install
 
-      - name: Build Linux packages
-        run: npx electron-builder --linux deb AppImage pacman snap --x64 --publish never
+      - name: Build deb, AppImage, pacman
+        run: npx electron-builder --linux deb AppImage pacman --x64 --publish never
+
+      # Same script release-snap.yml ships with.
+      - name: Build snap
+        run: .github/scripts/build-snap.sh
 
       - uses: actions/upload-artifact@v4
         with:
@@ -92,9 +96,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: snap / ubuntu runner / x11
-    # Known failure: the snap ships without libXt, so uiohook-napi can't load
-    # (#598). Reports on every run, doesn't block, until that lands.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
         with:

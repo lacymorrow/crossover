@@ -17,7 +17,8 @@ permissions:
 
 jobs:
   snap:
-    runs-on: ubuntu-latest
+    # core22 snap, built on the host: the runner must be 22.04.
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6
 
@@ -28,11 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install snapcraft
-        run: sudo snap install snapcraft --classic
-
       - name: Build snap
-        run: npx electron-builder --linux snap --publish never
+        run: .github/scripts/build-snap.sh
 
       - uses: actions/upload-artifact@v4
         with:
