@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Install snapcraft
-        run: sudo snap install snapcraft --classic --channel=8.x  # core20 base needs 8.x
+        run: sudo snap install snapcraft --classic
 
       - name: Build snap
         run: npx electron-builder --linux snap --publish never
