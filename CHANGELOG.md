@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.4.9] - 2026-11-10
+
+3.4.8 was never published, so 3.4.9 is the first release with everything listed under 3.4.8 below.
+
+### Fixed
+
+- The Arch Linux package installs again. It required `http-parser`, which Arch no longer ships, so pacman refused it outright.
+- The `.deb` starts on minimal Ubuntu and Debian installs. It didn't declare the sound and graphics libraries Electron needs, so on a system without them it quit at launch with `libasound.so.2: cannot open shared object file`. On Ubuntu 24.04 it now asks for `libasound2t64`. (#597)
+- In the Snap Store version, Hide on ADS, Follow Mouse and the hide keys work. The snap was missing the libraries the mouse and keyboard hooks load, so none of those features did anything. (#598)
+
 ## [3.4.8] - 2026-10-29
 
 ### Added
