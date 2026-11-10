@@ -31,8 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # package.json names the appx ${productName}.${ext}, so the second arch
+      # overwrote the first. Put the arch in the name to keep both.
       - name: Build appx
-        run: npx electron-builder --win appx --x64 --ia32 --publish never
+        shell: bash
+        run: npx electron-builder --win appx --x64 --ia32 --publish never -c.appx.artifactName='${productName}-${version}-${arch}.${ext}'
 
       - uses: actions/upload-artifact@v4
         with:
