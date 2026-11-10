@@ -37,11 +37,20 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq libarchive-tools >/dev/null
           sudo snap install snapcraft --classic --channel=8.x  # core20 base needs 8.x
+          # snap.stagePackages makes electron-builder run a real snapcraft
+          # build, which needs a build VM/container. LXD works on runners.
+          sudo snap install lxd
+          sudo lxd init --auto
+          sudo usermod -aG lxd "$USER"
+          # Docker's FORWARD DROP policy blocks LXD container networking.
+          sudo iptables -P FORWARD ACCEPT
 
       - run: npm install
 
       - name: Build Linux packages
-        run: npx electron-builder --linux deb AppImage pacman snap --x64 --publish never
+        env:
+          SNAPCRAFT_BUILD_ENVIRONMENT: lxd
+        run: sg lxd -c "npx electron-builder --linux deb AppImage pacman snap --x64 --publish never"
 
       - uses: actions/upload-artifact@v4
         with:
