@@ -79,6 +79,14 @@ start_display() {
 		[[ -n ${WAYLAND_DISPLAY:-} ]] || { echo "sway never came up"; cat "$OUT/display.log"; exit 1; }
 		export WAYLAND_DISPLAY SWAYSOCK; SWAYSOCK=$(ls "$XDG_RUNTIME_DIR"/sway-ipc.* | head -1)
 		export XDG_SESSION_TYPE=wayland
+		# A desktop session exports DISPLAY for XWayland; CrossOver relaunches
+		# itself on X11 (#456), so it needs it too. sway starts XWayland lazily.
+		for _ in $(seq 20); do
+			X=$(ls /tmp/.X11-unix 2>/dev/null | grep -m1 '^X[0-9]' || true)
+			[[ -n $X ]] && break; sleep 0.5
+		done
+		[[ -n $X ]] || { echo "XWayland socket never appeared"; cat "$OUT/display.log"; exit 1; }
+		export DISPLAY=:${X#X}
 	fi
 }
 
