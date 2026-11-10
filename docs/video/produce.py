@@ -273,7 +273,7 @@ proof = [
     ("1,200+ stars on GitHub",          (255, 204, 0)),
     ("217K monthly Store views",        (0, 212, 255)),
     ("530+ crosshairs",                 (255, 107, 53)),
-    ("Free. Open source. Not bannable.", (85, 255, 136)),
+    ("Free. Source available. Not bannable.", (85, 255, 136)),
 ]
 clips_s6 = []
 for pi, dur in enumerate([2,2,2,3]):

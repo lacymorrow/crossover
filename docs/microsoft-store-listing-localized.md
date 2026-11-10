@@ -49,7 +49,7 @@ Getestet und funktioniert mit Valorant, CS2, Fortnite, Call of Duty Warzone, Ape
 
 Wenn du farbenblind bist oder die Standard-Visiere schwer zu erkennen sind, hilft dir CrossOver. Volle Kontrolle über Farbe, Größe und Transparenz — erstelle ein Fadenkreuz, das wirklich für deine Augen funktioniert.
 
-Kostenlos, Open Source, keine Werbung, keine Datenerfassung. Ein Entwickler, von der Community unterstützt. Deine Daten verlassen deinen Rechner nicht. Updates erfolgen automatisch.
+Kostenlos, Quelltext einsehbar, keine Werbung, keine Datenerfassung. Ein Entwickler, von der Community unterstützt. Deine Daten verlassen deinen Rechner nicht. Updates erfolgen automatisch.
 
 Jede Aktion hat ein Tastaturkürzel: Anzeigen/Ausblenden, Zentrieren, Monitor wechseln, Duplizieren, Zurücksetzen. Alle Tasten sind frei belegbar.
 
@@ -87,7 +87,7 @@ Testé et fonctionnel avec Valorant, CS2, Fortnite, Call of Duty Warzone, Apex L
 
 Si tu es daltonien ou si les viseurs par défaut de ton jeu sont difficiles à distinguer, CrossOver t'aide. Contrôle total sur la couleur, la taille et l'opacité — crée un réticule qui fonctionne vraiment pour tes yeux.
 
-Gratuit, open source, sans pub, sans collecte de données. Un seul développeur, soutenu par la communauté. Tes données ne quittent pas ta machine. Les mises à jour sont automatiques.
+Gratuit, code source disponible, sans pub, sans collecte de données. Un seul développeur, soutenu par la communauté. Tes données ne quittent pas ta machine. Les mises à jour sont automatiques.
 
 Chaque action a un raccourci clavier : afficher/masquer, centrer, changer d'écran, dupliquer, réinitialiser. Tu peux tout reconfigurer.
 

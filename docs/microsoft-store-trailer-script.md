@@ -110,7 +110,7 @@
 
 **Visual:** Clean dark/branded background. CrossOver logo centered. Stats cascade in:
 - 1,200+ stars on GitHub
-- Free & Open Source
+- Free & Source Available
 - No ads. No data collection.
 **Text Overlay:** "Free. No ads. No data collection."
 **Text Style:** Stats appear one by one with satisfying animation. Final line is the boldest.

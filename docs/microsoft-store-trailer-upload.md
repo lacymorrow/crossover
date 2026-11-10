@@ -44,7 +44,7 @@ at thumbnail size and carries the social proof. Only use it if the stat question
 ```
 Title:       Put a crosshair on any game
 Description: 30 seconds: 500+ built-in sights, drag in your own image,
-             works on every monitor. Free and open source.
+             works on every monitor. Free and source available.
 ```
 
 ## Upload steps

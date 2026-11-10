@@ -80,7 +80,7 @@ It's just an overlay. No injection. No game files touched. **Not bannable.** Fre
 ## Install
 
 > [!NOTE]
-> Because CrossOver is free and open source, builds are unsigned. Chrome may flag the download as untrusted, Windows Defender may warn you, and macOS Gatekeeper may block the first launch. These are normal — see the per-OS notes below.
+> Because CrossOver is free and source available, builds are unsigned. Chrome may flag the download as untrusted, Windows Defender may warn you, and macOS Gatekeeper may block the first launch. These are normal — see the per-OS notes below.
 
 ### Windows
 

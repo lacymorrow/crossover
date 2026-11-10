@@ -377,12 +377,12 @@ print("  done")
 print("Scene 8 — Trust badge...")
 # Verified 2026-10-16 (LAC-4591). The Store rating is 3.7 from 154 ratings, not
 # the 4.8 this claimed, so the rating line is replaced with the GitHub star count
-# (actual 1,255, rounded down so burned-in pixels do not rot). The "Open Source"
+# (actual 1,255, rounded down so burned-in pixels do not rot). The "Source Available"
 # wording is a separate open question — package.json ships FSL-1.1-MIT.
 proof_stages = [
     (["1,200+ stars on GitHub"], [(255,204,0)]),
-    (["1,200+ stars on GitHub", "Free & Open Source"], [(255,204,0), (0,212,255)]),
-    (["1,200+ stars on GitHub", "Free & Open Source", "No ads. No data collection."],
+    (["1,200+ stars on GitHub", "Free & Source Available"], [(255,204,0), (0,212,255)]),
+    (["1,200+ stars on GitHub", "Free & Source Available", "No ads. No data collection."],
      [(255,204,0), (0,212,255), (85,255,136)]),
 ]
 clips_s8 = []

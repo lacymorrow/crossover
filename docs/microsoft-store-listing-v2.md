@@ -39,7 +39,7 @@ The overlay is tested and working with Valorant, CS2, Fortnite, Call of Duty War
 
 If you're colorblind or the default sights in your game are hard to see, this helps. Full control over color, size, and opacity means you can build a gaming crosshair that actually works for your eyes.
 
-Free, open source, no ads, no data collection. One developer, community supported. Your data doesn't leave your machine. Updates happen automatically.
+Free, source available, no ads, no data collection. One developer, community supported. Your data doesn't leave your machine. Updates happen automatically.
 
 Every action has a keyboard shortcut: show/hide, center, switch monitors, duplicate, reset. You can rebind all of them.
 
@@ -72,7 +72,7 @@ Runs on Windows 10, Windows 11, macOS, and Linux.
 - colorblind crosshair
 - crosshair for multiple monitors
 - free crosshair overlay
-- open source crosshair
+- source available crosshair
 - custom aim point
 - screen marker overlay
 - crosshair tool
@@ -160,7 +160,7 @@ Text: "Better visibility for colorblind and low-contrast gamers"
 | 0:20-0:25 | Resize, recolor, adjust opacity in real time | "Fully customizable" |
 | 0:25-0:30 | Game compatibility montage — CrossOver over 4-5 different games | "Works with your favorite games" |
 | 0:30-0:35 | Multi-monitor switch + duplicate crosshairs | "Multi-monitor. Duplicates." |
-| 0:35-0:40 | Logo + "Free & Open Source" badge | "Free. No ads. No data collection." |
+| 0:35-0:40 | Logo + "Free & Source Available" badge | "Free. No ads. No data collection." |
 | 0:40-0:45 | Store badge + "Download Now" CTA | "Get CrossOver on the Microsoft Store" |
 
 **Production notes:**
