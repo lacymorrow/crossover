@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq libarchive-tools >/dev/null
-          sudo snap install snapcraft --classic
+          sudo snap install snapcraft --classic --channel=8.x  # core20 base needs 8.x
 
       - run: npm install
 
