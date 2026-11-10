@@ -1,13 +1,15 @@
-const { globalShortcut, nativeTheme, shell, app } = require( 'electron' )
+const { globalShortcut, ipcMain, nativeTheme, shell, app } = require( 'electron' )
 const { SHADOW_WINDOW_OFFSET, DEFAULT_THEME, SETTINGS_WINDOW_DEVTOOLS, APP_BACKGROUND_OPACITY } = require( '../config/config' )
 const { checkboxTrue, hexToRgbA } = require( '../config/utils' )
 const dock = require( './dock' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
+const presets = require( './presets' )
 const save = require( './save' )
 const set = require( './set' )
 const sound = require( './sound' )
+const wayland = require( './wayland' )
 const windows = require( './windows' )
 const reset = require( './reset' )
 const Preferences = require( './preferences' )
@@ -79,10 +81,44 @@ const keyboardShortcuts = () => {
 			keybind: `${accelerator}+H`,
 			fn() {
 
-				windows.showHideWindow()
+				if ( preferences.value( 'hidden.locked' ) ) {
+
+					windows.showHideWindow()
+
+				}
 
 			},
 		},
+
+		// Toggle Reticle
+		{
+			action: 'hideReticle',
+			keybind: `${accelerator}+S`,
+			fn() {
+
+				if ( preferences.value( 'hidden.locked' ) ) {
+
+					const hidden = !preferences.value( 'hidden.reticleHidden' )
+					preferences.value( 'hidden.reticleHidden', hidden )
+					log.info( `Reticle hidden: ${hidden}` )
+					syncSettings()
+
+				}
+
+			},
+		},
+
+		// Switch to the next saved preset
+		{
+			action: 'cyclePreset',
+			keybind: `${accelerator}+P`,
+			fn() {
+
+				presets.cycle()
+
+			},
+		},
+
 		// Quit CrossOver
 		{
 			action: 'quit',
@@ -157,12 +193,98 @@ const keyboardShortcuts = () => {
 
 }
 
+// One-shot so the Wayland notice doesn't repeat on every preference save.
+let waylandNoticeShown = false
+
+// Kept alive when all keybinds are disabled, so a locked app is never stranded (#299)
+const SAFETY_ACTIONS = new Set( [ 'lock', 'reset' ] )
+
+const keybindsDisabled = () => checkboxTrue( preferences.value( 'keybinds.disableAll' ), 'disableAll' )
+
+// `previousPreferences` can alias the live store, so the menu rebuild tracks the
+// last value it actually applied instead of diffing the snapshot.
+let keybindsDisabledApplied = keybindsDisabled()
+
+// Returns true when the notice was handed to the renderer.
+const notify = options => {
+
+	// Only notify when the renderer window is ready to receive it
+	if ( !windows.win || windows.win.isDestroyed() ) {
+
+		return false
+
+	}
+
+	const notification = require( './notification' )
+	notification( options )
+
+	return true
+
+}
+
+// A native Wayland compositor accepts the registration and then never delivers
+// the key, so no registration result can catch it. Say so plainly. (#456)
+// Shortcuts re-register on every preference save, so only say it once.
+const warnIfShortcutsBlocked = () => {
+
+	// Nothing was asked to fire when the master switch took everything, so a
+	// notice about shortcuts not firing would be noise. (#299)
+	if ( keybindsDisabled() && preferences.value( 'hidden.disableSafetyKeybinds' ) === true ) {
+
+		return
+
+	}
+
+	const blocked = wayland.shortcutsBlockedReason()
+
+	if ( !blocked ) {
+
+		return
+
+	}
+
+	log.warn( `Shortcuts cannot fire: ${blocked}` )
+
+	if ( !waylandNoticeShown ) {
+
+		waylandNoticeShown = notify( {
+			title: 'Shortcuts Won\'t Work Here',
+			body: blocked,
+		} )
+
+	}
+
+}
+
 const registerKeyboardShortcuts = () => {
 
 	// Register all shortcuts
 	const { keybinds } = Preferences.getDefaults()
 	const custom = preferences.value( 'keybinds' ) // Defaults
+	const registeredShortcuts = []
+	const failed = []
+
+	// #299: master switch. Lock and Reset survive it unless the hidden
+	// preference opts out of them too.
+	const disableAll = keybindsDisabled()
+	const disableSafety = preferences.value( 'hidden.disableSafetyKeybinds' ) === true
+
+	if ( disableAll ) {
+
+		log.info( disableSafety ? 'All keybinds disabled' : 'All keybinds disabled except Lock and Reset' )
+
+	}
+
 	for ( const shortcut of keyboardShortcuts() ) {
+
+		if ( disableAll && ( disableSafety || !SAFETY_ACTIONS.has( shortcut.action ) ) ) {
+
+			continue
+
+		}
+
+		let accelerator
+		let registered
 
 		// Custom shortcuts
 		if ( custom[shortcut.action] === '' ) {
@@ -173,28 +295,63 @@ const registerKeyboardShortcuts = () => {
 
 			// If a custom shortcut exists for this action
 			log.info( `Custom keybind for ${shortcut.action}` )
-			keyboard.registerShortcut( custom[shortcut.action], shortcut.fn )
+			accelerator = custom[shortcut.action]
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
 
 		} else if ( keybinds[shortcut.action] ) {
 
 			// Set default keybind
-			keyboard.registerShortcut( keybinds[shortcut.action], shortcut.fn )
+			accelerator = keybinds[shortcut.action]
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
 
 		} else {
 
 			// Fallback to internal bind - THIS SHOULDNT HAPPEN
 			// if it does you forgot to add a default keybind for this shortcut
 			log.info( 'ERROR - you likely forgot to add a default keybind for this shortcut: ', shortcut )
-			keyboard.registerShortcut( shortcut.keybind, shortcut.fn )
+			accelerator = shortcut.keybind
+			registered = keyboard.registerShortcut( accelerator, shortcut.fn )
+
+		}
+
+		if ( accelerator && registered === false ) {
+
+			failed.push( accelerator )
+
+		} else if ( accelerator && registered ) {
+
+			registeredShortcuts.push( `${shortcut.action}: ${accelerator}` )
 
 		}
 
 	}
 
+	// Diagnostics: the log is the only place a user can see what actually bound.
+	log.info( `Shortcuts registered (${registeredShortcuts.length}): ${registeredShortcuts.join( ', ' ) || 'none'}` )
+	log.info( wayland.debugInfo() )
+
+	if ( failed.length > 0 ) {
+
+		log.warn( `Shortcut registration failed for: ${failed.join( ', ' )}` )
+		notify( {
+			title: 'Keyboard Shortcut Conflict',
+			body: `Could not register: ${failed.join( ', ' )}. Another app may be using this combo. Try rebinding in Settings.`,
+		} )
+
+	}
+
+	warnIfShortcutsBlocked()
+
 }
 
 // Allows dragging and setting options
 const lockWindow = ( lock, targetWindow = windows.win ) => {
+
+	if ( !targetWindow || targetWindow.isDestroyed() ) {
+
+		return
+
+	}
 
 	log.info( `Locked: ${lock}` )
 
@@ -318,17 +475,22 @@ const syncSettings = ( options = preferences.preferences ) => {
 		'--circle-thickness': options.crosshair.circleThickness,
 	}
 
-	// App color is set
+	// App colors — highlight only applies when bg is also set; resetting bg resets highlight too
 
-	if ( options.app.appHighlightColor.charAt( 0 ) === '#' ) {
-
-		properties['--app-highlight-color'] = options.app.appHighlightColor
-
-	}
-
-	if ( options.app.appBgColor.charAt( 0 ) === '#' ) {
+	if ( options.app.appBgColor?.startsWith( '#' ) ) {
 
 		properties['--app-bg-color'] = hexToRgbA( options.app.appBgColor, APP_BACKGROUND_OPACITY )
+
+		if ( options.app.appHighlightColor?.startsWith( '#' ) ) {
+
+			properties['--app-highlight-color'] = options.app.appHighlightColor
+
+		}
+
+	} else if ( options.app.appHighlightColor !== 'unset' ) {
+
+		// bg was reset to default — clear orphaned highlight color so buttons stay visible
+		preferences.value( 'app.appHighlightColor', 'unset' )
 
 	}
 
@@ -370,10 +532,13 @@ const syncSettings = ( options = preferences.preferences ) => {
 	windows.each( win => {
 
 		set.crosshair( options.crosshair?.crosshair, win )
-		set.reticle( options.crosshair?.reticle, win )
+		set.reticle( options.hidden?.reticleHidden ? 'off' : options.crosshair?.reticle, win )
 		set.rendererProperties( properties, win )
 
 	} )
+
+	// Sync screen-capture exclusion across all windows (#359)
+	windows.syncContentProtection()
 
 	set.startOnBoot()
 
@@ -387,6 +552,24 @@ const syncSettings = ( options = preferences.preferences ) => {
 	}
 
 	registerKeyboardShortcuts()
+
+	// #299: the Preferences accelerator lives in the app menu, so the menu has to
+	// be rebuilt when the master switch flips. ipc.js owns the rebuild so this
+	// file never reaches menu.js or tray.js, which both reach back here. A lazy
+	// require is not enough: madge counts requires inside function bodies.
+	if ( keybindsDisabled() !== keybindsDisabledApplied ) {
+
+		keybindsDisabledApplied = keybindsDisabled()
+
+		// emit() returns false when nothing is listening. Without this the menus
+		// would silently stop rebuilding if ipc.init() ever stopped running.
+		if ( !ipcMain.emit( 'refresh_menus' ) ) {
+
+			log.warn( 'refresh_menus has no listener: the app menu was not rebuilt' )
+
+		}
+
+	}
 
 	previousPreferences = options
 
@@ -414,7 +597,6 @@ const initShadowWindow = async () => {
 	const properties = {
 		// No app-color for shadow windows
 		// No crosshair scaling for shadow windows
-		// No resizing for shadow windows
 		'--crosshair-width': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-height': `${previousPreferences.crosshair?.size}px`,
 		'--crosshair-opacity': ( previousPreferences.crosshair?.opacity || 100 ) / 100,
@@ -437,7 +619,7 @@ const initShadowWindow = async () => {
 	}
 
 	set.crosshair( previousPreferences.crosshair?.crosshair, shadow )
-	set.reticle( previousPreferences.crosshair?.reticle, shadow )
+	set.reticle( preferences.value( 'hidden.reticleHidden' ) ? 'off' : previousPreferences.crosshair?.reticle, shadow )
 	set.rendererProperties( properties, shadow )
 
 	if ( preferences.value( 'crosshair.positionX' ) > -1 ) {
@@ -534,7 +716,7 @@ const openSettingsWindow = async () => {
 
 		// Force opening URLs in the default browser (remember to use `target="_blank"`)
 		// Todo: remove this check when updating to electron 12, this is to allow 11/12 compatibility
-		if ( windows.preferencesWindow.webContents.setWindowOpenHandler ) {
+		if ( typeof windows.preferencesWindow.webContents.setWindowOpenHandler === 'function' ) {
 
 			// Electron 12+
 			windows.preferencesWindow.webContents.setWindowOpenHandler( details => {
@@ -601,6 +783,7 @@ const toggleWindowLock = ( lock = !preferences.value( 'hidden.locked' ) ) => {
 const crossover = {
 	changeCrosshair,
 	initShadowWindow,
+	keybindsDisabled,
 	lockWindow,
 	openChooserWindow,
 	openSettingsWindow,

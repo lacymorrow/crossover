@@ -1,35 +1,50 @@
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 matrix:
   fast_finish: true
 
 platform:
-  - x86
   - x64
-
-os: unstable
 
 branches:
   only:
-    - master
+    - main
     - release
 
 skip_tags: true
 
-environment:
-  nodejs_version: "14.21.3"
-
 cache:
   - node_modules -> package.json
   - '%USERPROFILE%\.electron'
+  - '%LOCALAPPDATA%\electron\Cache'
+  - '%LOCALAPPDATA%\electron-builder\Cache'
 
 install:
-  - ps: Install-Product node $env:nodejs_version
-  - npm i  --openssl-fips=''
+  - ps: |
+      $v = "20.19.2"
+      $url = "https://nodejs.org/dist/v$v/node-v$v-win-x64.zip"
+      Write-Host "Downloading Node.js v$v from $url"
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      Invoke-WebRequest $url -OutFile "$env:TEMP\node.zip" -UseBasicParsing
+      Expand-Archive "$env:TEMP\node.zip" -DestinationPath C:\ -Force
+      $nodePath = "C:\node-v$v-win-x64"
+      $env:Path = "$nodePath;$env:Path"
+      [Environment]::SetEnvironmentVariable("PATH", $env:Path, "Machine")
+      Write-Host "Node.js v$v installed to $nodePath"
+  - cmd: pip install setuptools
+  - node --version
+  - npm --version
+  - npm install
 
 build_script:
-  - cmd: node --version
-  - cmd: npm --version
-  # - cmd: yarn test
-  - cmd: yarn build:windows
-  - cmd: if %platform%==x64 yarn build:windows
+  - ps: |
+      Write-Host "Building x64 (dir - no installer, CI verification only)"
+      $env:DEBUG = "electron-builder"
+      & npx electron-builder --win dir --x64 --publish never 2>&1 | ForEach-Object { Write-Host $_ }
+      $code = $LASTEXITCODE
+      Write-Host "electron-builder exit code: $code"
+      if ($code -ne 0) { throw "electron-builder failed with exit code $code" }
+
+artifacts:
+  - path: dist\win-unpacked\*.exe
+    name: app-binary

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Activate CrossOver Pro</title>
+<meta name="theme-color" content="#fbfbfa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0d0f" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+	body { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: 1fr auto; }
+	main { display: grid; place-items: center; padding: 48px var(--gutter); }
+	.card {
+		width: 100%; max-width: 440px; text-align: center;
+		padding: 40px 24px 32px; border-radius: 20px;
+		border: 1px solid var(--line); background: var(--raised); box-shadow: var(--shadow);
+	}
+	@media (min-width: 480px) { .card { padding: 48px 40px 36px; } }
+	.mark { position: relative; width: 72px; height: 72px; margin: 0 auto; }
+	.mark img { width: 72px; height: 72px; }
+	.mark .ring {
+		position: absolute; inset: -8px; border-radius: 50%;
+		border: 2px solid transparent; border-top-color: var(--text);
+		opacity: 0.55;
+		animation: spin 0.9s linear infinite;
+	}
+	@keyframes spin { to { transform: rotate(360deg); } }
+	@media (prefers-reduced-motion: reduce) { .mark .ring { animation-duration: 3s; } }
+	h1 { margin-top: 24px; font-size: 1.625rem; letter-spacing: -0.025em; }
+	.lede { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.55; }
+	.card .btn { margin-top: 28px; width: 100%; }
+	.fallback { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); text-align: left; }
+	.fallback p { font-size: 0.875rem; color: var(--muted); }
+	.fallback a { color: var(--text); }
+	.key { display: flex; gap: 8px; margin-top: 10px; }
+	.key code {
+		flex: 1; min-width: 0; padding: 10px 12px; border-radius: var(--radius-sm);
+		background: var(--surface); border: 1px solid var(--line);
+		font: 500 0.8125rem/1.5 var(--mono); overflow-wrap: anywhere; user-select: all;
+	}
+	.key .btn { margin: 0; width: auto; min-height: 0; padding: 0 16px; border-radius: var(--radius-sm); font-size: 0.875rem; }
+	.copy-status { min-height: 1.4em; margin-top: 8px; font-size: 0.8125rem; color: var(--muted); }
+	.page-foot { padding: 0 var(--gutter) 32px; text-align: center; font-size: 0.8125rem; color: var(--muted); }
+	.page-foot a { color: var(--muted); }
+	[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+	<div class="card">
+		<div class="mark">
+			<img src="/assets/icon-128.png" alt="" width="72" height="72">
+			<span class="ring" id="ring" aria-hidden="true"></span>
+		</div>
+
+		<section id="waiting" aria-live="polite">
+			<h1>Finishing up</h1>
+			<p class="lede">Getting your license key from Polar. This takes a few seconds.</p>
+		</section>
+
+		<section id="ready" hidden>
+			<h1>CrossOver Pro is yours</h1>
+			<p class="lede">Thanks for supporting CrossOver. It should open and activate on its own.</p>
+			<a id="open" class="btn btn-primary btn-lg" href="#">Open CrossOver</a>
+			<div class="fallback">
+				<p>If it doesn't, paste this key into Settings, then License.</p>
+				<div class="key">
+					<code id="key"></code>
+					<button id="copy" class="btn btn-secondary" type="button">Copy</button>
+				</div>
+				<p class="copy-status" id="copy-status" role="status"></p>
+			</div>
+		</section>
+
+		<section id="failed" hidden>
+			<h1>We couldn't find your key</h1>
+			<p class="lede" id="failed-reason">Your payment may still be processing.</p>
+			<a class="btn btn-primary btn-lg" href="https://polar.sh/lacy/portal">Find it in your purchases</a>
+			<div class="fallback">
+				<p>Still stuck? Email <a href="mailto:me@lacymorrow.com">me@lacymorrow.com</a> and we'll sort it out.</p>
+			</div>
+		</section>
+	</div>
+</main>
+<footer class="page-foot"><a href="/">crossover.lacy.sh</a></footer>
+
+<script>
+(function () {
+	var API = 'https://crossover-checkout.vercel.app/api/key';
+	var checkoutId = new URLSearchParams(location.search).get('checkout_id');
+	var ring = document.getElementById('ring');
+
+	function show(id) {
+		document.querySelectorAll('.card > section').forEach(function (s) { s.hidden = s.id !== id; });
+		ring.hidden = id !== 'waiting';
+	}
+
+	function fail(reason) {
+		document.getElementById('failed-reason').textContent = reason;
+		show('failed');
+	}
+
+	function ready(key) {
+		var link = 'crossover://activate?key=' + encodeURIComponent(key);
+		document.getElementById('key').textContent = key;
+		document.getElementById('open').href = link;
+		show('ready');
+		location.href = link;
+	}
+
+	var status = document.getElementById('copy-status');
+	document.getElementById('copy').addEventListener('click', function (event) {
+		var button = event.currentTarget;
+		var code = document.getElementById('key');
+		var done = function () {
+			button.textContent = 'Copied';
+			status.textContent = 'Key copied.';
+			setTimeout(function () { button.textContent = 'Copy'; status.textContent = ''; }, 2000);
+		};
+		var manual = function () {
+			var range = document.createRange();
+			range.selectNodeContents(code);
+			var sel = window.getSelection();
+			sel.removeAllRanges();
+			sel.addRange(range);
+			status.textContent = 'Selected. Press Ctrl+C, or Cmd+C on a Mac.';
+		};
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(code.textContent).then(done, manual);
+		} else {
+			manual();
+		}
+	});
+
+	var started = Date.now();
+	function poll() {
+		fetch(API + '?checkout_id=' + encodeURIComponent(checkoutId), { cache: 'no-store' })
+			.then(function (r) { return r.json(); })
+			.then(function (result) {
+				if (result.status === 'ready') return ready(result.key);
+				if (result.status === 'error' && result.reason !== 'upstream') {
+					return fail('This checkout link is not valid or the payment did not go through.');
+				}
+				next();
+			})
+			.catch(next); // Offline or a blip: keep trying until the deadline
+	}
+	function next() {
+		if (Date.now() - started > 60000) {
+			return fail('Polar is taking longer than usual. The receipt Polar emailed you links to your key.');
+		}
+		setTimeout(poll, 2000);
+	}
+
+	if (checkoutId) poll();
+	else fail('This page needs a checkout link from Polar.');
+})();
+</script>
+</body>
+</html>

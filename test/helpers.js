@@ -1,9 +1,27 @@
+const fs = require( 'fs' )
+const path = require( 'path' )
 const { _electron: electron } = require( 'playwright' )
 
 let electronApp
 
 const CHOOSER_WINDOW = 'Crosshairs'
 const SETTINGS_WINDOW = 'Preferences'
+
+const SRC_DIR = path.resolve( 'src' )
+
+const collectSourceFiles = dir => fs.readdirSync( dir, { withFileTypes: true } )
+	.flatMap( entry => {
+
+		const fullPath = path.join( dir, entry.name )
+		if ( entry.isDirectory() ) {
+
+			return collectSourceFiles( fullPath )
+
+		}
+
+		return entry.name.endsWith( '.js' ) ? [ fullPath ] : []
+
+	} )
 
 const delays = {
 	short: 500,
@@ -86,14 +104,22 @@ const focusedMinimizedVisible = async ( { electronApp, windowName } ) => electro
 	let win = windows.find( w => w.title === windowName )
 	if ( !win ) {
 
-		console.warn( `Window "${windowName}" not found, using "${win.title}" instead` )
+		// Fallback to the first available window if the requested one doesn't exist yet
 		win = windows[0]
+
+		if ( !win ) {
+
+			return { focused: false, minimized: false, visible: false }
+
+		}
+
+		console.warn( `Window "${windowName}" not found, using first window instead` )
 
 	}
 
-	win?.focus()
+	win.focus()
 
-	return { focused: win?.isFocused(), minimized: win?.isMinimized(), visible: win?.isVisible() }
+	return { focused: win.isFocused(), minimized: win.isMinimized(), visible: win.isVisible() }
 
 }, windowName )
 
@@ -187,7 +213,9 @@ const visualMouse = async mainPage => {
 module.exports = {
 	CHOOSER_WINDOW,
 	SETTINGS_WINDOW,
+	SRC_DIR,
 	closeApp,
+	collectSourceFiles,
 	delays,
 	focusedMinimizedVisible,
 	getBounds,

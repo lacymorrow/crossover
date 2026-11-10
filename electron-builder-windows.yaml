@@ -6,4 +6,4 @@ win:
         - ia32
 nsis:
   unicode: false
-  artifactName: ${productName}.${ext}
+  artifactName: ${productName}-${version}.${ext}

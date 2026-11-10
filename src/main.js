@@ -55,9 +55,13 @@
 
 console.time( 'init' )
 
-const process = require( 'process' )
-
 const { app } = require( 'electron' )
+
+// Portable-mode path override MUST run before any module that reads
+// app.getPath('userData') (electron-log, electron-preferences, etc.).
+const { initPortablePaths } = require( './main/portable.js' )
+const isPortable = initPortablePaths()
+
 const debug = require( 'electron-debug' )
 const { checkboxTrue } = require( './config/utils.js' )
 
@@ -71,9 +75,10 @@ const menu = require( './main/menu.js' )
 const register = require( './main/register.js' )
 const init = require( './main/init.js' )
 const reset = require( './main/reset.js' )
+const { isResetRequested } = require( './main/reset-flag.js' )
 const tray = require( './main/tray.js' )
+const wayland = require( './main/wayland.js' )
 const { appId } = require( '../package.json' )
-const { menuBarHeight } = require( 'electron-util' )
 
 const start = async () => {
 
@@ -83,6 +88,12 @@ const start = async () => {
 	/* App setup */
 	console.log( '***************' )
 	log.info( `CrossOver ${app.getVersion()} ${is.development ? '* Development *' : ''}` )
+
+	if ( isPortable ) {
+
+		log.info( `Portable mode: userData redirected to ${app.getPath( 'userData' )}` )
+
+	}
 
 	// Enable sandbox globally
 	// app.enableSandbox()
@@ -114,31 +125,49 @@ const start = async () => {
 	/* LINUX FIXES */
 	// More flags: https://www.electronjs.org/docs/latest/api/command-line-switches/
 
-	// Disable hardware acceleration
-	if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
+	// Global hotkeys need an X11 input grab, which native Wayland refuses. Work out
+	// whether this session can grab a key at all, so we can say so. (#456)
+	wayland.detect()
 
-		log.info( 'Setting: Enable GPU' )
+	// When resetting, force safe GPU settings so the GPU process doesn't crash
+	// before the reset logic can run. (#450)
+	// Also match on process.argv — AppImage/Snap/Flatpak launchers occasionally
+	// strip Chromium switches, so hasSwitch() alone can miss `--reset` on Linux.
+	if ( isResetRequested() ) {
+
+		log.info( 'Reset mode: forcing safe GPU settings' )
+		app.commandLine.appendSwitch( 'disable-gpu' )
+		app.disableHardwareAcceleration()
 
 	} else {
 
 		// Disable hardware acceleration
-		log.info( 'Setting: Disable GPU' )
-		app.commandLine.appendSwitch( 'enable-transparent-visuals' )
-		app.commandLine.appendSwitch( 'disable-gpu' )
-		app.disableHardwareAcceleration()
+		if ( checkboxTrue( preferences.value( 'app.gpu' ), 'gpu' ) ) {
 
-	}
+			log.info( 'Setting: Enable GPU' )
 
-	// Fix for Linux transparency issues: wayland on linux/sway
-	// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
-	// https://github.com/microsoft/vscode/issues/146464
-	// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
-	if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
+		} else {
 
-		log.info( 'Setting: Sharing GPU process and browser' )
+			// Disable hardware acceleration
+			log.info( 'Setting: Disable GPU' )
+			app.commandLine.appendSwitch( 'enable-transparent-visuals' )
+			app.commandLine.appendSwitch( 'disable-gpu' )
+			app.disableHardwareAcceleration()
 
-		app.commandLine.appendSwitch( 'in-process-gpu' )
-		app.commandLine.appendSwitch( 'use-gl=desktop' )
+		}
+
+		// Fix for Linux transparency issues: wayland on linux/sway
+		// This switch runs the GPU process in the same process as the browser, which can help avoid the issues with transparency.
+		// https://github.com/microsoft/vscode/issues/146464
+		// https://www.electronjs.org/docs/latest/api/command-line-switches/#in-process-gpu
+		if ( !checkboxTrue( preferences.value( 'app.gpuprocess' ), 'gpuprocess' ) ) {
+
+			log.info( 'Setting: Sharing GPU process and browser' )
+
+			app.commandLine.appendSwitch( 'in-process-gpu' )
+			app.commandLine.appendSwitch( 'use-gl=desktop' )
+
+		}
 
 	}
 
@@ -152,7 +181,7 @@ const ready = async () => {
 	log.info( 'App ready' )
 
 	// Allow command-line reset
-	if ( process.env.CROSSOVER_RESET ) {
+	if ( isResetRequested() ) {
 
 		log.info( 'Command-line reset triggered' )
 		reset.app( true )
@@ -176,12 +205,7 @@ const ready = async () => {
 	/* AUTO-UPDATE */
 	autoUpdate.update()
 
-	// Alert from developer
-	// alert.init()
-
 	console.timeEnd( 'init' )
-
-	console.log( menuBarHeight() )
 
 }
 
@@ -204,6 +228,20 @@ module.exports = async () => {
 
 	// wait for app.on('ready')
 	await app.whenReady()
+
+	// Where a native Wayland backend can never grab a hotkey, come back on
+	// Ozone/X11 rather than asking the user to relaunch by hand. Nothing has a
+	// window yet, so this is the last quiet moment to replace the process. (#456)
+	//
+	// Deliberately after whenReady(): app.exit() before the message loop is up
+	// quits without running the relaunch, which would leave CrossOver unable to
+	// start at all. And never from a second instance, which is already quitting.
+	if ( app.hasSingleInstanceLock() && wayland.relaunchOnX11() ) {
+
+		return
+
+	}
+
 	//  Remove tray in Linux to fully quit
 
 	console.timeLog( 'init' )

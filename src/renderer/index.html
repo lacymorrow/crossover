@@ -45,6 +45,62 @@
 				<i class="info-icon d-none" data-feather="alert-circle"></i>
 				<i class="resize-icon d-none" data-feather="arrow-up-right"></i>
 			</div>
+
+			<div id="onboarding" class="onboarding d-none">
+				<div class="onboarding-step active" data-step="0">
+					<div class="onboarding-icon">&#127919;</div>
+					<div class="onboarding-title">Welcome to CrossOver</div>
+					<div class="onboarding-body">A customizable crosshair overlay for any game or app.</div>
+				</div>
+				<div class="onboarding-step" data-step="1">
+					<div class="onboarding-icon">&#128247;</div>
+					<div class="onboarding-title">Choose a Crosshair</div>
+					<div class="onboarding-body">Click the <b>target icon</b> to browse built-ins, or drag a custom image onto the window.</div>
+				</div>
+				<div class="onboarding-step" data-step="2">
+					<div class="onboarding-icon">&#128274;</div>
+					<div class="onboarding-title">Position &amp; Lock</div>
+					<div class="onboarding-body">Drag to position, then press <code>Ctrl+Alt+Shift+X</code> to lock it over your game.</div>
+				</div>
+				<div class="onboarding-step" data-step="3">
+					<div class="onboarding-icon">&#9881;</div>
+					<div class="onboarding-title">Explore &amp; Customize</div>
+					<div class="onboarding-body">Use <b>Settings</b> to tweak colors, size &amp; keybinds. Try shadow windows &amp; mouse-follow!</div>
+				</div>
+				<div class="onboarding-nav">
+					<div class="onboarding-dots">
+						<span class="onboarding-dot active"></span>
+						<span class="onboarding-dot"></span>
+						<span class="onboarding-dot"></span>
+						<span class="onboarding-dot"></span>
+					</div>
+					<div class="onboarding-actions">
+						<button id="onboarding-skip">Skip</button>
+						<button id="onboarding-next">Next</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="remote-banner" class="review-prompt remote-banner d-none" role="status">
+				<div class="review-prompt-body">
+					<span id="remote-banner-text" class="review-prompt-text"></span>
+					<div class="review-prompt-actions">
+						<button id="remote-banner-action" class="review-prompt-btn review-prompt-btn--primary d-none"></button>
+						<button id="remote-banner-dismiss" class="review-prompt-btn">Dismiss</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="review-prompt" class="review-prompt d-none">
+				<div class="review-prompt-body">
+					<span class="review-prompt-text">Enjoying CrossOver? Leave a review!</span>
+					<div class="review-prompt-actions">
+						<a id="review-prompt-rate" class="review-prompt-btn review-prompt-btn--primary" href="https://apps.microsoft.com/detail/9NMZ0J4ZCNJ5" target="_blank">Rate it</a>
+						<button id="review-prompt-later" class="review-prompt-btn">Later</button>
+						<button id="review-prompt-dismiss" class="review-prompt-btn">No thanks</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script src="./renderer.js"></script>

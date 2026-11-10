@@ -1,93 +1,276 @@
-const keycode = require( '../config/keycode.js' )
+const log = require( './log.js' )
+const notification = require( './notification' )
 const { checkboxTrue } = require( '../config/utils.js' )
 const preferences = require( './preferences' ).init()
-const log = require( './log.js' )
 const set = require( './set.js' )
 const windows = require( './windows.js' )
+const accessibility = require( './accessibility.js' )
 
-const importIoHook = async () => {
+let uIOhook
+let UiohookKey = {}
+let iohookLoadError = null
 
-	// Dynamically require iohook
-	// We do this in case it gets flagged by anti-cheat
+try {
 
-	if ( !iohook.hook ) {
+	( { uIOhook, UiohookKey } = require( 'uiohook-napi' ) )
 
-		log.info( 'Loading IOHook...' )
-		try {
+} catch ( error ) {
 
-			iohook.hook = await require( 'iohook' )
+	iohookLoadError = error
+	log.error( 'Failed to load uiohook-napi native module', error )
 
-		} catch ( error ) {
+}
 
-			console.warn( 'IOHook failed to load, you may be using an unsupported architecture (Apple M)' )
-			console.warn( error )
+const getIOHookHint = () => {
 
-			iohook.hook = null
+	if ( process.platform === 'linux' ) {
 
-		}
+		return 'Install the libxkbcommon-x11-0 package (sudo apt install libxkbcommon-x11-0) and restart CrossOver.'
 
 	}
 
-	return iohook.hook
+	if ( process.platform === 'win32' ) {
+
+		return 'Repair or reinstall CrossOver to restore the input hook.'
+
+	}
+
+	return 'Reinstall CrossOver or run npm rebuild uiohook-napi.'
+
+}
+
+let iohookNotificationShown = false
+
+const ensureIOHookAvailable = action => {
+
+	if ( uIOhook ) {
+
+		return true
+
+	}
+
+	log.error( `Skipping "${action}" because the input hook failed to load.`, iohookLoadError )
+
+	if ( !iohookNotificationShown ) {
+
+		notification( {
+			title: 'Input controls unavailable',
+			body: `CrossOver could not load the system hook module required for ${action}. ${getIOHookHint()}`,
+		} )
+		iohookNotificationShown = true
+
+	}
+
+	return false
+
+}
+
+// Right mouse button (MOUSE_BUTTON2 = 2 in uiohook-napi)
+const RIGHT_MOUSE_BUTTON = 2
+
+// Keep track of registered shortcuts to remove them later
+const registeredShortcuts = []
+
+// Set when the keyboard hide key is what put the crosshair away, so unlocking
+// can't leave the user staring at an empty screen hunting for their crosshair.
+let hiddenByKey = false
+
+// Crosshair appearance has to change on every crosshair window, not just the
+// main one. Duplicates (shadow windows) are crosshairs too, so hiding only
+// windows.win left them on screen while ADS-ing (#536, #539).
+const setCrosshairProperties = properties => {
+
+	windows.each( win => set.rendererProperties( properties, win ) )
 
 }
 
 const unregisterIOHook = () => {
 
-	if ( iohook.hook ) {
+	// Reset any changes to the crosshair
+	const opacity = ( () => {
 
-		// reset any changes to the crosshair
-		const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
-		const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
+		const v = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 )
 
-		// if smaller/tilted; move to actual size
-		set.rendererProperties( { '--crosshair-opacity': opacity.toString(),
-			'--crosshair-width': `${oldCrosshairSize}px`,
-			'--crosshair-height': `${oldCrosshairSize}px`,
-			'--tilt-angle': '0deg',
-		}, windows.win )
+		return Number.isFinite( v ) ? v / 100 : 1 // default to fully opaque
 
-		// reset any changes to the prefs
-		preferences.value( 'hidden.tilted', false )
-		preferences.value( 'hidden.ADShidden', false )
-		preferences.value( 'hidden.ADSed', false )
+	} )()
+	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
 
-		iohook.hook.unregisterAllShortcuts()
-		iohook.hook.removeAllListeners( 'mousedown' )
-		iohook.hook.removeAllListeners( 'mouseup' )
-		iohook.hook.removeAllListeners( 'mousemove' )
+	// If smaller/tilted; move to actual size
+	setCrosshairProperties( {
+		'--crosshair-opacity': opacity.toString(),
+		'--crosshair-width': `${oldCrosshairSize}px`,
+		'--crosshair-height': `${oldCrosshairSize}px`,
+		'--tilt-angle': '0deg',
+	} )
+
+	// Unlocking shouldn't leave the crosshair invisible because the hide key was
+	// still down (or latched) at the time.
+	if ( hiddenByKey ) {
+
+		windows.showWindow()
+		hiddenByKey = false
 
 	}
+
+	// Reset any changes to the prefs
+	preferences.value( 'hidden.tilted', false )
+	preferences.value( 'hidden.ADShidden', false )
+	preferences.value( 'hidden.ADSed', false )
+
+	// Stop and remove all listeners
+	if ( uIOhook ) {
+
+		uIOhook.stop()
+		registeredShortcuts.forEach( ( { event, listener } ) => {
+
+			uIOhook.off( event, listener )
+
+		} )
+
+	}
+
+	registeredShortcuts.length = 0 // Clear the array
+
+}
+
+const registerShortcut = ( keys, keyDownCallback, keyUpCallback ) => {
+
+	if ( !ensureIOHookAvailable( 'registering shortcuts' ) ) {
+
+		return
+
+	}
+
+	const pressed = new Set()
+	const keyCodes = keys.map( key => UiohookKey[key] || key )
+
+	const keyDownListener = e => {
+
+		if ( keyCodes.includes( e.keycode ) ) {
+
+			// The OS repeats keydown for as long as a key is held. Fire only on
+			// the press that completes the combo and stay latched until release,
+			// or a toggle flips several times per press.
+			const wasComplete = pressed.size === keyCodes.length
+
+			pressed.add( e.keycode )
+
+			if ( !wasComplete && pressed.size === keyCodes.length ) {
+
+				keyDownCallback( e )
+
+			}
+
+		}
+
+	}
+
+	uIOhook.on( 'keydown', keyDownListener )
+	registeredShortcuts.push( { event: 'keydown', listener: keyDownListener } )
+
+	// Listen for keyup even with no callback: releasing the key is what arms the
+	// latch above for the next press.
+	const keyUpListener = e => {
+
+		if ( keyCodes.includes( e.keycode ) ) {
+
+			if ( keyUpCallback && pressed.size === keyCodes.length ) {
+
+				keyUpCallback( e )
+
+			}
+
+			pressed.delete( e.keycode )
+
+		}
+
+	}
+
+	uIOhook.on( 'keyup', keyUpListener )
+	registeredShortcuts.push( { event: 'keyup', listener: keyUpListener } )
 
 }
 
 const followMouse = async () => {
 
+	if ( !ensureIOHookAvailable( 'Follow Mouse' ) ) {
+
+		return
+
+	}
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Mouse follow requires accessibility permissions' )
+
+		// Show user-friendly notification instead of crashing
+		accessibility.showAccessibilityDisabledNotification()
+
+		// Try to request permissions
+		const granted = await accessibility.requestAccessibilityPermissions()
+		if ( !granted ) {
+
+			log.info( 'Mouse follow disabled - accessibility permissions not granted' )
+
+			return
+
+		}
+
+	}
+
 	const { width, height } = windows.win.getBounds()
-
-	// Prevent saving bounds
-	// windows.win.removeAllListeners( 'move' )
-
 	log.info( 'Setting: Mouse Follow' )
-	await iohook.importIoHook()
 
-	if ( iohook.hook ) {
+	const listener = event => {
 
-		iohook.hook.removeAllListeners( 'mousemove' )
+		if ( !windows.win || windows.win.isDestroyed() ) {
 
-		// Register
-		iohook.hook.on( 'mousemove', event => {
+			return
 
-			// Can't set fractional values
-			windows.win.setBounds( {
-				x: event.x - Math.round( width / 2 ),
-				y: event.y - Math.round( height / 2 ),
-			} )
+		}
 
+		windows.win.setBounds( {
+			x: event.x - Math.round( width / 2 ),
+			y: event.y - Math.round( height / 2 ),
 		} )
 
-		// Start hook
-		iohook.hook.start()
+	}
+
+	// uiohook-napi has no named event for drag motion (libuiohook
+	// EVENT_MOUSE_DRAGGED, type 10): mousemove goes silent while a mouse
+	// button is held. Drags only surface on the raw "input" event, so
+	// listen there too or the crosshair freezes during click-hold (#541).
+	const EVENT_MOUSE_DRAGGED = 10
+	const dragListener = event => {
+
+		if ( event.type === EVENT_MOUSE_DRAGGED ) {
+
+			listener( event )
+
+		}
+
+	}
+
+	try {
+
+		uIOhook.on( 'mousemove', listener )
+		registeredShortcuts.push( { event: 'mousemove', listener } )
+		uIOhook.on( 'input', dragListener )
+		registeredShortcuts.push( { event: 'input', listener: dragListener } )
+		uIOhook.start()
+
+	} catch ( error ) {
+
+		log.error( 'Failed to start mouse follow:', error )
+
+		// If we get the accessibility error, handle it gracefully
+		if ( error.message && error.message.includes( 'Accessibility API is disabled' ) ) {
+
+			accessibility.showAccessibilityDisabledNotification()
+
+		}
 
 	}
 
@@ -95,319 +278,390 @@ const followMouse = async () => {
 
 const hideOnMouse = async () => {
 
+	if ( !ensureIOHookAvailable( 'Hide on Mouse' ) ) {
+
+		return
+
+	}
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Hide on mouse requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+
+		return
+
+	}
+
 	const opacity = Number.parseInt( preferences.value( 'crosshair.opacity' ), 10 ) / 100
 	const mouseButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
 	const hideOnMouseToggle = checkboxTrue( preferences.value( 'actions.hideOnMouseToggle' ), 'hideOnMouseToggle' )
+	const showOnMouseInvert = checkboxTrue( preferences.value( 'actions.showOnMouseInvert' ), 'showOnMouseInvert' )
 
-	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? ' toggle' : 'hold' ) )
-	await iohook.importIoHook()
+	log.info( 'Setting: Hide on Mouse ' + ( hideOnMouseToggle ? 'toggle' : 'hold' ) + ( showOnMouseInvert ? ' (inverted: show on ADS)' : '' ) )
 
-	log.info( opacity )
+	// In inverted mode the crosshair starts hidden; the button reveals it.
+	if ( showOnMouseInvert ) {
+
+		setCrosshairProperties( { '--crosshair-opacity': '0' } )
+
+	}
 
 	if ( hideOnMouseToggle ) {
 
-		iohook.hook.on( 'mousedown', event => {
+		const listener = event => {
 
 			const hidden = preferences.value( 'hidden.ADShidden' )
-
 			if ( event.button === mouseButton ) {
 
-				if ( hidden ) {
+				const nextHidden = !hidden
 
-					set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// In inverted mode, "hidden" state maps to visible (opposite of normal)
+				const showOpacity = showOnMouseInvert ? ( nextHidden ? opacity.toString() : '0' ) : ( nextHidden ? '0' : opacity.toString() )
 
-				} else {
-
-					set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
-
-				}
-
-				preferences.value( 'hidden.ADShidden', !hidden )
+				setCrosshairProperties( { '--crosshair-opacity': showOpacity } )
+				preferences.value( 'hidden.ADShidden', nextHidden )
 
 			}
 
-		} )
+		}
 
-	} else if ( iohook.hook ) {
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
 
-		// Register
-		iohook.hook.on( 'mousedown', event => {
+	} else {
 
-			if ( event.button === mouseButton ) {
-
-				set.rendererProperties( { '--crosshair-opacity': '0' }, windows.win )
-
-			}
-
-		} )
-
-		iohook.hook.on( 'mouseup', event => {
+		const mouseDownListener = event => {
 
 			if ( event.button === mouseButton ) {
 
-				set.rendererProperties( { '--crosshair-opacity': opacity.toString() }, windows.win )
+				// Normal: hide on press. Inverted: show on press.
+				setCrosshairProperties( { '--crosshair-opacity': showOnMouseInvert ? opacity.toString() : '0' } )
 
 			}
 
-		} )
+		}
+
+		uIOhook.on( 'mousedown', mouseDownListener )
+		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } )
+
+		const mouseUpListener = event => {
+
+			if ( event.button === mouseButton ) {
+
+				// Normal: show on release. Inverted: hide on release.
+				setCrosshairProperties( { '--crosshair-opacity': showOnMouseInvert ? '0' : opacity.toString() } )
+
+			}
+
+		}
+
+		uIOhook.on( 'mouseup', mouseUpListener )
+		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } )
 
 	}
 
-	if ( iohook.hook ) {
-
-		// Register and start hook
-		iohook.hook.start()
-
-	}
+	uIOhook.start()
 
 }
 
 const hideOnKey = async () => {
 
-	const isEnabled = preferences.value( 'actions.hideOnKey' )
+	if ( !ensureIOHookAvailable( 'Hide on Key' ) ) {
 
-	log.info( 'Setting: Keyboard Hold/Toggle' )
-	await iohook.importIoHook()
-
-	log.info( `Key: ${isEnabled}` )
-
-	if ( Object.prototype.hasOwnProperty.call( keycode, isEnabled ) ) {
-
-		const key = keycode[isEnabled]
-
-		// Register
-		iohook.hook.registerShortcut(
-			[ key ],
-			_ => {
-
-				windows.hideWindow()
-
-			},
-			_ => {
-
-				windows.showWindow()
-
-			},
-		)
-
-		// Register and start hook
-		iohook.hook.start()
+		return
 
 	}
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Hide on key requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+
+		return
+
+	}
+
+	const key = preferences.value( 'actions.hideOnKey' )
+	const mode = preferences.value( 'actions.hideOnKeyMode' ) || 'hold'
+
+	if ( !UiohookKey[key] ) {
+
+		return
+
+	}
+
+	log.info( `Setting: Hide on Key (${mode})` )
+
+	const hide = () => {
+
+		windows.hideWindow()
+		hiddenByKey = true
+
+	}
+
+	const show = () => {
+
+		windows.showWindow()
+		hiddenByKey = false
+
+	}
+
+	switch ( mode ) {
+
+	case 'toggle': {
+
+		registerShortcut( [ key ], () => ( windows.hidden ? show() : hide() ) )
+
+		break
+
+	}
+
+	// Hide now, and let the next ADS click bring the crosshair back. Lets you
+	// drop into first-person without holding a key the whole time.
+	case 'press': {
+
+		const adsButton = Number.parseInt( preferences.value( 'actions.hideOnMouse' ), 10 )
+		const revealButton = adsButton > 0 ? adsButton : RIGHT_MOUSE_BUTTON
+
+		registerShortcut( [ key ], () => hide() )
+
+		const listener = event => {
+
+			if ( event.button === revealButton && hiddenByKey ) {
+
+				show()
+
+			}
+
+		}
+
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
+
+		break
+
+	}
+
+	default: {
+
+		registerShortcut( [ key ], hide, show )
+
+	}
+
+	}
+
+	uIOhook.start()
 
 }
 
 const tiltCrosshair = angle => {
 
-	if ( angle && windows.win ) {
-
-		set.rendererProperties( { '--tilt-angle': `${angle}deg` }, windows.win )
-
-	} else {
-
-		set.rendererProperties( { '--tilt-angle': '0deg' }, windows.win )
-
-	}
+	// Every crosshair tilts, not just the main one (#561).
+	setCrosshairProperties( { '--tilt-angle': `${angle || 0}deg` } )
 
 }
 
 const tilt = async () => {
 
-	let leftKey
-	let rightKey
+	if ( !ensureIOHookAvailable( 'Tilt controls' ) ) {
+
+		return
+
+	}
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'Tilt controls require accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+
+		return
+
+	}
+
 	const tiltAngle = Number.parseInt( preferences.value( 'actions.tiltAngle' ), 10 )
 	const tiltToggle = checkboxTrue( preferences.value( 'actions.tiltToggle' ), 'tiltToggle' )
 	const tiltLeft = preferences.value( 'actions.tiltLeft' )
 	const tiltRight = preferences.value( 'actions.tiltRight' )
 
 	log.info( 'Setting: Tilt' )
-	await iohook.importIoHook()
 
-	if ( Object.prototype.hasOwnProperty.call( keycode, tiltLeft ) ) {
-
-		leftKey = Number.parseInt( keycode[tiltLeft], 10 )
+	if ( UiohookKey[tiltLeft] ) {
 
 		if ( tiltToggle ) {
 
-			iohook.hook.registerShortcut(
-				[ leftKey ],
-				_ => {
+			registerShortcut( [ tiltLeft ], () => {
 
-					const tilted = preferences.value( 'hidden.tilted' )
-					if ( tilted ) {
+				const tilted = preferences.value( 'hidden.tilted' )
+				if ( tilted ) {
 
-						tiltCrosshair( 0 )
+					tiltCrosshair( 0 )
 
-					} else {
-
-						tiltCrosshair( tiltAngle * -1 )
-
-					}
-
-					preferences.value( 'hidden.tilted', !tilted )
-
-				},
-			)
-
-		} else {
-
-			iohook.hook.registerShortcut(
-				[ leftKey ],
-				_ => {
+				} else {
 
 					tiltCrosshair( tiltAngle * -1 )
 
-				},
-				_ => {
+				}
 
-					tiltCrosshair( 0 )
+				preferences.value( 'hidden.tilted', !tilted )
 
-				},
-			)
-
-		}
-
-	}
-
-	if ( Object.prototype.hasOwnProperty.call( keycode, tiltRight ) ) {
-
-		rightKey = Number.parseInt( keycode[tiltRight], 10 )
-
-		if ( tiltToggle ) {
-
-			iohook.hook.registerShortcut(
-				[ rightKey ],
-				_ => {
-
-					const tilted = preferences.value( 'hidden.tilted' )
-					if ( tilted ) {
-
-						tiltCrosshair( 0 )
-
-					} else {
-
-						tiltCrosshair( tiltAngle )
-
-					}
-
-					preferences.value( 'hidden.tilted', !tilted )
-
-				},
-			)
+			} )
 
 		} else {
 
-			iohook.hook.registerShortcut(
-				[ rightKey ],
-				_ => {
-
-					tiltCrosshair( tiltAngle )
-
-				},
-				_ => {
-
-					tiltCrosshair( 0 )
-
-				},
+			registerShortcut(
+				[ tiltLeft ],
+				() => tiltCrosshair( tiltAngle * -1 ),
+				() => tiltCrosshair( 0 ),
 			)
 
 		}
 
 	}
 
-	if ( leftKey || rightKey ) {
+	if ( UiohookKey[tiltRight] ) {
 
-		// Register and start hook
-		iohook.hook.start()
+		if ( tiltToggle ) {
+
+			registerShortcut( [ tiltRight ], () => {
+
+				const tilted = preferences.value( 'hidden.tilted' )
+				if ( tilted ) {
+
+					tiltCrosshair( 0 )
+
+				} else {
+
+					tiltCrosshair( tiltAngle )
+
+				}
+
+				preferences.value( 'hidden.tilted', !tilted )
+
+			} )
+
+		} else {
+
+			registerShortcut(
+				[ tiltRight ],
+				() => tiltCrosshair( tiltAngle ),
+				() => tiltCrosshair( 0 ),
+			)
+
+		}
 
 	}
+
+	uIOhook.start()
 
 }
 
 const resizeOnADS = async () => {
 
-	const ADSSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 )
-	const resizeOnADSOption = preferences.value( 'actions.resizeOnADS' )
+	if ( !ensureIOHookAvailable( 'ADS resize' ) ) {
+
+		return
+
+	}
+
+	// Check accessibility permissions before starting
+	if ( !accessibility.checkAccessibilityPermissions() ) {
+
+		log.warn( 'ADS resize requires accessibility permissions' )
+		accessibility.showAccessibilityDisabledNotification()
+
+		return
+
+	}
+
+	const ads = preferences.value( 'actions.resizeOnADS' )
+
+	if ( !ads || ads === 'off' ) {
+
+		return
+
+	}
+
+	const adsSize = Number.parseInt( preferences.value( 'actions.ADSSize' ), 10 ) || 50
+	const adsToggle = ads === 'toggle'
 	const oldCrosshairSize = Number.parseInt( preferences.value( 'crosshair.size' ), 10 )
+	const newCrosshairSize = adsSize
 
-	log.info( 'Setting: Resize on ADS ' + ( resizeOnADSOption === 'toggle' ? ' toggle' : 'hold' ) )
-	await iohook.importIoHook()
+	log.info( 'Setting: ADS Resize' )
 
-	if ( resizeOnADSOption === 'toggle' ) {
+	if ( adsToggle ) {
 
-		iohook.hook.on( 'mousedown', event => {
+		const listener = event => {
 
-			if ( event.button === 2 ) {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
 
-				const ADSed = preferences.value( 'hidden.ADSed' )
+				const adsed = preferences.value( 'hidden.ADSed' )
+				const size = adsed ? oldCrosshairSize : newCrosshairSize
 
-				if ( ADSed ) {
+				setCrosshairProperties( {
+					'--crosshair-width': `${size}px`,
+					'--crosshair-height': `${size}px`,
+				} )
 
-					set.rendererProperties( {
-						'--crosshair-width': `${ADSSize}px`,
-						'--crosshair-height': `${ADSSize}px`,
-					}, windows.win )
-
-				} else {
-
-					set.rendererProperties( {
-						'--crosshair-width': `${oldCrosshairSize}px`,
-						'--crosshair-height': `${oldCrosshairSize}px`,
-					}, windows.win )
-
-				}
-
-				preferences.value( 'hidden.ADSed', !ADSed )
+				preferences.value( 'hidden.ADSed', !adsed )
 
 			}
 
-		} )
+		}
 
-	} else if ( resizeOnADSOption === 'hold' ) {
+		uIOhook.on( 'mousedown', listener )
+		registeredShortcuts.push( { event: 'mousedown', listener } )
 
-		iohook.hook.on( 'mousedown', event => {
+	} else {
 
-			if ( event.button === 2 ) {
+		const mouseDownListener = event => {
 
-				set.rendererProperties( {
-					'--crosshair-width': `${ADSSize}px`,
-					'--crosshair-height': `${ADSSize}px`,
-				}, windows.win )
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
+
+				setCrosshairProperties( {
+					'--crosshair-width': `${newCrosshairSize}px`,
+					'--crosshair-height': `${newCrosshairSize}px`,
+				} )
 
 			}
 
-		} )
+		}
 
-		iohook.hook.on( 'mouseup', event => {
+		uIOhook.on( 'mousedown', mouseDownListener )
+		registeredShortcuts.push( { event: 'mousedown', listener: mouseDownListener } )
 
-			if ( event.button === 2 ) {
+		const mouseUpListener = event => {
 
-				set.rendererProperties( {
+			if ( event.button === RIGHT_MOUSE_BUTTON ) {
+
+				// Size only. Opacity belongs to Hide on ADS; writing it here
+				// overrode "Show on ADS" and kept the crosshair visible (#539).
+				setCrosshairProperties( {
 					'--crosshair-width': `${oldCrosshairSize}px`,
 					'--crosshair-height': `${oldCrosshairSize}px`,
-				}, windows.win )
+				} )
 
 			}
 
-		} )
+		}
+
+		uIOhook.on( 'mouseup', mouseUpListener )
+		registeredShortcuts.push( { event: 'mouseup', listener: mouseUpListener } )
 
 	}
 
-	if ( resizeOnADS ) {
-
-		iohook.hook.start()
-
-	}
+	uIOhook.start()
 
 }
 
 const iohook = {
-	hook: null,
-	importIoHook,
 	unregisterIOHook,
 	followMouse,
-	hideOnKey,
 	hideOnMouse,
+	hideOnKey,
 	tilt,
 	resizeOnADS,
 }

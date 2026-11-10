@@ -7,6 +7,7 @@ const {
 	is,
 	appMenu,
 } = require( './util' )
+const { TROUBLESHOOTING_URL, COMPATIBILITY_URL } = require( '../config/config' )
 
 const errorHandling = require( './error-handling' )
 const dialog = require( './dialog' )
@@ -17,7 +18,7 @@ const windows = require( './windows' )
 
 /* MENU ITEMS */
 const closeWindowMenuItem = {
-	label: 'Custom Image...',
+	label: 'Close Window',
 	async click() {
 
 		// Open dialog
@@ -26,10 +27,12 @@ const closeWindowMenuItem = {
 	},
 }
 
-const preferencesMenuItems = [
+// #299: the Preferences accelerator is the one keybind users can't clear
+// individually, so the master switch has to reach it.
+const preferencesMenuItems = () => [
 	{
 		label: 'Preferences...',
-		accelerator: 'CommandOrControl+,',
+		...crossover.keybindsDisabled() ? {} : { accelerator: 'CommandOrControl+,' },
 		click() {
 
 			crossover.openSettingsWindow()
@@ -60,8 +63,22 @@ const resetMenuItem = {
 	label: 'Reset CrossOver',
 	async click() {
 
-		// Open dialog
-		reset.app()
+		const { dialog } = require( 'electron' )
+		const { response } = await dialog.showMessageBox( {
+			type: 'warning',
+			buttons: [ 'Cancel', 'Reset' ],
+			defaultId: 0,
+			cancelId: 0,
+			title: 'Reset CrossOver',
+			message: 'Are you sure you want to reset all settings?',
+			detail:
+				'This will remove all customizations and restore default settings. This cannot be undone.',
+		} )
+		if ( response === 1 ) {
+
+			reset.app()
+
+		}
 
 	},
 }
@@ -74,6 +91,11 @@ const showAppMenuItem = {
 
 	},
 }
+
+const troubleshootingMenuItem = openUrlMenuItem( {
+	label: 'Game Not Working? Troubleshooting Guide',
+	url: TROUBLESHOOTING_URL,
+} )
 
 /* SUBMENUS */
 const helpSubmenu = [
@@ -88,6 +110,14 @@ const helpSubmenu = [
 	openUrlMenuItem( {
 		label: 'Support the Developer',
 		url: 'https://www.patreon.com/lacymorrow',
+	} ),
+	{
+		type: 'separator',
+	},
+	troubleshootingMenuItem,
+	openUrlMenuItem( {
+		label: 'Game Compatibility List',
+		url: COMPATIBILITY_URL,
 	} ),
 	{
 		type: 'separator',
@@ -116,7 +146,9 @@ const debugSubmenu = [
 		label: 'Show Preferences File',
 		async click() {
 
-			await shell.openPath( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			await shell.openPath(
+				path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+			)
 
 		},
 	},
@@ -135,7 +167,9 @@ const debugSubmenu = [
 		label: 'Delete Preferences',
 		click() {
 
-			shell.trashItem( path.resolve( app.getPath( 'userData' ), 'preferences.json' ) )
+			shell.trashItem(
+				path.resolve( app.getPath( 'userData' ), 'preferences.json' ),
+			)
 			app.relaunch()
 			app.quit()
 
@@ -154,8 +188,8 @@ const debugSubmenu = [
 ]
 
 /* TEMPLATES */
-const macosTemplate = [
-	appMenu( [ ...preferencesMenuItems ] ),
+const macosTemplate = () => [
+	appMenu( [ ...preferencesMenuItems() ] ),
 	{
 		role: 'fileMenu',
 		submenu: [
@@ -176,11 +210,11 @@ const macosTemplate = [
 ]
 
 // Linux and Windows
-const otherTemplate = [
+const otherTemplate = () => [
 	{
 		role: 'fileMenu',
 		submenu: [
-			...preferencesMenuItems,
+			...preferencesMenuItems(),
 			openCustomImageMenuItem,
 			{
 				type: 'separator',
@@ -199,7 +233,7 @@ const otherTemplate = [
 
 const init = () => {
 
-	const template = is.macos ? macosTemplate : otherTemplate
+	const template = is.macos ? macosTemplate() : otherTemplate()
 
 	if ( is.development ) {
 
@@ -221,5 +255,6 @@ const menu = {
 	openCustomImageMenuItem,
 	resetMenuItem,
 	showAppMenuItem,
+	troubleshootingMenuItem,
 }
 module.exports = menu

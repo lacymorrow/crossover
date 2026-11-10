@@ -5,6 +5,8 @@ const preferences = require( './preferences' ).init()
 const helpers = require( './helpers' )
 const log = require( './log' )
 const reset = require( './reset' )
+const banner = require( './banner' )
+const reviewPrompt = require( './review-prompt' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
@@ -123,6 +125,41 @@ const init = () => {
 
 	} )
 
+	ipcMain.on( 'complete_onboarding', () => {
+
+		preferences.value( 'hidden.onboardingCompleted', true )
+
+	} )
+
+	ipcMain.on( 'review_prompt_dismiss', () => {
+
+		reviewPrompt.dismiss()
+
+	} )
+
+	ipcMain.on( 'banner_dismiss', () => {
+
+		banner.dismiss()
+
+	} )
+
+	ipcMain.on( 'banner_action', event => {
+
+		const status = banner.act()
+		if ( status ) {
+
+			event.sender.send( 'set_banner_status', status )
+
+		}
+
+	} )
+
+	ipcMain.on( 'review_prompt_later', () => {
+
+		reviewPrompt.later()
+
+	} )
+
 	ipcMain.on( 'set_preference', arg => {
 
 		if ( arg.key && arg.value ) {
@@ -130,6 +167,29 @@ const init = () => {
 			preferences.value( arg.key, arg.value )
 
 		}
+
+	} )
+
+	/* Internal main-process events */
+
+	// Rebuild the app menu and the tray menu. crossover.js fires this when the
+	// keybinds master switch flips (#299); it cannot call menu.init() itself
+	// because menu.js and tray.js both require crossover.js. Required lazily so
+	// the load order is the same as before: menu.js builds its items at module
+	// load and ipc.init() runs before the first window exists.
+	ipcMain.on( 'refresh_menus', () => {
+
+		require( './menu' ).init()
+		require( './tray' ).refreshMenu()
+
+	} )
+
+	// Re-apply the whole preference set. presets.js fires this after applying a
+	// loadout; crossover.js requires presets for the cycle shortcut, so presets
+	// must not require crossover back.
+	ipcMain.on( 'sync_settings', () => {
+
+		crossover.syncSettings()
 
 	} )
 

@@ -1,0 +1,48 @@
+name: release-snap
+
+# Snap is deliberately NOT part of the v* release workflow (LAC-4454). Its build
+# fails on every tag (app-builder exit 64 under snapcraft >=8) and the old step
+# published to the Snap Store stable channel on tag push, with no human gate.
+# Run this by hand instead. Nothing here touches a GitHub release.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Upload the snap to the Snap Store candidate channel (needs SNAPCRAFT_STORE_CREDENTIALS)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  snap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Build snap
+        run: npx electron-builder --linux snap --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crossover-snap
+          path: dist/*.snap
+
+      # Candidate, never stable: promote to stable by hand in the Snap Store
+      # dashboard (or `snapcraft release`) after checking the build.
+      - name: Upload snap to Snap Store candidate channel
+        if: ${{ inputs.publish }}
+        run: snapcraft upload --release=candidate dist/*.snap
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}

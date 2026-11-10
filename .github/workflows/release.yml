@@ -1,0 +1,124 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  # QA verification build (LAC-4450). Builds and signs exactly what a tag push
+  # would build, but publishes nothing: artifacts are uploaded to the workflow
+  # run only, no GitHub release is created or touched. spctl and stapler can
+  # only be run against a real built app, so QA needs a way to get one without
+  # creating a release object first.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      # Developer ID signing + notarization. Without these the build is ad-hoc
+      # signed and macOS installs can't auto-update.
+      - name: Import signing certificate
+        run: .github/scripts/import-signing-cert.sh
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+
+      - name: Build and publish macOS
+        run: npx electron-builder --macos --publish ${{ github.event_name == 'workflow_dispatch' && 'never' || 'always' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_NAME: Lacy Morrow (DPFY6AHP57)
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+      - name: Upload macOS artifacts for QA
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crossover-mac-unpublished
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/latest-mac.yml
+
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and publish Windows
+        # x64 only — uiohook-napi ships no ia32 N-API prebuilt (npmRebuild is disabled)
+        run: npx electron-builder --win --x64 --publish ${{ github.event_name == 'workflow_dispatch' && 'never' || 'always' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # #535: compiling is not opening. Dispatch only.
+      - name: Smoke test Windows build
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: .github/scripts/windows-smoke.ps1
+
+      - name: Upload Windows artifacts for QA
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crossover-win-unpublished
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            dist/*.exe
+            dist/latest.yml
+            dist/windows-smoke.png
+
+  release-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install -y rpm
+
+      - name: Build and publish Linux
+        run: npx electron-builder --linux AppImage deb --x64 --publish ${{ github.event_name == 'workflow_dispatch' && 'never' || 'always' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux artifacts for QA
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crossover-linux-unpublished
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/latest-linux.yml

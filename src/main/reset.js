@@ -4,6 +4,7 @@ const sound = require( './sound' )
 const windows = require( './windows' )
 const Preferences = require( './preferences' )
 const keyboard = require( './keyboard' )
+const accessibility = require( './accessibility' )
 const preferences = Preferences.init()
 const app = skipFullReset => {
 
@@ -17,6 +18,9 @@ const app = skipFullReset => {
 	keyboard.escapeAction()
 
 	reset.allPreferences()
+
+	// Reset accessibility preferences
+	accessibility.resetAccessibilityPreferences()
 
 	if ( !skipFullReset ) {
 
@@ -65,11 +69,19 @@ const preference = key => {
 // Temp until implemented in electron-preferences
 const allPreferences = () => {
 
-	// defaults are all different: defaults.crosshair.positionX, Preferences.defaults.crosshair.positionX, Preferences.getDefaults().crosshair.positionX
+	if ( typeof preferences.resetToDefaults === 'function' ) {
 
-	for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
+		preferences.resetToDefaults()
 
-		preferences.value( key, value )
+	} else {
+
+		// defaults are all different: defaults.crosshair.positionX, Preferences.defaults.crosshair.positionX, Preferences.getDefaults().crosshair.positionX
+
+		for ( const [ key, value ] of Object.entries( Preferences.getDefaults() ) ) {
+
+			preferences.value( key, value )
+
+		}
 
 	}
 

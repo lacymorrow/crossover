@@ -1,15 +1,17 @@
+@use "sass:color";
+
 $pref_highlight_color_dark: orange;
 $pref_highlight_color_light: red;
 
 
 :root {
 	--pref-highlight-color: #{$pref_highlight_color_dark};
-	--pref-highlight-color-hover: #{darken($pref_highlight_color_dark, 20%)};
+	--pref-highlight-color-hover: #{color.scale($pref_highlight_color_dark, $lightness: -40%)};
 
 	// ANY LIGHT/DARK MODE SETTINGS ^v
 	@media (prefers-color-scheme: light) {
 		--pref-highlight-color: #{$pref_highlight_color_light};
-		--pref-highlight-color-hover: #{darken($pref_highlight_color_light, 20%)};
+		--pref-highlight-color-hover: #{color.scale($pref_highlight_color_light, $lightness: -40%)};
 
 	}
 }

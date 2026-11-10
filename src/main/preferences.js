@@ -38,12 +38,18 @@ const getDefaults = () => ( {
 		resizeOnADS: 'off',
 		ADSSize: 50,
 		hideOnMouse: '-1',
+		showOnMouseInvert: [],
 		tiltEnable: [],
 		tiltToggle: [],
 		tiltAngle: 25,
 		hideOnKey: '',
+		hideOnKeyMode: 'hold',
 		tiltLeft: '',
 		tiltRight: '',
+	},
+	presets: {
+		active: '',
+		name: '',
 	},
 	app: {
 		theme: DEFAULT_THEME || 'system',
@@ -54,11 +60,13 @@ const getDefaults = () => ( {
 		updates: [ 'updates' ],
 		sounds: [ 'sounds' ],
 		gpu: [ 'gpu' ],
+		hideFromScreenCapture: [],
 		startUnlocked: [ 'startUnlocked' ],
 		boot: [],
 		appSize: 'normal',
 	},
 	keybinds: {
+		disableAll: [],
 		reset: 'Control+Shift+Alt+R',
 		lock: 'Control+Shift+Alt+X',
 		center: 'Control+Shift+Alt+C',
@@ -72,17 +80,36 @@ const getDefaults = () => ( {
 		nextWindow: 'Control+Shift+Alt+O',
 		about: 'Control+Shift+Alt+A',
 		quit: 'Control+Shift+Alt+Q',
+		hideReticle: 'Control+Shift+Alt+S',
+		cyclePreset: 'Control+Shift+Alt+P',
 
 	},
 	hidden: {
+		presets: [],
 		frame: false,
 		locked: false,
+		onboardingCompleted: false,
 		showSettings: false,
 		tilted: false,
 		ADSed: false,
 		ADShidden: false,
+		reticleHidden: false,
+		reviewPromptLaunchCount: 0,
+		reviewPromptFirstLaunchDate: null,
+		reviewPromptState: 'pending',
+		reviewPromptLaterDate: null,
+		bannerDismissedId: null,
+		updateChannel: null,
+		// Not exposed in the UI (#299): when true, "Disable All Keybinds" also
+		// clears Lock and Reset. Edit preferences.json by hand to opt in.
+		disableSafetyKeybinds: false,
 	},
 } )
+
+// #299: the master switch leaves these fields editable but inert, so say so
+// instead of letting the list look like it still works. Serialized to the
+// preferences renderer, so it cannot reference anything outside itself.
+const showWhenKeybindsDisabled = allPreferences => !allPreferences?.keybinds?.disableAll?.includes( 'disableAll' )
 
 const preferencesConfig = {
 	browserWindowOverrides,
@@ -249,7 +276,7 @@ const preferencesConfig = {
 						label: 'CrossOver Actions (beta)',
 						fields: [
 							{
-								content: '<p><b>Note:</b> CrossOver Actions do not work on Apple Silicon.</p>',
+								content: '<p><b>Note:</b> On macOS these need Accessibility permission (System Settings &gt; Privacy &amp; Security &gt; Accessibility). Games with kernel-level anti-cheat can block them entirely.</p>',
 								type: 'message',
 							},
 						],
@@ -258,11 +285,15 @@ const preferencesConfig = {
 						label: 'Mouse Actions',
 						fields: [
 							{
+								content: '<p><b>Note:</b> Mouse Actions only take effect once the crosshair is locked (default <code>Ctrl+Shift+Alt+X</code>). If a setting here appears to do nothing, lock the crosshair first.</p>',
+								type: 'message',
+							},
+							{
 								label: 'Follow Mouse',
 								key: 'followMouse',
 								type: 'checkbox',
 								options: [ { label: 'Lock the crosshair to the mouse cursor', value: 'followMouse' } ],
-								help: 'Keeps CrossOver centered on the mouse cursor. ',
+								help: 'Keeps CrossOver centered on the mouse cursor. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Resize crosshair on ADS',
@@ -273,7 +304,7 @@ const preferencesConfig = {
 									{ label: 'Toggle right mouse-button', value: 'toggle' },
 									{ label: 'Hold right mouse-button', value: 'hold' },
 								],
-								help: 'Change crosshair size when ADS-ing',
+								help: 'Change crosshair size when ADS-ing. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Crosshair ADS Size',
@@ -294,7 +325,7 @@ const preferencesConfig = {
 									{ label: 'Backward mouse-button', value: '4' },
 									{ label: 'Forward mouse-button', value: '5' },
 								],
-								help: 'Hides the crosshair when the specified mouse button is held.',
+								help: 'Hides the crosshair when the specified mouse button is held. Requires the crosshair to be locked.',
 							},
 							{
 								label: 'Toggle/Hold ADS',
@@ -303,17 +334,39 @@ const preferencesConfig = {
 								options: [ { label: 'On ADS, toggle hiding/showing the Crosshair (vs hold)', value: 'hideOnMouseToggle' } ],
 								help: 'Toggle hiding/showing the Crosshair when ADS-ing, vs holding to hide the Crosshair while ADS-ing.',
 							},
+							{
+								label: 'Show on ADS',
+								key: 'showOnMouseInvert',
+								type: 'checkbox',
+								options: [ { label: 'Invert: show crosshair while ADS-ing (hidden normally)', value: 'showOnMouseInvert' } ],
+								help: 'When enabled, the crosshair is hidden by default and only appears while the ADS button is held.',
+							},
 						],
 					},
 					{
 						label: 'Keyboard Actions',
 						fields: [
 							{
+								content: '<p><b>Note:</b> Keyboard Actions only take effect once the crosshair is locked (default <code>Ctrl+Shift+Alt+X</code>).</p>',
+								type: 'message',
+							},
+							{
 								label: 'Hide on keypress',
 								key: 'hideOnKey',
 								type: 'accelerator',
-								help: 'Hides the crosshair when the above key is held. Single key only. Delete/Backspace to disable.',
+								help: 'Hides the crosshair with the above key. Single key only. Delete/Backspace to disable.',
 								allowOnlyModifier: true,
+							},
+							{
+								label: 'Keypress behavior',
+								key: 'hideOnKeyMode',
+								type: 'radio',
+								options: [
+									{ label: 'Hold the key to hide', value: 'hold' },
+									{ label: 'Press to hide, press again to show', value: 'toggle' },
+									{ label: 'Press to hide until the next ADS click', value: 'press' },
+								],
+								help: 'How the key above behaves. "Until the next ADS click" drops the crosshair for first-person view and brings it back the next time you aim.',
 							},
 							{
 								heading: 'Crosshair Tilt Left/Right',
@@ -357,6 +410,56 @@ const preferencesConfig = {
 			},
 		},
 		{
+			id: 'presets',
+			label: 'Presets',
+			icon: 'layers-3',
+			form: {
+				groups: [
+					{
+						label: 'Crosshair Presets',
+						fields: [
+							{
+								content: '<p>A preset remembers your crosshair and action settings so you can keep one per game.</p><p>Press <code>CTRL+ALT+SHIFT+P</code> to switch to the next preset without opening this window.</p>',
+								type: 'message',
+							},
+							{
+								label: 'Active Preset',
+								key: 'active',
+								type: 'dropdown',
+								help: 'Save your first preset below and it shows up here.',
+								// Options and help are filled in at runtime, see main/presets.js
+								options: [],
+							},
+							{
+								label: 'Preset Name',
+								key: 'name',
+								type: 'text',
+								help: 'Leave this blank and CrossOver names the preset for you.',
+							},
+							{
+								label: 'Save Preset',
+								// electron-preferences compares this against the string 'true'
+								hideLabel: 'true',
+								buttonLabel: 'Save Current Settings',
+								key: 'savePreset',
+								type: 'button',
+								help: 'Saving over a name you already used replaces that preset.',
+							},
+							{
+								label: 'Delete Preset',
+								// electron-preferences compares this against the string 'true'
+								hideLabel: 'true',
+								buttonLabel: 'Delete Active Preset',
+								key: 'deletePreset',
+								type: 'button',
+								help: 'Removes the preset shown above.',
+							},
+						],
+					},
+				],
+			},
+		},
+		{
 			id: 'keybinds',
 			label: 'Keybinds',
 			icon: 'handout',
@@ -369,11 +472,23 @@ const preferencesConfig = {
 								content: '<p>You can clear or disable a keybind completely by using Backspace/Delete.</p><p>Use <code>CTRL+ALT+SHIFT+R</code> to reset all settings.</p>',
 								type: 'message',
 							},
+							{
+								label: 'Disable All Keybinds',
+								key: 'disableAll',
+								type: 'checkbox',
+								options: [ { label: 'Turn off every keybind, including Preferences', value: 'disableAll' } ],
+								help: 'Lock and Reset keep working so you can always unlock the app. To drop those two as well, set "disableSafetyKeybinds" to true in preferences.json.',
+							},
 						],
 					},
 					{
 						label: 'Custom Keybinds',
 						fields: [
+							{
+								content: '<p><strong>These keybinds are turned off.</strong> They still save, and they fire again when you turn the switch back on.</p>',
+								type: 'message',
+								hideFunction: showWhenKeybindsDisabled,
+							},
 							{
 								label: 'Lock Crosshair in Place',
 								key: 'lock',
@@ -389,10 +504,17 @@ const preferencesConfig = {
 								modifierRequired: true,
 							},
 							{
-								label: 'Show/Hide Crosshair',
+								label: 'Show/Hide CrossOver',
 								key: 'hide',
 								type: 'accelerator',
 								help: 'Hide CrossOver from the screen.',
+								modifierRequired: true,
+							},
+							{
+								label: 'Show/Hide Reticle',
+								key: 'hideReticle',
+								type: 'accelerator',
+								help: 'Toggle the center reticle visibility.',
 								modifierRequired: true,
 							},
 							{
@@ -442,6 +564,13 @@ const preferencesConfig = {
 								key: 'moveRight',
 								type: 'accelerator',
 								help: 'Move the crosshair right 1 pixel.',
+								modifierRequired: true,
+							},
+							{
+								label: 'Next Preset',
+								key: 'cyclePreset',
+								type: 'accelerator',
+								help: 'Switch to the next saved preset.',
 								modifierRequired: true,
 							},
 							// Allowing users to change the Reset shortcut may end poorly
@@ -533,7 +662,7 @@ const preferencesConfig = {
 								key: 'alerts',
 								type: 'checkbox',
 								options: [ { label: 'Receive information from the developer', value: 'alerts' } ],
-								help: 'You may receive a notification regarding bugs or updates from the developer.',
+								help: 'Shows an occasional note from the developer in the crosshair window while it is unlocked. Never shown while locked.',
 							},
 							{
 								label: 'Hardware Acceleration',
@@ -548,6 +677,13 @@ const preferencesConfig = {
 								type: 'checkbox',
 								options: [ { label: 'This switch runs the GPU process in the same process as the browser', value: 'gpuprocess' } ],
 								help: 'This can help avoid issues with transparency.',
+							},
+							{
+								label: 'Hide From Screen Recording',
+								key: 'hideFromScreenCapture',
+								type: 'checkbox',
+								options: [ { label: 'Exclude the crosshair from screen captures and recordings', value: 'hideFromScreenCapture' } ],
+								help: 'Prevents the crosshair from showing up in screen recordings (e.g. GeForce Instant Replay, OBS, screenshots). The crosshair remains visible on-screen. Requires Windows 10 or later for full effect.',
 							},
 							{
 								label: 'Run App On System Start',

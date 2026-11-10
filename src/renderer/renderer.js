@@ -356,4 +356,158 @@
 
 	}, true )
 
+	// Onboarding overlay
+	const onboardingEl = document.querySelector( '#onboarding' )
+	if ( onboardingEl ) {
+
+		const steps = onboardingEl.querySelectorAll( '.onboarding-step' )
+		const dots = onboardingEl.querySelectorAll( '.onboarding-dot' )
+		const skipBtn = document.querySelector( '#onboarding-skip' )
+		const nextBtn = document.querySelector( '#onboarding-next' )
+		let currentStep = 0
+
+		const showStep = step => {
+
+			steps.forEach( ( el, i ) => el.classList.toggle( 'active', i === step ) )
+			dots.forEach( ( el, i ) => el.classList.toggle( 'active', i === step ) )
+			nextBtn.textContent = step === steps.length - 1 ? 'Done' : 'Next'
+
+		}
+
+		const completeOnboarding = () => {
+
+			onboardingEl.classList.add( 'd-none' )
+			window.crossover.send( 'complete_onboarding' )
+
+		}
+
+		skipBtn.addEventListener( 'click', completeOnboarding )
+
+		nextBtn.addEventListener( 'click', () => {
+
+			if ( currentStep < steps.length - 1 ) {
+
+				currentStep++
+				showStep( currentStep )
+
+			} else {
+
+				completeOnboarding()
+
+			}
+
+		} )
+
+		window.crossover.receive( 'show_onboarding', () => {
+
+			currentStep = 0
+			showStep( currentStep )
+			onboardingEl.classList.remove( 'd-none' )
+
+		} )
+
+	}
+
+	// Review prompt
+	const reviewPromptEl = document.querySelector( '#review-prompt' )
+	if ( reviewPromptEl ) {
+
+		const rateBtn = document.querySelector( '#review-prompt-rate' )
+		const laterBtn = document.querySelector( '#review-prompt-later' )
+		const dismissBtn = document.querySelector( '#review-prompt-dismiss' )
+
+		const hideReviewPrompt = () => {
+
+			reviewPromptEl.classList.add( 'd-none' )
+
+		}
+
+		if ( rateBtn ) {
+
+			rateBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_dismiss' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		if ( laterBtn ) {
+
+			laterBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_later' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		if ( dismissBtn ) {
+
+			dismissBtn.addEventListener( 'click', () => {
+
+				window.crossover.send( 'review_prompt_dismiss' )
+				hideReviewPrompt()
+
+			} )
+
+		}
+
+		window.crossover.receive( 'show_review_prompt', () => {
+
+			reviewPromptEl.classList.remove( 'd-none' )
+
+		} )
+
+	}
+
+	/* Remote banner (see src/main/banner.js) */
+	const bannerEl = document.querySelector( '#remote-banner' )
+	if ( bannerEl ) {
+
+		const bannerText = document.querySelector( '#remote-banner-text' )
+		const bannerAction = document.querySelector( '#remote-banner-action' )
+		const bannerDismiss = document.querySelector( '#remote-banner-dismiss' )
+
+		window.crossover.receive( 'set_banner', banner => {
+
+			if ( !banner ) {
+
+				bannerEl.classList.add( 'd-none' )
+
+				return
+
+			}
+
+			bannerText.textContent = banner.message
+			bannerAction.textContent = banner.action?.label || ''
+			bannerAction.classList.toggle( 'd-none', !banner.action )
+			bannerEl.classList.remove( 'd-none' )
+
+		} )
+
+		window.crossover.receive( 'set_banner_status', status => {
+
+			bannerText.textContent = status
+			bannerAction.classList.add( 'd-none' )
+
+		} )
+
+		bannerAction.addEventListener( 'click', () => {
+
+			window.crossover.send( 'banner_action' )
+
+		} )
+
+		bannerDismiss.addEventListener( 'click', () => {
+
+			window.crossover.send( 'banner_dismiss' )
+			bannerEl.classList.add( 'd-none' )
+
+		} )
+
+	}
+
 } )()

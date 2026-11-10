@@ -4,6 +4,7 @@ const { app, BrowserWindow, screen } = require( 'electron' )
 
 const { activeWindow, centerWindow, is } = require( './util' )
 const { APP_HEIGHT, APP_WIDTH, MAX_SHADOW_WINDOWS, APP_ASPECT_RATIO } = require( '../config/config.js' )
+const { checkboxTrue } = require( '../config/utils.js' )
 const { productName } = require( '../../package.json' )
 const dock = require( './dock.js' )
 const log = require( './log.js' )
@@ -77,6 +78,43 @@ const getActiveWindow = () => {
 
 }
 
+// Toggle whether a window is excluded from screen captures / recordings (#359)
+// Uses Electron's setContentProtection, which maps to WDA_MONITOR / WDA_EXCLUDEFROMCAPTURE
+// on Windows and NSWindowSharingNone on macOS.
+const applyContentProtection = ( win, enabled = checkboxTrue( preferences.value( 'app.hideFromScreenCapture' ), 'hideFromScreenCapture' ) ) => {
+
+	if ( !win || win.isDestroyed() ) {
+
+		return
+
+	}
+
+	try {
+
+		win.setContentProtection( Boolean( enabled ) )
+
+	} catch ( error ) {
+
+		log.error( `setContentProtection failed: ${error?.message}` )
+
+	}
+
+}
+
+// Apply the current hideFromScreenCapture preference to every crosshair window
+const syncContentProtection = () => {
+
+	const enabled = checkboxTrue( preferences.value( 'app.hideFromScreenCapture' ), 'hideFromScreenCapture' )
+	applyContentProtection( windows.win, enabled )
+
+	for ( const currentWindow of windows.shadowWindows ) {
+
+		applyContentProtection( currentWindow, enabled )
+
+	}
+
+}
+
 // Prevent window from being garbage collected
 // Default no shadow window
 const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
@@ -125,13 +163,18 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 
 	}
 
+	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
+	// Must run BEFORE the window exists (#546): hiding the dock transforms the
+	// process into a UIElement app, and macOS only lets windows created while the
+	// process is already a UIElement float over another app's fullscreen Space.
+	// Transforming afterwards leaves the existing window stuck on the desktop space.
+	dock.setVisible( false )
+
 	const win = new BrowserWindow( options )
 
 	// Maintain aspect ratio
 	win.setAspectRatio( APP_ASPECT_RATIO )
 
-	// Enables staying on fullscreen apps for macos https://github.com/electron/electron/pull/11599
-	dock.setVisible( false )
 	win.setFullScreenable( false )
 
 	// VisibleOnFullscreen removed in https://github.com/electron/electron/pull/21706
@@ -140,6 +183,9 @@ const create = ( { isShadowWindow } = { isShadowWindow: false } ) => {
 	// Values include normal, floating, torn-off-menu, modal-panel, main-menu, status, pop-up-menu, screen-saver
 	win.setAlwaysOnTop( true, 'screen-saver', 1 )
 	win.setFullScreenable( false )
+
+	// Exclude the crosshair from screen recordings / captures when enabled (#359)
+	applyContentProtection( win )
 
 	win.once( 'ready-to-show', () => {
 
@@ -332,12 +378,16 @@ const hideChooserWindow = ( { focus } = {} ) => {
 // Switch window type when hiding chooser
 const hideSettingsWindow = () => {
 
-	if ( windows.preferencesWindow && windows.preferencesWindow.isVisible() ) {
+	if ( windows.preferencesWindow && !windows.preferencesWindow.isDestroyed() && windows.preferencesWindow.isVisible() ) {
 
 		preferences.value( 'hidden.showSettings', false )
 		windows.preferencesWindow.close()
 		windows.preferencesWindow = null
 		windows.win.focus()
+
+	} else {
+
+		windows.preferencesWindow = null
 
 	}
 
@@ -372,22 +422,36 @@ const center = options => {
 
 }
 
+// Duplicates are crosshairs too, so the visibility class has to reach every
+// window and not just windows.win. Sending to the main window alone left
+// duplicates on screen through the hide hotkey and Hide on keypress (#560).
+const sendToEveryCrosshair = ( channel, argument ) => {
+
+	each( windows, win => {
+
+		if ( win && !win.isDestroyed() ) {
+
+			win.webContents.send( channel, argument )
+
+		}
+
+	} )
+
+}
+
 const showWindow = () => {
 
 	// Todo: showInactive() can be used in later versions of Electron
 	// each( win => win.showInactive() )
 
-	windows.win.webContents.send( 'remove_class', 'hidden' )
+	sendToEveryCrosshair( 'remove_class', 'hidden' )
 	windows.hidden = false
 
 }
 
 const hideWindow = () => {
 
-	// Previously:
-	// each( win => win.hide() )
-
-	windows.win.webContents.send( 'add_class', 'hidden' )
+	sendToEveryCrosshair( 'add_class', 'hidden' )
 	windows.hidden = true
 
 }
@@ -532,6 +596,12 @@ const onWillResize = ( _event, newBounds ) => {
 // Prevent opening windows off-screen; Must pass width/height to set safely
 const safeSetBounds = ( win, bounds ) => {
 
+	if ( !win || win.isDestroyed() ) {
+
+		return
+
+	}
+
 	let currentBounds
 	if ( !( bounds.width && bounds.height ) ) {
 
@@ -584,6 +654,8 @@ const unregister = () => {
 
 const windows = {
 
+	applyContentProtection,
+	syncContentProtection,
 	init,
 	load,
 	each,

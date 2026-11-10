@@ -8,8 +8,10 @@ const APP_WIDTH = 208
 
 const DEFAULT_DEBOUNCE = 20
 const DEFAULT_THEME = 'light'
-const ALERT_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/master/CROSSOVER_ALERT'
+const BANNER_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/main/banner.json'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
+const TROUBLESHOOTING_URL = 'https://github.com/lacymorrow/crossover#game-compatibility'
+const COMPATIBILITY_URL = 'https://github.com/lacymorrow/crossover/issues/47'
 const RELEASES_URL = 'https://github.com/lacymorrow/crossover/releases/latest'
 const APP_ASPECT_RATIO = 16 / 10
 const APP_HEIGHT_MEDIUM = 225
@@ -20,7 +22,7 @@ const SETTINGS_WINDOW_DEVTOOLS = true
 const SHADOW_WINDOW_OFFSET = 40
 
 // Debounce delay in ms
-const DEBOUNCE_DELAY = 200
+const DEBOUNCE_DELAY = 500
 
 const SUPPORTED_IMAGE_FILE_TYPES = [
 	'bmp', 'gif', 'jpg', 'jpeg', 'jfif', 'jfi', 'jif', 'png', 'svg', 'webp',
@@ -42,9 +44,11 @@ const config = {
 	DEBOUNCE_DELAY,
 	DEFAULT_THEME,
 	FILE_FILTERS,
-	ALERT_URL,
+	BANNER_URL,
+	COMPATIBILITY_URL,
 	HOMEPAGE_URL,
 	RELEASES_URL,
+	TROUBLESHOOTING_URL,
 	MAX_SHADOW_WINDOWS,
 	SETTINGS_WINDOW_DEVTOOLS,
 	SHADOW_WINDOW_OFFSET,

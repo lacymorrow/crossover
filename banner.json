@@ -1,0 +1,10 @@
+{
+	"id": "v4-preview",
+	"enabled": false,
+	"message": "CrossOver 4 is ready to try.",
+	"action": {
+		"label": "Try CrossOver 4",
+		"type": "update-v4",
+		"url": "https://github.com/lacymorrow/crossover/releases"
+	}
+}

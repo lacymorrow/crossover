@@ -91,6 +91,14 @@ const update = () => {
 			log.info( 'Setting: Automatic Updates' )
 
 			autoUpdater.logger = log
+
+			// Opted into CrossOver 4 from the banner; v4 ships as a GitHub pre-release
+			if ( preferences.value( 'hidden.updateChannel' ) === 'v4' ) {
+
+				autoUpdater.allowPrerelease = true
+
+			}
+
 			autoUpdater.on( 'update-available', autoUpdate.onUpdateAvailable )
 
 			if ( is.linux ) {

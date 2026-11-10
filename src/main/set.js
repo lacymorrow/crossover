@@ -82,7 +82,13 @@ const crosshair = ( src, targetWindow = windows.win ) => {
 	if ( src ) {
 
 		windows.hideChooserWindow()
-		targetWindow.webContents.send( 'set_crosshair', src )
+
+		if ( targetWindow && !targetWindow.isDestroyed() ) {
+
+			targetWindow.webContents.send( 'set_crosshair', src )
+
+		}
+
 		save.crosshair( src )
 
 	} else {
@@ -128,14 +134,22 @@ const position = ( posX, posY, targetWindow = windows.win ) => {
 // {property, value}
 const rendererProperties = ( options, targetWindow = windows.win ) => {
 
-	targetWindow.webContents.send( 'set_properties', options )
+	if ( targetWindow && !targetWindow.isDestroyed() ) {
+
+		targetWindow.webContents.send( 'set_properties', options )
+
+	}
 
 }
 
 // Reticle/sight
 const reticle = ( reticle, targetWindow = windows.win ) => {
 
-	targetWindow.webContents.send( 'set_reticle', reticle )
+	if ( targetWindow && !targetWindow.isDestroyed() ) {
+
+		targetWindow.webContents.send( 'set_reticle', reticle )
+
+	}
 
 }
 

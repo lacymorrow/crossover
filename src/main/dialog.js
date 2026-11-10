@@ -4,11 +4,10 @@ const { app, dialog: electronDialog, shell } = require( 'electron' )
 const log = require( 'electron-log' )
 const { debugInfo, is, showAboutWindow } = require( './util' )
 
-const { FILE_FILTERS, HOMEPAGE_URL } = require( '../config/config.js' )
+const { FILE_FILTERS } = require( '../config/config.js' )
 const set = require( './set.js' )
 const notification = require( './notification.js' )
 const { __static } = require( './paths.js' )
-const preferences = require( './preferences.js' ).init()
 
 const validButtonIndex = result => {
 
@@ -28,35 +27,6 @@ const openAboutWindow = () => {
 		icon: path.join( __static, 'icons', 'icon.png' ),
 		copyright: `🎯 CrossOver ${app.getVersion()} | Copyright © Lacy Morrow`,
 		text: `A crosshair overlay for any screen. Feedback and bug reports welcome. Created by Lacy Morrow. Crosshairs thanks to /u/IrisFlame. ${is.development && ' | ' + debugInfo()} GPU: ${app.getGPUFeatureStatus().gpu_compositing}`,
-	} )
-
-}
-
-const openAlertDialog = async message => {
-
-	await electronDialog.showMessageBox( {
-		type: 'info',
-		title: 'CrossOver: Developer Update',
-		message,
-		buttons: [
-			'Turn off alerts', 'Open in browser...', 'Dismiss',
-		],
-	} ).then( result => {
-
-		const buttonIndex = validButtonIndex( result )
-
-		if ( buttonIndex === 0 ) {
-
-			return preferences.value( 'app.alerts', [] )
-
-		}
-
-		if ( buttonIndex === 1 ) {
-
-			return shell.openExternal( HOMEPAGE_URL )
-
-		}
-
 	} )
 
 }
@@ -140,9 +110,31 @@ const openUpdateDialog = async action => {
 
 }
 
+const openAccessibilityDialog = async () => {
+
+	await electronDialog.showMessageBox( {
+		type: 'info',
+		title: 'Accessibility Permission Required',
+		message: 'CrossOver needs accessibility permissions to capture global mouse and keyboard events.',
+		detail: 'This enables features like:\n• Mouse follow mode\n• Hide crosshair on mouse/key press\n• Resize crosshair when aiming\n• Tilt crosshair controls\n\nGo to System Preferences > Security & Privacy > Accessibility and check the box next to CrossOver.',
+		buttons: [ 'Open System Preferences', 'Skip' ],
+	} ).then( result => {
+
+		const buttonIndex = validButtonIndex( result )
+
+		if ( buttonIndex === 0 ) {
+
+			return shell.openExternal( 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility' )
+
+		}
+
+	} )
+
+}
+
 const dialog = {
 	openAboutWindow,
-	openAlertDialog,
+	openAccessibilityDialog,
 	openCustomImageDialog,
 	openReportCrashDialog,
 	openUpdateDialog,

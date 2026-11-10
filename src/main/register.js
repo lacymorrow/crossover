@@ -2,13 +2,19 @@ const { app } = require( 'electron' )
 const { is } = require( './util' )
 const crossover = require( './crossover' )
 const preferences = require( './preferences' ).init()
+const presets = require( './presets' )
 const iohook = require( './iohook' )
 const keyboard = require( './keyboard' )
 const log = require( './log' )
 const reset = require( './reset' )
+const sessionPermissions = require( './session-permissions' )
 const windows = require( './windows' )
+const EXIT_CODES = require( '../config/exit-codes' )
 
 const appEvents = () => {
+
+	// Deferred until app ready internally; appEvents() runs pre-ready (#529)
+	sessionPermissions.init()
 
 	app.on( 'activate', async () => {
 
@@ -60,16 +66,46 @@ const appEvents = () => {
 	// See https://github.com/electron/electron/issues/5273
 	app.on( 'before-quit', () => {
 
+		// Stop IOHook before windows close so in-flight events (e.g. mousemove
+		// for followMouse) can't call setBounds on a destroyed window and trigger
+		// an ObjC exception crash (EXC_BAD_INSTRUCTION via _crashOnException).
+		iohook.unregisterIOHook()
+
+		// Unlock all windows before quitting so they can properly close on Windows
+		// When locked, closable=false prevents the window from being destroyed,
+		// leaving a zombie process (see #480)
+		const makeWindowClosable = win => {
+
+			if ( win && !win.isDestroyed() ) {
+
+				win.closable = true
+				win.setFocusable( true )
+				win.setIgnoreMouseEvents( false )
+
+			}
+
+		}
+
+		makeWindowClosable( windows.win )
+		windows.shadowWindows.forEach( makeWindowClosable )
+
 		app.releaseSingleInstanceLock()
 
 	} )
 
 	app.on( 'will-quit', () => {
 
-		// Unregister all shortcuts.
-		iohook.unregisterIOHook()
-		keyboard.unregisterShortcuts()
-		// process.exit( EXIT_CODES.SUCCESS )
+		// IOHook already stopped in before-quit; just clean up keyboard shortcuts
+		// then force-exit to prevent lingering handles from keeping the process alive. (#486)
+		try {
+
+			keyboard.unregisterShortcuts()
+
+		} finally {
+
+			app.exit( EXIT_CODES.SUCCESS )
+
+		}
 
 	} )
 
@@ -100,10 +136,54 @@ const appEvents = () => {
 
 }
 
+// How long the preferences renderer debounces a field write before it ships the
+// value to the main process. Matches the debounce in electron-preferences' bundle.
+const RENDERER_SAVE_DEBOUNCE = 300
+
+/**
+ * The preferences window reads its section config once per load, so the preset
+ * dropdown only picks up a new or deleted preset after a reload. Land the user
+ * back on the Presets tab so the reload reads as a refresh, not a reset.
+ */
+const refreshPresetsSection = () => {
+
+	presets.refreshOptions()
+
+	const window_ = windows.preferencesWindow
+
+	if ( !window_ || window_.isDestroyed() ) {
+
+		return
+
+	}
+
+	window_.webContents.once( 'did-finish-load', () => {
+
+		window_.webContents.executeJavaScript( 'document.getElementById( "tab-presets" )?.click();0' )
+
+	} )
+
+	window_.reload()
+
+}
+
 const events = () => {
 
 	// Sync preferences to renderer
 	preferences.on( 'save', options => {
+
+		// Picking a preset from the dropdown applies it, which syncs on its own.
+		// The window still has to be refreshed: the preferences renderer snapshots
+		// the whole store once per load and replays that snapshot on every later
+		// field edit, so without a reload the next keystroke in Preset Name would
+		// write the pre-preset settings back over the preset that was just applied.
+		if ( presets.handleSelection( options.presets?.active ) ) {
+
+			refreshPresetsSection()
+
+			return
+
+		}
 
 		crossover.syncSettings( options )
 
@@ -116,6 +196,23 @@ const events = () => {
 
 		case 'chooseCrosshair':
 			crossover.openChooserWindow()
+			break
+		case 'savePreset':
+
+			// The name field only reaches the store after the renderer's debounce, and
+			// the click arrives on its own channel without waiting for it. Reading the
+			// name immediately can miss it and auto-name a preset the user just named.
+			setTimeout( () => {
+
+				presets.save( preferences.value( 'presets.name' ) )
+				refreshPresetsSection()
+
+			}, RENDERER_SAVE_DEBOUNCE )
+
+			break
+		case 'deletePreset':
+			presets.remove( presets.activeName() )
+			refreshPresetsSection()
 			break
 		case 'resetPreferences':
 			reset.allPreferences()

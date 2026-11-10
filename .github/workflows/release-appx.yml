@@ -1,0 +1,40 @@
+name: release-appx
+
+# Builds the Microsoft Store package (appx) from a release tag. Build only:
+# the .appx is uploaded as a workflow artifact and submitted through Partner
+# Center by hand. The Store re-signs it, so no code-signing secret is needed.
+# Identity (2886Fly5.CrossOverCrosshairOverlay, publisher CN) comes from
+# build.appx in package.json and must match the Partner Center listing.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag or branch to build, e.g. v3.4.7'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  appx:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build appx
+        run: npx electron-builder --win appx --x64 --ia32 --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crossover-appx-${{ inputs.ref }}
+          path: dist/*.appx
