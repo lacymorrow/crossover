@@ -104,10 +104,10 @@ jobs:
         run: npm install
 
       - name: Install build tools
-        run: sudo apt-get update && sudo apt-get install -y rpm
+        run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools  # bsdtar for pacman
 
       - name: Build and publish Linux
-        run: npx electron-builder --linux AppImage deb --x64 --publish ${{ github.event_name == 'workflow_dispatch' && 'never' || 'always' }}
+        run: npx electron-builder --linux AppImage deb pacman --x64 --publish ${{ github.event_name == 'workflow_dispatch' && 'never' || 'always' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -121,4 +121,5 @@ jobs:
           path: |
             dist/*.AppImage
             dist/*.deb
+            dist/*.pacman
             dist/latest-linux.yml
