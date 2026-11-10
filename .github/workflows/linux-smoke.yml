@@ -1,0 +1,115 @@
+name: linux-smoke
+
+# Builds every Linux package, then installs each one in a different distro and
+# display session and checks the app opens a crosshair window and stays up.
+# Catches "won't install / won't open" before a store or GitHub release.
+# Screenshots and logs land in each job's artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag or branch to test (empty = the branch you run from)'
+        required: false
+        type: string
+  push:
+    branches: [main]
+    paths: &smoke-paths ['src/**', 'package.json', 'package-lock.json', '.github/workflows/linux-smoke.yml', '.github/scripts/linux-smoke.sh']
+  pull_request:
+    paths: *smoke-paths
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libarchive-tools >/dev/null
+          sudo snap install snapcraft --classic
+
+      - run: npm install
+
+      - name: Build Linux packages
+        run: npx electron-builder --linux deb AppImage pacman snap --x64 --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            dist/*.deb
+            dist/*.AppImage
+            dist/*.pacman
+            dist/*.snap
+
+  smoke:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { kind: deb, image: 'ubuntu:24.04', session: x11 }
+          - { kind: deb, image: 'ubuntu:24.04', session: wayland }
+          - { kind: deb, image: 'debian:12', session: x11 }
+          - { kind: appimage, image: 'fedora:41', session: wayland }
+          - { kind: pacman, image: 'archlinux:latest', session: x11 }
+    name: ${{ matrix.kind }} / ${{ matrix.image }} / ${{ matrix.session }}
+    container:
+      image: ${{ matrix.image }}
+      options: --shm-size=1g
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/scripts
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-packages
+          path: pkgs
+
+      - name: Install, launch, check
+        run: bash .github/scripts/linux-smoke.sh ${{ matrix.kind }} ${{ matrix.session }} pkgs out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-${{ matrix.kind }}-${{ strategy.job-index }}-${{ matrix.session }}
+          path: out
+
+  # snapd can't run inside a container, so the snap is tested on the runner.
+  smoke-snap:
+    needs: build
+    runs-on: ubuntu-latest
+    name: snap / ubuntu runner / x11
+    # Known failure: the snap ships without libXt, so uiohook-napi can't load
+    # (#598). Reports on every run, doesn't block, until that lands.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/scripts
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-packages
+          path: pkgs
+
+      - name: Install, launch, check
+        run: sudo -E bash .github/scripts/linux-smoke.sh snap x11 pkgs out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-snap-x11
+          path: out
