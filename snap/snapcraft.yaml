@@ -27,7 +27,6 @@ apps:
     # Same flag electron-builder's snap used: the setuid sandbox can't run
     # under strict confinement; snapd's confinement stands in for it.
     command: crossover/crossover --no-sandbox
-    desktop: crossover/crossover.desktop
     extensions: [gnome]
     plugs:
       - home
@@ -51,18 +50,6 @@ parts:
     source: dist/linux-unpacked
     organize:
       '*': crossover/
-    override-build: |
-      craftctl default
-      cat > "$CRAFT_PART_INSTALL/crossover/crossover.desktop" <<'EOF'
-      [Desktop Entry]
-      Name=CrossOver
-      Comment=A crosshair overlay for any screen
-      Exec=crossover %U
-      Icon=${SNAP}/meta/gui/crossover.png
-      Type=Application
-      Categories=Game;Shooter;
-      StartupWMClass=CrossOver
-      EOF
     stage-packages:
       # uiohook-napi (mouse/keyboard hooks)
       - libxt6

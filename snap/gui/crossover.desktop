@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=CrossOver
+Comment=A crosshair overlay for any screen
+Exec=crossover %U
+Icon=${SNAP}/meta/gui/crossover.png
+Type=Application
+Categories=Game;Shooter;
+StartupWMClass=CrossOver
