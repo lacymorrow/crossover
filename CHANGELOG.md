@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- The Arch Linux package installs again. It required `http-parser`, which Arch no longer ships, so pacman refused it outright.
+- Releases include an Arch Linux package (`.pacman`). The package the build produced required `http-parser`, which Arch no longer ships, so pacman refused it; it now installs on current Arch. (#597)
 - The `.deb` starts on minimal Ubuntu and Debian installs. It didn't declare the sound and graphics libraries Electron needs, so on a system without them it quit at launch with `libasound.so.2: cannot open shared object file`. On Ubuntu 24.04 it now asks for `libasound2t64`. (#597)
 - In the Snap Store version, Hide on ADS, Follow Mouse and the hide keys work. The snap was missing the libraries the mouse and keyboard hooks load, so none of those features did anything. (#598)
 
