@@ -81,6 +81,8 @@ public class WinEnum {
   [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr h);
   [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr h, out RECT r);
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowTextW(IntPtr h, StringBuilder s, int n);
+  [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();
+  [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int cmd);
   public struct RECT { public int L, T, R, B; }
   delegate bool EnumProc(IntPtr h, IntPtr l);
   public static List<string> Windows(int[] pids) {
@@ -106,10 +108,31 @@ $windows | ForEach-Object { Write-Host "  $_" }
 
 try {
 	Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+
+	# The runner's own console sits right where the crosshair draws, so a
+	# plain desktop grab is a picture of this log. Minimise it first (SW_MINIMIZE).
+	[WinEnum]::ShowWindow([WinEnum]::GetConsoleWindow(), 6) | Out-Null
+	Start-Sleep -Seconds 2
+
 	$bmp = New-Object System.Drawing.Bitmap 1920, 1080
 	$gfx = [System.Drawing.Graphics]::FromImage($bmp)
 	$gfx.CopyFromScreen(0, 0, 0, 0, $bmp.Size)
 	$bmp.Save((Join-Path $OutDir "windows-smoke-$Kind.png"))
+
+	# And a crop of the crosshair window itself, which is what someone
+	# reviewing this actually wants to look at.
+	if ($windows.Count -gt 0 -and $windows[0] -match 'rect=(-?\d+),(-?\d+) (\d+)x(\d+)') {
+		$pad = 40
+		$x = [Math]::Max(0, [int]$Matches[1] - $pad)
+		$y = [Math]::Max(0, [int]$Matches[2] - $pad)
+		$w = [Math]::Min(1920 - $x, [int]$Matches[3] + 2 * $pad)
+		$h = [Math]::Min(1080 - $y, [int]$Matches[4] + 2 * $pad)
+		if ($w -gt 0 -and $h -gt 0) {
+			$crop = $bmp.Clone((New-Object System.Drawing.Rectangle $x, $y, $w, $h), $bmp.PixelFormat)
+			$crop.Save((Join-Path $OutDir "windows-smoke-$Kind-window.png"))
+			Write-Host "crosshair crop saved: ${w}x${h} at $x,$y"
+		}
+	}
 	Write-Host "screenshot saved to $OutDir\windows-smoke-$Kind.png"
 } catch {
 	Write-Host "screenshot unavailable: $_"
