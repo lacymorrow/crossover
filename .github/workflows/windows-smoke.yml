@@ -1,0 +1,97 @@
+name: windows-smoke
+
+# Installs the Windows installer and runs the portable exe the way a user
+# would, then checks the app opens a crosshair window and stays up.
+# Catches "won't install / won't open" (#535, #546) before or after a release.
+# Screenshots and logs land in each job's artifact.
+#
+# release_tag runs it against the bytes that are actually published, which is
+# the only way to check an installer users already have.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag or branch to build and test (empty = the branch you run from)'
+        required: false
+        type: string
+      release_tag:
+        description: 'Test the published assets of this release tag instead of building (e.g. v3.4.9)'
+        required: false
+        type: string
+  push:
+    branches: [main]
+    paths: &smoke-paths ['src/**', 'package.json', 'package-lock.json', '.github/workflows/windows-smoke.yml', '.github/scripts/windows-smoke.ps1']
+  pull_request:
+    paths: *smoke-paths
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # Skipped when we are testing already-published assets.
+    if: ${{ !inputs.release_tag }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - run: npm install
+
+      # x64 only — uiohook-napi ships no ia32 N-API prebuilt, same as release.yml.
+      - name: Build installer and portable
+        run: npx electron-builder --win nsis portable --x64 --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages
+          if-no-files-found: error
+          path: dist/*.exe
+
+  smoke:
+    needs: build
+    if: ${{ always() && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [nsis, portable]
+    name: ${{ matrix.kind }} / windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          sparse-checkout: .github/scripts
+
+      - name: Download built packages
+        if: ${{ !inputs.release_tag }}
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-packages
+          path: pkgs
+
+      - name: Download published release assets
+        if: ${{ inputs.release_tag }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p pkgs
+          gh release download "${{ inputs.release_tag }}" --repo "$GITHUB_REPOSITORY" \
+            --pattern '*.exe' --dir pkgs
+          ls -la pkgs
+
+      - name: Install, launch, check
+        shell: pwsh
+        run: .github/scripts/windows-smoke.ps1 -Kind ${{ matrix.kind }} -PkgDir pkgs -OutDir out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-smoke-${{ matrix.kind }}
+          path: out

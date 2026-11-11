@@ -77,7 +77,9 @@ jobs:
       - name: Smoke test Windows build
         if: github.event_name == 'workflow_dispatch'
         shell: pwsh
-        run: .github/scripts/windows-smoke.ps1
+        run: |
+          .github/scripts/windows-smoke.ps1 -Kind portable -PkgDir dist -OutDir dist
+          .github/scripts/windows-smoke.ps1 -Kind nsis -PkgDir dist -OutDir dist
 
       - name: Upload Windows artifacts for QA
         if: github.event_name == 'workflow_dispatch'
@@ -89,7 +91,8 @@ jobs:
           path: |
             dist/*.exe
             dist/latest.yml
-            dist/windows-smoke.png
+            dist/windows-smoke-*.png
+            dist/app-*.log
 
   release-linux:
     runs-on: ubuntu-latest
