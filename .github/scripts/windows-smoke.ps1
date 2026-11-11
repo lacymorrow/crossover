@@ -109,10 +109,14 @@ $windows | ForEach-Object { Write-Host "  $_" }
 try {
 	Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 
-	# The runner's own console sits right where the crosshair draws, so a
-	# plain desktop grab is a picture of this log. Minimise it first (SW_MINIMIZE).
+	# The runner's host console sits right where the crosshair draws, and the
+	# crosshair window is transparent, so a plain grab is this log with faint
+	# cross lines over it. Clear the desktop first. MinimizeAll covers the
+	# runner's console, which belongs to another process; SW_MINIMIZE on our
+	# own console handle does not (and returns NULL under a redirected pwsh).
+	try { (New-Object -ComObject Shell.Application).MinimizeAll() } catch {}
 	[WinEnum]::ShowWindow([WinEnum]::GetConsoleWindow(), 6) | Out-Null
-	Start-Sleep -Seconds 2
+	Start-Sleep -Seconds 3
 
 	$bmp = New-Object System.Drawing.Bitmap 1920, 1080
 	$gfx = [System.Drawing.Graphics]::FromImage($bmp)
