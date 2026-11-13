@@ -10,7 +10,7 @@ CrossOver is a cross-platform Electron application that provides a customizable 
 
 ### Key Information
 - **Version**: 3.3.4
-- **License**: CC-BY-NC-SA-4.0
+- **License**: FSL-1.1-MIT (source-available, converts to MIT after two years)
 - **Platforms**: Windows, macOS, Linux
 - **Built with**: Electron 11.5.0, Node.js 14
 - **Author**: Lacy Morrow
