@@ -112,7 +112,7 @@ Managed by [src/main/auto-update.js](mdc:src/main/auto-update.js):
 ```
 
 ## Code Signing
-**Current Status**: Not code signed (free/open source)
+**Current Status**: Not code signed (free, source-available)
 
 **Implications:**
 - Chrome download warnings

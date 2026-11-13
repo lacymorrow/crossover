@@ -160,7 +160,7 @@ Located in App Settings → Performance:
 - Whitelist CrossOver in anti-virus if needed
 
 ### Code Signing
-- Application is NOT code signed (open source limitation)
+- Application is NOT code signed (free project limitation)
 - Users must manually approve first execution
 - Security warnings are expected and normal
 
