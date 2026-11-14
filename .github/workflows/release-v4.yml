@@ -78,3 +78,35 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+  notes:
+    # electron-builder creates the release and leaves the body empty, so every
+    # v4 pre-release page has said nothing at all. LAC-7622 wants Lacy's Pro
+    # note on it, in the same words the in-app Pro screen shows.
+    #
+    # Runs after all three publish jobs so it cannot race them into creating
+    # the release, and runs once rather than per-platform.
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      # The note and the script that reads it live with the app.
+      - uses: actions/checkout@v6
+        with:
+          repository: lacymorrow/xover
+          ref: ${{ inputs.ref }}
+
+      - name: Put Lacy's Pro note on the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Same name electron-builder published under, from the same file.
+          TAG="v$(node -p "require('./package.json').version")"
+          # No npm install: the script is dependency-free CommonJS.
+          node .erb/scripts/release-notes.js > body.md
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file body.md
+          # Read it back. An edit that silently no-ops leaves the same empty
+          # page this job exists to fix.
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
+            | grep -qF 'Everything that was free in v3 is still free'
+          echo "Pro note published on $TAG"
