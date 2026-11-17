@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.4.10] - unreleased
+
+The bridge to CrossOver 4. Publish this as Latest before CrossOver 4 ships (see `docs/v4-rollout.md`).
+
+### Added
+
+- When CrossOver 4 is out, a one-line note in the crosshair window offers it, with an **Update** button. It only appears on computers that can run CrossOver 4 (64-bit Windows 10 or later, macOS 12 or later, Linux with glibc 2.27 or later) and never in the Store or snap versions. The Windows installer and Macs with CrossOver in Applications update in place; everyone else gets the download page. If the download fails or you're offline, the download page opens and the note says so.
+
+### Changed
+
+- Automatic updates never install CrossOver 4 on a computer that can't run it, on the portable build, or after you've tried CrossOver 4 and gone back to 3. Updates within version 3 work as before.
+
 ## [3.4.9] - 2026-11-10
 
 3.4.8 was never published, so 3.4.9 is the first release with everything listed under 3.4.8 below.

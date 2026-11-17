@@ -1,4 +1,4 @@
-const { shell } = require( 'electron' )
+const { app, shell } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
 const { checkboxTrue } = require( '../config/utils' )
 const log = require( './log' )
@@ -10,6 +10,8 @@ const dialog = require( './dialog' )
 const { RELEASES_URL } = require( '../config/config' )
 const notification = require( './notification' )
 const dock = require( './dock' )
+const { hasRunV4, majorOf, v4Support } = require( './v4-support' )
+const v4Update = require( './v4-update' )
 
 const FOUR_HOURS = 1000 * 60 * 60 * 4
 
@@ -35,9 +37,36 @@ const onDownloadProgress = progressObject => {
 
 }
 
-const onUpdateAvailable = () => {
+const v4Policy = () => ( {
+	support: v4Support( {
+		isInApplicationsFolder: () => is.macos && app.isInApplicationsFolder(),
+	} ),
+	rolledBack: hasRunV4( app.getPath( 'userData' ) ),
+} )
+
+const onUpdateAvailable = info => {
 
 	try {
+
+		// CrossOver 4 is Latest once it ships. Say nothing on machines that
+		// can't run it, or to someone who already tried it and came back.
+		const isV4 = majorOf( info?.version ) >= 4
+		const policy = isV4 ? v4Policy() : null
+
+		if ( isV4 && ( !policy.support.supported || policy.rolledBack ) ) {
+
+			log.info( 'Update: not offering v4', policy.support.reason, policy.rolledBack ? '(came back from v4)' : '' )
+
+			return
+
+		}
+
+		// autoDownload is off (see update()); decide here
+		if ( !is.linux && v4Update.shouldDownload( { version: info?.version, ...policy } ) ) {
+
+			v4Update.download( autoUpdater ).catch( error => log.error( error ) )
+
+		}
 
 		sound.play( 'UPDATE' )
 		windows.win?.webContents.send( 'set_info_icon', 'info' )
@@ -91,6 +120,11 @@ const update = () => {
 			log.info( 'Setting: Automatic Updates' )
 
 			autoUpdater.logger = log
+
+			// Every download goes through onUpdateAvailable, which keeps v4 off
+			// installs that can't take it (32-bit or ARM Windows 10, portable,
+			// Store, macOS outside /Applications, people who came back from v4)
+			autoUpdater.autoDownload = false
 
 			// Opted into CrossOver 4 from the banner; v4 ships as a GitHub pre-release
 			if ( preferences.value( 'hidden.updateChannel' ) === 'v4' ) {
