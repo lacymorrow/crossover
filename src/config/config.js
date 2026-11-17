@@ -8,7 +8,8 @@ const APP_WIDTH = 208
 
 const DEFAULT_DEBOUNCE = 20
 const DEFAULT_THEME = 'light'
-const BANNER_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/main/banner.json'
+// 3.4.9 and older read banner.json; 3.4.10+ read announcement.json (see src/main/banner.js)
+const ANNOUNCEMENT_URL = 'https://raw.githubusercontent.com/lacymorrow/crossover/main/announcement.json'
 const HOMEPAGE_URL = 'https://lacymorrow.github.io/crossover'
 const TROUBLESHOOTING_URL = 'https://github.com/lacymorrow/crossover#game-compatibility'
 const COMPATIBILITY_URL = 'https://github.com/lacymorrow/crossover/issues/47'
@@ -44,7 +45,7 @@ const config = {
 	DEBOUNCE_DELAY,
 	DEFAULT_THEME,
 	FILE_FILTERS,
-	BANNER_URL,
+	ANNOUNCEMENT_URL,
 	COMPATIBILITY_URL,
 	HOMEPAGE_URL,
 	RELEASES_URL,

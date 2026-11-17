@@ -145,12 +145,15 @@ const init = () => {
 
 	ipcMain.on( 'banner_action', event => {
 
-		const status = banner.act()
-		if ( status ) {
+		banner.act( status => {
 
-			event.sender.send( 'set_banner_status', status )
+			if ( status && !event.sender.isDestroyed() ) {
 
-		}
+				event.sender.send( 'set_banner_status', status )
+
+			}
+
+		} )
 
 	} )
 

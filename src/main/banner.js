@@ -1,33 +1,40 @@
 /*
-	Remote banner
+	CrossOver 4 announcement
 
-	Fetches BANNER_URL (banner.json in the root of the main branch) and shows a small
-	banner in the crosshair window while it is unlocked. Edit that file to change the
-	message for every install; set "enabled": false to take it down.
+	Fetches ANNOUNCEMENT_URL (announcement.json in the root of the main branch)
+	and shows a small banner in the crosshair window while it is unlocked. Edit
+	that file to change the message for every 3.4.10+ install; set
+	"enabled": false to take it down.
+
+	3.4.9 and older read banner.json instead, which stays disabled: their gate
+	only knew the OS version, so it would offer v4 to 32-bit Windows, Store and
+	snap installs, and old Linux. This file is only read by builds that carry
+	v4Support() (src/main/v4-support.js), and machines that can't run v4 see
+	nothing at all.
 
 	{
-		"id": "v4-preview",            // change the id to show a dismissed banner again
+		"id": "v4-launch",             // change the id to show a dismissed banner again
 		"enabled": true,
-		"message": "CrossOver 4 is ready to try.",  // 80 characters max
+		"message": "...",              // 80 characters max
 		"action": {
-			"label": "Try it",
+			"label": "Update",
 			"type": "update-v4",        // or "url"
-			"url": "https://github.com/lacymorrow/crossover/releases"
+			"url": "https://lacymorrow.github.io/crossover"
 		}
 	}
 
-	"update-v4" opts this install into pre-release updates (where v4 is published) and
-	downloads it. Installs that can't auto-update open action.url instead.
+	"update-v4" downloads v4 in place where the install allows it (Windows
+	installer, macOS in /Applications) and opens action.url everywhere else.
 */
 const https = require( 'https' )
-const os = require( 'os' )
-const { shell } = require( 'electron' )
+const { app, shell } = require( 'electron' )
 const { autoUpdater } = require( 'electron-updater' )
-const { BANNER_URL } = require( '../config/config' )
+const { ANNOUNCEMENT_URL } = require( '../config/config' )
 const { checkboxTrue } = require( '../config/utils' )
 const log = require( './log' )
 const preferences = require( './preferences' ).init()
-const { is } = require( './util' )
+const { hasRunV4, v4Support } = require( './v4-support' )
+const { MESSAGES, updateToV4 } = require( './v4-update' )
 
 const FOUR_HOURS = 1000 * 60 * 60 * 4
 const MAX_MESSAGE_LENGTH = 80 // two lines in the smallest window
@@ -91,26 +98,12 @@ const isSafeUrl = url => {
 
 }
 
-// CrossOver 4 (Electron 40) needs Windows 10+ or macOS 12+ (Darwin 21)
-const supportsV4 = ( platform = process.platform, release = os.release() ) => {
+const support = () => v4Support( {
+	isInApplicationsFolder: () => process.platform === 'darwin' && app.isInApplicationsFolder(),
+} )
 
-	const major = Number.parseInt( release.split( '.' )[0], 10 )
-
-	if ( platform === 'win32' ) {
-
-		return major >= 10
-
-	}
-
-	if ( platform === 'darwin' ) {
-
-		return major >= 21
-
-	}
-
-	return true
-
-}
+// Someone who already went to v4 and came back has decided; don't ask again
+const rolledBack = () => hasRunV4( app.getPath( 'userData' ) )
 
 // Only accept the shape we expect; anything else hides the banner
 const sanitize = data => {
@@ -127,8 +120,8 @@ const sanitize = data => {
 		url: isSafeUrl( data.action.url ) ? data.action.url : '',
 	} : null
 
-	// Don't advertise v4 to machines that can't run it
-	if ( action?.type === 'update-v4' && !supportsV4() ) {
+	// Every announcement is about v4: machines that can't run it see nothing
+	if ( !support().supported || rolledBack() ) {
 
 		return null
 
@@ -170,7 +163,7 @@ const refresh = async win => {
 
 	try {
 
-		current = sanitize( await fetchJson( BANNER_URL ) )
+		current = sanitize( await fetchJson( ANNOUNCEMENT_URL ) )
 
 	} catch ( error ) {
 
@@ -201,42 +194,53 @@ const dismiss = () => {
 
 }
 
-// NSIS installs on Windows are the only builds electron-updater can update in place
-const canAutoUpdate = () => is.windows
-	&& !process.windowsStore
-	&& !process.env.PORTABLE_EXECUTABLE_DIR
-	&& checkboxTrue( preferences.value( 'app.updates' ), 'updates' )
+let inFlight = false
 
-// Returns what the renderer should say next
-const act = () => {
+// Called from the renderer's button. report(message) updates the banner text.
+const act = ( report = () => {} ) => {
 
 	const action = current?.action
 
-	if ( !action ) {
+	if ( !action || inFlight ) {
 
-		return null
+		return
 
 	}
 
-	if ( action.type === 'update-v4' && canAutoUpdate() ) {
+	const openUrl = url => {
 
-		log.info( 'Banner: opted into v4 updates' )
-		preferences.value( 'hidden.updateChannel', 'v4' )
-		autoUpdater.allowPrerelease = true
-		autoUpdater.checkForUpdates().catch( error => log.error( error ) )
+		if ( isSafeUrl( url ) ) {
 
-		return 'Downloading CrossOver 4. It installs when you restart.'
+			shell.openExternal( url )
+
+		}
+
+	}
+
+	if ( action.type === 'update-v4' && support().canUpdateInPlace ) {
+
+		log.info( 'Banner: updating to CrossOver 4' )
+		inFlight = true
+		updateToV4( { updater: autoUpdater, url: action.url, openUrl, report, log } )
+			.then( outcome => log.info( 'Banner: v4 update', outcome ) )
+			.catch( error => log.error( error ) )
+			.finally( () => {
+
+				inFlight = false
+
+			} )
+
+		return
 
 	}
 
 	if ( action.url ) {
 
-		shell.openExternal( action.url )
+		openUrl( action.url )
+		report( action.type === 'update-v4' ? MESSAGES.opened : null )
 
 	}
 
-	return null
-
 }
 
-module.exports = { act, dismiss, init, refresh, supportsV4 }
+module.exports = { act, dismiss, init, refresh, sanitize }

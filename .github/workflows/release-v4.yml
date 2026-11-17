@@ -1,9 +1,16 @@
 name: release-v4
 
-# Builds CrossOver 4 from lacymorrow/xover and publishes it here as a GitHub
-# pre-release. v3 installs only see it after opting in from the remote banner
-# (allowPrerelease); everyone else keeps getting /releases/latest.
+# Builds CrossOver 4 from lacymorrow/xover and publishes it here.
 # Lives in this repo so the built-in GITHUB_TOKEN can write the release.
+#
+# release_type=prerelease (default): a GitHub pre-release. Only installs that
+#   allow pre-releases see it.
+# release_type=latest: CrossOver 4 stable. Built into a DRAFT so no install can
+#   see it, then the update files get minimumSystemVersion and
+#   stagingPercentage (default 0: nobody), the notes go on, and only then is it
+#   published and marked Latest. Raise the rollout afterwards with
+#   scripts/v4-rollout.sh. Read docs/v4-rollout.md first: 3.4.10 must already
+#   be Latest.
 
 on:
   workflow_dispatch:
@@ -12,6 +19,18 @@ on:
         description: 'xover tag, branch or SHA to build'
         required: true
         default: 'main'
+      release_type:
+        description: 'prerelease, or latest for CrossOver 4 stable'
+        required: true
+        default: 'prerelease'
+        type: choice
+        options:
+          - prerelease
+          - latest
+      staging_percentage:
+        description: 'latest only: share of installs that update automatically (0-100, 0 = nobody)'
+        required: true
+        default: '0'
 
 permissions:
   contents: write
@@ -70,9 +89,13 @@ jobs:
       - name: Publish pre-release
         # bash everywhere: PowerShell splits -c.publish.releaseType at the dot
         shell: bash
-        run: npx electron-builder ${{ matrix.target }} --publish always -c.publish.releaseType=prerelease
+        # latest goes up as a draft: published at the end of the gate job
+        run: npx electron-builder ${{ matrix.target }} --publish always -c.publish.releaseType=${{ inputs.release_type == 'latest' && 'draft' || 'prerelease' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # electron-builder skips uploads to a release published more than 2h
+          # ago, which silently drops a slow job's files or a re-run's
+          EP_GH_IGNORE_TIME: 'true'
           # macOS signs with the identity imported above; Windows/Linux get none
           CSC_NAME: ${{ matrix.os == 'macos-latest' && 'Lacy Morrow (DPFY6AHP57)' || '' }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -110,3 +133,56 @@ jobs:
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
             | grep -qF 'Everything that was free in v3 is still free'
           echo "Pro note published on $TAG"
+
+  gate:
+    # Writes the OS floor and the rollout share into latest.yml and
+    # latest-mac.yml before any install can read them, then (latest only)
+    # publishes the draft as Latest. Pre-releases get the OS floor and no
+    # staging, so beta testers keep updating.
+    needs: notes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: scripts
+
+      - uses: actions/checkout@v6
+        with:
+          repository: lacymorrow/xover
+          ref: ${{ inputs.ref }}
+          path: xover
+          sparse-checkout: package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Gate the update files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          V4_ROLLOUT_REPO: ${{ github.repository }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          STAGING: ${{ inputs.staging_percentage }}
+        run: |
+          set -euo pipefail
+          TAG="v$(node -p "require('./xover/package.json').version")"
+          if [[ "$RELEASE_TYPE" == latest ]]; then
+            scripts/v4-rollout.sh "$STAGING" "$TAG"
+          else
+            scripts/v4-rollout.sh none "$TAG"
+          fi
+
+      - name: Publish as Latest
+        if: inputs.release_type == 'latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="v$(node -p "require('./xover/package.json').version")"
+          # 3.4.10 has to be Latest first, or <=3.4.9 installs go straight to v4
+          # with no in-app note and no rollback guard
+          CURRENT="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          case "$CURRENT" in
+            v3.4.1[0-9]|v3.4.[2-9][0-9]|v4.*) ;;
+            *) echo "Latest is $CURRENT; publish 3.4.10 as Latest first (docs/v4-rollout.md)" >&2; exit 1 ;;
+          esac
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease=false --latest
+          test "$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)" = "$TAG"
+          echo "$TAG is Latest"

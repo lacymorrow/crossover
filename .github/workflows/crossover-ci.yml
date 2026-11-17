@@ -46,6 +46,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Unit tests (no Electron)
+        run: npm run test:unit
+
       - name: Check Dependencies
         run: npm run depcheck
 
