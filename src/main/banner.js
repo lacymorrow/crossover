@@ -146,7 +146,16 @@ const send = win => {
 	}
 
 	const dismissed = preferences.value( 'hidden.bannerDismissedId' )
-	win.webContents.send( 'set_banner', current && current.id !== dismissed ? current : null )
+	const shown = current && current.id !== dismissed ? current : null
+
+	// The background update to v4 waits until this has been on screen a while
+	if ( shown?.action?.type === 'update-v4' && !preferences.value( 'hidden.v4OfferedAt' ) ) {
+
+		preferences.value( 'hidden.v4OfferedAt', Date.now() )
+
+	}
+
+	win.webContents.send( 'set_banner', shown )
 
 }
 
@@ -190,6 +199,15 @@ const dismiss = () => {
 
 		preferences.value( 'hidden.bannerDismissedId', current.id )
 
+		// Closing the CrossOver 4 announcement means "stay on CrossOver 3":
+		// the background update leaves this install alone from here on
+		if ( current.action?.type === 'update-v4' ) {
+
+			log.info( 'Banner: staying on CrossOver 3' )
+			preferences.value( 'hidden.v4Declined', true )
+
+		}
+
 	}
 
 }
@@ -220,6 +238,7 @@ const act = ( report = () => {} ) => {
 	if ( action.type === 'update-v4' && support().canUpdateInPlace ) {
 
 		log.info( 'Banner: updating to CrossOver 4' )
+		preferences.value( 'hidden.v4Declined', false )
 		inFlight = true
 		updateToV4( { updater: autoUpdater, url: action.url, openUrl, report, log } )
 			.then( outcome => log.info( 'Banner: v4 update', outcome ) )
