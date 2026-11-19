@@ -8,7 +8,6 @@ const { app, ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
 const banner = require( './banner' )
-const reviewPrompt = require( './review-prompt' )
 const { firstLaunch } = require( './first-launch' )
 
 const init = async options => {
@@ -102,14 +101,18 @@ const init = async options => {
 
 		}
 
-		// Check review prompt (not on settings reset; deferred so lock state is applied first)
+		// Announcement (not on settings reset; deferred so lock state is applied first)
 		if ( !options?.triggeredByReset ) {
 
 			if ( windows.win ) {
 
 				try {
 
-					reviewPrompt.check( windows.win )
+					// The review prompt stays off in 3.4.x. It was written for
+					// this spot but never ran in a release (the startup race
+					// above), nobody has seen it live, and it sits over the
+					// chooser and settings buttons until dismissed. Turning it
+					// on is a feature, and v3 takes fixes only.
 					banner.init( windows.win )
 
 				} catch ( error ) {
