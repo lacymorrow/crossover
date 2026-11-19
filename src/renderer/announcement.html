@@ -211,7 +211,8 @@
 			.never:hover { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
 
 			button:focus { outline: none; }
-			button:focus-visible { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px rgba(255, 160, 96, 0.95); }
+			/* The ring is for keyboard users: it appears after the first Tab, not on open */
+			.kbd button:focus { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px rgba(255, 160, 96, 0.95); }
 
 			/* ---------- progress ---------- */
 
@@ -356,6 +357,7 @@
 			$( 'later' ).addEventListener( 'click', () => send( 'announcement_later' ) )
 			$( 'never' ).addEventListener( 'click', () => send( 'announcement_never' ) )
 			document.addEventListener( 'keydown', event => event.key === 'Escape' && send( 'announcement_later' ) )
+			document.addEventListener( 'keydown', event => event.key === 'Tab' && document.body.classList.add( 'kbd' ) )
 
 			if ( window.crossover ) {
 
