@@ -155,7 +155,7 @@ const send = win => {
 	// refresh is four hours away. Wait for the load, then send.
 	if ( win.webContents.isLoading() ) {
 
-		win.webContents.once( 'did-finish-load', () => send( win ) )
+		win.webContents.once( 'did-stop-loading', () => send( win ) )
 
 		return
 

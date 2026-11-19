@@ -134,8 +134,14 @@ const init = async options => {
 
 			if ( windows.win.webContents.isLoading() ) {
 
-				// First boot: wait for renderer to finish loading
+				// First boot: wait for renderer to finish loading.
+				// did-finish-load can fire before we get here while isLoading()
+				// is still true, and then it never fires again: setup never ran,
+				// so the saved lock state, the review prompt and the announcement
+				// were all skipped. did-stop-loading always follows.
+				// setupLockState runs once, whichever comes first.
 				windows.win.webContents.once( 'did-finish-load', scheduleSetup )
+				windows.win.webContents.once( 'did-stop-loading', scheduleSetup )
 
 			} else {
 
