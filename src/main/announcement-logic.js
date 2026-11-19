@@ -58,4 +58,43 @@ const actionFor = ( { channel, state, canUpdateInPlace = false, actionType = 'ur
 
 }
 
-module.exports = { actionFor, shouldShow }
+/*
+	Where the window goes: beside the crosshair, never over it. Tries right,
+	left, below, then above the crosshair window, centered on it and kept
+	inside the display's work area. Only a display too small for any of those
+	gets the centered fallback.
+
+	anchor and workArea are { x, y, width, height }; size is { width, height }.
+*/
+const placeBeside = ( anchor, workArea, size, gap = 0 ) => {
+
+	const clamp = ( value, min, max ) => Math.round( Math.min( Math.max( value, min ), Math.max( min, max ) ) )
+	const maxX = workArea.x + workArea.width - size.width
+	const maxY = workArea.y + workArea.height - size.height
+	const centered = {
+		x: clamp( workArea.x + ( ( workArea.width - size.width ) / 2 ), workArea.x, maxX ),
+		y: clamp( workArea.y + ( ( workArea.height - size.height ) / 2 ), workArea.y, maxY ),
+	}
+
+	if ( !anchor ) {
+
+		return centered
+
+	}
+
+	const alongY = clamp( anchor.y + ( ( anchor.height - size.height ) / 2 ), workArea.y, maxY )
+	const alongX = clamp( anchor.x + ( ( anchor.width - size.width ) / 2 ), workArea.x, maxX )
+	const candidates = [
+		{ x: anchor.x + anchor.width + gap, y: alongY },
+		{ x: anchor.x - gap - size.width, y: alongY },
+		{ x: alongX, y: anchor.y + anchor.height + gap },
+		{ x: alongX, y: anchor.y - gap - size.height },
+	]
+	const fits = spot => spot.x >= workArea.x && spot.x <= maxX && spot.y >= workArea.y && spot.y <= maxY
+	const spot = candidates.find( candidate => fits( candidate ) )
+
+	return spot ? { x: Math.round( spot.x ), y: Math.round( spot.y ) } : centered
+
+}
+
+module.exports = { actionFor, placeBeside, shouldShow }

@@ -42,7 +42,7 @@ const log = require( './log' )
 const preferences = require( './preferences' ).init()
 const { __renderer } = require( './paths.js' )
 const windows = require( './windows' )
-const { actionFor, shouldShow } = require( './announcement-logic' )
+const { actionFor, placeBeside, shouldShow } = require( './announcement-logic' )
 const { hasRunV4, v4Support } = require( './v4-support' )
 const { updateToV4 } = require( './v4-update' )
 
@@ -207,14 +207,14 @@ const open = initialState => {
 	shownThisSession = true
 	state = initialState
 
-	// Center on the display the crosshair is on
+	// Beside the crosshair, never over it (announcement-logic.js placeBeside)
 	const anchor = windows.win && !windows.win.isDestroyed() ? windows.win.getBounds() : null
 	const display = anchor ? screen.getDisplayMatching( anchor ) : screen.getPrimaryDisplay()
-	const { x, y, width, height } = display.workArea
+	const spot = placeBeside( anchor, display.workArea, { width: WIDTH, height: HEIGHT } )
 
 	win = new BrowserWindow( {
-		x: Math.round( x + ( ( width - WIDTH ) / 2 ) ),
-		y: Math.round( y + ( ( height - HEIGHT ) / 2 ) ),
+		x: spot.x,
+		y: spot.y,
 		width: WIDTH,
 		height: HEIGHT,
 		show: false,
