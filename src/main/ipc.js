@@ -187,15 +187,6 @@ const init = () => {
 
 	} )
 
-	// Re-apply the whole preference set. presets.js fires this after applying a
-	// loadout; crossover.js requires presets for the cycle shortcut, so presets
-	// must not require crossover back.
-	ipcMain.on( 'sync_settings', () => {
-
-		crossover.syncSettings()
-
-	} )
-
 	// ipcMain.handle( 'invoke_test', async ( event, arg ) => {
 	// 	console.log( 'invoke_test', arg )
 	// 	return 'ok'
