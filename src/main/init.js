@@ -4,11 +4,12 @@ const register = require( './register' )
 const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
-const { ipcMain } = require( 'electron' )
+const { app, ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
 const banner = require( './banner' )
 const reviewPrompt = require( './review-prompt' )
+const { firstLaunch } = require( './first-launch' )
 
 const init = async options => {
 
@@ -82,6 +83,13 @@ const init = async options => {
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
 		// Show onboarding overlay on first launch
+		// An install that has run before doesn't get the tour (see first-launch.js)
+		if ( !preferences.value( 'hidden.onboardingCompleted' ) && !firstLaunch( app.getPath( 'userData' ) ) ) {
+
+			preferences.value( 'hidden.onboardingCompleted', true )
+
+		}
+
 		if ( !options?.triggeredByReset && !preferences.value( 'hidden.onboardingCompleted' ) ) {
 
 			if ( windows.win && windows.win.webContents ) {
