@@ -10,6 +10,9 @@ const accessibility = require( './accessibility' )
 const banner = require( './banner' )
 const { firstLaunch } = require( './first-launch' )
 
+// Flip only with Lacy's sign-off on the redesigned prompts
+const PROMPTS_APPROVED = false
+
 const init = async options => {
 
 	log.info( 'Init', options )
@@ -84,16 +87,20 @@ const init = async options => {
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
 		// Show onboarding overlay on first launch
-		// An install that has run before doesn't get the tour (see first-launch.js)
-		if ( !preferences.value( 'hidden.onboardingCompleted' ) && !firstLaunch( app.getPath( 'userData' ) ) ) {
+		// Onboarding, the review prompt and the announcement are all off until
+		// Lacy has approved a redesign (2026-11-19: they overlap each other and
+		// the window's buttons). Before 3.4.10 a startup race hid all three, so
+		// nobody had seen them live. The announcement also stays off remotely
+		// (announcement.json), and PROMPTS_APPROVED gates it here as well.
+		if ( PROMPTS_APPROVED && !options?.triggeredByReset ) {
 
-			preferences.value( 'hidden.onboardingCompleted', true )
+			if ( !preferences.value( 'hidden.onboardingCompleted' ) && !firstLaunch( app.getPath( 'userData' ) ) ) {
 
-		}
+				preferences.value( 'hidden.onboardingCompleted', true )
 
-		if ( !options?.triggeredByReset && !preferences.value( 'hidden.onboardingCompleted' ) ) {
+			}
 
-			if ( windows.win && windows.win.webContents ) {
+			if ( !preferences.value( 'hidden.onboardingCompleted' ) && windows.win && windows.win.webContents ) {
 
 				windows.win.webContents.send( 'show_onboarding' )
 
@@ -102,7 +109,7 @@ const init = async options => {
 		}
 
 		// Announcement (not on settings reset; deferred so lock state is applied first)
-		if ( !options?.triggeredByReset ) {
+		if ( PROMPTS_APPROVED && !options?.triggeredByReset ) {
 
 			if ( windows.win ) {
 
