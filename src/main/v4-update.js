@@ -126,10 +126,7 @@ const updateToV4 = async ( { updater, url, openUrl, report = () => {}, log = con
 	before. A v4 update downloads only where v4 runs, the install can be
 	replaced in place, and the person hasn't already been to v4 and back.
 */
-// A v3 user gets three days with the announcement on screen to say no
-const NOTICE_MS = 1000 * 60 * 60 * 24 * 3
-
-const shouldDownload = ( { version, support, rolledBack, declined, offeredAt, now = Date.now() } ) => {
+const shouldDownload = ( { version, support, rolledBack, declined } ) => {
 
 	if ( !( majorOf( version ) >= 4 ) ) {
 
@@ -137,15 +134,8 @@ const shouldDownload = ( { version, support, rolledBack, declined, offeredAt, no
 
 	}
 
-	// Dismissing the announcement means "stay on CrossOver 3"
+	// "Never update" on the announcement, or already tried v4 and came back
 	if ( declined || rolledBack ) {
-
-		return false
-
-	}
-
-	// Never silent: the announcement must have been showing for NOTICE_MS first
-	if ( !offeredAt || now - offeredAt < NOTICE_MS ) {
 
 		return false
 
@@ -155,4 +145,4 @@ const shouldDownload = ( { version, support, rolledBack, declined, offeredAt, no
 
 }
 
-module.exports = { MESSAGES, NOTICE_MS, bypassStaging, download, resetForTests, shouldDownload, updateToV4 }
+module.exports = { MESSAGES, bypassStaging, download, resetForTests, shouldDownload, updateToV4 }

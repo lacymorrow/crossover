@@ -43,7 +43,6 @@ const v4Policy = () => ( {
 	} ),
 	rolledBack: hasRunV4( app.getPath( 'userData' ) ),
 	declined: preferences.value( 'hidden.v4Declined' ) === true,
-	offeredAt: preferences.value( 'hidden.v4OfferedAt' ) || 0,
 } )
 
 const onUpdateAvailable = info => {

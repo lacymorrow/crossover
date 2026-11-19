@@ -701,6 +701,27 @@ body:not(.draggable) .remote-banner,
     display: none !important;
 }
 
+// The quiet way out, under the two buttons
+.remote-banner-never {
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding: 0;
+    background: transparent;
+    color: var(--app-text-color);
+    font-family: inherit;
+    font-size: 7px;
+    opacity: 0.55;
+    text-decoration: underline;
+    align-self: center;
+
+    &:hover,
+    &:focus-visible {
+        opacity: 1;
+    }
+}
+
 // One prompt at a time: the banner wins over the review prompt
 .remote-banner:not(.d-none) ~ #review-prompt {
     display: none;

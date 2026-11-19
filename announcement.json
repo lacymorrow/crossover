@@ -3,7 +3,7 @@
 	"enabled": false,
 	"message": "Meet CrossOver 4. Rebuilt from the ground up.",
 	"action": {
-		"label": "Update",
+		"label": "Update now",
 		"type": "update-v4",
 		"url": "https://lacymorrow.github.io/crossover"
 	}

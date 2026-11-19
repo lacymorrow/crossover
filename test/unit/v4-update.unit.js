@@ -128,13 +128,10 @@ test( 'background policy keeps v4 off installs that cannot take it', () => {
 
 	const inPlace = { supported: true, canUpdateInPlace: true }
 	assert.equal( shouldDownload( { version: '3.4.11', support: { supported: false } } ), true, 'v3 updates unchanged' )
-	const now = 1_800_000_000_000
-	const seen = now - v4Update.NOTICE_MS
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: false, offeredAt: seen, now } ), true )
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: true, offeredAt: seen, now } ), false )
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, offeredAt: seen, now, declined: true } ), false, 'dismissed the announcement: stays on v3' )
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, offeredAt: 0, now } ), false, 'never silent: announcement not shown yet' )
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, offeredAt: seen + 1000, now } ), false, 'notice period not over' )
+	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: false } ), true, 'no prompt needed: the rollout percentage is the gate' )
+	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: true } ), false )
+	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, declined: true } ), false, 'Never update: stays on v3' )
+	assert.equal( shouldDownload( { version: '3.4.11', support: inPlace, declined: true } ), true, 'Never update still takes v3 fixes' )
 	assert.equal( shouldDownload( { version: '4.0.0', support: { supported: true, canUpdateInPlace: false } } ), false )
 	assert.equal( shouldDownload( { version: '4.0.0', support: { supported: false, canUpdateInPlace: false } } ), false )
 
