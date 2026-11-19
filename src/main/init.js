@@ -76,8 +76,10 @@ const init = async options => {
 
 		lockStateInitialized = true
 
-		// Keyboard shortcuts (delay from did-finish-load avoids the reset loop)
-		crossover.registerKeyboardShortcuts()
+		// Shortcuts are already registered: syncSettings() above clears and
+		// registers them. Registering again here made every one fail as "claimed
+		// by another app" and raised the conflict notice on each launch. Nobody
+		// saw that before 3.4.10 because this function almost never ran.
 
 		// Restore lock state
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
