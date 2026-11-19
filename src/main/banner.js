@@ -151,6 +151,16 @@ const send = win => {
 	const never = preferences.value( 'hidden.v4Declined' ) === true
 	const shown = current && !snoozed && !never ? current : null
 
+	// A message sent before the page has loaded is dropped, and the next
+	// refresh is four hours away. Wait for the load, then send.
+	if ( win.webContents.isLoading() ) {
+
+		win.webContents.once( 'did-finish-load', () => send( win ) )
+
+		return
+
+	}
+
 	win.webContents.send( 'set_banner', shown )
 
 }
