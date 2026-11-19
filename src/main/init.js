@@ -4,11 +4,12 @@ const register = require( './register' )
 const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
-const { ipcMain } = require( 'electron' )
+const { app, ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
 const banner = require( './banner' )
 const reviewPrompt = require( './review-prompt' )
+const { firstLaunch } = require( './first-launch' )
 
 const init = async options => {
 
@@ -82,6 +83,13 @@ const init = async options => {
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
 		// Show onboarding overlay on first launch
+		// An install that has run before doesn't get the tour (see first-launch.js)
+		if ( !preferences.value( 'hidden.onboardingCompleted' ) && !firstLaunch( app.getPath( 'userData' ) ) ) {
+
+			preferences.value( 'hidden.onboardingCompleted', true )
+
+		}
+
 		if ( !options?.triggeredByReset && !preferences.value( 'hidden.onboardingCompleted' ) ) {
 
 			if ( windows.win && windows.win.webContents ) {
@@ -134,8 +142,14 @@ const init = async options => {
 
 			if ( windows.win.webContents.isLoading() ) {
 
-				// First boot: wait for renderer to finish loading
+				// First boot: wait for renderer to finish loading.
+				// did-finish-load can fire before we get here while isLoading()
+				// is still true, and then it never fires again: setup never ran,
+				// so the saved lock state, the review prompt and the announcement
+				// were all skipped. did-stop-loading always follows.
+				// setupLockState runs once, whichever comes first.
 				windows.win.webContents.once( 'did-finish-load', scheduleSetup )
+				windows.win.webContents.once( 'did-stop-loading', scheduleSetup )
 
 			} else {
 
