@@ -82,7 +82,6 @@ const getDefaults = () => ( {
 	hidden: {
 		frame: false,
 		locked: false,
-		onboardingCompleted: false,
 		showSettings: false,
 		tilted: false,
 		ADSed: false,
@@ -90,11 +89,6 @@ const getDefaults = () => ( {
 		reticleHidden: false,
 		v4Declined: false,
 		bannerSnoozedUntil: 0,
-		reviewPromptLaunchCount: 0,
-		reviewPromptFirstLaunchDate: null,
-		reviewPromptState: 'pending',
-		reviewPromptLaterDate: null,
-		bannerDismissedId: null,
 		updateChannel: null,
 		// Not exposed in the UI (#299): when true, "Disable All Keybinds" also
 		// clears Lock and Reset. Edit preferences.json by hand to opt in.

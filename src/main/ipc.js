@@ -5,8 +5,7 @@ const preferences = require( './preferences' ).init()
 const helpers = require( './helpers' )
 const log = require( './log' )
 const reset = require( './reset' )
-const banner = require( './banner' )
-const reviewPrompt = require( './review-prompt' )
+const announcement = require( './announcement' )
 const set = require( './set' )
 const sound = require( './sound' )
 const windows = require( './windows' )
@@ -125,49 +124,13 @@ const init = () => {
 
 	} )
 
-	ipcMain.on( 'complete_onboarding', () => {
+	for ( const channel of [
+		'announcement_primary', 'announcement_later', 'announcement_never',
+	] ) {
 
-		preferences.value( 'hidden.onboardingCompleted', true )
+		ipcMain.on( channel, () => announcement.handle( channel ) )
 
-	} )
-
-	ipcMain.on( 'review_prompt_dismiss', () => {
-
-		reviewPrompt.dismiss()
-
-	} )
-
-	ipcMain.on( 'banner_dismiss', () => {
-
-		banner.dismiss()
-
-	} )
-
-	ipcMain.on( 'banner_never', () => {
-
-		banner.never()
-
-	} )
-
-	ipcMain.on( 'banner_action', event => {
-
-		banner.act( status => {
-
-			if ( status && !event.sender.isDestroyed() ) {
-
-				event.sender.send( 'set_banner_status', status )
-
-			}
-
-		} )
-
-	} )
-
-	ipcMain.on( 'review_prompt_later', () => {
-
-		reviewPrompt.later()
-
-	} )
+	}
 
 	ipcMain.on( 'set_preference', arg => {
 

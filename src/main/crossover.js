@@ -426,6 +426,21 @@ const lockWindow = ( lock, targetWindow = windows.win ) => {
 
 	preferences.value( 'hidden.locked', lock )
 
+	// An unlock is the moment a waiting announcement may open (lazy: no import cycle)
+	if ( !lock ) {
+
+		try {
+
+			require( './announcement' ).onLockChange()
+
+		} catch ( error ) {
+
+			log.error( error )
+
+		}
+
+	}
+
 }
 
 const resetPosition = () => {

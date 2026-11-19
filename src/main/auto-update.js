@@ -91,9 +91,16 @@ const onUpdateAvailable = info => {
 
 }
 
-const onUpdateDownloaded = () => {
+const onUpdateDownloaded = info => {
 
 	try {
+
+		// A staged v4 that landed on its own installs on quit: no announcement
+		if ( majorOf( info?.version ) >= 4 ) {
+
+			require( './announcement' ).onBackgroundV4Downloaded()
+
+		}
 
 		windows.setProgress( -1 )
 		dock.setBadge( '!' )
