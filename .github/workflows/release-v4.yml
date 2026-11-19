@@ -131,7 +131,7 @@ jobs:
           # Read it back. An edit that silently no-ops leaves the same empty
           # page this job exists to fix.
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
-            | grep -qF 'Everything that was free in v3 is still free'
+            | grep -qF 'CrossOver 4 adds Pro for'
           echo "Pro note published on $TAG"
 
   gate:
