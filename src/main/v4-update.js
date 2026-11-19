@@ -126,7 +126,7 @@ const updateToV4 = async ( { updater, url, openUrl, report = () => {}, log = con
 	before. A v4 update downloads only where v4 runs, the install can be
 	replaced in place, and the person hasn't already been to v4 and back.
 */
-const shouldDownload = ( { version, support, rolledBack } ) => {
+const shouldDownload = ( { version, support, rolledBack, declined } ) => {
 
 	if ( !( majorOf( version ) >= 4 ) ) {
 
@@ -134,7 +134,14 @@ const shouldDownload = ( { version, support, rolledBack } ) => {
 
 	}
 
-	return Boolean( support?.supported && support.canUpdateInPlace && !rolledBack )
+	// "Never update" on the announcement, or already tried v4 and came back
+	if ( declined || rolledBack ) {
+
+		return false
+
+	}
+
+	return Boolean( support?.supported && support.canUpdateInPlace )
 
 }
 

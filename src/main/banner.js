@@ -37,6 +37,7 @@ const { hasRunV4, v4Support } = require( './v4-support' )
 const { MESSAGES, updateToV4 } = require( './v4-update' )
 
 const FOUR_HOURS = 1000 * 60 * 60 * 4
+const SNOOZE_MS = 1000 * 60 * 60 * 24 * 30
 const MAX_MESSAGE_LENGTH = 80 // two lines in the smallest window
 const MAX_LABEL_LENGTH = 24
 
@@ -145,8 +146,12 @@ const send = win => {
 
 	}
 
-	const dismissed = preferences.value( 'hidden.bannerDismissedId' )
-	win.webContents.send( 'set_banner', current && current.id !== dismissed ? current : null )
+	// "Later" hides it for a month; "Never update" hides it for good
+	const snoozed = Date.now() < ( preferences.value( 'hidden.bannerSnoozedUntil' ) || 0 )
+	const never = preferences.value( 'hidden.v4Declined' ) === true
+	const shown = current && !snoozed && !never ? current : null
+
+	win.webContents.send( 'set_banner', shown )
 
 }
 
@@ -184,13 +189,19 @@ const init = win => {
 
 }
 
+// "Later": ask again in a month. The background update is unaffected.
 const dismiss = () => {
 
-	if ( current ) {
+	preferences.value( 'hidden.bannerSnoozedUntil', Date.now() + SNOOZE_MS )
 
-		preferences.value( 'hidden.bannerDismissedId', current.id )
+}
 
-	}
+// "Never update": this install stays on CrossOver 3. No announcement, and the
+// background update skips v4 (auto-update.js). v3 fixes still arrive.
+const never = () => {
+
+	log.info( 'Banner: staying on CrossOver 3' )
+	preferences.value( 'hidden.v4Declined', true )
 
 }
 
@@ -220,6 +231,7 @@ const act = ( report = () => {} ) => {
 	if ( action.type === 'update-v4' && support().canUpdateInPlace ) {
 
 		log.info( 'Banner: updating to CrossOver 4' )
+		preferences.value( 'hidden.v4Declined', false )
 		inFlight = true
 		updateToV4( { updater: autoUpdater, url: action.url, openUrl, report, log } )
 			.then( outcome => log.info( 'Banner: v4 update', outcome ) )
@@ -243,4 +255,4 @@ const act = ( report = () => {} ) => {
 
 }
 
-module.exports = { act, dismiss, init, refresh, sanitize }
+module.exports = { act, dismiss, init, never, refresh, sanitize, SNOOZE_MS }

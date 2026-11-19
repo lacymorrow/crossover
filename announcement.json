@@ -1,9 +1,9 @@
 {
 	"id": "v4-launch",
 	"enabled": false,
-	"message": "CrossOver 4 is here. Your crosshairs and settings come with you.",
+	"message": "Meet CrossOver 4. Rebuilt from the ground up.",
 	"action": {
-		"label": "Update",
+		"label": "Update now",
 		"type": "update-v4",
 		"url": "https://lacymorrow.github.io/crossover"
 	}

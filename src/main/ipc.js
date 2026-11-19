@@ -143,6 +143,12 @@ const init = () => {
 
 	} )
 
+	ipcMain.on( 'banner_never', () => {
+
+		banner.never()
+
+	} )
+
 	ipcMain.on( 'banner_action', event => {
 
 		banner.act( status => {

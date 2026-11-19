@@ -128,8 +128,10 @@ test( 'background policy keeps v4 off installs that cannot take it', () => {
 
 	const inPlace = { supported: true, canUpdateInPlace: true }
 	assert.equal( shouldDownload( { version: '3.4.11', support: { supported: false } } ), true, 'v3 updates unchanged' )
-	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: false } ), true )
+	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: false } ), true, 'no prompt needed: the rollout percentage is the gate' )
 	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, rolledBack: true } ), false )
+	assert.equal( shouldDownload( { version: '4.0.0', support: inPlace, declined: true } ), false, 'Never update: stays on v3' )
+	assert.equal( shouldDownload( { version: '3.4.11', support: inPlace, declined: true } ), true, 'Never update still takes v3 fixes' )
 	assert.equal( shouldDownload( { version: '4.0.0', support: { supported: true, canUpdateInPlace: false } } ), false )
 	assert.equal( shouldDownload( { version: '4.0.0', support: { supported: false, canUpdateInPlace: false } } ), false )
 

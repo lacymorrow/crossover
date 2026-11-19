@@ -88,6 +88,8 @@ const getDefaults = () => ( {
 		ADSed: false,
 		ADShidden: false,
 		reticleHidden: false,
+		v4Declined: false,
+		bannerSnoozedUntil: 0,
 		reviewPromptLaunchCount: 0,
 		reviewPromptFirstLaunchDate: null,
 		reviewPromptState: 'pending',

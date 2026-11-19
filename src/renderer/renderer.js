@@ -470,6 +470,7 @@
 		const bannerText = document.querySelector( '#remote-banner-text' )
 		const bannerAction = document.querySelector( '#remote-banner-action' )
 		const bannerDismiss = document.querySelector( '#remote-banner-dismiss' )
+		const bannerNever = document.querySelector( '#remote-banner-never' )
 
 		window.crossover.receive( 'set_banner', banner => {
 
@@ -484,6 +485,7 @@
 			bannerText.textContent = banner.message
 			bannerAction.textContent = banner.action?.label || ''
 			bannerAction.classList.toggle( 'd-none', !banner.action )
+			bannerNever.classList.toggle( 'd-none', banner.action?.type !== 'update-v4' )
 			bannerEl.classList.remove( 'd-none' )
 
 		} )
@@ -492,12 +494,20 @@
 
 			bannerText.textContent = status
 			bannerAction.classList.add( 'd-none' )
+			bannerNever.classList.add( 'd-none' )
 
 		} )
 
 		bannerAction.addEventListener( 'click', () => {
 
 			window.crossover.send( 'banner_action' )
+
+		} )
+
+		bannerNever.addEventListener( 'click', () => {
+
+			window.crossover.send( 'banner_never' )
+			bannerEl.classList.add( 'd-none' )
 
 		} )
 

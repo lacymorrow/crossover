@@ -42,6 +42,7 @@ const v4Policy = () => ( {
 		isInApplicationsFolder: () => is.macos && app.isInApplicationsFolder(),
 	} ),
 	rolledBack: hasRunV4( app.getPath( 'userData' ) ),
+	declined: preferences.value( 'hidden.v4Declined' ) === true,
 } )
 
 const onUpdateAvailable = info => {
@@ -53,9 +54,9 @@ const onUpdateAvailable = info => {
 		const isV4 = majorOf( info?.version ) >= 4
 		const policy = isV4 ? v4Policy() : null
 
-		if ( isV4 && ( !policy.support.supported || policy.rolledBack ) ) {
+		if ( isV4 && ( !policy.support.supported || policy.rolledBack || policy.declined ) ) {
 
-			log.info( 'Update: not offering v4', policy.support.reason, policy.rolledBack ? '(came back from v4)' : '' )
+			log.info( 'Update: not offering v4', policy.support.reason, policy.rolledBack ? '(came back from v4)' : '', policy.declined ? '(chose to stay on v3)' : '' )
 
 			return
 
