@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>CrossOver 4</title>
+		<style>
+			:root {
+				--sun: #ffd166;
+				--ember: #ff7a59;
+				--rose: #f0318f;
+				--ink: #0d0b12;
+				--ink-2: #17131f;
+				--text: #f7f4fb;
+				--muted: rgba(247, 244, 251, 0.62);
+				--faint: rgba(247, 244, 251, 0.38);
+				--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+			}
+
+			* { box-sizing: border-box; }
+
+			html, body {
+				margin: 0;
+				height: 100%;
+				background: transparent;
+				overflow: hidden;
+				-webkit-font-smoothing: antialiased;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Inter, Roboto, "Helvetica Neue", sans-serif;
+				color: var(--text);
+				user-select: none;
+				cursor: default;
+			}
+
+			/* The window is transparent; the card draws its own shape and shadow */
+			body { padding: 28px; }
+
+			.card {
+				position: relative;
+				height: 100%;
+				border-radius: 26px;
+				overflow: hidden;
+				background:
+					radial-gradient(120% 64% at 50% 0%, rgba(240, 49, 143, 0.13) 0%, rgba(240, 49, 143, 0) 62%),
+					radial-gradient(80% 46% at 50% 20%, rgba(255, 160, 96, 0.12) 0%, rgba(255, 160, 96, 0) 72%),
+					linear-gradient(180deg, var(--ink-2) 0%, var(--ink) 62%);
+				box-shadow:
+					0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+					0 1px 0 0 rgba(255, 255, 255, 0.10) inset,
+					0 18px 40px rgba(0, 0, 0, 0.45),
+					0 4px 12px rgba(0, 0, 0, 0.35);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				padding: 0 36px 22px;
+				-webkit-app-region: drag;
+			}
+
+			/* ---------- hero ---------- */
+
+			.hero {
+				position: relative;
+				width: 248px;
+				height: 248px;
+				margin-top: 34px;
+				flex: none;
+			}
+
+			.halo {
+				position: absolute;
+				inset: -40px;
+				border-radius: 50%;
+				background: radial-gradient(closest-side, rgba(255, 122, 89, 0.26), rgba(240, 49, 143, 0.10) 55%, rgba(240, 49, 143, 0) 75%);
+				filter: blur(18px);
+				opacity: 0;
+				animation: halo-in 1400ms 200ms var(--ease-out) forwards, breathe 7s 1600ms ease-in-out infinite;
+			}
+
+			.reticle { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+			.ring, .tick { fill: none; stroke: url(#brand); stroke-linecap: round; }
+
+			.ring--outer {
+				stroke-width: 9;
+				stroke-dasharray: 578;
+				stroke-dashoffset: 578;
+				animation: draw 1100ms 120ms var(--ease-out) forwards;
+			}
+
+			.ring--inner {
+				stroke-width: 9;
+				stroke-dasharray: 352;
+				stroke-dashoffset: 352;
+				animation: draw 900ms 320ms var(--ease-out) forwards;
+			}
+
+			.tick { stroke-width: 9; opacity: 0; animation: tick-in 700ms var(--ease-out) forwards; }
+			.tick--n { --from: translateY(-22px); animation-delay: 520ms; }
+			.tick--e { --from: translateX(22px); animation-delay: 580ms; }
+			.tick--s { --from: translateY(22px); animation-delay: 640ms; }
+			.tick--w { --from: translateX(-22px); animation-delay: 700ms; }
+
+			.orbit {
+				fill: none;
+				stroke: rgba(255, 255, 255, 0.16);
+				stroke-width: 1;
+				stroke-dasharray: 1 9;
+				stroke-linecap: round;
+				transform-origin: 124px 124px;
+				opacity: 0;
+				animation: fade 900ms 900ms ease-out forwards, spin 90s linear infinite;
+			}
+
+			.four {
+				position: absolute;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				font-size: 72px;
+				font-weight: 800;
+				padding-right: 3px;
+				letter-spacing: -0.04em;
+				line-height: 1;
+				background: linear-gradient(180deg, var(--sun) 8%, var(--ember) 52%, var(--rose) 96%);
+				-webkit-background-clip: text;
+				background-clip: text;
+				-webkit-text-fill-color: transparent;
+				opacity: 0;
+				transform: scale(0.86);
+				animation: pop 800ms 620ms var(--ease-out) forwards;
+			}
+
+			/* ---------- copy ---------- */
+
+			.copy { text-align: center; margin-top: 30px; }
+
+			h1 {
+				margin: 0;
+				font-size: 31px;
+				line-height: 1.12;
+				font-weight: 700;
+				letter-spacing: -0.025em;
+			}
+
+			.sub {
+				margin: 9px 0 0;
+				font-size: 16px;
+				line-height: 1.4;
+				color: var(--muted);
+				letter-spacing: -0.005em;
+			}
+
+			.rise { opacity: 0; transform: translateY(10px); animation: rise 700ms var(--ease-out) forwards; }
+			h1.rise { animation-delay: 760ms; }
+			.sub.rise { animation-delay: 840ms; }
+			.actions.rise { animation-delay: 940ms; }
+			.never.rise { animation-delay: 1040ms; }
+
+			/* ---------- actions ---------- */
+
+			.actions {
+				margin-top: auto;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 6px;
+				-webkit-app-region: no-drag;
+			}
+
+			button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; -webkit-app-region: no-drag; }
+
+			.primary {
+				position: relative;
+				width: 100%;
+				height: 50px;
+				border-radius: 15px;
+				font-size: 16px;
+				font-weight: 650;
+				letter-spacing: -0.01em;
+				color: #1b0d12;
+				background: linear-gradient(100deg, var(--sun) 0%, var(--ember) 52%, var(--rose) 108%);
+				box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset, 0 10px 26px rgba(240, 80, 110, 0.34);
+				overflow: hidden;
+				transition: transform 160ms var(--ease-out), box-shadow 200ms ease, filter 200ms ease;
+			}
+
+			.primary:hover { filter: brightness(1.06); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 12px 30px rgba(240, 80, 110, 0.44); }
+			.primary:active { transform: scale(0.975); }
+
+			.secondary {
+				height: 40px;
+				padding: 0 22px;
+				border-radius: 12px;
+				font-size: 14.5px;
+				font-weight: 500;
+				color: var(--muted);
+				transition: color 160ms ease, background 160ms ease, transform 160ms var(--ease-out);
+			}
+
+			.secondary:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+			.secondary:active { transform: scale(0.97); }
+
+			.never {
+				margin-top: 8px;
+				font-size: 11.5px;
+				color: var(--faint);
+				transition: color 160ms ease;
+				-webkit-app-region: no-drag;
+			}
+
+			.never:hover { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+			button:focus { outline: none; }
+			button:focus-visible { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px rgba(255, 209, 102, 0.9); }
+
+			/* ---------- progress ---------- */
+
+			.progress { display: none; width: 100%; }
+
+			.label {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				font-size: 14.5px;
+				font-weight: 600;
+				letter-spacing: -0.005em;
+				margin: 0 2px 12px;
+			}
+
+			.label b { font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+			.track {
+				height: 8px;
+				border-radius: 8px;
+				background: rgba(255, 255, 255, 0.09);
+				position: relative;
+				overflow: hidden;
+			}
+
+			.fill {
+				position: absolute;
+				inset: 0 auto 0 0;
+				width: var(--pct, 0%);
+				min-width: 8px;
+				border-radius: 8px;
+				background: linear-gradient(90deg, var(--sun) 0%, var(--ember) 55%, var(--rose) 100%);
+				box-shadow: 0 0 14px rgba(255, 122, 89, 0.55);
+				transition: width 400ms var(--ease-out);
+			}
+
+			.hint { margin: 18px 0 0; height: 46px; font-size: 13.5px; color: var(--muted); text-align: center; }
+
+			/* ---------- states ---------- */
+
+			[data-state="downloading"] .primary,
+			[data-state="downloading"] .secondary,
+			[data-state="downloading"] .never { display: none; }
+			[data-state="downloading"] .progress { display: block; }
+
+			[data-state="ready"] .never,
+			[data-state="failed"] .never { visibility: hidden; }
+
+			/* ---------- motion ---------- */
+
+			@keyframes draw { to { stroke-dashoffset: 0; } }
+			@keyframes tick-in { from { opacity: 0; transform: var(--from); } to { opacity: 1; transform: none; } }
+			@keyframes pop { to { opacity: 1; transform: none; } }
+			@keyframes rise { to { opacity: 1; transform: none; } }
+			@keyframes fade { to { opacity: 1; } }
+			@keyframes halo-in { to { opacity: 1; } }
+			@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+			@keyframes spin { to { transform: rotate(360deg); } }
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+			}
+		</style>
+	</head>
+	<body data-state="offer">
+		<main class="card" role="dialog" aria-labelledby="title" aria-describedby="sub">
+			<div class="hero" aria-hidden="true">
+				<div class="halo"></div>
+				<svg class="reticle" viewBox="0 0 248 248">
+					<defs>
+						<linearGradient id="brand" x1="124" y1="0" x2="124" y2="248" gradientUnits="userSpaceOnUse">
+							<stop offset="0" stop-color="#ffd166"/>
+							<stop offset="0.5" stop-color="#ff7a59"/>
+							<stop offset="1" stop-color="#f0318f"/>
+						</linearGradient>
+					</defs>
+					<circle class="orbit" cx="124" cy="124" r="121"/>
+					<path class="ring ring--outer" d="M124 32a92 92 0 1 1 0 184a92 92 0 1 1 0-184"/>
+					<path class="ring ring--inner" d="M124 180a56 56 0 1 1 0-112a56 56 0 1 1 0 112"/>
+					<line class="tick tick--n" x1="124" y1="6" x2="124" y2="56"/>
+					<line class="tick tick--e" x1="242" y1="124" x2="192" y2="124"/>
+					<line class="tick tick--s" x1="124" y1="242" x2="124" y2="192"/>
+					<line class="tick tick--w" x1="6" y1="124" x2="56" y2="124"/>
+				</svg>
+				<div class="four">4</div>
+			</div>
+
+			<div class="copy">
+				<h1 id="title" class="rise">Meet CrossOver 4.</h1>
+				<p id="sub" class="sub rise">Rebuilt from the ground up.</p>
+			</div>
+
+			<div class="actions rise">
+				<button id="primary" class="primary">Update now</button>
+				<button id="later" class="secondary">Later</button>
+				<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+					<div class="label"><span>Downloading CrossOver 4</span><b id="pct"></b></div>
+					<div class="track"><div class="fill"></div></div>
+					<p class="hint">Keep playing. It installs when you restart.</p>
+				</div>
+			</div>
+
+			<button id="never" class="never rise">Never update</button>
+		</main>
+
+		<script>
+			// States: offer | downloading | ready | failed. The main process sets
+			// them through window.crossover; ?state= and ?pct= are for screenshots.
+			const copy = {
+				offer: { title: 'Meet CrossOver 4.', sub: 'Rebuilt from the ground up.', primary: 'Update now', later: 'Later' },
+				downloading: { title: 'Meet CrossOver 4.', sub: 'Rebuilt from the ground up.' },
+				ready: { title: 'CrossOver 4 is ready.', sub: 'Restart to step into it.', primary: 'Restart now', later: 'Later' },
+				failed: { title: 'That didn’t download.', sub: 'Get CrossOver 4 from the download page instead.', primary: 'Open download page', later: 'Not now' },
+			}
+
+			const $ = id => document.querySelector( '#' + id )
+
+			const setState = ( state, pct ) => {
+
+				const c = copy[state] || copy.offer
+				document.body.dataset.state = state
+				$( 'title' ).textContent = c.title
+				$( 'sub' ).textContent = c.sub
+				if ( c.primary ) $( 'primary' ).textContent = c.primary
+				if ( c.later ) $( 'later' ).textContent = c.later
+				if ( state === 'downloading' ) {
+
+					const p = Math.max( 0, Math.min( 100, Math.round( pct || 0 ) ) )
+					document.querySelector( '.fill' ).style.setProperty( '--pct', p + '%' )
+					document.querySelector( '.progress' ).setAttribute( 'aria-valuenow', p )
+					$( 'pct' ).textContent = p > 0 ? `${p}%` : ''
+
+				}
+
+			}
+
+			const q = new URLSearchParams( location.search )
+			setState( q.get( 'state' ) || 'offer', Number( q.get( 'pct' ) ) )
+			if ( q.has( 'still' ) ) document.documentElement.style.setProperty( '--still', '1' )
+
+			const send = channel => window.crossover && window.crossover.send( channel, document.body.dataset.state )
+			$( 'primary' ).addEventListener( 'click', () => send( 'announcement_primary' ) )
+			$( 'later' ).addEventListener( 'click', () => send( 'announcement_later' ) )
+			$( 'never' ).addEventListener( 'click', () => send( 'announcement_never' ) )
+			document.addEventListener( 'keydown', event => event.key === 'Escape' && send( 'announcement_later' ) )
+
+			if ( window.crossover ) {
+
+				window.crossover.receive( 'announcement_state', ( { state, pct } ) => setState( state, pct ) )
+
+			}
+		</script>
+	</body>
+</html>
