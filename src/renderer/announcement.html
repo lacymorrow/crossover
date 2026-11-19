@@ -170,23 +170,22 @@
 
 			button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; -webkit-app-region: no-drag; }
 
+			/* One flat, bright surface. The gradient belongs to the crosshair alone. */
 			.primary {
 				position: relative;
 				width: 100%;
 				height: 50px;
-				border-radius: 15px;
+				border-radius: 14px;
 				font-size: 16px;
-				font-weight: 650;
+				font-weight: 600;
 				letter-spacing: -0.01em;
-				color: #1b0d12;
-				background: linear-gradient(100deg, var(--sun) 0%, var(--ember) 52%, var(--rose) 108%);
-				box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset, 0 10px 26px rgba(240, 80, 110, 0.34);
-				overflow: hidden;
-				transition: transform 160ms var(--ease-out), box-shadow 200ms ease, filter 200ms ease;
+				color: #131017;
+				background: var(--text);
+				transition: transform 160ms var(--ease-out), background 160ms ease;
 			}
 
-			.primary:hover { filter: brightness(1.06); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 12px 30px rgba(240, 80, 110, 0.44); }
-			.primary:active { transform: scale(0.975); }
+			.primary:hover { background: #fff; }
+			.primary:active { transform: scale(0.975); background: #e9e5ef; }
 
 			.secondary {
 				height: 40px;
@@ -212,7 +211,7 @@
 			.never:hover { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
 
 			button:focus { outline: none; }
-			button:focus-visible { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px rgba(255, 209, 102, 0.9); }
+			button:focus-visible { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px rgba(255, 160, 96, 0.95); }
 
 			/* ---------- progress ---------- */
 
@@ -244,8 +243,7 @@
 				width: var(--pct, 0%);
 				min-width: 8px;
 				border-radius: 8px;
-				background: linear-gradient(90deg, var(--sun) 0%, var(--ember) 55%, var(--rose) 100%);
-				box-shadow: 0 0 14px rgba(255, 122, 89, 0.55);
+				background: var(--text);
 				transition: width 400ms var(--ease-out);
 			}
 
