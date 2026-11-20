@@ -2,7 +2,7 @@
   "name": "crossover",
   "productName": "CrossOver",
   "appId": "com.lacymorrow.crossover",
-  "version": "3.4.11",
+  "version": "3.4.12",
   "description": "A Crosshair Overlay for any screen",
   "copyright": "Copyright \u00a9 Lacy Morrow",
   "repository": {
@@ -55,7 +55,7 @@
     "lint:src": "eslint --fix src",
     "lint:test": "eslint --fix test",
     "test": "playwright test",
-    "test:unit": "node --test test/unit/v4-support.unit.js test/unit/v4-update.unit.js test/unit/presets-removed.unit.js test/unit/first-launch.unit.js",
+    "test:unit": "node --test test/unit/v4-support.unit.js test/unit/v4-update.unit.js test/unit/presets-removed.unit.js test/unit/announcement.unit.js",
     "test:verbose": "NODE_ENV=development playwright test",
     "test:debug": "PWDEBUG=1 CI=1 playwright test",
     "test:debug:console": "PWDEBUG=console CI=1 playwright test",

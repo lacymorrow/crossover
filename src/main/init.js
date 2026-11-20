@@ -4,14 +4,15 @@ const register = require( './register' )
 const ipc = require( './ipc' )
 const crossover = require( './crossover' )
 const { checkboxTrue } = require( '../config/utils' )
-const { app, ipcMain } = require( 'electron' )
+const { ipcMain } = require( 'electron' )
 const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
-const banner = require( './banner' )
-const { firstLaunch } = require( './first-launch' )
+const announcement = require( './announcement' )
 
-// Flip only with Lacy's sign-off on the redesigned prompts
-const PROMPTS_APPROVED = false
+// Gates the CrossOver 4 announcement window. Lacy approved the design and the
+// real-app screenshots on 2026-11-20 (docs/changelog/media/614). Whether anyone
+// sees it is still up to announcement.json on main, which stays off until launch.
+const PROMPTS_APPROVED = true
 
 const init = async options => {
 
@@ -86,47 +87,17 @@ const init = async options => {
 		// Restore lock state
 		crossover.lockWindow( preferences.value( 'hidden.locked' ) )
 
-		// Show onboarding overlay on first launch
-		// Onboarding, the review prompt and the announcement are all off until
-		// Lacy has approved a redesign (2026-11-19: they overlap each other and
-		// the window's buttons). Before 3.4.10 a startup race hid all three, so
-		// nobody had seen them live. The announcement also stays off remotely
-		// (announcement.json), and PROMPTS_APPROVED gates it here as well.
-		if ( PROMPTS_APPROVED && !options?.triggeredByReset ) {
+		// Announcement window (not on settings reset). Deferred so the lock state
+		// above is applied first: it only opens while the crosshair is unlocked.
+		if ( !options?.triggeredByReset ) {
 
-			if ( !preferences.value( 'hidden.onboardingCompleted' ) && !firstLaunch( app.getPath( 'userData' ) ) ) {
+			try {
 
-				preferences.value( 'hidden.onboardingCompleted', true )
+				announcement.init( { approved: PROMPTS_APPROVED } )
 
-			}
+			} catch ( error ) {
 
-			if ( !preferences.value( 'hidden.onboardingCompleted' ) && windows.win && windows.win.webContents ) {
-
-				windows.win.webContents.send( 'show_onboarding' )
-
-			}
-
-		}
-
-		// Announcement (not on settings reset; deferred so lock state is applied first)
-		if ( PROMPTS_APPROVED && !options?.triggeredByReset ) {
-
-			if ( windows.win ) {
-
-				try {
-
-					// The review prompt stays off in 3.4.x. It was written for
-					// this spot but never ran in a release (the startup race
-					// above), nobody has seen it live, and it sits over the
-					// chooser and settings buttons until dismissed. Turning it
-					// on is a feature, and v3 takes fixes only.
-					banner.init( windows.win )
-
-				} catch ( error ) {
-
-					log.error( error )
-
-				}
+				log.error( error )
 
 			}
 
@@ -157,8 +128,7 @@ const init = async options => {
 				// First boot: wait for renderer to finish loading.
 				// did-finish-load can fire before we get here while isLoading()
 				// is still true, and then it never fires again: setup never ran,
-				// so the saved lock state, the review prompt and the announcement
-				// were all skipped. did-stop-loading always follows.
+				// so the saved lock state and the announcement were skipped. did-stop-loading always follows.
 				// setupLockState runs once, whichever comes first.
 				windows.win.webContents.once( 'did-finish-load', scheduleSetup )
 				windows.win.webContents.once( 'did-stop-loading', scheduleSetup )

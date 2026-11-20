@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [3.4.12] - 2026-11-20
+
+### Changed
+
+- News about a new version now opens in its own small window beside the crosshair, never inside it.
+
+### Removed
+
+- The first-run tips and the review prompt.
+
 ## [3.4.11] - 2026-11-19
 
 ### Fixed
