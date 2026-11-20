@@ -102,6 +102,15 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
+  smoke:
+    # Starts the files just uploaded on Apple silicon, Intel Mac, Linux and
+    # Windows. Nothing after this runs unless all four start, so a build that
+    # cannot launch is never gated, annotated or marked Latest.
+    needs: publish
+    uses: ./.github/workflows/smoke-v4.yml
+    with:
+      ref: ${{ inputs.ref }}
+
   notes:
     # electron-builder creates the release and leaves the body empty, so every
     # v4 pre-release page has said nothing at all. LAC-7622 wants Lacy's Pro
@@ -109,7 +118,7 @@ jobs:
     #
     # Runs after all three publish jobs so it cannot race them into creating
     # the release, and runs once rather than per-platform.
-    needs: publish
+    needs: [publish, smoke]
     runs-on: ubuntu-latest
     steps:
       # The note and the script that reads it live with the app.

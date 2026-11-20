@@ -1,0 +1,119 @@
+name: smoke-v4
+
+# Downloads a CrossOver 4 release exactly as a user would and starts it on
+# every kind of machine we ship to. beta.9 and beta.10 were published without
+# this: they could not start on Linux, and beta.10 could not start on Intel
+# Macs, because only Windows had been launched by hand.
+#
+# Run it by hand against any tag, or let release-v4 call it. release-v4 will
+# not write notes, gate the update files or mark a build Latest until every
+# job here is green. Works on a draft release too.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to launch, for example v4.0.0-beta.11'
+        required: true
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Release tag. Leave empty to read the version from xover at ref.'
+        required: false
+        type: string
+        default: ''
+      ref:
+        description: 'xover ref the release was built from'
+        required: false
+        type: string
+        default: 'main'
+
+permissions:
+  # write, not read: a draft release is invisible to a read-only token
+  contents: write
+
+jobs:
+  launch:
+    name: launch (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Apple silicon Mac
+            os: macos-latest
+          - name: Intel Mac
+            os: macos-15-intel
+          - name: Linux
+            os: ubuntu-latest
+          - name: Windows
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Work out the tag
+        run: |
+          set -euo pipefail
+          TAG="${{ inputs.tag }}"
+          if [[ -z "$TAG" ]]; then
+            VERSION="$(curl -fsSL "https://raw.githubusercontent.com/lacymorrow/xover/${{ inputs.ref }}/package.json" | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version")"
+            TAG="v$VERSION"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
+      - name: Download and start (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          set -euo pipefail
+          uname -m
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" -p "CrossOver-$VERSION-universal-mac.zip"
+          ditto -xk "CrossOver-$VERSION-universal-mac.zip" .
+          spctl -a -vv CrossOver.app
+          ./CrossOver.app/Contents/MacOS/CrossOver --user-data-dir="$RUNNER_TEMP/ud" > out.log 2>&1 &
+          echo "LOG=$HOME/Library/Logs/CrossOver/main.log" >> "$GITHUB_ENV"
+
+      - name: Download and start (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libnss3 libgbm1 libxss1 libxtst6 libnotify4 libgtk-3-0t64 libasound2t64
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" -p "CrossOver-$VERSION.AppImage"
+          chmod +x "CrossOver-$VERSION.AppImage"
+          "./CrossOver-$VERSION.AppImage" --appimage-extract > /dev/null
+          xvfb-run -a -s "-screen 0 1280x800x24" "$PWD/squashfs-root/crossover" --no-sandbox --disable-gpu > out.log 2>&1 &
+          echo "LOG=$HOME/.config/CrossOver/logs/main.log" >> "$GITHUB_ENV"
+
+      - name: Download, install and start (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          gh release download $env:TAG --repo $env:GITHUB_REPOSITORY -p "CrossOver-Installer-$env:VERSION.exe"
+          $p = Start-Process ".\CrossOver-Installer-$env:VERSION.exe" -ArgumentList /S -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "installer exit $($p.ExitCode)" }
+          Start-Process "$env:LOCALAPPDATA\Programs\crossover\CrossOver.exe" -RedirectStandardError out.log
+          "LOG=$env:APPDATA\CrossOver\logs\main.log" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - name: It started
+        run: |
+          set -uo pipefail
+          # The version line is written once the main process has loaded every
+          # native module and Electron is ready. A build that cannot start
+          # never writes it.
+          for _ in $(seq 1 30); do
+            grep -qF "CrossOver $VERSION" "$LOG" 2>/dev/null && break
+            sleep 2
+          done
+          sleep 5
+          echo "--- app log"; cat "$LOG" 2>/dev/null | tail -40 || true
+          echo "--- process output"; tail -40 out.log 2>/dev/null || true
+          grep -qF "CrossOver $VERSION" "$LOG" || { echo "::error::CrossOver $VERSION never reached startup on ${{ matrix.name }}"; exit 1; }
+          if grep -hE "Uncaught Exception|JavaScript error occurred|App threw an error" "$LOG" out.log 2>/dev/null; then
+            echo "::error::CrossOver $VERSION threw at startup on ${{ matrix.name }}"; exit 1
+          fi
+          echo "CrossOver $VERSION starts on ${{ matrix.name }}"
