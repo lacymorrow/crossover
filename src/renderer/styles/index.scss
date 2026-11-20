@@ -494,3 +494,8 @@ label {
 .d-none {
     display: none;
 }
+
+.hidden {
+	display: none;
+	pointer-events: none;
+}
