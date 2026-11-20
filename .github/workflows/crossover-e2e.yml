@@ -1,0 +1,94 @@
+name: crossover-e2e
+
+# The Playwright suite launches a real Electron 14 app. This gate runs the
+# crosshair-action specs on every PR to main/dev/release under xvfb. The rest
+# of the suite runs nightly (see the schedule below), because several specs
+# are macOS-only or need a real display server and are not stable on a runner.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - release
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: crossover-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-gate:
+    name: e2e (crosshair actions)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - name: Get Node Version
+        run: echo "nodeversion=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+        id: get-node-version
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.get-node-version.outputs.nodeversion }}
+      - name: Electron runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libxkbfile1
+      - name: Install Dependencies
+        run: npm ci
+      - name: Enable the Electron sandbox helper
+        run: |
+          sudo chown root node_modules/electron/dist/chrome-sandbox
+          sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+      - name: Crosshair action specs
+        # PORTABLE_EXECUTABLE_DIR gives this run its own single-instance lock
+        # and prefs, so concurrent runs on one machine do not collide.
+        run: |
+          export PORTABLE_EXECUTABLE_DIR="$(mktemp -d)"
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" \
+            npx playwright test test/duplicate-crosshairs.spec.js test/ads-hide.spec.js test/hide-on-key-mode.spec.js
+      - name: Upload results
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-results
+          path: test/results
+          if-no-files-found: ignore
+
+  e2e-nightly:
+    name: e2e (full suite, linux)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - name: Get Node Version
+        run: echo "nodeversion=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+        id: get-node-version
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.get-node-version.outputs.nodeversion }}
+      - name: Electron runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libxkbfile1
+      - run: npm ci
+      - name: Enable the Electron sandbox helper
+        run: |
+          sudo chown root node_modules/electron/dist/chrome-sandbox
+          sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
+      - name: Full suite
+        run: |
+          export PORTABLE_EXECUTABLE_DIR="$(mktemp -d)"
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npx playwright test
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-nightly-results
+          path: test/results
+          if-no-files-found: ignore
