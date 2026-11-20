@@ -39,6 +39,11 @@ jobs:
           sudo apt-get install -y xvfb libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libxss1 libxtst6 libxkbfile1
       - name: Install Dependencies
         run: npm ci
+      # Also the gate on the compiled stylesheet. src/renderer/styles/dist is
+      # build output and is not tracked (LAC-8778), so this step passing proves
+      # npm ci regenerated it from the scss before anything read it.
+      - name: Unit tests (no Electron)
+        run: npm run test:unit
       - name: Enable the Electron sandbox helper
         run: |
           sudo chown root node_modules/electron/dist/chrome-sandbox
