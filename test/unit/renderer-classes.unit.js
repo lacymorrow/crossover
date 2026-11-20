@@ -9,7 +9,9 @@
 // This reads the compiled stylesheet, not the scss, because the compiled file is
 // what the app loads. `npm install` runs `npm run css`, so by the time this test
 // runs in CI the compiled file has been regenerated from the scss - a change to
-// one without the other is caught either way.
+// one without the other is caught either way. The compiled file is gitignored and
+// untracked (LAC-8786), so a checkout that skipped the install hook will not have
+// it; readCss() fails with that instruction rather than a bare ENOENT.
 
 const assert = require( 'node:assert/strict' )
 const fs = require( 'node:fs' )
@@ -18,6 +20,17 @@ const { test } = require( 'node:test' )
 
 const mainDir = path.join( __dirname, '..', '..', 'src', 'main' )
 const cssPath = path.join( __dirname, '..', '..', 'src', 'renderer', 'styles', 'dist', 'index.css' )
+
+// The compiled stylesheet is generated, never committed. Missing means the build
+// step did not run, which must fail loudly: a silent skip here is how a build
+// with no CSS at all would reach users.
+const readCss = () => {
+
+	assert.ok( fs.existsSync( cssPath ), `${cssPath} is missing; it is generated, not committed - run \`npm run css\`` )
+
+	return fs.readFileSync( cssPath, 'utf8' )
+
+}
 
 // Every `something( 'add_class', <arg> )` call in the main process, with the file
 // and the raw argument text so a non-literal argument can be reported rather than
@@ -123,7 +136,7 @@ test( 'every class the main process broadcasts has a rule in the compiled CSS', 
 	// A regex that stops matching would otherwise pass this test vacuously.
 	assert.ok( broadcasts.length >= 2, `expected at least the hide and shadow broadcasts, found ${broadcasts.length}` )
 
-	const rules = readRules( fs.readFileSync( cssPath, 'utf8' ) )
+	const rules = readRules( readCss() )
 
 	for ( const broadcast of broadcasts ) {
 
@@ -144,7 +157,7 @@ test( 'hiding a crosshair still has a rule that hides it', () => {
 	assert.match( windows, /'add_class',\s*'hidden'/, 'hideWindow no longer broadcasts the hidden class' )
 	assert.match( windows, /'remove_class',\s*'hidden'/, 'showWindow no longer removes the hidden class' )
 
-	const rules = readRules( fs.readFileSync( cssPath, 'utf8' ) )
+	const rules = readRules( readCss() )
 	const matches = rulesFor( rules, 'hidden' )
 
 	assert.ok( matches.length > 0, '.hidden has no rule in the compiled CSS (PR #614 deleted it once already)' )
