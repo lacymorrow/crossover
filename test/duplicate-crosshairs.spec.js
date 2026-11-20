@@ -104,6 +104,9 @@ test.describe( 'Crosshair actions reach duplicate crosshairs', () => {
 		await configure( electronApp, {
 			'crosshair.size': CROSSHAIR_SIZE,
 			'actions.hideOnKey': 'Alt',
+			// The default, but a profile that has been switched to 'press' keeps the
+			// crosshair hidden until an ADS click, which is not what this test reads.
+			'actions.hideOnKeyMode': 'hold',
 			'actions.hideOnMouse': '-1',
 			'actions.resizeOnADS': 'off',
 			'actions.tiltEnable': [],

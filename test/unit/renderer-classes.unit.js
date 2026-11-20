@@ -1,0 +1,156 @@
+// Run with: npm run test:unit (node --test, no Electron)
+//
+// Guard for LAC-8771. The main process hides and styles crosshair windows by
+// broadcasting a class name over the `add_class` / `remove_class` channels; the
+// renderer puts it on document.body. Nothing but a CSS rule makes that class do
+// anything, so deleting the rule silently kills the feature. PR #614 deleted
+// `.hidden` and shipped a 3.4.12 where Hide Crosshair did nothing.
+//
+// This reads the compiled stylesheet, not the scss, because the compiled file is
+// what the app loads. `npm install` runs `npm run css`, so by the time this test
+// runs in CI the compiled file has been regenerated from the scss - a change to
+// one without the other is caught either way.
+
+const assert = require( 'node:assert/strict' )
+const fs = require( 'node:fs' )
+const path = require( 'node:path' )
+const { test } = require( 'node:test' )
+
+const mainDir = path.join( __dirname, '..', '..', 'src', 'main' )
+const cssPath = path.join( __dirname, '..', '..', 'src', 'renderer', 'styles', 'dist', 'index.css' )
+
+// Every `something( 'add_class', <arg> )` call in the main process, with the file
+// and the raw argument text so a non-literal argument can be reported rather than
+// quietly skipped.
+const findBroadcasts = () => {
+
+	const pattern = /([\w.]+)\s*\(\s*(['"])(add_class|remove_class)\2\s*,\s*([^)]*?)\s*\)/g
+	const found = []
+
+	for ( const file of fs.readdirSync( mainDir ).filter( name => name.endsWith( '.js' ) ) ) {
+
+		const source = fs.readFileSync( path.join( mainDir, file ), 'utf8' )
+
+		for ( const match of source.matchAll( pattern ) ) {
+
+			const argument = match[4]
+			const literal = /^(['"])([\w-]+)\1$/.exec( argument )
+			found.push( {
+				file,
+				channel: match[3],
+				argument,
+				className: literal ? literal[2] : null,
+			} )
+
+		}
+
+	}
+
+	return found
+
+}
+
+// Minimal CSS reader: returns { selector, declarations } for every style rule,
+// descending into at-rules such as @media. The compiled file has no nested style
+// rules, and this throws rather than guessing if that ever changes.
+const readRules = css => {
+
+	const rules = []
+	const stack = []
+	let buffer = ''
+
+	for ( const character of css ) {
+
+		if ( character === '{' ) {
+
+			const prelude = buffer.trim()
+			buffer = ''
+
+			if ( prelude.startsWith( '@' ) ) {
+
+				stack.push( { kind: 'at' } )
+
+			} else {
+
+				assert.ok( !stack.some( frame => frame.kind === 'style' ), `nested style rule in compiled CSS ("${prelude}"); this reader needs updating` )
+				const rule = { selector: prelude, declarations: '' }
+				rules.push( rule )
+				stack.push( { kind: 'style', rule } )
+
+			}
+
+			continue
+
+		}
+
+		if ( character === '}' ) {
+
+			buffer = ''
+			stack.pop()
+			continue
+
+		}
+
+		const top = stack[stack.length - 1]
+
+		if ( top && top.kind === 'style' ) {
+
+			top.rule.declarations += character
+			continue
+
+		}
+
+		buffer += character
+
+	}
+
+	return rules
+
+}
+
+const rulesFor = ( rules, className ) => {
+
+	const token = new RegExp( `\\.${className.replace( /[^\w-]/g, '\\$&' )}(?![\\w-])` )
+
+	return rules.filter( rule => token.test( rule.selector ) )
+
+}
+
+test( 'every class the main process broadcasts has a rule in the compiled CSS', () => {
+
+	const broadcasts = findBroadcasts()
+
+	// A regex that stops matching would otherwise pass this test vacuously.
+	assert.ok( broadcasts.length >= 2, `expected at least the hide and shadow broadcasts, found ${broadcasts.length}` )
+
+	const rules = readRules( fs.readFileSync( cssPath, 'utf8' ) )
+
+	for ( const broadcast of broadcasts ) {
+
+		assert.ok( broadcast.className, `${broadcast.file}: ${broadcast.channel} is sent a non-literal class (${broadcast.argument}); add it to this test by hand` )
+
+		const matches = rulesFor( rules, broadcast.className )
+
+		assert.ok( matches.length > 0, `${broadcast.file} broadcasts "${broadcast.className}" over ${broadcast.channel}, but no selector in src/renderer/styles/dist/index.css uses .${broadcast.className}, so the class does nothing` )
+
+	}
+
+} )
+
+test( 'hiding a crosshair still has a rule that hides it', () => {
+
+	const windows = fs.readFileSync( path.join( mainDir, 'windows.js' ), 'utf8' )
+
+	assert.match( windows, /'add_class',\s*'hidden'/, 'hideWindow no longer broadcasts the hidden class' )
+	assert.match( windows, /'remove_class',\s*'hidden'/, 'showWindow no longer removes the hidden class' )
+
+	const rules = readRules( fs.readFileSync( cssPath, 'utf8' ) )
+	const matches = rulesFor( rules, 'hidden' )
+
+	assert.ok( matches.length > 0, '.hidden has no rule in the compiled CSS (PR #614 deleted it once already)' )
+	assert.ok(
+		matches.some( rule => /display:\s*none/.test( rule.declarations ) ),
+		`.hidden is defined but never sets display: none, so Hide Crosshair would leave the window on screen (found: ${matches.map( rule => rule.declarations ).join( ' | ' )})`,
+	)
+
+} )
