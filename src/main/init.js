@@ -9,9 +9,10 @@ const preferences = require( './preferences' ).init()
 const accessibility = require( './accessibility' )
 const announcement = require( './announcement' )
 
-// Gates the CrossOver 4 announcement window. Lacy flips this after he has seen
-// real-app screenshots of it (CROSSOVER_ANNOUNCEMENT_PREVIEW=offer|downloading|ready|failed).
-const PROMPTS_APPROVED = false
+// Gates the CrossOver 4 announcement window. Lacy approved the design and the
+// real-app screenshots on 2026-11-20 (docs/changelog/media/614). Whether anyone
+// sees it is still up to announcement.json on main, which stays off until launch.
+const PROMPTS_APPROVED = true
 
 const init = async options => {
 
