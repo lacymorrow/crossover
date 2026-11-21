@@ -121,6 +121,45 @@ test.describe( 'Crosshair actions reach duplicate crosshairs', () => {
 
 	} )
 
+	// 'press' is the third hideOnKeyMode: it hides on the press and leaves the
+	// crosshair hidden until the next ADS click, so you can drop into
+	// first-person without holding a key down. It shares the hide path with
+	// 'hold', but the reveal is a mousedown listener of its own, and a reveal
+	// that reached windows.win only is exactly the #560/#561 bug this file
+	// exists to catch.
+	test( 'Hide on keypress in press mode hides every crosshair until the next ADS click', async () => {
+
+		test.setTimeout( 60_000 )
+
+		await configure( electronApp, {
+			'crosshair.size': CROSSHAIR_SIZE,
+			'actions.hideOnKey': 'Alt',
+			'actions.hideOnKeyMode': 'press',
+			// -1 leaves Hide on ADS unregistered, so the right button only ever
+			// means "reveal" here. It is also what makes press mode fall back to
+			// the right button: a real hideOnMouse button would become the reveal.
+			'actions.hideOnMouse': '-1',
+			'actions.resizeOnADS': 'off',
+			'actions.tiltEnable': [],
+		} )
+
+		expect( await setDuplicateCount( electronApp, 1 ) ).toBe( 1 )
+
+		const { held, released } = await holdKey( displays )
+
+		expect( held ).toEqual( [ 'none', 'none' ] )
+		// The whole difference from 'hold': letting the key up changes nothing.
+		expect( released ).toEqual( [ 'none', 'none' ] )
+
+		await emit( electronApp, 'mousedown', { button: RIGHT_MOUSE_BUTTON } )
+		await wait( delays.short )
+
+		expect( await displays( electronApp ) ).toEqual( [ 'block', 'block' ] )
+
+		await emit( electronApp, 'mouseup', { button: RIGHT_MOUSE_BUTTON } )
+
+	} )
+
 	test( 'ADS resize resizes every crosshair', async () => {
 
 		test.setTimeout( 60_000 )
