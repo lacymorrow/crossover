@@ -81,6 +81,8 @@ v3 never installs updates on Linux. When electron-updater reports one, v3 shows 
 
 ## Publish order
 
+> **ON HOLD (Lacy, 2026-11-25).** v4 has not been tested enough to launch. Steps 3 onward do not run until Lacy lifts the hold in writing: no `release-v4` with `release_type: latest`, no `scripts/v4-rollout.sh`, no `announcement.json` change. There is no new date. Tracked in LAC-8734.
+
 1. **Ship 3.4.10 as Latest** through the normal `release.yml` (tag `v3.4.10`). Leave `announcement.json` at `enabled: false`.
 2. **Wait** until most active installs have taken 3.4.10, so the bulk of users have gate 4 and the rollback guard before v4 exists as Latest. One week (Lacy, 2026-11-19). Installs on 3.3.x and older that update in this window also gain gate 1.
 3. **Publish v4 stable**: run `release-v4` with `release_type: latest`, `staging_percentage: 0`, `ref: <xover tag>`. It builds into a draft, starts the draft's files on Apple silicon, Intel Mac, Linux and Windows (`smoke-v4`; a build that cannot start stops here), writes the gates into the ymls, adds the notes, refuses to continue unless 3.4.10 (or newer) is Latest, then publishes v4 as Latest. Nobody updates yet.
